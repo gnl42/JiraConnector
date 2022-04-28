@@ -16,12 +16,12 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import org.joda.time.DateTime;
 
 /**
  * Basic information about JIRA server
@@ -39,7 +39,7 @@ public class ServerInfo {
     private final String serverTitle;
 
     public ServerInfo(URI baseUri, String version, int buildNumber, DateTime buildDate, @Nullable DateTime serverTime,
-                      String scmInfo, String serverTitle) {
+            String scmInfo, String serverTitle) {
         this.baseUri = baseUri;
         this.version = version;
         this.buildNumber = buildNumber;
@@ -102,15 +102,8 @@ public class ServerInfo {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).addValue(super.toString()).
-                add("baseUri", baseUri).
-                add("version", version).
-                add("buildNumber", buildNumber).
-                add("buildDate", buildDate).
-                add("serverTime", serverTime).
-                add("svnRevision", scmInfo).
-                add("serverTitle", serverTitle).
-                toString();
+        return "ServerInfo [baseUri=" + baseUri + ", version=" + version + ", buildNumber=" + buildNumber + ", scmInfo=" + scmInfo + ", serverTitle="
+                + serverTitle + "]";
     }
 
 
@@ -118,20 +111,20 @@ public class ServerInfo {
     public boolean equals(Object obj) {
         if (obj instanceof ServerInfo) {
             ServerInfo that = (ServerInfo) obj;
-            return Objects.equal(this.baseUri, that.baseUri)
-                    && Objects.equal(this.version, that.version)
-                    && Objects.equal(this.buildNumber, that.buildNumber)
-                    && Objects.equal(this.buildDate, that.buildDate)
-                    && Objects.equal(this.serverTime, that.serverTime)
-                    && Objects.equal(this.scmInfo, that.scmInfo)
-                    && Objects.equal(this.serverTitle, that.serverTitle);
+            return Objects.equals(this.baseUri, that.baseUri)
+                    && Objects.equals(this.version, that.version)
+                    && Objects.equals(this.buildNumber, that.buildNumber)
+                    && Objects.equals(this.buildDate, that.buildDate)
+                    && Objects.equals(this.serverTime, that.serverTime)
+                    && Objects.equals(this.scmInfo, that.scmInfo)
+                    && Objects.equals(this.serverTitle, that.serverTitle);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(baseUri, version, buildNumber, buildDate, serverTime, scmInfo, serverTitle);
+        return Objects.hash(baseUri, version, buildNumber, buildDate, serverTime, scmInfo, serverTitle);
     }
 
 }

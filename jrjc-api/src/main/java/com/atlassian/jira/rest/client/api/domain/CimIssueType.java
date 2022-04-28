@@ -16,14 +16,14 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
-import com.atlassian.jira.rest.client.api.IssueRestClient;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
+import com.atlassian.jira.rest.client.api.IssueRestClient;
 
 /**
  * Describes issue type with fields info map.
@@ -33,6 +33,11 @@ import java.util.Map;
  * @since v1.0
  */
 public class CimIssueType extends IssueType {
+
+    @Override
+    public String toString() {
+        return "CimIssueType [fields=" + fields + ", " + super.toString() + "]";
+    }
 
     private final Map<String, CimFieldInfo> fields;
 
@@ -56,8 +61,8 @@ public class CimIssueType extends IssueType {
      * @return ToStringHelper
      */
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().add("fields", fields);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
@@ -65,13 +70,13 @@ public class CimIssueType extends IssueType {
         if (obj instanceof CimIssueType) {
             CimIssueType that = (CimIssueType) obj;
             return super.equals(obj)
-                    && Objects.equal(this.fields, that.fields);
+                    && Objects.equals(this.fields, that.fields);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), fields);
+        return Objects.hash(super.hashCode(), fields);
     }
 }

@@ -1,7 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -11,6 +10,12 @@ import javax.annotation.Nullable;
  * @since v2.0
  */
 public class AuditRecordInput {
+
+    @Override
+    public String toString() {
+        return "AuditRecordInput [summary=" + summary + ", category=" + category + ", objectItem=" + objectItem + ", associatedItem=" + associatedItem
+                + ", changedValues=" + changedValues + "]";
+    }
 
     private final String summary;
 
@@ -26,9 +31,9 @@ public class AuditRecordInput {
     private final Iterable<AuditChangedValue> changedValues;
 
     public AuditRecordInput(final String category, final String summary,
-                            @Nullable final AuditAssociatedItem objectItem,
-                            @Nullable final Iterable<AuditAssociatedItem> associatedItem,
-                            @Nullable final Iterable<AuditChangedValue> changedValues) {
+            @Nullable final AuditAssociatedItem objectItem,
+            @Nullable final Iterable<AuditAssociatedItem> associatedItem,
+            @Nullable final Iterable<AuditChangedValue> changedValues) {
         this.summary = summary;
         this.category = category;
         this.objectItem = objectItem;
@@ -56,31 +61,26 @@ public class AuditRecordInput {
         return changedValues;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("summary", summary).
-                add("category", category).
-                add("objectItem", objectItem).
-                add("associatedItem", associatedItem).
-                add("changedValues", changedValues);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(final Object o) {
         if (o instanceof AuditRecordInput) {
             final AuditRecordInput that = (AuditRecordInput) o;
-            return Objects.equal(this.summary, that.summary)
-                    && Objects.equal(this.category, that.category)
-                    && Objects.equal(this.objectItem, that.objectItem)
-                    && Objects.equal(this.associatedItem, that.associatedItem)
-                    && Objects.equal(this.changedValues, that.changedValues);
+            return Objects.equals(this.summary, that.summary)
+                    && Objects.equals(this.category, that.category)
+                    && Objects.equals(this.objectItem, that.objectItem)
+                    && Objects.equals(this.associatedItem, that.associatedItem)
+                    && Objects.equals(this.changedValues, that.changedValues);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(summary, category, objectItem, associatedItem, changedValues);
+        return Objects.hash(summary, category, objectItem, associatedItem, changedValues);
     }
 
 }

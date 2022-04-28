@@ -16,10 +16,10 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.domain.IssueFieldId;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 /**
  * New value for selected field - used while changing issue fields - e.g. while transitioning issue.
@@ -51,6 +51,7 @@ public class FieldInput implements IdentifiableEntity<String> {
     /**
      * @return field id
      */
+    @Override
     public String getId() {
         return id;
     }
@@ -64,24 +65,21 @@ public class FieldInput implements IdentifiableEntity<String> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, value);
+        return Objects.hash(id, value);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof FieldInput) {
             final FieldInput other = (FieldInput) obj;
-            return Objects.equal(this.id, other.id)
-                    && Objects.equal(this.value, other.value);
+            return Objects.equals(this.id, other.id)
+                    && Objects.equals(this.value, other.value);
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("value", value)
-                .toString();
+        return "FieldInput [id=" + id + ", value=" + value + "]";
     }
 }

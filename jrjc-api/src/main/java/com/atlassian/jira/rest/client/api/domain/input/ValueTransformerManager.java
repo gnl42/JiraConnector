@@ -16,13 +16,14 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * This class allows to register {@link ValueTransformer} objects and then perform value transformation using
@@ -66,6 +67,7 @@ public class ValueTransformerManager implements Function<Object, Object> {
      * @return transformed value
      * @throws CannotTransformValueException when any of available transformers was able to transform given value
      */
+    @Override
     public Object apply(@Nullable Object rawInput) {
         if (rawInput instanceof Iterable) {
             @SuppressWarnings("unchecked") final Iterable<Object> rawInputObjects = (Iterable<Object>) rawInput;

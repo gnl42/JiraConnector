@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 /**
  * Represents error of creating single element during batch operation.
@@ -48,25 +48,21 @@ public class BulkOperationErrorResult {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("elementErrors", elementErrors)
-                .add("failedElementNumber", failedElementNumber)
-                .toString();
-
+        return "BulkOperationErrorResult [elementErrors=" + elementErrors + ", failedElementNumber=" + failedElementNumber + "]";
     }
 
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof BulkOperationErrorResult) {
             final BulkOperationErrorResult that = (BulkOperationErrorResult) obj;
-            return Objects.equal(this.elementErrors, that.elementErrors)
-                    && Objects.equal(this.failedElementNumber, that.failedElementNumber);
+            return Objects.equals(this.elementErrors, that.elementErrors)
+                    && Objects.equals(this.failedElementNumber, that.failedElementNumber);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(elementErrors, failedElementNumber);
+        return Objects.hash(elementErrors, failedElementNumber);
     }
 }

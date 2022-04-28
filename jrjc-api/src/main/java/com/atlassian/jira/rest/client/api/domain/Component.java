@@ -16,11 +16,11 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
 
 /**
  * Project component
@@ -60,10 +60,7 @@ public class Component extends BasicComponent {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).addValue(super.toString()).
-                add("lead", lead).
-                add("assigneeInfo", assigneeInfo).
-                toString();
+        return "Component [lead=" + lead + ", assigneeInfo=" + assigneeInfo + ", " + super.toString() + "]";
     }
 
 
@@ -71,15 +68,15 @@ public class Component extends BasicComponent {
     public boolean equals(Object obj) {
         if (obj instanceof Component) {
             Component that = (Component) obj;
-            return super.equals(obj) && Objects.equal(this.lead, that.lead)
-                    && Objects.equal(this.assigneeInfo, that.assigneeInfo);
+            return super.equals(obj) && Objects.equals(this.lead, that.lead)
+                    && Objects.equals(this.assigneeInfo, that.assigneeInfo);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), lead, assigneeInfo);
+        return Objects.hash(super.hashCode(), lead, assigneeInfo);
     }
 
     public static class AssigneeInfo {
@@ -123,13 +120,8 @@ public class Component extends BasicComponent {
 
         @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this).
-                    add("assignee", assignee).
-                    add("assigneeType", assigneeType).
-                    add("realAssignee", realAssignee).
-                    add("realAssigneeType", realAssigneeType).
-                    add("isAssigneeTypeValid", isAssigneeTypeValid).
-                    toString();
+            return "AssigneeInfo [assignee=" + assignee + ", assigneeType=" + assigneeType + ", realAssignee=" + realAssignee + ", realAssigneeType="
+                    + realAssigneeType + ", isAssigneeTypeValid=" + isAssigneeTypeValid + "]";
         }
 
 
@@ -137,18 +129,18 @@ public class Component extends BasicComponent {
         public boolean equals(Object obj) {
             if (obj instanceof AssigneeInfo) {
                 AssigneeInfo that = (AssigneeInfo) obj;
-                return Objects.equal(this.assignee, that.assignee)
-                        && Objects.equal(this.assigneeType, that.assigneeType)
-                        && Objects.equal(this.realAssignee, that.realAssignee)
-                        && Objects.equal(this.realAssigneeType, that.realAssigneeType)
-                        && Objects.equal(this.isAssigneeTypeValid, that.isAssigneeTypeValid);
+                return Objects.equals(this.assignee, that.assignee)
+                        && Objects.equals(this.assigneeType, that.assigneeType)
+                        && Objects.equals(this.realAssignee, that.realAssignee)
+                        && Objects.equals(this.realAssigneeType, that.realAssigneeType)
+                        && Objects.equals(this.isAssigneeTypeValid, that.isAssigneeTypeValid);
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(super
+            return Objects.hash(super
                     .hashCode(), assignee, assigneeType, realAssignee, realAssigneeType, isAssigneeTypeValid);
         }
 

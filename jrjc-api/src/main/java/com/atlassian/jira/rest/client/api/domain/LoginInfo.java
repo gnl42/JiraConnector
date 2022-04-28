@@ -16,11 +16,12 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
+
+import org.joda.time.DateTime;
+
 
 /**
  * Statistics about logins (successful and failed logins number and last date) for the current user
@@ -64,29 +65,25 @@ public class LoginInfo {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("failedLoginCount", failedLoginCount).
-                add("loginCount", loginCount).
-                add("lastFailedLoginDate", lastFailedLoginDate).
-                add("previousLoginDate", previousLoginDate).
-                toString();
+        return "LoginInfo [failedLoginCount=" + failedLoginCount + ", loginCount=" + loginCount + ", lastFailedLoginDate=" + lastFailedLoginDate
+                + ", previousLoginDate=" + previousLoginDate + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof LoginInfo) {
             LoginInfo that = (LoginInfo) obj;
-            return Objects.equal(this.failedLoginCount, that.failedLoginCount)
-                    && Objects.equal(this.loginCount, that.loginCount)
-                    && Objects.equal(this.lastFailedLoginDate, that.lastFailedLoginDate)
-                    && Objects.equal(this.previousLoginDate, that.previousLoginDate);
+            return Objects.equals(this.failedLoginCount, that.failedLoginCount)
+                    && Objects.equals(this.loginCount, that.loginCount)
+                    && Objects.equals(this.lastFailedLoginDate, that.lastFailedLoginDate)
+                    && Objects.equals(this.previousLoginDate, that.previousLoginDate);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(failedLoginCount, loginCount, lastFailedLoginDate, previousLoginDate);
+        return Objects.hash(failedLoginCount, loginCount, lastFailedLoginDate, previousLoginDate);
     }
 
 }

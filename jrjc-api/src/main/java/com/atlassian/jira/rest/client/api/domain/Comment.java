@@ -16,13 +16,14 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import org.joda.time.DateTime;
+
+import com.atlassian.jira.rest.client.api.AddressableEntity;
 
 /**
  * A JIRA comment
@@ -109,37 +110,30 @@ public class Comment implements AddressableEntity {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("self", self)
-                .add("id", id)
-                .add("body", body)
-                .add("author", author)
-                .add("updateAuthor", updateAuthor)
-                .add("creationDate", creationDate)
-                .add("visibility", visibility)
-                .add("updateDate", updateDate).toString();
+        return "Comment [self=" + self + ", id=" + id + ", author=" + author + ", updateAuthor=" + updateAuthor + ", creationDate=" + creationDate
+                + ", updateDate=" + updateDate + ", body=" + body + ", visibility=" + visibility + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Comment) {
             Comment that = (Comment) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.body, that.body)
-                    && Objects.equal(this.author, that.author)
-                    && Objects.equal(this.updateAuthor, that.updateAuthor)
-                    && Objects.equal(this.creationDate, that.creationDate)
-                    && Objects.equal(this.updateDate, that.updateDate)
-                    && Objects.equal(this.visibility, that.visibility)
-                    && Objects.equal(this.body, that.body);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.body, that.body)
+                    && Objects.equals(this.author, that.author)
+                    && Objects.equals(this.updateAuthor, that.updateAuthor)
+                    && Objects.equals(this.creationDate, that.creationDate)
+                    && Objects.equals(this.updateDate, that.updateDate)
+                    && Objects.equals(this.visibility, that.visibility)
+                    && Objects.equals(this.body, that.body);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, id, body, author, updateAuthor, creationDate, updateDate, visibility);
+        return Objects.hash(self, id, body, author, updateAuthor, creationDate, updateDate, visibility);
     }
 
 }

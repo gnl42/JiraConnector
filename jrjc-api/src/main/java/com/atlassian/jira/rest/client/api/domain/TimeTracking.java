@@ -16,8 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -68,27 +67,24 @@ public class TimeTracking {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("originalEstimateMinutes", originalEstimateMinutes).
-                add("remainingEstimateMinutes", remainingEstimateMinutes).
-                add("timeSpentMinutes", timeSpentMinutes).
-                toString();
+        return "TimeTracking [originalEstimateMinutes=" + originalEstimateMinutes + ", remainingEstimateMinutes=" + remainingEstimateMinutes
+                + ", timeSpentMinutes=" + timeSpentMinutes + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof TimeTracking) {
             TimeTracking that = (TimeTracking) obj;
-            return Objects.equal(this.originalEstimateMinutes, that.originalEstimateMinutes)
-                    && Objects.equal(this.timeSpentMinutes, that.timeSpentMinutes)
-                    && Objects.equal(this.remainingEstimateMinutes, that.remainingEstimateMinutes);
+            return Objects.equals(this.originalEstimateMinutes, that.originalEstimateMinutes)
+                    && Objects.equals(this.timeSpentMinutes, that.timeSpentMinutes)
+                    && Objects.equals(this.remainingEstimateMinutes, that.remainingEstimateMinutes);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(originalEstimateMinutes, remainingEstimateMinutes, timeSpentMinutes);
+        return Objects.hash(originalEstimateMinutes, remainingEstimateMinutes, timeSpentMinutes);
     }
 
 }

@@ -16,6 +16,15 @@
 
 package com.atlassian.jira.rest.client;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+import javax.ws.rs.core.UriBuilder;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.atlassian.jira.functest.framework.Administration;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
@@ -26,13 +35,6 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 import com.atlassian.jira.testkit.client.Backdoor;
 import com.atlassian.jira.webtests.util.LocalTestEnvironmentData;
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang.StringUtils;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
 
 public class IntegrationTestUtil {
     public static final User USER_ADMIN_FULL;

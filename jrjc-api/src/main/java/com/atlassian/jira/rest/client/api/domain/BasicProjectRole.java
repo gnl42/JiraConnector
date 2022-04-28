@@ -15,12 +15,11 @@
  */
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.net.URI;
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.AddressableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import java.net.URI;
 
 /**
  * Basic information about a JIRA project's role.
@@ -52,25 +51,23 @@ public class BasicProjectRole implements AddressableEntity, NamedEntity {
     public boolean equals(Object o) {
         if (o instanceof BasicProjectRole) {
             final BasicProjectRole that = (BasicProjectRole) o;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.name, that.name);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.name, that.name);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), self, name);
+        return Objects.hash(super.hashCode(), self, name);
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "BasicProjectRole [self=" + self + ", name=" + name + "]";
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this)
-                .add("self", self)
-                .add("name", name);
+    protected String getToStringHelper() {
+        return toString();
     }
 }

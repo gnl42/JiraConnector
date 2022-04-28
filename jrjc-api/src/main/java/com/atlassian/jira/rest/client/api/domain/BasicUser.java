@@ -16,10 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * Basic information about a JIRA user
@@ -27,6 +25,11 @@ import java.net.URI;
  * @since v0.1
  */
 public class BasicUser extends AddressableNamedEntity {
+
+    @Override
+    public String toString() {
+        return "BasicUser [displayName=" + displayName + ", accountId=" + accountId + "]";
+    }
 
     /**
      * This value is used to mark incomplete user URI - when server response with user without selfUri set.
@@ -57,24 +60,22 @@ public class BasicUser extends AddressableNamedEntity {
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper()
-                .add("displayName", displayName)
-                .add("accountId", accountId);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BasicUser) {
             BasicUser that = (BasicUser) obj;
-            return super.equals(that) && Objects.equal(this.displayName, that.displayName) && Objects.equal(this.accountId, that.accountId);
+            return super.equals(that) && Objects.equals(this.displayName, that.displayName) && Objects.equals(this.accountId, that.accountId);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), displayName, accountId);
+        return Objects.hash(super.hashCode(), displayName, accountId);
     }
 
     /**

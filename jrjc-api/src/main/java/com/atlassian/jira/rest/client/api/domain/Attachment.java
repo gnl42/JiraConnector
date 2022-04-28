@@ -16,13 +16,14 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import org.joda.time.DateTime;
+
+import com.atlassian.jira.rest.client.api.AddressableEntity;
 
 /**
  * A file attachment attached to an issue
@@ -92,36 +93,28 @@ public class Attachment implements AddressableEntity {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("self", self).
-                add("filename", filename).
-                add("author", author).
-                add("creationDate", creationDate).
-                add("size", size).
-                add("mimeType", mimeType).
-                add("contentUri", contentUri).
-                add("thumbnailUri", thumbnailUri).
-                toString();
+        return "Attachment [self=" + self + ", filename=" + filename + ", author=" + author + ", size=" + size + ", mimeType=" + mimeType + ", contentUri="
+                + contentUri + ", thumbnailUri=" + thumbnailUri + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Attachment) {
             Attachment that = (Attachment) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.filename, that.filename)
-                    && Objects.equal(this.author, that.author)
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.filename, that.filename)
+                    && Objects.equals(this.author, that.author)
                     && this.creationDate.isEqual(that.creationDate)
-                    && Objects.equal(this.size, that.size)
-                    && Objects.equal(this.mimeType, that.mimeType)
-                    && Objects.equal(this.contentUri, that.contentUri)
-                    && Objects.equal(this.thumbnailUri, that.thumbnailUri);
+                    && Objects.equals(this.size, that.size)
+                    && Objects.equals(this.mimeType, that.mimeType)
+                    && Objects.equals(this.contentUri, that.contentUri)
+                    && Objects.equals(this.thumbnailUri, that.thumbnailUri);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, filename, author, creationDate, size, mimeType, contentUri, thumbnailUri);
+        return Objects.hash(self, filename, author, creationDate, size, mimeType, contentUri, thumbnailUri);
     }
 }

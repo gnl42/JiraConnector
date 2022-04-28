@@ -1,7 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,6 +15,11 @@ public class AuditAssociatedItem {
 
     @Nullable
     private final String id;
+
+    @Override
+    public String toString() {
+        return "AuditAssociatedItem [id=" + id + ", name=" + name + ", typeName=" + typeName + ", parentId=" + parentId + ", parentName=" + parentName + "]";
+    }
 
     private final String name;
 
@@ -60,31 +64,26 @@ public class AuditAssociatedItem {
         return parentName;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("id", id).
-                add("name", name).
-                add("typeName", typeName).
-                add("parentId", parentId).
-                add("parentName", parentName);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(final Object o) {
         if (o instanceof AuditAssociatedItem) {
             final AuditAssociatedItem that = (AuditAssociatedItem) o;
-            return Objects.equal(this.id, that.id)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.parentId, that.parentId)
-                    && Objects.equal(this.parentName, that.parentName)
-                    && Objects.equal(this.typeName, that.typeName);
+            return Objects.equals(this.id, that.id)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.parentId, that.parentId)
+                    && Objects.equals(this.parentName, that.parentName)
+                    && Objects.equals(this.typeName, that.typeName);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, name, typeName, typeName, parentId, parentName);
+        return Objects.hash(id, name, typeName, typeName, parentId, parentName);
     }
 
 }

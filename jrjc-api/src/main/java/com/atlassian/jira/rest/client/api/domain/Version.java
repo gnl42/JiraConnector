@@ -16,14 +16,15 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import org.joda.time.DateTime;
+
+import com.atlassian.jira.rest.client.api.AddressableEntity;
+import com.atlassian.jira.rest.client.api.NamedEntity;
 
 /**
  * Complete information about a version defined for a JIRA project
@@ -65,6 +66,7 @@ public class Version implements AddressableEntity, NamedEntity {
         return description;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -84,35 +86,28 @@ public class Version implements AddressableEntity, NamedEntity {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("self", self).
-                add("id", id).
-                add("name", name).
-                add("description", description).
-                add("isArchived", isArchived).
-                add("isReleased", isReleased).
-                add("releaseDate", releaseDate).
-                toString();
+        return "Version [self=" + self + ", id=" + id + ", description=" + description + ", name=" + name + ", isArchived=" + isArchived + ", isReleased="
+                + isReleased + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Version) {
             Version that = (Version) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.isArchived, that.isArchived)
-                    && Objects.equal(this.isReleased, that.isReleased)
-                    && Objects.equal(this.releaseDate, that.releaseDate);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.description, that.description)
+                    && Objects.equals(this.isArchived, that.isArchived)
+                    && Objects.equals(this.isReleased, that.isReleased)
+                    && Objects.equals(this.releaseDate, that.releaseDate);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, id, name, description, isArchived, isReleased, releaseDate);
+        return Objects.hash(self, id, name, description, isArchived, isReleased, releaseDate);
     }
 
 }

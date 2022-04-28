@@ -18,6 +18,7 @@ package com.atlassian.jira.rest.client.api.domain;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -26,8 +27,6 @@ import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 /**
  * Contains information about field in IssueType.
@@ -124,20 +123,14 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String>, Se
      *
      * @return ToStringHelper
      */
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("id", id).
-                add("name", name).
-                add("required", required).
-                add("schema", schema).
-                add("operations", operations).
-                add("allowedValues", allowedValues).
-                add("autoCompleteUri", autoCompleteUri);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "CimFieldInfo [id=" + id + ", required=" + required + ", name=" + name + ", schema=" + schema + ", operations=" + operations + ", allowedValues="
+                + allowedValues + ", autoCompleteUri=" + autoCompleteUri + "]";
     }
 
 
@@ -145,19 +138,19 @@ public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String>, Se
     public boolean equals(Object obj) {
         if (obj instanceof CimFieldInfo) {
             CimFieldInfo that = (CimFieldInfo) obj;
-            return Objects.equal(this.id, that.id)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.required, that.required)
-                    && Objects.equal(this.schema, that.schema)
-                    && Objects.equal(this.operations, that.operations)
-                    && Objects.equal(this.allowedValues, that.allowedValues)
-                    && Objects.equal(this.autoCompleteUri, that.autoCompleteUri);
+            return Objects.equals(this.id, that.id)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.required, that.required)
+                    && Objects.equals(this.schema, that.schema)
+                    && Objects.equals(this.operations, that.operations)
+                    && Objects.equals(this.allowedValues, that.allowedValues)
+                    && Objects.equals(this.autoCompleteUri, that.autoCompleteUri);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, name, required, schema, operations, allowedValues, autoCompleteUri);
+        return Objects.hash(id, name, required, schema, operations, allowedValues, autoCompleteUri);
     }
 }

@@ -16,28 +16,31 @@
 
 package com.atlassian.jira.rest.client;
 
-import com.atlassian.jira.rest.client.api.RestClientException;
-import com.atlassian.jira.rest.client.api.domain.OperationGroup;
-import com.atlassian.jira.rest.client.api.domain.OperationLink;
-import com.atlassian.jira.rest.client.api.domain.Transition;
-import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
-import com.google.common.collect.Iterators;
-import junit.framework.Assert;
-import org.apache.commons.lang.StringUtils;
+import static com.google.common.collect.Iterators.getOnlyElement;
+
+import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
+
+import javax.annotation.Nullable;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+
+import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import javax.annotation.Nullable;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-import java.util.Collection;
-import java.util.Collections;
+import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.OperationGroup;
+import com.atlassian.jira.rest.client.api.domain.OperationLink;
+import com.atlassian.jira.rest.client.api.domain.Transition;
+import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import com.google.common.collect.Iterators;
 
-import static com.google.common.collect.Iterators.getOnlyElement;
+import junit.framework.Assert;
 
 public class TestUtil {
     private static DateTimeFormatter universalDateTimeParser = ISODateTimeFormat.dateTimeParser();

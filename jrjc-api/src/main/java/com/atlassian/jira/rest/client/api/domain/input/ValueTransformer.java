@@ -16,7 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
-import com.google.common.base.Function;
+
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 

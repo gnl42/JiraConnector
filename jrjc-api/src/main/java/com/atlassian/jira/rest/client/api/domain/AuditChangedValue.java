@@ -1,7 +1,6 @@
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -11,6 +10,11 @@ import javax.annotation.Nullable;
  * @since v2.0
  */
 public class AuditChangedValue {
+
+    @Override
+    public String toString() {
+        return "AuditChangedValue [fieldName=" + fieldName + ", changedTo=" + changedTo + ", changedFrom=" + changedFrom + "]";
+    }
 
     private final String fieldName;
 
@@ -40,27 +44,24 @@ public class AuditChangedValue {
         return changedFrom;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("fieldName", fieldName).
-                add("changedFrom", changedFrom).
-                add("changedTo", changedTo);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(final Object o) {
         if (o instanceof AuditChangedValue) {
             final AuditChangedValue that = (AuditChangedValue) o;
-            return Objects.equal(this.fieldName, that.fieldName)
-                    && Objects.equal(this.changedFrom, that.changedFrom)
-                    && Objects.equal(this.changedTo, that.changedTo);
+            return Objects.equals(this.fieldName, that.fieldName)
+                    && Objects.equals(this.changedFrom, that.changedFrom)
+                    && Objects.equals(this.changedTo, that.changedTo);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(fieldName, changedFrom, changedTo);
+        return Objects.hash(fieldName, changedFrom, changedTo);
     }
 
 }

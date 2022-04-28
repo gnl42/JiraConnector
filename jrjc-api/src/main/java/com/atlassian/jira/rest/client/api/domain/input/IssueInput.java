@@ -16,15 +16,13 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
-import com.atlassian.jira.rest.client.api.domain.EntityHelper;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.atlassian.jira.rest.client.api.domain.EntityHelper;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 
 /**
  * Represents new JIRA issue
@@ -60,9 +58,6 @@ public class IssueInput {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("fields", fields)
-                .add("properties", properties)
-                .toString();
+        return "IssueInput [fields=" + fields + ", properties=" + properties + "]";
     }
 }

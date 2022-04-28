@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
+
 
 /**
  * Complete information about a single JIRA group
@@ -27,21 +27,21 @@ import java.net.URI;
  */
 public class Group extends AddressableNamedEntity {
 
-	public Group(URI self, String name) {
-		super(self, name);
-	}
+    public Group(URI self, String name) {
+        super(self, name);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Group) {
-			Group that = (Group) obj;
-			return super.equals(obj) && Objects.equal(this.name, that.name);
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Group) {
+            Group that = (Group) obj;
+            return super.equals(obj) && Objects.equals(this.name, that.name);
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), name);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name);
+    }
 }

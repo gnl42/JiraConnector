@@ -16,6 +16,15 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
 import com.atlassian.jira.rest.client.api.domain.BasicComponent;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
@@ -27,14 +36,6 @@ import com.atlassian.jira.rest.client.api.domain.Version;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Builder for IssueInput class.
@@ -48,8 +49,8 @@ public class IssueInputBuilder {
     private final ValueTransformerManager valueTransformerManager = new ValueTransformerManager()
             .registerTransformer(new BaseValueTransformer());
 
-    private Map<String, FieldInput> fields = Maps.newHashMap();
-    private final List<PropertyInput> properties = new ArrayList<PropertyInput>();
+    private Map<String, FieldInput> fields = new HashMap<>();
+    private final List<PropertyInput> properties = new ArrayList<>();
 
     /**
      * Creates {@link IssueInputBuilder} without any fields pre-populated. Remember to fill required fields for the target
@@ -96,7 +97,7 @@ public class IssueInputBuilder {
         return setFieldInput(new FieldInput(
                 IssueFieldId.ISSUE_TYPE_FIELD,
                 ComplexIssueInputFieldValue.with("id", issueTypeId.toString())
-        ));
+                ));
     }
 
     public IssueInputBuilder setIssueType(IssueType issueType) {

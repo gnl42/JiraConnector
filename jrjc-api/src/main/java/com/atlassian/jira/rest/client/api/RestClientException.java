@@ -16,12 +16,12 @@
 
 package com.atlassian.jira.rest.client.api;
 
-import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
+
+import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Basic exception which may be thrown by any remote operation encapsulated by the REST com.atlassian.jira.rest.client.api.
@@ -43,7 +43,7 @@ public class RestClientException extends RuntimeException {
     public RestClientException(final Throwable cause) {
         super(cause);
         this.errorCollections = Collections.emptyList();
-        this.statusCode = Optional.absent();
+        this.statusCode = Optional.empty();
     }
 
     public RestClientException(final Throwable cause, final int statusCode) {
@@ -55,12 +55,12 @@ public class RestClientException extends RuntimeException {
     public RestClientException(final String errorMessage, final Throwable cause) {
         super(errorMessage, cause);
         this.errorCollections = ImmutableList.of(new ErrorCollection(errorMessage));
-        statusCode = Optional.absent();
+        statusCode = Optional.empty();
     }
 
     public RestClientException(final Collection<ErrorCollection> errorCollections, final int statusCode) {
         super(errorCollections.toString());
-        this.errorCollections = ImmutableList.copyOf(errorCollections);
+        this.errorCollections = Collections.unmodifiableCollection(errorCollections);
         this.statusCode = Optional.of(statusCode);
     }
 

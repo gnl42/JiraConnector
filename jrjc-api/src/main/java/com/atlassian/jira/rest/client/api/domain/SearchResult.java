@@ -16,8 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 /**
  * Represents search results - links to issues matching given filter (JQL query) with basic
@@ -67,29 +66,24 @@ public class SearchResult {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("startIndex", startIndex).
-                add("maxResults", maxResults).
-                add("total", total).
-                add("issues", issues).
-                toString();
+        return "SearchResult [startIndex=" + startIndex + ", maxResults=" + maxResults + ", total=" + total + ", issues=" + issues + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SearchResult) {
             SearchResult that = (SearchResult) obj;
-            return Objects.equal(this.startIndex, that.startIndex)
-                    && Objects.equal(this.maxResults, that.maxResults)
-                    && Objects.equal(this.total, that.total)
-                    && Objects.equal(this.issues, that.issues);
+            return Objects.equals(this.startIndex, that.startIndex)
+                    && Objects.equals(this.maxResults, that.maxResults)
+                    && Objects.equals(this.total, that.total)
+                    && Objects.equals(this.issues, that.issues);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(startIndex, maxResults, total, issues);
+        return Objects.hash(startIndex, maxResults, total, issues);
     }
 
 }

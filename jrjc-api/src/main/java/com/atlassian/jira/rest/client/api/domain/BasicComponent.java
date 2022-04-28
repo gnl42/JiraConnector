@@ -16,13 +16,13 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import com.atlassian.jira.rest.client.api.AddressableEntity;
+import com.atlassian.jira.rest.client.api.NamedEntity;
 
 /**
  * Basic information about a project component
@@ -49,6 +49,7 @@ public class BasicComponent implements AddressableEntity, NamedEntity {
         return self;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -68,29 +69,24 @@ public class BasicComponent implements AddressableEntity, NamedEntity {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("id", id).
-                add("self", self).
-                add("name", name).
-                add("description", description).
-                toString();
+        return "BasicComponent [id=" + id + ", self=" + self + ", name=" + name + ", description=" + description + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BasicComponent) {
             BasicComponent that = (BasicComponent) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.description, that.description);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.description, that.description);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, name, description);
+        return Objects.hash(self, name, description);
     }
 
 }

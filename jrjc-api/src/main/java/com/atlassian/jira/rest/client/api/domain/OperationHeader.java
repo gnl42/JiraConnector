@@ -16,9 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -70,28 +69,23 @@ public class OperationHeader implements Operation {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("label", label)
-                .add("title", title)
-                .add("iconClass", iconClass)
-                .toString();
+        return "OperationHeader [id=" + id + ", label=" + label + ", title=" + title + ", iconClass=" + iconClass + "]";
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof OperationHeader) {
             OperationHeader that = (OperationHeader) o;
-            return Objects.equal(id, that.id)
-                    && Objects.equal(label, that.label)
-                    && Objects.equal(title, that.title)
-                    && Objects.equal(iconClass, that.iconClass);
+            return Objects.equals(id, that.id)
+                    && Objects.equals(label, that.label)
+                    && Objects.equals(title, that.title)
+                    && Objects.equals(iconClass, that.iconClass);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, label, title, iconClass);
+        return Objects.hash(id, label, title, iconClass);
     }
 }

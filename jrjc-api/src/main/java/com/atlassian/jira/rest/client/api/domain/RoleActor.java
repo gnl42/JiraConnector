@@ -15,12 +15,13 @@
  */
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 
 /**
  * Association between users and project roles.
@@ -93,23 +94,23 @@ public class RoleActor implements NamedEntity {
     public boolean equals(Object o) {
         if (o instanceof RoleActor) {
             RoleActor that = (RoleActor) o;
-            return Objects.equal(this.getName(), that.getName())
-                    && Objects.equal(this.id, that.getId())
-                    && Objects.equal(this.getAvatarUri(), that.getAvatarUri())
-                    && Objects.equal(this.getType(), that.getType())
-                    && Objects.equal(this.getDisplayName(), that.getDisplayName());
+            return Objects.equals(this.getName(), that.getName())
+                    && Objects.equals(this.id, that.getId())
+                    && Objects.equals(this.getAvatarUri(), that.getAvatarUri())
+                    && Objects.equals(this.getType(), that.getType())
+                    && Objects.equals(this.getDisplayName(), that.getDisplayName());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), name, avatarUrl, type, displayName);
+        return Objects.hash(super.hashCode(), name, avatarUrl, type, displayName);
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "RoleActor [id=" + id + ", displayName=" + displayName + ", type=" + type + ", name=" + name + ", avatarUrl=" + avatarUrl + "]";
     }
 
     protected MoreObjects.ToStringHelper getToStringHelper() {

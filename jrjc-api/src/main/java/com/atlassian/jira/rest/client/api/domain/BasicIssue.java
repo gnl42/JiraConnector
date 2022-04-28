@@ -16,12 +16,11 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.net.URI;
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.AddressableEntity;
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import java.net.URI;
 
 /**
  * Very basic (key and link only) representation of a JIRA issue.
@@ -65,30 +64,27 @@ public class BasicIssue implements AddressableEntity, IdentifiableEntity<Long> {
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "BasicIssue [self=" + self + ", key=" + key + ", id=" + id + "]";
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("self", self).
-                add("key", key).
-                add("id", id);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BasicIssue) {
             BasicIssue that = (BasicIssue) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.key, that.key)
-                    && Objects.equal(this.id, that.id);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.key, that.key)
+                    && Objects.equals(this.id, that.id);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, key, id);
+        return Objects.hash(self, key, id);
     }
 
 }

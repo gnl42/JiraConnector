@@ -340,7 +340,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     }
 
     private Map<String, String> parseSchema(final JSONObject json) throws JSONException {
-        final HashMap<String, String> res = Maps.newHashMap();
+        final HashMap<String, String> res = new HashMap<>();
         final Iterator<String> it = JsonParseUtil.getStringKeys(json);
         while (it.hasNext()) {
             final String fieldId = it.next();
@@ -352,7 +352,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     }
 
     private Map<String, String> parseNames(final JSONObject json) throws JSONException {
-        final HashMap<String, String> res = Maps.newHashMap();
+        final HashMap<String, String> res = new HashMap<>();
         final Iterator<String> iterator = getStringKeys(json);
         while (iterator.hasNext()) {
             final String key = iterator.next();

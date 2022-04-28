@@ -15,12 +15,12 @@
  */
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.collect.Maps;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.util.Map;
+
 
 public class Permissions {
     /**
@@ -30,7 +30,12 @@ public class Permissions {
     private final Map<String, Permission> permissionMap;
 
     public Permissions(final Iterable<Permission> permissions) {
-        this.permissionMap = Maps.uniqueIndex(permissions, Permission.TO_KEY);
+        Map<String, Permission> convert = new HashMap<>();
+        for (Permission permission : permissions) {
+            convert.put(permission.getId() + "", permission);
+        }
+        this.permissionMap = convert;
+        // FIXME real fix permissions.stream().collect(Collectors.toMap(Permission::getId, Function.identity()));
     }
 
     public Map<String, Permission> getPermissionMap() {
@@ -39,7 +44,7 @@ public class Permissions {
 
     public boolean havePermission(final String permissionKey) {
         final Permission permission = getPermission(permissionKey);
-        return (permission != null && permission.havePermission());
+        return permission != null && permission.havePermission();
     }
 
     @Nullable
@@ -49,16 +54,14 @@ public class Permissions {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("permissionMap", permissionMap)
-                .toString();
+        return "Permissions [permissionMap=" + permissionMap + "]";
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof Permissions) {
             Permissions that = (Permissions) o;
-            return Objects.equal(permissionMap, that.permissionMap);
+            return Objects.equals(permissionMap, that.permissionMap);
         }
         return false;
     }

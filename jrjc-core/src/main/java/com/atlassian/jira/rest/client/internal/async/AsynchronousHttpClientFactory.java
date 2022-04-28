@@ -15,6 +15,20 @@
  */
 package com.atlassian.jira.rest.client.internal.async;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Date;
+import java.util.Optional;
+import java.util.Properties;
+
+import javax.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClientFactory;
 import com.atlassian.httpclient.api.HttpClient;
@@ -23,19 +37,6 @@ import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.UrlMode;
 import com.atlassian.sal.api.executor.ThreadLocalContextManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Properties;
 
 /**
  * Factory for asynchronous http clients.
@@ -51,19 +52,19 @@ public class AsynchronousHttpClientFactory {
         final DefaultHttpClientFactory defaultHttpClientFactory = new DefaultHttpClientFactory(new NoOpEventPublisher(),
                 new RestClientApplicationProperties(serverUri),
                 new ThreadLocalContextManager() {
-                    @Override
-                    public Object getThreadLocalContext() {
-                        return null;
-                    }
+            @Override
+            public Object getThreadLocalContext() {
+                return null;
+            }
 
-                    @Override
-                    public void setThreadLocalContext(Object context) {
-                    }
+            @Override
+            public void setThreadLocalContext(Object context) {
+            }
 
-                    @Override
-                    public void clearThreadLocalContext() {
-                    }
-                });
+            @Override
+            public void clearThreadLocalContext() {
+            }
+        });
 
         final HttpClient httpClient = defaultHttpClientFactory.create(options);
 
@@ -201,24 +202,17 @@ public class AsynchronousHttpClientFactory {
 
         static String getVersion(String groupId, String artifactId) {
             final Properties props = new Properties();
-            InputStream resourceAsStream = null;
-            try {
-                resourceAsStream = MavenUtils.class.getResourceAsStream(String
-                        .format("/META-INF/maven/%s/%s/pom.properties", groupId, artifactId));
-                props.load(resourceAsStream);
+            try (InputStream resourceAsStream = MavenUtils.class
+                    .getResourceAsStream(String.format("/META-INF/maven/%s/%s/pom.properties", groupId, artifactId))) {
+                if (resourceAsStream != null) {
+                    props.load(resourceAsStream);
+                }
                 return props.getProperty("version", UNKNOWN_VERSION);
+
             } catch (Exception e) {
                 logger.debug("Could not find version for maven artifact {}:{}", groupId, artifactId);
                 logger.debug("Got the following exception", e);
                 return UNKNOWN_VERSION;
-            } finally {
-                if (resourceAsStream != null) {
-                    try {
-                        resourceAsStream.close();
-                    } catch (IOException ioe) {
-                        // ignore
-                    }
-                }
             }
         }
     }

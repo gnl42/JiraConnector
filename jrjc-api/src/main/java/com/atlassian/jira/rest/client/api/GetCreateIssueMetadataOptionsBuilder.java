@@ -16,8 +16,11 @@
 
 package com.atlassian.jira.rest.client.api;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
 
 /**
  * Builder class for {@link GetCreateIssueMetadataOptions}. All fields are optional so set only those that
@@ -32,7 +35,7 @@ import com.google.common.collect.Sets;
  * @since v1.0
  */
 public class GetCreateIssueMetadataOptionsBuilder {
-    private Iterable<String> expandos = Sets.newHashSet();
+    private Iterable<String> expandos = new HashSet<>();
     private Iterable<String> issueTypeNames;
     private Iterable<Long> issueTypeIds;
     private Iterable<String> projectKeys;
@@ -58,9 +61,8 @@ public class GetCreateIssueMetadataOptionsBuilder {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-
     public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(String... issueTypeNames) {
-        return withIssueTypeNames(ImmutableList.copyOf(issueTypeNames));
+        return withIssueTypeNames(Collections.unmodifiableList(Arrays.asList(issueTypeNames)));
     }
 
     public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Iterable<Long> issueTypeIds) {
@@ -70,7 +72,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
 
     @SuppressWarnings("UnusedDeclaration")
     public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Long... issueTypeIds) {
-        return withIssueTypeIds(ImmutableList.copyOf(issueTypeIds));
+        return withIssueTypeIds(Collections.unmodifiableList(Arrays.asList(issueTypeIds)));
     }
 
     public GetCreateIssueMetadataOptionsBuilder withProjectKeys(Iterable<String> projectKeys) {

@@ -15,13 +15,14 @@
  */
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.IdentifiableEntity;
-import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.Function;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
+
+import com.atlassian.jira.rest.client.api.IdentifiableEntity;
+import com.atlassian.jira.rest.client.api.NamedEntity;
+import com.google.common.base.MoreObjects;
 
 public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
     private final Integer id;
@@ -32,7 +33,7 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
     private final boolean havePermission;
 
     public Permission(final int id, final String key, final String name, @Nullable final String description,
-                      final boolean havePermission) {
+            final boolean havePermission) {
         this.id = id;
         this.key = key;
         this.name = name;
@@ -74,7 +75,7 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "Permission [id=" + id + ", key=" + key + ", name=" + name + ", description=" + description + ", havePermission=" + havePermission + "]";
     }
 
     @Override
@@ -82,9 +83,9 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
         if (o instanceof Permission) {
             Permission that = (Permission) o;
             return id == that.id
-                    && Objects.equal(key, that.key)
-                    && Objects.equal(name, that.name)
-                    && Objects.equal(description, that.description)
+                    && Objects.equals(key, that.key)
+                    && Objects.equals(name, that.name)
+                    && Objects.equals(description, that.description)
                     && havePermission == that.havePermission;
         }
         return false;
@@ -92,7 +93,7 @@ public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, key, name, description, havePermission);
+        return Objects.hash(id, key, name, description, havePermission);
     }
 
     public static final Function<Permission, String> TO_KEY = new Function<Permission, String>() {

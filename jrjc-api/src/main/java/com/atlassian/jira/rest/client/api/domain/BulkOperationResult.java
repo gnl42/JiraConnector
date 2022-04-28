@@ -16,8 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 /**
  * Basic representation of a JIRA issues and errors created using batch operation.
@@ -44,24 +43,21 @@ public class BulkOperationResult<T> {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("issues", issues)
-                .add("errors", errors)
-                .toString();
+        return "BulkOperationResult [issues=" + issues + ", errors=" + errors + "]";
     }
 
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof BulkOperationResult) {
             final BulkOperationResult that = (BulkOperationResult) obj;
-            return Objects.equal(this.issues, that.issues)
-                    && Objects.equal(this.errors, that.errors);
+            return Objects.equals(this.issues, that.issues)
+                    && Objects.equals(this.errors, that.errors);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(issues, errors);
+        return Objects.hash(issues, errors);
     }
 }

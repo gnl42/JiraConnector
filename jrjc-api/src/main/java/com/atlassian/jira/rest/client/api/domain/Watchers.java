@@ -16,10 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Complete information about the watchers of given issue
@@ -27,6 +25,11 @@ import java.util.Collection;
  * @since v0.1
  */
 public class Watchers extends BasicWatchers {
+    @Override
+    public String toString() {
+        return "Watchers [watchers=" + users + ", " + super.toString() + "]";
+    }
+
     private final Collection<BasicUser> users;
 
     public Watchers(BasicWatchers basicWatchers, Collection<BasicUser> users) {
@@ -39,20 +42,20 @@ public class Watchers extends BasicWatchers {
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().add("watchers", users);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), users);
+        return Objects.hash(super.hashCode(), users);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Watchers) {
             final Watchers that = (Watchers) obj;
-            return super.equals(that) && Objects.equal(this.users, that.users);
+            return super.equals(that) && Objects.equals(this.users, that.users);
         }
         return false;
     }

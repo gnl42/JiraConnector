@@ -16,15 +16,15 @@
 
 package com.atlassian.jira.rest.client.api.domain.util;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Error container returned in bulk operations
@@ -67,27 +67,23 @@ public class ErrorCollection {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("status", status)
-                .add("errors", errors)
-                .add("errorMessages", errorMessages)
-                .toString();
+        return "ErrorCollection [status=" + status + ", errorMessages=" + errorMessages + ", errors=" + errors + "]";
     }
 
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof ErrorCollection) {
             final ErrorCollection that = (ErrorCollection) obj;
-            return Objects.equal(this.status, that.status)
-                    && Objects.equal(this.errors, that.errors)
-                    && Objects.equal(this.errorMessages, that.errorMessages);
+            return Objects.equals(this.status, that.status)
+                    && Objects.equals(this.errors, that.errors)
+                    && Objects.equals(this.errorMessages, that.errorMessages);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(status, errors, errorMessages);
+        return Objects.hash(status, errors, errorMessages);
     }
 
     public static class Builder {

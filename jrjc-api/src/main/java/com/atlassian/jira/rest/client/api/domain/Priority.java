@@ -16,11 +16,10 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
 
 /**
  * Complete information about a JIRA issue priority
@@ -28,6 +27,11 @@ import java.net.URI;
  * @since v0.1
  */
 public class Priority extends BasicPriority {
+    @Override
+    public String toString() {
+        return "Priority [statusColor=" + statusColor + ", description=" + description + ", iconUrl=" + iconUrl + ", " + super.toString() + "]";
+    }
+
     private final String statusColor;
     private final String description;
     private final URI iconUrl;
@@ -52,27 +56,24 @@ public class Priority extends BasicPriority {
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().
-                add("description", description).
-                add("statusColor", statusColor).
-                add("iconUrl", iconUrl);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Priority) {
             Priority that = (Priority) obj;
-            return super.equals(obj) && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.statusColor, that.statusColor)
-                    && Objects.equal(this.iconUrl, that.iconUrl);
+            return super.equals(obj) && Objects.equals(this.description, that.description)
+                    && Objects.equals(this.statusColor, that.statusColor)
+                    && Objects.equals(this.iconUrl, that.iconUrl);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), description, statusColor, iconUrl);
+        return Objects.hash(super.hashCode(), description, statusColor, iconUrl);
     }
 
 }

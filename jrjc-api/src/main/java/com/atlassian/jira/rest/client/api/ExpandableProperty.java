@@ -16,11 +16,10 @@
 
 package com.atlassian.jira.rest.client.api;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Collection;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 
 /**
  * Represents a resource which can be expandable - that is REST API is capable of sending just the number
@@ -60,10 +59,7 @@ public class ExpandableProperty<T> {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("size", size).
-                add("items", items).
-                toString();
+        return "ExpandableProperty [size=" + size + ", items=" + items + "]";
     }
 
 
@@ -71,14 +67,14 @@ public class ExpandableProperty<T> {
     public boolean equals(Object obj) {
         if (obj instanceof ExpandableProperty) {
             ExpandableProperty that = (ExpandableProperty) obj;
-            return Objects.equal(this.size, that.size)
-                    && Objects.equal(this.items, that.items);
+            return Objects.equals(this.size, that.size)
+                    && Objects.equals(this.items, that.items);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(size, items);
+        return Objects.hash(size, items);
     }
 }

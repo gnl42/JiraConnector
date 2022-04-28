@@ -16,18 +16,20 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
 
 /**
  * Represents Custom Field Option
  *
  * @since v1.0
  */
-public class CustomFieldOption {
+public class CustomFieldOption implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final URI self;
     private final Long id;
@@ -70,23 +72,18 @@ public class CustomFieldOption {
      *
      * @return ToStringHelper
      */
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this)
-                .add("self", self)
-                .add("id", id)
-                .add("value", value)
-                .add("children", children)
-                .add("child", child);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "CustomFieldOption [self=" + self + ", id=" + id + ", value=" + value + ", children=" + children + ", child=" + child + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, id, value, children, child);
+        return Objects.hash(self, id, value, children, child);
     }
 
     @Override
@@ -98,10 +95,10 @@ public class CustomFieldOption {
             return false;
         }
         final CustomFieldOption other = (CustomFieldOption) obj;
-        return Objects.equal(this.self, other.self)
-                && Objects.equal(this.id, other.id)
-                && Objects.equal(this.value, other.value)
-                && Objects.equal(this.children, other.children)
-                && Objects.equal(this.child, other.child);
+        return Objects.equals(this.self, other.self)
+                && Objects.equals(this.id, other.id)
+                && Objects.equals(this.value, other.value)
+                && Objects.equals(this.children, other.children)
+                && Objects.equals(this.child, other.child);
     }
 }

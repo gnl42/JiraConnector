@@ -16,11 +16,11 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
+
+import org.joda.time.DateTime;
 
 /**
  * Input data describing details of a project version to create.
@@ -37,7 +37,7 @@ public class VersionInput {
     private boolean isReleased;
 
     public VersionInput(String projectKey, String name, @Nullable String description, @Nullable DateTime releaseDate,
-                        boolean isArchived, boolean isReleased) {
+            boolean isArchived, boolean isReleased) {
         this.projectKey = projectKey;
         this.name = name;
         this.description = description;
@@ -47,7 +47,7 @@ public class VersionInput {
     }
 
     public static VersionInput create(String projectKey, String name, @Nullable String description, @Nullable DateTime releaseDate,
-                                      boolean archived, boolean release) {
+            boolean archived, boolean release) {
         return new VersionInput(projectKey, name, description, releaseDate, archived, release);
     }
 
@@ -78,32 +78,26 @@ public class VersionInput {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("name", name)
-                .add("projectKey", projectKey)
-                .add("description", description)
-                .add("releaseDate", releaseDate)
-                .add("isArchived", isArchived)
-                .add("isReleased", isReleased)
-                .toString();
+        return "VersionInput [projectKey=" + projectKey + ", name=" + name + ", description=" + description + ", isArchived=" + isArchived + ", isReleased="
+                + isReleased + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof VersionInput) {
             VersionInput that = (VersionInput) obj;
-            return Objects.equal(this.projectKey, that.projectKey)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.releaseDate, that.releaseDate)
-                    && Objects.equal(this.isArchived, that.isArchived)
-                    && Objects.equal(this.isReleased, that.isReleased);
+            return Objects.equals(this.projectKey, that.projectKey)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.releaseDate, that.releaseDate)
+                    && Objects.equals(this.isArchived, that.isArchived)
+                    && Objects.equals(this.isReleased, that.isReleased);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, projectKey, description, releaseDate, isArchived, isReleased);
+        return Objects.hash(name, projectKey, description, releaseDate, isArchived, isReleased);
     }
 
 

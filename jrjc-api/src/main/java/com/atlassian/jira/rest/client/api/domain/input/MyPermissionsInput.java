@@ -16,11 +16,9 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
-import com.atlassian.jira.rest.client.api.MyPermissionsRestClient;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import javax.annotation.Nullable;
+
+import com.atlassian.jira.rest.client.api.MyPermissionsRestClient;
 
 /**
  * Permissions context for {@link MyPermissionsRestClient}
@@ -44,7 +42,7 @@ public class MyPermissionsInput {
      * @param issueId    id of the issue to scope returned permissions for
      */
     public MyPermissionsInput(@Nullable final String projectKey, @Nullable final Integer projectId,
-                              @Nullable final String issueKey, @Nullable final Integer issueId) {
+            @Nullable final String issueKey, @Nullable final Integer issueId) {
         this.projectKey = projectKey;
         this.projectId = projectId;
         this.issueKey = issueKey;
@@ -73,12 +71,7 @@ public class MyPermissionsInput {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("projectKey", projectKey)
-                .add("projectId", projectId)
-                .add("issueKey", issueKey)
-                .add("issueId", issueId)
-                .toString();
+        return "MyPermissionsInput [projectKey=" + projectKey + ", projectId=" + projectId + ", issueKey=" + issueKey + ", issueId=" + issueId + "]";
     }
 
     /**

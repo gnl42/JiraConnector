@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 import org.joda.time.DateTime;
 
 /**
@@ -52,24 +52,20 @@ public class ChangelogGroup {
     public boolean equals(Object obj) {
         if (obj instanceof ChangelogGroup) {
             ChangelogGroup that = (ChangelogGroup) obj;
-            return Objects.equal(this.author, that.author)
-                    && Objects.equal(this.created, that.created)
-                    && Objects.equal(this.items, that.items);
+            return Objects.equals(this.author, that.author)
+                    && Objects.equals(this.created, that.created)
+                    && Objects.equals(this.items, that.items);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(author, created, items);
+        return Objects.hash(author, created, items);
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("author", author)
-                .add("created", created)
-                .add("items", items)
-                .toString();
+        return "ChangelogGroup [author=" + author + ", created=" + created + ", items=" + items + "]";
     }
 }

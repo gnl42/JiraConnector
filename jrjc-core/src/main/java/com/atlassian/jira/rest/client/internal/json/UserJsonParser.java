@@ -16,17 +16,18 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import com.atlassian.jira.rest.client.api.ExpandableProperty;
 import com.atlassian.jira.rest.client.api.domain.BasicUser;
 import com.atlassian.jira.rest.client.api.domain.User;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import java.net.URI;
-import java.util.Iterator;
-import java.util.Map;
 
 public class UserJsonParser implements JsonObjectParser<User> {
     @Override
@@ -34,7 +35,7 @@ public class UserJsonParser implements JsonObjectParser<User> {
         final BasicUser basicUser = Preconditions.checkNotNull(JsonParseUtil.parseBasicUser(json));
         final String timezone = JsonParseUtil.getOptionalString(json, "timeZone");
         final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
-        Map<String, URI> avatarUris = Maps.newHashMap();
+        Map<String, URI> avatarUris = new HashMap<>();
         if (avatarUrl != null) {
             // JIRA prior 5.0
             final URI avatarUri = JsonParseUtil.parseURI(avatarUrl);

@@ -16,11 +16,10 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
+
+import com.atlassian.jira.rest.client.api.AddressableEntity;
 
 /**
  * Basic information about watchers of a JIRA issue
@@ -51,31 +50,28 @@ public class BasicWatchers implements AddressableEntity {
         return numWatchers;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("self", self).
-                add("isWatching", isWatching).
-                add("numWatchers", numWatchers);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "BasicWatchers [self=" + self + ", isWatching=" + isWatching + ", numWatchers=" + numWatchers + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BasicWatchers) {
             final BasicWatchers that = (BasicWatchers) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.isWatching, that.isWatching)
-                    && Objects.equal(this.numWatchers, that.numWatchers);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.isWatching, that.isWatching)
+                    && Objects.equals(this.numWatchers, that.numWatchers);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, isWatching, numWatchers);
+        return Objects.hash(self, isWatching, numWatchers);
     }
 }

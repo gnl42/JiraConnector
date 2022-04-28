@@ -16,12 +16,19 @@
 
 package com.atlassian.jira.rest.client.api;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.atlassian.jira.rest.client.api.domain.BasicIssue;
 import com.atlassian.jira.rest.client.api.domain.BulkOperationResult;
 import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
 import com.atlassian.jira.rest.client.api.domain.CimProject;
 import com.atlassian.jira.rest.client.api.domain.Comment;
-import com.atlassian.jira.rest.client.api.domain.Field;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.Page;
@@ -33,15 +40,8 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.api.domain.input.LinkIssuesInput;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.api.domain.input.WorklogInput;
-import io.atlassian.util.concurrent.Promise;
-import com.google.common.annotations.Beta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Collection;
+import io.atlassian.util.concurrent.Promise;
 
 /**
  * The com.atlassian.jira.rest.client.api handling issue resources.
@@ -290,7 +290,6 @@ public interface IssueRestClient {
      * @param attachmentUri URI for the attachment to retrieve
      * @return stream from which the caller may read the attachment content (bytes). The caller is responsible for closing the stream.
      */
-    @Beta
     Promise<InputStream> getAttachment(URI attachmentUri);
 
     /**

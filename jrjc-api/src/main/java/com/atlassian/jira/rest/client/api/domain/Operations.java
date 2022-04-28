@@ -16,10 +16,10 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import com.atlassian.jira.rest.client.api.IssueRestClient;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 /**
@@ -46,14 +46,14 @@ public class Operations {
         return accept(new OperationVisitor<Operation>() {
             @Override
             public Optional<Operation> visit(Operation operation) {
-                return operationId.equals(operation.getId()) ? Optional.of(operation) : Optional.<Operation>absent();
+                return operationId.equals(operation.getId()) ? Optional.of(operation) : Optional.<Operation>empty();
             }
-        }).orNull();
+        }).orElse(null);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(linkGroups);
+        return Objects.hash(linkGroups);
     }
 
     @Override
@@ -70,8 +70,6 @@ public class Operations {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("linkGroups", linkGroups)
-                .toString();
+        return "Operations [linkGroups=" + linkGroups + "]";
     }
 }

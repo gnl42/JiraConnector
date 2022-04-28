@@ -16,8 +16,9 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +27,8 @@ import javax.annotation.Nullable;
  *
  * @since v1.0
  */
-public class FieldSchema {
+public class FieldSchema implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final String type;
     @Nullable
@@ -79,35 +81,30 @@ public class FieldSchema {
      *
      * @return ToStringHelper
      */
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("type", type).
-                add("items", items).
-                add("system", system).
-                add("custom", custom).
-                add("customId", customId);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "FieldSchema [type=" + type + ", items=" + items + ", system=" + system + ", custom=" + custom + ", customId=" + customId + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof FieldSchema) {
             FieldSchema that = (FieldSchema) obj;
-            return Objects.equal(this.type, that.type)
-                    && Objects.equal(this.items, that.items)
-                    && Objects.equal(this.system, that.system)
-                    && Objects.equal(this.custom, that.custom)
-                    && Objects.equal(this.customId, that.customId);
+            return Objects.equals(this.type, that.type)
+                    && Objects.equals(this.items, that.items)
+                    && Objects.equals(this.system, that.system)
+                    && Objects.equals(this.custom, that.custom)
+                    && Objects.equals(this.customId, that.customId);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, items, system, custom, customId);
+        return Objects.hash(type, items, system, custom, customId);
     }
 }

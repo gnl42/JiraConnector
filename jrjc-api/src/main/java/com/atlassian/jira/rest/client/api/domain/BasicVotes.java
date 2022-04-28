@@ -16,11 +16,10 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
+
+import com.atlassian.jira.rest.client.api.AddressableEntity;
 
 /**
  * Basic information about voters of a JIRA issue
@@ -51,31 +50,28 @@ public class BasicVotes implements AddressableEntity {
         return hasVoted;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("self", self).
-                add("votes", votes).
-                add("hasVoted", hasVoted);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "BasicVotes [self=" + self + ", votes=" + votes + ", hasVoted=" + hasVoted + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BasicVotes) {
             final BasicVotes that = (BasicVotes) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.votes, that.votes)
-                    && Objects.equal(this.hasVoted, that.hasVoted);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.votes, that.votes)
+                    && Objects.equals(this.hasVoted, that.hasVoted);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, votes, hasVoted);
+        return Objects.hash(self, votes, hasVoted);
     }
 }

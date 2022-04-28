@@ -16,23 +16,25 @@
 
 package com.atlassian.jira.rest.client.internal.json;
 
-import com.atlassian.jira.rest.client.api.domain.Transition;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.util.Collection;
-import java.util.Iterator;
+import com.atlassian.jira.rest.client.api.domain.Transition;
 
 public class TransitionJsonParserV5 implements JsonObjectParser<Transition> {
     private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
 
+    @Override
     public Transition parse(JSONObject json) throws JSONException {
         final int id = json.getInt("id");
         final String name = json.getString("name");
         final JSONObject fieldsObj = json.getJSONObject("fields");
         final Iterator keys = fieldsObj.keys();
-        final Collection<Transition.Field> fields = Lists.newArrayList();
+        final Collection<Transition.Field> fields = new ArrayList<>();
         while (keys.hasNext()) {
             final String fieldId = keys.next().toString();
             fields.add(transitionFieldJsonParser.parse(fieldsObj.getJSONObject(fieldId), fieldId));

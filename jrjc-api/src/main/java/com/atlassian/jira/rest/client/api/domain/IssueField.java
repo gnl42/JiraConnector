@@ -16,10 +16,10 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 /**
  * JIRA issue field with its current value.
@@ -40,10 +40,12 @@ public class IssueField implements NamedEntity, IdentifiableEntity<String> {
         this.value = value;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -58,27 +60,22 @@ public class IssueField implements NamedEntity, IdentifiableEntity<String> {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("id", id).
-                add("name", name).
-                add("type", type).
-                add("value", getValue()).
-                toString();
+        return "IssueField [id=" + id + ", name=" + name + ", type=" + type + ", value=" + value + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, name, type); // for the sake of performance we don't include "value" field here
+        return Objects.hash(id, name, type); // for the sake of performance we don't include "value" field here
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof IssueField) {
             final IssueField that = (IssueField) obj;
-            return Objects.equal(this.id, that.id)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.type, that.type)
-                    && Objects.equal(this.value, that.value);
+            return Objects.equals(this.id, that.id)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.type, that.type)
+                    && Objects.equals(this.value, that.value);
         }
         return false;
     }

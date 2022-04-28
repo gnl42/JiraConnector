@@ -16,11 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents object with fields in IssueInputField's value.
@@ -32,7 +29,7 @@ public class ComplexIssueInputFieldValue {
     private final Map<String, Object> valuesMap;
 
     public static ComplexIssueInputFieldValue with(String key, Object value) {
-        return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of(key, value));
+        return new ComplexIssueInputFieldValue(Map.of(key, value));
     }
 
     public ComplexIssueInputFieldValue(Map<String, Object> valuesMap) {
@@ -45,21 +42,19 @@ public class ComplexIssueInputFieldValue {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("valuesMap", valuesMap)
-                .toString();
+        return "ComplexIssueInputFieldValue [valuesMap=" + valuesMap + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(valuesMap);
+        return Objects.hash(valuesMap);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ComplexIssueInputFieldValue) {
             final ComplexIssueInputFieldValue other = (ComplexIssueInputFieldValue) obj;
-            return Objects.equal(this.valuesMap, other.valuesMap);
+            return Objects.equals(this.valuesMap, other.valuesMap);
         }
         return false;
     }

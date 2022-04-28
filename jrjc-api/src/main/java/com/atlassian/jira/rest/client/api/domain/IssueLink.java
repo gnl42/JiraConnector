@@ -16,10 +16,9 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * Link between two JIRA issues
@@ -51,27 +50,23 @@ public class IssueLink {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("targetIssueKey", targetIssueKey).
-                add("targetIssueUri", targetIssueUri).
-                add("issueLinkType", issueLinkType).
-                toString();
+        return "IssueLink [targetIssueKey=" + targetIssueKey + ", targetIssueUri=" + targetIssueUri + ", issueLinkType=" + issueLinkType + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof IssueLink) {
             IssueLink that = (IssueLink) obj;
-            return Objects.equal(this.targetIssueKey, that.targetIssueKey)
-                    && Objects.equal(this.targetIssueUri, that.targetIssueUri)
-                    && Objects.equal(this.issueLinkType, that.issueLinkType);
+            return Objects.equals(this.targetIssueKey, that.targetIssueKey)
+                    && Objects.equals(this.targetIssueUri, that.targetIssueUri)
+                    && Objects.equals(this.issueLinkType, that.issueLinkType);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(targetIssueKey, targetIssueUri, issueLinkType);
+        return Objects.hash(targetIssueKey, targetIssueUri, issueLinkType);
     }
 
 }

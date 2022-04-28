@@ -16,13 +16,13 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
+
+import com.google.common.collect.Iterables;
 
 /**
  * Represents operations group
@@ -40,8 +40,8 @@ public class OperationGroup implements Operation {
     private final Integer weight;
 
     public OperationGroup(@Nullable final String id, final Iterable<OperationLink> links,
-                          final Iterable<OperationGroup> groups, @Nullable final OperationHeader header,
-                          @Nullable final Integer weight) {
+            final Iterable<OperationGroup> groups, @Nullable final OperationHeader header,
+            @Nullable final Integer weight) {
         this.id = id;
         this.header = header;
         this.links = links;
@@ -49,6 +49,7 @@ public class OperationGroup implements Operation {
         this.weight = weight;
     }
 
+    @Override
     @Nullable
     public String getId() {
         return id;
@@ -62,7 +63,7 @@ public class OperationGroup implements Operation {
         } else {
             final Iterable<Operation> operations = Iterables.concat(
                     header != null ? Collections.singleton(header) : Collections.<Operation>emptyList(),
-                    links, groups);
+                            links, groups);
             return accept(operations, visitor);
         }
     }
@@ -74,7 +75,7 @@ public class OperationGroup implements Operation {
                 return result;
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Nullable
@@ -97,7 +98,7 @@ public class OperationGroup implements Operation {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, header, links, groups, weight);
+        return Objects.hash(id, header, links, groups, weight);
     }
 
     @Override
@@ -109,21 +110,15 @@ public class OperationGroup implements Operation {
             return false;
         }
         final OperationGroup other = (OperationGroup) obj;
-        return Objects.equal(this.id, other.id)
-                && Objects.equal(this.header, other.header)
+        return Objects.equals(this.id, other.id)
+                && Objects.equals(this.header, other.header)
                 && Iterables.elementsEqual(this.links, other.links)
                 && Iterables.elementsEqual(this.groups, other.groups)
-                && Objects.equal(this.weight, other.weight);
+                && Objects.equals(this.weight, other.weight);
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("header", header)
-                .add("links", Iterables.toString(links))
-                .add("groups", Iterables.toString(groups))
-                .add("weight", weight)
-                .toString();
+        return "OperationGroup [id=" + id + ", header=" + header + ", links=" + links + ", groups=" + groups + ", weight=" + weight + "]";
     }
 }

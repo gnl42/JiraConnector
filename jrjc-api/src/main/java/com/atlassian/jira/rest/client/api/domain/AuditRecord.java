@@ -1,11 +1,12 @@
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.OptionalIterable;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
+
+import org.joda.time.DateTime;
+
+import com.atlassian.jira.rest.client.api.OptionalIterable;
 
 /**
  * Represents record from JIRA Audit Log.
@@ -13,6 +14,13 @@ import javax.annotation.Nullable;
  * @since v2.0
  */
 public class AuditRecord {
+
+    @Override
+    public String toString() {
+        return "AuditRecord [id=" + id + ", summary=" + summary + ", category=" + category + ", eventSource=" + eventSource + ", authorKey=" + authorKey
+                + ", remoteAddress=" + remoteAddress + ", objectItem=" + objectItem + ", associatedItem=" + associatedItem + ", changedValues=" + changedValues
+                + "]";
+    }
 
     private final Long id;
 
@@ -38,11 +46,11 @@ public class AuditRecord {
     private final OptionalIterable<AuditChangedValue> changedValues;
 
     public AuditRecord(final Long id, final String summary, @Nullable final String remoteAddress,
-                       final DateTime created, final String category, String eventSource,
-                       @Nullable final String authorKey,
-                       @Nullable final AuditAssociatedItem objectItem,
-                       final OptionalIterable<AuditAssociatedItem> associatedItem,
-                       final OptionalIterable<AuditChangedValue> changedValues) {
+            final DateTime created, final String category, String eventSource,
+            @Nullable final String authorKey,
+            @Nullable final AuditAssociatedItem objectItem,
+            final OptionalIterable<AuditAssociatedItem> associatedItem,
+            final OptionalIterable<AuditChangedValue> changedValues) {
         this.id = id;
         this.summary = summary;
         this.remoteAddress = remoteAddress;
@@ -98,39 +106,30 @@ public class AuditRecord {
         return changedValues;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("id", id).
-                add("summary", summary).
-                add("remoteAddress", remoteAddress).
-                add("created", created).
-                add("category", category).
-                add("authorKey", authorKey).
-                add("objectItem", objectItem).
-                add("associatedItem", associatedItem).
-                add("changedValues", changedValues);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(final Object o) {
         if (o instanceof AuditRecord) {
             final AuditRecord that = (AuditRecord) o;
-            return Objects.equal(this.id, that.id)
-                    && Objects.equal(this.summary, that.summary)
-                    && Objects.equal(this.remoteAddress, that.remoteAddress)
-                    && Objects.equal(this.created, that.created)
-                    && Objects.equal(this.category, that.category)
-                    && Objects.equal(this.authorKey, that.authorKey)
-                    && Objects.equal(this.objectItem, that.objectItem)
-                    && Objects.equal(this.associatedItem, that.associatedItem)
-                    && Objects.equal(this.changedValues, that.changedValues);
+            return Objects.equals(this.id, that.id)
+                    && Objects.equals(this.summary, that.summary)
+                    && Objects.equals(this.remoteAddress, that.remoteAddress)
+                    && Objects.equals(this.created, that.created)
+                    && Objects.equals(this.category, that.category)
+                    && Objects.equals(this.authorKey, that.authorKey)
+                    && Objects.equals(this.objectItem, that.objectItem)
+                    && Objects.equals(this.associatedItem, that.associatedItem)
+                    && Objects.equals(this.changedValues, that.changedValues);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, summary, remoteAddress, created, category, authorKey, objectItem, associatedItem, changedValues);
+        return Objects.hash(id, summary, remoteAddress, created, category, authorKey, objectItem, associatedItem, changedValues);
     }
 
 }

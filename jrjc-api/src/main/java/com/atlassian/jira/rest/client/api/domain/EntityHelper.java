@@ -16,14 +16,14 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.util.NoSuchElementException;
+
 import com.atlassian.jira.rest.client.api.AddressableEntity;
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-
-import java.util.NoSuchElementException;
 
 /**
  * Helper class for entities.
@@ -32,14 +32,14 @@ import java.util.NoSuchElementException;
  */
 public class EntityHelper {
 
-    public static Function<IdentifiableEntity<String>, String> GET_ENTITY_STRING_ID_FUNCTION = new Function<IdentifiableEntity<String>, String>() {
+    public static Function<IdentifiableEntity<String>, String> GET_ENTITY_STRING_ID_FUNCTION = new Function<>() {
         @Override
         public String apply(IdentifiableEntity<String> entity) {
             return entity.getId();
         }
     };
 
-    public static Function<NamedEntity, String> GET_ENTITY_NAME_FUNCTION = new Function<NamedEntity, String>() {
+    public static Function<NamedEntity, String> GET_ENTITY_NAME_FUNCTION = new Function<>() {
         @Override
         public String apply(NamedEntity entity) {
             return entity.getName();
@@ -97,7 +97,7 @@ public class EntityHelper {
         private final String fileName;
 
         public static <K extends Attachment> HasFileNamePredicate<K> forFileName(String fileName) {
-            return new HasFileNamePredicate<K>(fileName);
+            return new HasFileNamePredicate<>(fileName);
         }
 
         private HasFileNamePredicate(String fileName) {
@@ -116,7 +116,7 @@ public class EntityHelper {
         private final String name;
 
         public static <K extends NamedEntity> HasNamePredicate<K> forName(String name) {
-            return new HasNamePredicate<K>(name);
+            return new HasNamePredicate<>(name);
         }
 
         private HasNamePredicate(String name) {
@@ -134,7 +134,7 @@ public class EntityHelper {
         private final K id;
 
         public static <X extends IdentifiableEntity<Y>, Y> HasIdPredicate<X, Y> forId(Y id) {
-            return new HasIdPredicate<X, Y>(id);
+            return new HasIdPredicate<>(id);
         }
 
         private HasIdPredicate(K id) {

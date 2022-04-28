@@ -15,11 +15,10 @@
  */
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.IdentifiableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
+
+import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 
 /**
  * Represents Filter
@@ -27,6 +26,12 @@ import java.net.URI;
  * @since 2.0
  */
 public class Filter extends AddressableNamedEntity implements IdentifiableEntity<Long> {
+    @Override
+    public String toString() {
+        return "Filter [id=" + id + ", description=" + description + ", jql=" + jql + ", viewUrl=" + viewUrl + ", searchUrl=" + searchUrl + ", owner=" + owner
+                + ", favourite=" + favourite + "]";
+    }
+
     private final Long id;
     private final String description;
     private final String jql;
@@ -81,15 +86,8 @@ public class Filter extends AddressableNamedEntity implements IdentifiableEntity
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper()
-                .add("id", id)
-                .add("description", description)
-                .add("jql", jql)
-                .add("viewUrl", viewUrl)
-                .add("searchUrl", searchUrl)
-                .add("owner", owner)
-                .add("favourite", favourite);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
@@ -97,19 +95,19 @@ public class Filter extends AddressableNamedEntity implements IdentifiableEntity
         if (obj instanceof Filter) {
             Filter that = (Filter) obj;
             return super.equals(that)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.jql, that.jql)
-                    && Objects.equal(this.viewUrl, that.viewUrl)
-                    && Objects.equal(this.searchUrl, that.searchUrl)
-                    && Objects.equal(this.owner, that.owner)
-                    && Objects.equal(this.favourite, that.favourite);
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.description, that.description)
+                    && Objects.equals(this.jql, that.jql)
+                    && Objects.equals(this.viewUrl, that.viewUrl)
+                    && Objects.equals(this.searchUrl, that.searchUrl)
+                    && Objects.equals(this.owner, that.owner)
+                    && Objects.equals(this.favourite, that.favourite);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, description, jql, searchUrl, viewUrl, owner, favourite);
+        return Objects.hash(super.hashCode(), id, description, jql, searchUrl, viewUrl, owner, favourite);
     }
 }

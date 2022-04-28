@@ -16,15 +16,14 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.CustomFieldOption;
 import com.atlassian.jira.rest.client.api.domain.TimeTracking;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-
-import java.util.Map;
 
 /**
  * Transforms most of standard fields values into form understandable by input generator.
@@ -33,23 +32,24 @@ import java.util.Map;
  */
 public class BaseValueTransformer implements ValueTransformer {
 
+    @Override
     public Object apply(Object rawValue) {
         if (rawValue == null) {
             return null;
         } else if (rawValue instanceof String || rawValue instanceof Number || rawValue instanceof ComplexIssueInputFieldValue) {
             return rawValue;
         } else if (rawValue instanceof BasicProject) {
-            return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("key", ((BasicProject) rawValue).getKey()));
+            return new ComplexIssueInputFieldValue(Map.<String, Object>of("key", ((BasicProject) rawValue).getKey()));
         } else if (rawValue instanceof CustomFieldOption) {
             return transformCustomFieldOption((CustomFieldOption) rawValue);
         } else if (rawValue instanceof TimeTracking) {
             return transformTimeTracking((TimeTracking) rawValue);
         } else if (rawValue instanceof IdentifiableEntity) {
             final IdentifiableEntity identifiableEntity = (IdentifiableEntity) rawValue;
-            return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", identifiableEntity.getId().toString()));
+            return new ComplexIssueInputFieldValue(Map.<String, Object>of("id", identifiableEntity.getId().toString()));
         } else if (rawValue instanceof NamedEntity) {
             final NamedEntity namedEntity = (NamedEntity) rawValue;
-            return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("name", namedEntity.getName()));
+            return new ComplexIssueInputFieldValue(Map.<String, Object>of("name", namedEntity.getName()));
         }
 
         return CANNOT_HANDLE;
@@ -57,18 +57,18 @@ public class BaseValueTransformer implements ValueTransformer {
 
     private ComplexIssueInputFieldValue transformCustomFieldOption(CustomFieldOption cfo) {
         if (cfo.getChild() != null) {
-            return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of(
+            return new ComplexIssueInputFieldValue(Map.<String, Object>of(
                     "id", cfo.getId().toString(),
                     "value", cfo.getValue(),
                     "child", this.apply(cfo.getChild())));
         } else {
-            return new ComplexIssueInputFieldValue(ImmutableMap.<String, Object>of("id", cfo.getId().toString(), "value", cfo
+            return new ComplexIssueInputFieldValue(Map.<String, Object>of("id", cfo.getId().toString(), "value", cfo
                     .getValue()));
         }
     }
 
     private ComplexIssueInputFieldValue transformTimeTracking(TimeTracking timeTracking) {
-        final Map<String, Object> fields = Maps.newHashMap();
+        final Map<String, Object> fields = new HashMap<>();
 
         final Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();
         if (originalEstimateMinutes != null) {

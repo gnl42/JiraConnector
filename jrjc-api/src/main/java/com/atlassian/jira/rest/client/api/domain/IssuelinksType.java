@@ -1,8 +1,8 @@
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
+
 
 /**
  * @since v0.5
@@ -33,27 +33,23 @@ public class IssuelinksType extends AddressableNamedEntity {
 
     @Override
     public String toString() {
-        return getToStringHelper().
-                add("id", id).
-                add("inward", inward).
-                add("outward", outward).
-                toString();
+        return "IssuelinksType [id=" + id + ", inward=" + inward + ", outward=" + outward + ", " + super.toString() + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof IssuelinksType) {
             IssuelinksType that = (IssuelinksType) obj;
-            return super.equals(obj) && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.inward, that.inward)
-                    && Objects.equal(this.outward, that.outward);
+            return super.equals(obj) && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.inward, that.inward)
+                    && Objects.equals(this.outward, that.outward);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, name, inward, outward);
+        return Objects.hash(id, name, inward, outward);
     }
 
 }

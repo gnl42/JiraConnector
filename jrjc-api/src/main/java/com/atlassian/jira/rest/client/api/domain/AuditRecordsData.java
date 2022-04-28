@@ -1,12 +1,16 @@
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 /**
  * Represents audit search metadata and audit result records
  */
 public class AuditRecordsData {
+
+    @Override
+    public String toString() {
+        return "AuditRecordsData [offset=" + offset + ", limit=" + limit + ", total=" + total + ", records=" + records + "]";
+    }
 
     private final Integer offset;
     private final Integer limit;
@@ -36,28 +40,24 @@ public class AuditRecordsData {
         return records;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("offset", offset).
-                add("limit", limit).
-                add("total", total).
-                add("records", records);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(final Object o) {
         if (o instanceof AuditRecordsData) {
             final AuditRecordsData that = (AuditRecordsData) o;
-            return Objects.equal(this.offset, that.offset)
-                    && Objects.equal(this.limit, that.limit)
-                    && Objects.equal(this.total, that.total)
-                    && Objects.equal(this.records, that.records);
+            return Objects.equals(this.offset, that.offset)
+                    && Objects.equals(this.limit, that.limit)
+                    && Objects.equals(this.total, that.total)
+                    && Objects.equals(this.records, that.records);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(offset, limit, total, records);
+        return Objects.hash(offset, limit, total, records);
     }
 }

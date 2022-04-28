@@ -15,12 +15,11 @@
  */
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.IdentifiableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
 import java.util.Collection;
+import java.util.Objects;
+
+import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 
 /**
  * A way to group users (@see RoleActors) with projects. An example would be a global role called "testers". If you
@@ -32,6 +31,11 @@ import java.util.Collection;
  */
 @SuppressWarnings("JavadocReference")
 public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<Long> {
+
+    @Override
+    public String toString() {
+        return "ProjectRole [description=" + description + ", actors=" + actors + ", id=" + id + "]";
+    }
 
     private final String description;
     private final Collection<RoleActor> actors;
@@ -61,6 +65,7 @@ public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<
     /**
      * @return the unique id for this project role.
      */
+    @Override
     public Long getId() {
         return id;
     }
@@ -70,22 +75,20 @@ public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<
         if (o instanceof ProjectRole) {
             final ProjectRole that = (ProjectRole) o;
             return super.equals(o)
-                    && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.actors, that.actors)
-                    && Objects.equal(this.id, that.id);
+                    && Objects.equals(this.description, that.description)
+                    && Objects.equals(this.actors, that.actors)
+                    && Objects.equals(this.id, that.id);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), description, actors);
+        return Objects.hash(super.hashCode(), description, actors);
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper()
-                .add("description", description)
-                .add("actors", actors);
+    protected String getToStringHelper() {
+        return toString();
     }
 }

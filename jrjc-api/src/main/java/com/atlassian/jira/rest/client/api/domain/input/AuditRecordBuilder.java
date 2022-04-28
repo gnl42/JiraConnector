@@ -1,13 +1,14 @@
 package com.atlassian.jira.rest.client.api.domain.input;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.atlassian.jira.rest.client.api.domain.AuditAssociatedItem;
 import com.atlassian.jira.rest.client.api.domain.AuditChangedValue;
 import com.atlassian.jira.rest.client.api.domain.AuditRecordInput;
 import com.google.common.collect.ImmutableList;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Input used for creating new Audit records.

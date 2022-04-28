@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 /**
  * Cookie used for maintaining the session for this user
@@ -34,6 +34,7 @@ public class SessionCookie implements NamedEntity {
         this.value = value;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -44,25 +45,22 @@ public class SessionCookie implements NamedEntity {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).addValue(super.toString()).
-                add("name", name).
-                add("value", value).
-                toString();
+        return "SessionCookie [name=" + name + ", value=" + value + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SessionCookie) {
             SessionCookie that = (SessionCookie) obj;
-            return Objects.equal(this.name, that.name)
-                    && Objects.equal(this.value, that.value);
+            return Objects.equals(this.name, that.name)
+                    && Objects.equals(this.value, that.value);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, value);
+        return Objects.hash(name, value);
     }
 
 }

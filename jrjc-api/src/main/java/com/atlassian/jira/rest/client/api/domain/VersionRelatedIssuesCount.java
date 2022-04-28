@@ -16,10 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * Represents number of issues which use given version in their FixVersion(s) and Affects Version fields.
@@ -66,27 +64,23 @@ public class VersionRelatedIssuesCount {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("versionUri", versionUri).
-                add("numFixedIssues", numFixedIssues).
-                add("numAffectedIssues", numAffectedIssues).
-                toString();
+        return "VersionRelatedIssuesCount [versionUri=" + versionUri + ", numFixedIssues=" + numFixedIssues + ", numAffectedIssues=" + numAffectedIssues + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof VersionRelatedIssuesCount) {
             VersionRelatedIssuesCount that = (VersionRelatedIssuesCount) obj;
-            return Objects.equal(this.numFixedIssues, that.numFixedIssues)
-                    && Objects.equal(this.versionUri, that.versionUri)
-                    && Objects.equal(this.numAffectedIssues, that.numAffectedIssues);
+            return Objects.equals(this.numFixedIssues, that.numFixedIssues)
+                    && Objects.equals(this.versionUri, that.versionUri)
+                    && Objects.equals(this.numAffectedIssues, that.numAffectedIssues);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(versionUri, numAffectedIssues, numFixedIssues);
+        return Objects.hash(versionUri, numAffectedIssues, numFixedIssues);
     }
 
 }

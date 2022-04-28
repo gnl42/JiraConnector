@@ -15,12 +15,12 @@
  */
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.IdentifiableEntity;
-import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
+
+import com.atlassian.jira.rest.client.api.IdentifiableEntity;
+import com.atlassian.jira.rest.client.api.NamedEntity;
 
 /**
  * Representation of JIRA field, either system or custom.
@@ -37,7 +37,7 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
     private final FieldSchema schema;
 
     public Field(String id, String name, FieldType fieldType, boolean orderable, boolean navigable, boolean searchable,
-                 @Nullable FieldSchema schema) {
+            @Nullable FieldSchema schema) {
         this.id = id;
         this.name = name;
         this.fieldType = fieldType;
@@ -47,10 +47,12 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
         this.schema = schema;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -83,37 +85,31 @@ public class Field implements NamedEntity, IdentifiableEntity<String> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, name, fieldType, orderable, navigable, searchable, schema);
+        return Objects.hash(id, name, fieldType, orderable, navigable, searchable, schema);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Field) {
             final Field that = (Field) obj;
-            return Objects.equal(this.id, that.id)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.fieldType, that.fieldType)
-                    && Objects.equal(this.orderable, that.orderable)
-                    && Objects.equal(this.navigable, that.navigable)
-                    && Objects.equal(this.searchable, that.searchable)
-                    && Objects.equal(this.schema, that.schema);
+            return Objects.equals(this.id, that.id)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.fieldType, that.fieldType)
+                    && Objects.equals(this.orderable, that.orderable)
+                    && Objects.equals(this.navigable, that.navigable)
+                    && Objects.equals(this.searchable, that.searchable)
+                    && Objects.equals(this.schema, that.schema);
         }
         return false;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("name", name)
-                .add("fieldType", fieldType)
-                .add("orderable", orderable)
-                .add("navigable", navigable)
-                .add("searchable", searchable)
-                .add("schema", schema);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "Field [id=" + id + ", name=" + name + ", fieldType=" + fieldType + ", orderable=" + orderable + ", navigable=" + navigable + ", searchable="
+                + searchable + ", schema=" + schema + "]";
     }
 }

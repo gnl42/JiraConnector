@@ -1,9 +1,7 @@
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
 
 /**
  *
@@ -46,13 +44,7 @@ public class Subtask {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).addValue(super.toString()).
-                add("issueKey", issueKey).
-                add("issueUri", issueUri).
-                add("summary", summary).
-                add("issueType", issueType).
-                add("status", status).
-                toString();
+        return "Subtask [issueKey=" + issueKey + ", issueUri=" + issueUri + ", summary=" + summary + ", issueType=" + issueType + ", status=" + status + "]";
     }
 
 
@@ -60,18 +52,18 @@ public class Subtask {
     public boolean equals(Object obj) {
         if (obj instanceof Subtask) {
             Subtask that = (Subtask) obj;
-            return super.equals(obj) && Objects.equal(this.issueKey, that.issueKey)
-                    && Objects.equal(this.issueUri, that.issueUri)
-                    && Objects.equal(this.summary, that.summary)
-                    && Objects.equal(this.issueType, that.issueType)
-                    && Objects.equal(this.status, that.status);
+            return super.equals(obj) && Objects.equals(this.issueKey, that.issueKey)
+                    && Objects.equals(this.issueUri, that.issueUri)
+                    && Objects.equals(this.summary, that.summary)
+                    && Objects.equals(this.issueType, that.issueType)
+                    && Objects.equals(this.status, that.status);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), issueKey, issueUri, summary, issueType, status);
+        return Objects.hash(super.hashCode(), issueKey, issueUri, summary, issueType, status);
     }
 
 }

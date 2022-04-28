@@ -16,14 +16,15 @@
 
 package com.atlassian.jira.rest.client.api.domain.input;
 
-import com.atlassian.jira.rest.client.api.domain.BasicUser;
-import com.atlassian.jira.rest.client.api.domain.Visibility;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import org.joda.time.DateTime;
+
+import com.atlassian.jira.rest.client.api.domain.BasicUser;
+import com.atlassian.jira.rest.client.api.domain.Visibility;
 
 /**
  * Represents worklog item in JIRA. Is used to create new worklog or update existing one.
@@ -73,8 +74,8 @@ public class WorklogInput {
      *                            to {@link AdjustEstimate#NEW} or {@link AdjustEstimate#MANUAL}
      */
     public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
-                        @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility,
-                        AdjustEstimate adjustEstimate, @Nullable String adjustEstimateValue) {
+            @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility,
+            AdjustEstimate adjustEstimate, @Nullable String adjustEstimateValue) {
         this.visibility = visibility;
         this.minutesSpent = minutesSpent;
         this.startDate = startDate;
@@ -100,7 +101,7 @@ public class WorklogInput {
      * @param visibility   visibility settings for this worklog
      */
     public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
-                        @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+            @Nullable String comment, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
         this(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility, AdjustEstimate.AUTO, null);
     }
 
@@ -162,18 +163,9 @@ public class WorklogInput {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("self", self)
-                .add("issueUri", issueUri)
-                .add("author", author)
-                .add("updateAuthor", updateAuthor)
-                .add("comment", comment)
-                .add("startDate", startDate)
-                .add("minutesSpent", minutesSpent)
-                .add("visibility", visibility)
-                .add("adjustEstimate", adjustEstimate)
-                .add("adjustEstimateValue", adjustEstimateValue)
-                .toString();
+        return "WorklogInput [self=" + self + ", issueUri=" + issueUri + ", author=" + author + ", updateAuthor=" + updateAuthor + ", comment=" + comment
+                + ", minutesSpent=" + minutesSpent + ", visibility=" + visibility + ", adjustEstimateValue=" + adjustEstimateValue + ", adjustEstimate="
+                + adjustEstimate + "]";
     }
 
     @Override
@@ -181,23 +173,23 @@ public class WorklogInput {
         if (obj instanceof WorklogInput) {
             final WorklogInput that = (WorklogInput) obj;
 
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.issueUri, that.issueUri)
-                    && Objects.equal(this.author, that.author)
-                    && Objects.equal(this.updateAuthor, that.updateAuthor)
-                    && Objects.equal(this.comment, that.comment)
-                    && Objects.equal(this.startDate, that.startDate)
-                    && Objects.equal(this.minutesSpent, that.minutesSpent)
-                    && Objects.equal(this.visibility, that.visibility)
-                    && Objects.equal(this.adjustEstimate, that.adjustEstimate)
-                    && Objects.equal(this.adjustEstimateValue, that.adjustEstimateValue);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.issueUri, that.issueUri)
+                    && Objects.equals(this.author, that.author)
+                    && Objects.equals(this.updateAuthor, that.updateAuthor)
+                    && Objects.equals(this.comment, that.comment)
+                    && Objects.equals(this.startDate, that.startDate)
+                    && Objects.equals(this.minutesSpent, that.minutesSpent)
+                    && Objects.equals(this.visibility, that.visibility)
+                    && Objects.equals(this.adjustEstimate, that.adjustEstimate)
+                    && Objects.equals(this.adjustEstimateValue, that.adjustEstimateValue);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility,
+        return Objects.hash(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility,
                 adjustEstimate, adjustEstimateValue);
     }
 

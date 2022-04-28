@@ -16,13 +16,12 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
-import com.atlassian.jira.rest.client.api.IssueRestClient;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
 import java.util.Map;
+import java.util.Objects;
+
+import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
+import com.atlassian.jira.rest.client.api.IssueRestClient;
 
 /**
  * Represents project allowed to choose to create new issue. Also contains issue types allowed for that project described by {@link CimIssueType} class.
@@ -32,6 +31,11 @@ import java.util.Map;
  * @since v1.0
  */
 public class CimProject extends BasicProject {
+
+    @Override
+    public String toString() {
+        return "CimProject [avatarUris=" + avatarUris + ", issueTypes=" + issueTypes + ", " + super.toString() + "]";
+    }
 
     private final Map<String, URI> avatarUris;
     private final Iterable<CimIssueType> issueTypes;
@@ -54,15 +58,13 @@ public class CimProject extends BasicProject {
      * {@inheritDoc}
      */
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().
-                add("issueTypes", issueTypes).
-                add("avatarUris", avatarUris);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), avatarUris, issueTypes);
+        return Objects.hash(super.hashCode(), avatarUris, issueTypes);
     }
 
     @Override
@@ -70,8 +72,8 @@ public class CimProject extends BasicProject {
         if (obj instanceof CimProject) {
             CimProject that = (CimProject) obj;
             return super.equals(obj)
-                    && Objects.equal(this.avatarUris, that.avatarUris)
-                    && Objects.equal(this.issueTypes, that.issueTypes);
+                    && Objects.equals(this.avatarUris, that.avatarUris)
+                    && Objects.equals(this.issueTypes, that.issueTypes);
         }
         return false;
     }

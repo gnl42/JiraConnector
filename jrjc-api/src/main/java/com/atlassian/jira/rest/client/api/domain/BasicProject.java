@@ -16,20 +16,23 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import com.atlassian.jira.rest.client.api.AddressableEntity;
+import com.atlassian.jira.rest.client.api.NamedEntity;
 
 /**
  * Basic information about a JIRA project
  *
  * @since v0.1
  */
-public class BasicProject implements AddressableEntity, NamedEntity {
+public class BasicProject implements AddressableEntity, NamedEntity, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final URI self;
     private final String key;
     @Nullable
@@ -53,6 +56,7 @@ public class BasicProject implements AddressableEntity, NamedEntity {
         return key;
     }
 
+    @Override
     @Nullable
     public String getName() {
         return name;
@@ -65,32 +69,28 @@ public class BasicProject implements AddressableEntity, NamedEntity {
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "BasicProject [self=" + self + ", key=" + key + ", id=" + id + ", name=" + name + "]";
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("self", self).
-                add("key", key).
-                add("id", id).
-                add("name", name);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BasicProject) {
             BasicProject that = (BasicProject) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.key, that.key);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.key, that.key);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, name, id, key);
+        return Objects.hash(self, name, id, key);
     }
 
 }

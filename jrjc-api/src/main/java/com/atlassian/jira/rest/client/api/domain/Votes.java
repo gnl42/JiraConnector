@@ -16,12 +16,9 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.Objects;
-
 import java.net.URI;
 import java.util.Collection;
-
-import static com.google.common.base.MoreObjects.ToStringHelper;
+import java.util.Objects;
 
 /**
  * Complete information about the voters for given issue
@@ -41,22 +38,27 @@ public class Votes extends BasicVotes {
     }
 
     @Override
-    protected ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().add("users", users);
+    protected String getToStringHelper() {
+        return toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Votes [users=" + users + ", toString()=" + super.toString() + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Votes) {
             final Votes that = (Votes) obj;
-            return super.equals(that) && Objects.equal(this.users, that.users);
+            return super.equals(that) && Objects.equals(this.users, that.users);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), this.users);
+        return Objects.hash(super.hashCode(), this.users);
     }
 
 }

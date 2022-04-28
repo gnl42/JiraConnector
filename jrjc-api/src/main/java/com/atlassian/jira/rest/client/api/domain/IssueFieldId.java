@@ -59,7 +59,7 @@ public enum IssueFieldId {
         this.id = id;
     }
 
-    public static final Function<IssueFieldId, String> TRANSFORM_TO_ID_FUNCTION = new Function<IssueFieldId, String>() {
+    public static final Function<IssueFieldId, String> TRANSFORM_TO_ID_FUNCTION = new Function<>() {
         @Override
         public String apply(IssueFieldId from) {
             return from.id;

@@ -16,15 +16,15 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.ExpandableProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
-import java.util.Map;
+
+import com.atlassian.jira.rest.client.api.ExpandableProperty;
+import com.google.common.base.Preconditions;
 
 /**
  * Complete information about a single JIRA user
@@ -32,6 +32,12 @@ import java.util.Map;
  * @since v0.1
  */
 public class User extends BasicUser {
+
+    @Override
+    public String toString() {
+        return "User [emailAddress=" + emailAddress + ", active=" + active + ", groups=" + groups + ", avatarUris=" + avatarUris + ", timezone=" + timezone
+                + ", toString()=" + super.toString() + "]";
+    }
 
     public static final String S16_16 = "16x16";
     public static final String S48_48 = "48x48";
@@ -56,12 +62,12 @@ public class User extends BasicUser {
         this.timezone = timezone;
         this.emailAddress = emailAddress;
         this.active = active;
-        this.avatarUris = Maps.newHashMap(avatarUris);
+        this.avatarUris = new HashMap<>(avatarUris);
         this.groups = groups;
     }
 
     public User(URI self, String name, String displayName, String emailAddress, boolean active,
-                @Nullable ExpandableProperty<String> groups, Map<String, URI> avatarUris, @Nullable String timezone) {
+            @Nullable ExpandableProperty<String> groups, Map<String, URI> avatarUris, @Nullable String timezone) {
         this(self, name, displayName, null, emailAddress, true, groups, avatarUris, timezone);
     }
 
@@ -121,15 +127,15 @@ public class User extends BasicUser {
     public boolean equals(Object obj) {
         if (obj instanceof User) {
             User that = (User) obj;
-            return super.equals(obj) && Objects.equal(this.emailAddress, that.emailAddress)
-                    && Objects.equal(this.avatarUris, that.avatarUris);
+            return super.equals(obj) && Objects.equals(this.emailAddress, that.emailAddress)
+                    && Objects.equals(this.avatarUris, that.avatarUris);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), emailAddress, avatarUris, groups, timezone);
+        return Objects.hash(super.hashCode(), emailAddress, avatarUris, groups, timezone);
     }
 
     /**
@@ -142,12 +148,8 @@ public class User extends BasicUser {
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().add("emailAddress", emailAddress).
-                add("active", active).
-                add("avatarUris", avatarUris).
-                add("groups", groups).
-                add("timezone", timezone);
+    protected String getToStringHelper() {
+        return toString();
     }
 
 }

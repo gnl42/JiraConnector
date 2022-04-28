@@ -16,11 +16,11 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.net.URI;
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.StatusCategory;
-import com.google.common.base.Objects;
-
-import java.net.URI;
 
 /**
  * Basic information about a JIRA issue status
@@ -43,12 +43,8 @@ public class Status extends AddressableNamedEntity implements IdentifiableEntity
 
     @Override
     public String toString() {
-        return getToStringHelper().
-                add("id", id).
-                add("description", description).
-                add("iconUrl", iconUrl).
-                add("statusCategory", statusCategory.toString()).
-                toString();
+        return "Status [id=" + id + ", description=" + description + ", iconUrl=" + iconUrl + ", statusCategory=" + statusCategory + ", =" + super.toString()
+                + "]";
     }
 
     @Override
@@ -56,16 +52,16 @@ public class Status extends AddressableNamedEntity implements IdentifiableEntity
         if (obj instanceof Status) {
             Status that = (Status) obj;
             return super.equals(obj)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.iconUrl, that.iconUrl);
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.description, that.description)
+                    && Objects.equals(this.iconUrl, that.iconUrl);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, description, iconUrl);
+        return Objects.hash(super.hashCode(), id, description, iconUrl);
     }
 
     @Override

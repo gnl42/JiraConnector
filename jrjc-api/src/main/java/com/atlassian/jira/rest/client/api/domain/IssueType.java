@@ -16,20 +16,22 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.AddressableEntity;
 import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import java.net.URI;
 
 /**
  * Complete information about a single issue type defined in JIRA
  *
  * @since v0.1
  */
-public class IssueType implements AddressableEntity, NamedEntity, IdentifiableEntity<Long> {
+public class IssueType implements AddressableEntity, NamedEntity, IdentifiableEntity<Long>, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final URI self;
     private final Long id;
     private final String name;
@@ -73,38 +75,33 @@ public class IssueType implements AddressableEntity, NamedEntity, IdentifiableEn
         return iconUri;
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this)
-                .add("self", self)
-                .add("id", id)
-                .add("name", name)
-                .add("isSubtask", isSubtask)
-                .add("description", description)
-                .add("iconUri", iconUri);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "IssueType [self=" + self + ", id=" + id + ", name=" + name + ", isSubtask=" + isSubtask + ", description=" + description + ", iconUri="
+                + iconUri + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof IssueType) {
             IssueType that = (IssueType) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.name, that.name)
-                    && Objects.equal(this.isSubtask, that.isSubtask)
-                    && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.iconUri, that.iconUri);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.name, that.name)
+                    && Objects.equals(this.isSubtask, that.isSubtask)
+                    && Objects.equals(this.description, that.description)
+                    && Objects.equals(this.iconUri, that.iconUri);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, id, name, isSubtask, description, iconUri);
+        return Objects.hash(self, id, name, isSubtask, description, iconUri);
     }
 
 }

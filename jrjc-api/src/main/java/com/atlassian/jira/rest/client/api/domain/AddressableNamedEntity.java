@@ -16,12 +16,11 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.net.URI;
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.AddressableEntity;
 import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import java.net.URI;
 
 /**
  * Any resource which is addressable (has "self" URI) and has a name.
@@ -42,33 +41,32 @@ public class AddressableNamedEntity implements AddressableEntity, NamedEntity {
         return self;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
     @Override
     public String toString() {
-        return getToStringHelper().toString();
+        return "AddressableNamedEntity [self=" + self + ", name=" + name + "]";
     }
 
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return MoreObjects.toStringHelper(this).
-                add("self", self).
-                add("name", name);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof AddressableNamedEntity) {
             AddressableNamedEntity that = (AddressableNamedEntity) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.name, that.name);
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.name, that.name);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, name);
+        return Objects.hash(self, name);
     }
 }

@@ -16,13 +16,14 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
+import java.net.URI;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import org.joda.time.DateTime;
+
+import com.atlassian.jira.rest.client.api.AddressableEntity;
 
 /**
  * Issue worklog - single worklog entry describing the work logged for selected issue
@@ -44,7 +45,7 @@ public class Worklog implements AddressableEntity {
     private final Visibility visibility;
 
     public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, @Nullable String comment,
-                   DateTime creationDate, DateTime updateDate, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+            DateTime creationDate, DateTime updateDate, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
         this.self = self;
         this.issueUri = issueUri;
         this.author = author;
@@ -57,6 +58,7 @@ public class Worklog implements AddressableEntity {
         this.visibility = visibility;
     }
 
+    @Override
     public URI getSelf() {
         return self;
     }
@@ -100,41 +102,31 @@ public class Worklog implements AddressableEntity {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("self", self).
-                add("issueUri", issueUri).
-                add("author", author).
-                add("updateAuthor", updateAuthor).
-                add("comment", comment).
-                add("creationDate", creationDate).
-                add("updateDate", updateDate).
-                add("startDate", startDate).
-                add("minutesSpent", minutesSpent).
-                add("visibility", visibility).
-                toString();
+        return "Worklog [self=" + self + ", issueUri=" + issueUri + ", author=" + author + ", updateAuthor=" + updateAuthor + ", comment=" + comment
+                + ", minutesSpent=" + minutesSpent + ", visibility=" + visibility + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Worklog) {
             Worklog that = (Worklog) obj;
-            return Objects.equal(this.self, that.self)
-                    && Objects.equal(this.issueUri, that.issueUri)
-                    && Objects.equal(this.author, that.author)
-                    && Objects.equal(this.updateAuthor, that.updateAuthor)
-                    && Objects.equal(this.comment, that.comment)
-                    && Objects.equal(this.visibility, that.visibility)
+            return Objects.equals(this.self, that.self)
+                    && Objects.equals(this.issueUri, that.issueUri)
+                    && Objects.equals(this.author, that.author)
+                    && Objects.equals(this.updateAuthor, that.updateAuthor)
+                    && Objects.equals(this.comment, that.comment)
+                    && Objects.equals(this.visibility, that.visibility)
                     && this.creationDate.isEqual(that.creationDate)
                     && this.updateDate.isEqual(that.updateDate)
                     && this.startDate.isEqual(that.startDate)
-                    && Objects.equal(this.minutesSpent, that.minutesSpent);
+                    && Objects.equals(this.minutesSpent, that.minutesSpent);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
+        return Objects.hash(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent);
     }
 
 }

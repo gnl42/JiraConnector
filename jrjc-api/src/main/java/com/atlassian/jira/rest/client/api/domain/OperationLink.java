@@ -16,9 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -42,7 +41,7 @@ public class OperationLink implements Operation {
     private final String iconClass;
 
     public OperationLink(@Nullable final String id, @Nullable final String styleClass, final String label, @Nullable final String title,
-                         final String href, @Nullable final Integer weight, @Nullable final String iconClass) {
+            final String href, @Nullable final Integer weight, @Nullable final String iconClass) {
         this.id = id;
         this.styleClass = styleClass;
         this.iconClass = iconClass;
@@ -95,32 +94,25 @@ public class OperationLink implements Operation {
     public boolean equals(Object o) {
         if (o instanceof OperationLink) {
             OperationLink that = (OperationLink) o;
-            return Objects.equal(id, that.id)
-                    && Objects.equal(styleClass, that.styleClass)
-                    && Objects.equal(label, that.label)
-                    && Objects.equal(title, that.title)
-                    && Objects.equal(href, that.href)
-                    && Objects.equal(weight, that.weight)
-                    && Objects.equal(iconClass, that.iconClass);
+            return Objects.equals(id, that.id)
+                    && Objects.equals(styleClass, that.styleClass)
+                    && Objects.equals(label, that.label)
+                    && Objects.equals(title, that.title)
+                    && Objects.equals(href, that.href)
+                    && Objects.equals(weight, that.weight)
+                    && Objects.equals(iconClass, that.iconClass);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, styleClass, label, title, href, weight, iconClass);
+        return Objects.hash(id, styleClass, label, title, href, weight, iconClass);
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("styleClass", styleClass)
-                .add("label", label)
-                .add("title", title)
-                .add("href", href)
-                .add("weight", weight)
-                .add("iconClass", iconClass)
-                .toString();
+        return "OperationLink [id=" + id + ", styleClass=" + styleClass + ", label=" + label + ", title=" + title + ", href=" + href + ", weight=" + weight
+                + ", iconClass=" + iconClass + "]";
     }
 }

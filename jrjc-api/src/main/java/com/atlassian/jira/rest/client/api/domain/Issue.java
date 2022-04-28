@@ -16,18 +16,17 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.ExpandableResource;
-import com.atlassian.jira.rest.client.api.domain.util.UriUtil;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.joda.time.DateTime;
-
-import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
 
-import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos;
+import javax.annotation.Nullable;
+
+import org.joda.time.DateTime;
+
+import com.atlassian.jira.rest.client.api.ExpandableResource;
+import com.atlassian.jira.rest.client.api.IssueRestClient.Expandos;
+import com.atlassian.jira.rest.client.api.domain.util.UriUtil;
 
 /**
  * Single JIRA issue
@@ -36,16 +35,27 @@ import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos;
  */
 public class Issue extends BasicIssue implements ExpandableResource {
 
+    @Override
+    public String toString() {
+        return "Issue [status=" + status + ", issueType=" + issueType + ", project=" + project + ", transitionsUri=" + transitionsUri + ", expandos=" + expandos
+                + ", components=" + components + ", summary=" + summary + ", description=" + description + ", reporter=" + reporter + ", assignee=" + assignee
+                + ", resolution=" + resolution + ", issueFields=" + issueFields + ", creationDate=" + creationDate + ", updateDate=" + updateDate + ", dueDate="
+                + dueDate + ", priority=" + priority + ", votes=" + votes + ", fixVersions=" + fixVersions + ", affectedVersions=" + affectedVersions
+                + ", comments=" + comments + ", issueLinks=" + issueLinks + ", attachments=" + attachments + ", worklogs=" + worklogs + ", watchers=" + watchers
+                + ", timeTracking=" + timeTracking + ", subtasks=" + subtasks + ", changelog=" + changelog + ", operations=" + operations + ", labels=" + labels
+                + "]";
+    }
+
     public Issue(String summary, URI self, String key, Long id, BasicProject project, IssueType issueType, Status status,
-                 String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, Collection<Attachment> attachments,
-                 @Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
-                 Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
-                 @Nullable TimeTracking timeTracking, Collection<IssueField> issueFields, Collection<Comment> comments,
-                 @Nullable URI transitionsUri,
-                 @Nullable Collection<IssueLink> issueLinks,
-                 BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
-                 @Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, @Nullable Operations operations,
-                 Set<String> labels) {
+            String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, Collection<Attachment> attachments,
+            @Nullable User reporter, @Nullable User assignee, DateTime creationDate, DateTime updateDate, DateTime dueDate,
+            Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
+            @Nullable TimeTracking timeTracking, Collection<IssueField> issueFields, Collection<Comment> comments,
+            @Nullable URI transitionsUri,
+            @Nullable Collection<IssueLink> issueLinks,
+            BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
+            @Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, @Nullable Operations operations,
+            Set<String> labels) {
         super(self, key, id);
         this.summary = summary;
         this.project = project;
@@ -355,33 +365,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().
-                add("project", project).
-                add("status", status).
-                add("description", description).
-                add("expandos", expandos).
-                add("resolution", resolution).
-                add("reporter", reporter).
-                add("assignee", assignee).addValue("\n").
-                add("fields", issueFields).addValue("\n").
-                add("affectedVersions", affectedVersions).addValue("\n").
-                add("fixVersions", fixVersions).addValue("\n").
-                add("components", components).addValue("\n").
-                add("issueType", issueType).
-                add("creationDate", creationDate).
-                add("updateDate", updateDate).addValue("\n").
-                add("dueDate", dueDate).addValue("\n").
-                add("attachments", attachments).addValue("\n").
-                add("comments", comments).addValue("\n").
-                add("transitionsUri", transitionsUri).
-                add("issueLinks", issueLinks).addValue("\n").
-                add("votes", votes).addValue("\n").
-                add("worklogs", worklogs).addValue("\n").
-                add("watchers", watchers).
-                add("timeTracking", timeTracking).
-                add("changelog", changelog).
-                add("operations", operations).
-                add("labels", labels);
+    protected String getToStringHelper() {
+        return toString();
     }
 }

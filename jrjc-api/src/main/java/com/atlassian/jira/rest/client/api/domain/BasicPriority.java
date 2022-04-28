@@ -16,19 +16,21 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.IdentifiableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.io.Serializable;
+import java.net.URI;
 
 import javax.annotation.Nullable;
-import java.net.URI;
+
+import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 
 /**
  * Basic information about selected priority
  *
  * @since v0.1
  */
-public class BasicPriority extends AddressableNamedEntity implements IdentifiableEntity<Long> {
+public class BasicPriority extends AddressableNamedEntity implements IdentifiableEntity<Long>, Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Nullable
     private final Long id;
 
@@ -42,13 +44,19 @@ public class BasicPriority extends AddressableNamedEntity implements Identifiabl
      *
      * @return the id
      */
+    @Override
     @Nullable
     public Long getId() {
         return id;
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().add("id", id);
+    protected String getToStringHelper() {
+        return toString();
+    }
+
+    @Override
+    public String toString() {
+        return "BasicPriority [id=" + id + ", " + super.toString() + "]";
     }
 }

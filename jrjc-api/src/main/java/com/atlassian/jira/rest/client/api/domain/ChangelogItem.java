@@ -16,8 +16,8 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -75,12 +75,12 @@ public class ChangelogItem {
     public boolean equals(Object obj) {
         if (obj instanceof ChangelogItem) {
             ChangelogItem that = (ChangelogItem) obj;
-            return Objects.equal(this.fieldType, that.fieldType)
-                    && Objects.equal(this.field, that.field)
-                    && Objects.equal(this.from, that.from)
-                    && Objects.equal(this.fromString, that.fromString)
-                    && Objects.equal(this.to, that.to)
-                    && Objects.equal(this.toString, that.toString);
+            return Objects.equals(this.fieldType, that.fieldType)
+                    && Objects.equals(this.field, that.field)
+                    && Objects.equals(this.from, that.from)
+                    && Objects.equals(this.fromString, that.fromString)
+                    && Objects.equals(this.to, that.to)
+                    && Objects.equals(this.toString, that.toString);
         }
         return false;
 
@@ -88,19 +88,13 @@ public class ChangelogItem {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(fieldType, field, from, fromString, to, toString);
+        return Objects.hash(fieldType, field, from, fromString, to, toString);
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("fieldType", fieldType).
-                add("field", field).
-                add("from", from).
-                add("fromString", fromString).
-                add("to", to).
-                add("toString", toString).
-                toString();
+        return "ChangelogItem [fieldType=" + fieldType + ", field=" + field + ", from=" + from + ", fromString=" + fromString + ", to=" + to + ", toString="
+                + toString + "]";
     }
 
 }

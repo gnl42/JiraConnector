@@ -16,8 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 /**
  * Represents visibility (access level) of selected element (comment, worklog, etc.)
@@ -55,23 +54,20 @@ public class Visibility {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("type", type).
-                add("value", value).
-                toString();
+        return "Visibility [type=" + type + ", value=" + value + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Visibility) {
             Visibility that = (Visibility) obj;
-            return Objects.equal(this.type, that.type) && Objects.equal(this.value, that.value);
+            return Objects.equals(this.type, that.type) && Objects.equals(this.value, that.value);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, value);
+        return Objects.hash(type, value);
     }
 }

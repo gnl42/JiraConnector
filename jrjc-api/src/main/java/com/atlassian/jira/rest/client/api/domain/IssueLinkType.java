@@ -16,9 +16,9 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.NamedEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 /**
  * Type of a link between two JIRA issues
@@ -41,6 +41,7 @@ public class IssueLinkType implements NamedEntity {
         this.direction = direction;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -55,27 +56,23 @@ public class IssueLinkType implements NamedEntity {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("name", name).
-                add("description", description).
-                add("direction", direction).
-                toString();
+        return "IssueLinkType [name=" + name + ", description=" + description + ", direction=" + direction + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof IssueLinkType) {
             IssueLinkType that = (IssueLinkType) obj;
-            return Objects.equal(this.name, that.name)
-                    && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.direction, that.direction);
+            return Objects.equals(this.name, that.name)
+                    && Objects.equals(this.description, that.description)
+                    && Objects.equals(this.direction, that.direction);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name, description, direction);
+        return Objects.hash(name, description, direction);
     }
 
 }

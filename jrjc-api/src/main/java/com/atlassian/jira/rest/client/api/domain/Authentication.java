@@ -16,8 +16,7 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 /**
  * Basic Authentication information of the current user session (if the connection maintains the session)
@@ -45,25 +44,22 @@ public class Authentication {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).addValue(super.toString()).
-                add("loginInfo", loginInfo).
-                add("sessionCookie", sessionCookie).
-                toString();
+        return "Authentication [loginInfo=" + loginInfo + ", sessionCookie=" + sessionCookie + "]";
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Authentication) {
             Authentication that = (Authentication) obj;
-            return Objects.equal(this.loginInfo, that.loginInfo)
-                    && Objects.equal(this.sessionCookie, that.sessionCookie);
+            return Objects.equals(this.loginInfo, that.loginInfo)
+                    && Objects.equals(this.sessionCookie, that.sessionCookie);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(loginInfo, sessionCookie);
+        return Objects.hash(loginInfo, sessionCookie);
     }
 
 }

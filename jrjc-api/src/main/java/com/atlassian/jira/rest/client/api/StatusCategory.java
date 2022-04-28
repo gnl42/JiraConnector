@@ -1,9 +1,9 @@
 package com.atlassian.jira.rest.client.api;
 
-import com.atlassian.jira.rest.client.api.domain.AddressableNamedEntity;
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
+
+import com.atlassian.jira.rest.client.api.domain.AddressableNamedEntity;
 
 /**
  * Basic information about a JIRA issue status category
@@ -37,11 +37,7 @@ public class StatusCategory extends AddressableNamedEntity implements Identifiab
 
     @Override
     public String toString() {
-        return getToStringHelper().
-                add("id", id).
-                add("key", key).
-                add("colorName", colorName).
-                toString();
+        return "StatusCategory [id=" + id + ", key=" + key + ", colorName=" + colorName + ", " + super.toString() + "]";
     }
 
     @Override
@@ -49,15 +45,15 @@ public class StatusCategory extends AddressableNamedEntity implements Identifiab
         if (obj instanceof StatusCategory) {
             StatusCategory that = (StatusCategory) obj;
             return super.equals(obj)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.key, that.key)
-                    && Objects.equal(this.colorName, that.colorName);
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.key, that.key)
+                    && Objects.equals(this.colorName, that.colorName);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, key, colorName);
+        return Objects.hash(super.hashCode(), id, key, colorName);
     }
 }

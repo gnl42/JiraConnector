@@ -16,11 +16,11 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
+import java.util.Collection;
+import java.util.Objects;
+
 import com.atlassian.jira.rest.client.api.NamedEntity;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import java.util.Collection;
 
 /**
  * Information about selected transition including fields which can or must be set while performing the transition.
@@ -38,6 +38,7 @@ public class Transition implements NamedEntity {
         this.fields = fields;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -54,26 +55,22 @@ public class Transition implements NamedEntity {
     public boolean equals(Object obj) {
         if (obj instanceof Transition) {
             Transition that = (Transition) obj;
-            return Objects.equal(this.name, that.name)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.fields, that.fields);
+            return Objects.equals(this.name, that.name)
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.fields, that.fields);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, name, fields);
+        return Objects.hash(id, name, fields);
     }
 
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).
-                add("id", id).
-                add("name", name).
-                add("fields", fields).
-                toString();
+        return "Transition [name=" + name + ", id=" + id + ", fields=" + fields + "]";
     }
 
 
@@ -102,16 +99,16 @@ public class Transition implements NamedEntity {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(id, isRequired, type);
+            return Objects.hash(id, isRequired, type);
         }
 
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof Field) {
                 Field that = (Field) obj;
-                return Objects.equal(this.id, that.id)
-                        && Objects.equal(this.isRequired, that.isRequired)
-                        && Objects.equal(this.type, that.type);
+                return Objects.equals(this.id, that.id)
+                        && Objects.equals(this.isRequired, that.isRequired)
+                        && Objects.equals(this.type, that.type);
             }
             return false;
         }

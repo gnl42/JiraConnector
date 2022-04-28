@@ -1,15 +1,23 @@
 package com.atlassian.jira.rest.client.app;
 
-import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.RestClientException;
-import com.atlassian.jira.rest.client.api.domain.ServerInfo;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import org.apache.commons.cli.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
+import com.atlassian.jira.rest.client.api.RestClientException;
+import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.ServerInfo;
+import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 
 public class App {
 
@@ -18,6 +26,7 @@ public class App {
     private static final String OPTION_JIRA_HOST_URL = "host";
     private static final String OPTION_JIRA_USERNAME = "username";
     private static final String OPTION_JIRA_PASSWORD = "password";
+    private static final String OPTION_ISSUE = "issue";
     private static final String ERROR_PARAMETER      = "Parameter {} is missing";
     private static final String COMMAND_LINE_SYNTAX  = "use the following parameters";
 
@@ -30,6 +39,7 @@ public class App {
                 .addOption("h", OPTION_JIRA_HOST_URL, true, null)
                 .addOption("u", OPTION_JIRA_USERNAME, true, null)
                 .addOption("p", OPTION_JIRA_PASSWORD, true, null)
+                .addOption("i", OPTION_ISSUE, true, null)
                 ;
 
         try {
@@ -75,6 +85,15 @@ public class App {
         try {
             ServerInfo serverInfo = client.getMetadataClient().getServerInfo().claim();
             log.info("Found JIRA version {}", serverInfo.getVersion());
+            if (commandLine.hasOption(OPTION_ISSUE)) {
+                String issueId = commandLine.getOptionValue(OPTION_ISSUE);
+                try {
+                    Issue issue = client.getIssueClient().getIssue(issueId).get();
+                    log.debug("Issue: {}\n{}", issueId, issue);
+                } catch (InterruptedException | ExecutionException e) {
+                    log.error("", e);
+                }
+            }
         } catch (RestClientException e) {
             log.error("Error accessing JIRA, please check URL and credentials");
         }

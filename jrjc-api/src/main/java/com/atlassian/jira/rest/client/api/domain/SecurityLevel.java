@@ -16,11 +16,10 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.IdentifiableEntity;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
 import java.net.URI;
+import java.util.Objects;
+
+import com.atlassian.jira.rest.client.api.IdentifiableEntity;
 
 /**
  * Represents JIRA Security Level
@@ -48,8 +47,13 @@ public class SecurityLevel extends AddressableNamedEntity implements Identifiabl
     }
 
     @Override
+    public String toString() {
+        return "SecurityLevel [id=" + id + ", description=" + description + ", " + super.toString() + "]";
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, description);
+        return Objects.hash(super.hashCode(), id, description);
     }
 
     @Override
@@ -57,16 +61,14 @@ public class SecurityLevel extends AddressableNamedEntity implements Identifiabl
         if (obj instanceof SecurityLevel) {
             final SecurityLevel that = (SecurityLevel) obj;
             return super.equals(that)
-                    && Objects.equal(this.id, that.id)
-                    && Objects.equal(this.description, that.description);
+                    && Objects.equals(this.id, that.id)
+                    && Objects.equals(this.description, that.description);
         }
         return false;
     }
 
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper()
-                .add("id", id)
-                .add("description", description);
+    protected String getToStringHelper() {
+        return toString();
     }
 }

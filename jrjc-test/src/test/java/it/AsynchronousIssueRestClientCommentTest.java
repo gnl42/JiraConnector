@@ -103,7 +103,7 @@ public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronous
         return Iterables.filter(comments, new Predicate<Comment>() {
             @Override
             public boolean apply(Comment input) {
-                return Objects.equal(input.getId(), id);
+                return Objects.equals(input.getId(), id);
             }
         }).iterator().hasNext();
     }

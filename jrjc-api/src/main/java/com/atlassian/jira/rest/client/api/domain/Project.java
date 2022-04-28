@@ -16,14 +16,14 @@
 
 package com.atlassian.jira.rest.client.api.domain;
 
-import com.atlassian.jira.rest.client.api.ExpandableResource;
-import com.atlassian.jira.rest.client.api.OptionalIterable;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import com.atlassian.jira.rest.client.api.ExpandableResource;
+import com.atlassian.jira.rest.client.api.OptionalIterable;
 
 /**
  * Complete information about single JIRA project.
@@ -41,13 +41,20 @@ public class Project extends BasicProject implements ExpandableResource {
     @Nullable
     private final URI uri;
     private final Collection<Version> versions;
+
+    @Override
+    public String toString() {
+        return "Project [expandos=" + expandos + ", description=" + description + ", lead=" + lead + ", uri=" + uri + ", versions=" + versions + ", components="
+                + components + ", issueTypes=" + issueTypes + ", projectRoles=" + projectRoles + ", " + super.toString() + "]";
+    }
+
     private final Collection<BasicComponent> components;
     private final OptionalIterable<IssueType> issueTypes;
     private final Collection<BasicProjectRole> projectRoles;
 
     public Project(final Iterable<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
-                   Collection<Version> versions, Collection<BasicComponent> components,
-                   OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
+            Collection<Version> versions, Collection<BasicComponent> components,
+            OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
         super(self, key, id, name);
         this.expandos = expandos;
         this.description = description;
@@ -121,14 +128,8 @@ public class Project extends BasicProject implements ExpandableResource {
      * {@inheritDoc}
      */
     @Override
-    protected MoreObjects.ToStringHelper getToStringHelper() {
-        return super.getToStringHelper().
-                add("description", description).
-                add("lead", lead).
-                add("uri", uri).
-                add("components", components).
-                add("issueTypes", issueTypes).
-                add("versions", versions);
+    protected String getToStringHelper() {
+        return toString();
     }
 
     @Override
@@ -136,18 +137,18 @@ public class Project extends BasicProject implements ExpandableResource {
         if (o instanceof Project) {
             Project that = (Project) o;
             return super.equals(that)
-                    && Objects.equal(this.lead, that.lead)
-                    && Objects.equal(this.uri, that.uri)
-                    && Objects.equal(this.description, that.description)
-                    && Objects.equal(this.components, that.components)
-                    && Objects.equal(this.issueTypes, that.issueTypes)
-                    && Objects.equal(this.versions, that.versions);
+                    && Objects.equals(this.lead, that.lead)
+                    && Objects.equals(this.uri, that.uri)
+                    && Objects.equals(this.description, that.description)
+                    && Objects.equals(this.components, that.components)
+                    && Objects.equals(this.issueTypes, that.issueTypes)
+                    && Objects.equals(this.versions, that.versions);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), description, lead, uri);
+        return Objects.hash(super.hashCode(), description, lead, uri);
     }
 }
