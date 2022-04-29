@@ -12,7 +12,8 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.mylyn.tasks.core;bundle-version="[3.0.0,4.0.0)",
  com.google.guava,
  me.glindholm.connector.eclipse.commons.core,
- jira-rest-java-client-osgi;bundle-version="5.2.5"
+ jira-rest-java-client-api;bundle-version="6.0.0",
+ jira-rest-java-client-core;bundle-version="6.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core;x-friends:="me.glindholm.connector.eclipse.jira.ui",

@@ -88,9 +88,17 @@
          unpack="false"/>
 
    <plugin
-         id="jira-rest-java-client-osgi"
+         id="jira-rest-java-client-api"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="jira-rest-java-client-core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

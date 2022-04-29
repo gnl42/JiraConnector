@@ -21,6 +21,6 @@ Require-Bundle: org.eclipse.swt,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.ui.browser,
  org.eclipse.ui.workbench,
- me.glindholm.connector.eclipse.commons.core;bundle-version="4.0.0",
- me.glindholm.connector.eclipse.commons.core;bundle-version="4.0.0"
+ me.glindholm.connector.eclipse.commons.core,
+ me.glindholm.connector.eclipse.commons.core
 Bundle-ClassPath: .
