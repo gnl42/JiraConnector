@@ -22,7 +22,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.atlassian.jira.rest.client.api.domain.IssueField;
-import com.google.common.collect.Lists;
 
 
 /**
@@ -125,7 +124,7 @@ public class JiraCustomFieldImpl implements JiraCustomField {
             name = meta.getString("name");
             String type = schema.getString("type");
             id = field.getId();
-            values = Lists.newArrayList();
+            values = new ArrayList<>();
             if ("array".equals(type)) {
                 //                try {
                 //                    JSONArray vals = (JSONArray) field.getValue();

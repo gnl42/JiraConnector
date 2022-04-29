@@ -56,7 +56,6 @@ import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldVal
 import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
 import com.atlassian.jira.rest.client.api.domain.input.WorklogInput;
 import com.atlassian.jira.rest.client.api.domain.input.WorklogInputBuilder;
-import com.google.common.collect.ImmutableList;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
@@ -465,40 +464,40 @@ public class JiraRestConverter {
             case URL:
             case EPIC_LABEL:
             case EPIC_LINK:
-                values = ImmutableList.of(field.getValue().toString());
+                values = List.of(field.getValue().toString());
                 break;
             case DATE:
             case DATETIME:
-                values = ImmutableList.of(field.getValue().toString());
+                values = List.of(field.getValue().toString());
                 break;
             case FLOATFIELD:
-                values = ImmutableList.of(field.getValue().toString());
+                values = List.of(field.getValue().toString());
                 break;
             case MULTIUSERPICKER:
                 // no support for multi users on the Mylyn side
                 // values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
-                values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
+                values = List.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
                 break;
             case USERPICKER:
-                values = ImmutableList.of(JiraRestCustomFieldsParser.parseUserPicker(field));
+                values = List.of(JiraRestCustomFieldsParser.parseUserPicker(field));
                 break;
             case SELECT:
             case RADIOBUTTONS:
-                values = ImmutableList.of(JiraRestCustomFieldsParser.parseSelect(field));
+                values = List.of(JiraRestCustomFieldsParser.parseSelect(field));
                 break;
             case MULTISELECT:
             case MULTICHECKBOXES:
                 values = JiraRestCustomFieldsParser.parseMultiSelect(field);
                 break;
             case LABELSS:
-                values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), " ")); //$NON-NLS-1$
+                values = List.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), " ")); //$NON-NLS-1$
                 readonly = true;
                 break;
             case GROUPPICKER:
-                values = ImmutableList.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
+                values = List.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
                 break;
             case MULTIGROUPPICKER:
-                values = ImmutableList.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field), ", ")); //$NON-NLS-1$
+                values = List.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field), ", ")); //$NON-NLS-1$
                 break;
             default:
                 StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,

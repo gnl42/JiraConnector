@@ -60,8 +60,6 @@ import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
 import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
@@ -266,7 +264,7 @@ public class JiraRestClientAdapter {
             @Override
             public Issue call() throws JiraException {
                 try {
-                    return restClient.getIssueClient().getIssue(issueKeyOrId, ImmutableList.of(IssueRestClient.Expandos.SCHEMA)).get();
+                    return restClient.getIssueClient().getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA)).get();
                 } catch (InterruptedException | ExecutionException e) {
                     throw new JiraException(e);
                 }
@@ -625,10 +623,14 @@ public class JiraRestClientAdapter {
         }
 
         if (issue.getEstimate() != null) {
-            Map<String, Object> map = ImmutableMap.<String, Object>builder()
-                    .put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m") //$NON-NLS-1$
-                    .put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m") //$NON-NLS-1$
-                    .build();
+            Map<String, Object> map = Map.ofEntries(Map.entry(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m"),
+                    Map.entry(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m"));
+
+            // TODO Remove
+            //                    ImmutableMap.<String, Object>builder()
+            //                    .put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m") //$NON-NLS-1$
+            //                    .put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m") //$NON-NLS-1$
+            //                    .build();
             issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
         }
 
@@ -710,9 +712,13 @@ public class JiraRestClientAdapter {
 
             if (outputOriginalEstimateInMinutes != null && outputRemainingEstimateInMinutes != null) {
 
-                Map<String, Object> map = ImmutableMap.<String, Object>builder().put(JiraRestFields.ORIGINAL_ESTIMATE, outputOriginalEstimateInMinutes + "m") //$NON-NLS-1$
-                        .put(JiraRestFields.REMAINING_ESTIMATE, outputRemainingEstimateInMinutes + "m") //$NON-NLS-1$
-                        .build();
+                Map<String, Object> map = Map.ofEntries(Map.entry(JiraRestFields.ORIGINAL_ESTIMATE, outputOriginalEstimateInMinutes + "m"),
+                        Map.entry(JiraRestFields.REMAINING_ESTIMATE, outputRemainingEstimateInMinutes + "m"));
+
+                // TODO Remove
+                //                        ImmutableMap.<String, Object>builder().put(JiraRestFields.ORIGINAL_ESTIMATE, outputOriginalEstimateInMinutes + "m") //$NON-NLS-1$
+                //                        .put(JiraRestFields.REMAINING_ESTIMATE, outputRemainingEstimateInMinutes + "m") //$NON-NLS-1$
+                //                        .build();
 
                 updateFields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
             }
