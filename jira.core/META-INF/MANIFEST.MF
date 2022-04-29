@@ -24,5 +24,4 @@ Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui"
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Eclipse-RegisterBuddy: org.apache.axis
 Bundle-Localization: plugin
