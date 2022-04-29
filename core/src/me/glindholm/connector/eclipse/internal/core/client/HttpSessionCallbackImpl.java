@@ -11,7 +11,7 @@
 
 package me.glindholm.connector.eclipse.internal.core.client;
 
-import me.glindholm.connector.eclipse.internal.ui.IBrandingConstants;
+import me.glindholm.connector.eclipse.internal.ui.BrandingConstants;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin;
@@ -55,7 +55,7 @@ public class HttpSessionCallbackImpl implements HttpSessionCallback {
     private final Map<String, ConnectionCfg> locations = new HashMap<String, ConnectionCfg>();
 
     public HttpSessionCallbackImpl() {
-        userAgent = IBrandingConstants.PRODUCT_NAME + "/" + JiraConnectorCorePlugin.getDefault().getVersion();
+        userAgent = BrandingConstants.PRODUCT_NAME + "/" + JiraConnectorCorePlugin.getDefault().getVersion();
     }
 
     public synchronized HttpClient getHttpClient(ConnectionCfg server) throws HttpProxySettingsException {

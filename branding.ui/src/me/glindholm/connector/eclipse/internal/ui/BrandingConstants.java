@@ -11,10 +11,10 @@
 
 package me.glindholm.connector.eclipse.internal.ui;
 
-public interface IBrandingConstants {
+public abstract class BrandingConstants {
 
-	String JIRA_INSTALLED_SYSTEM_PROPERTY = "me.glindholm.connector.eclipse.branding.ui.isOnlyJiraInstalled";
+    public static final String JIRA_INSTALLED_SYSTEM_PROPERTY = "me.glindholm.connector.eclipse.branding.ui.isOnlyJiraInstalled";
 
-	String PRODUCT_NAME = "Mylyn Atlassian Jira/Bamboo Connector for Eclipse";
+    public static final String PRODUCT_NAME = "Eclipse Mylyn JiraConnector for  Atlassian's Jira/Bamboo";
 
 }
