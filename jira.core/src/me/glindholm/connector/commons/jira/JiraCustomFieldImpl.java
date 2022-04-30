@@ -21,7 +21,7 @@ import java.util.List;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.atlassian.jira.rest.client.api.domain.IssueField;
+import me.glindholm.jira.rest.client.api.domain.IssueField;
 
 
 /**

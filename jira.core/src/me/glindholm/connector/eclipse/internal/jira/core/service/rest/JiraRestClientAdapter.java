@@ -38,28 +38,6 @@ import org.eclipse.osgi.util.NLS;
 import org.joda.time.DateTime;
 
 import com.atlassian.httpclient.api.factory.HttpClientOptions;
-import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptions;
-import com.atlassian.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
-import com.atlassian.jira.rest.client.api.IssueRestClient;
-import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.RestClientException;
-import com.atlassian.jira.rest.client.api.domain.BasicPriority;
-import com.atlassian.jira.rest.client.api.domain.BasicProject;
-import com.atlassian.jira.rest.client.api.domain.BasicUser;
-import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
-import com.atlassian.jira.rest.client.api.domain.CimIssueType;
-import com.atlassian.jira.rest.client.api.domain.CimProject;
-import com.atlassian.jira.rest.client.api.domain.Comment;
-import com.atlassian.jira.rest.client.api.domain.Field;
-import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.jira.rest.client.api.domain.Project;
-import com.atlassian.jira.rest.client.api.domain.Session;
-import com.atlassian.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
-import com.atlassian.jira.rest.client.api.domain.input.FieldInput;
-import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
-import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
-import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
@@ -81,6 +59,28 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraAuthenticat
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
+import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
+import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
+import me.glindholm.jira.rest.client.api.IssueRestClient;
+import me.glindholm.jira.rest.client.api.JiraRestClient;
+import me.glindholm.jira.rest.client.api.RestClientException;
+import me.glindholm.jira.rest.client.api.domain.BasicPriority;
+import me.glindholm.jira.rest.client.api.domain.BasicProject;
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
+import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
+import me.glindholm.jira.rest.client.api.domain.CimIssueType;
+import me.glindholm.jira.rest.client.api.domain.CimProject;
+import me.glindholm.jira.rest.client.api.domain.Comment;
+import me.glindholm.jira.rest.client.api.domain.Field;
+import me.glindholm.jira.rest.client.api.domain.Issue;
+import me.glindholm.jira.rest.client.api.domain.Project;
+import me.glindholm.jira.rest.client.api.domain.Session;
+import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
+import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
+import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
+import me.glindholm.jira.rest.client.api.domain.input.IssueInputBuilder;
+import me.glindholm.jira.rest.client.api.domain.input.TransitionInput;
+import me.glindholm.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 
 /**
  * @author Jacek Jaroczynski

@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.atlassian.jira.rest.client.api.domain.Issue;
+import me.glindholm.jira.rest.client.api.domain.Issue;
 
 /**
  * @author Brock Janiczak

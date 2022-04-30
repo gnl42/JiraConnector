@@ -26,10 +26,6 @@ import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 
-import com.atlassian.jira.rest.client.api.RestClientException;
-import com.atlassian.jira.rest.client.api.domain.Field;
-import com.atlassian.jira.rest.client.api.domain.Session;
-
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAttachment;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraFilter;
@@ -48,6 +44,9 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
 import me.glindholm.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
+import me.glindholm.jira.rest.client.api.RestClientException;
+import me.glindholm.jira.rest.client.api.domain.Field;
+import me.glindholm.jira.rest.client.api.domain.Session;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change during the session. This server uses a

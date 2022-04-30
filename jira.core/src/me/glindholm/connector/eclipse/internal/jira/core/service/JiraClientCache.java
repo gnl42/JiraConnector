@@ -20,9 +20,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
-import com.atlassian.jira.rest.client.api.domain.CimFieldInfo;
-import com.atlassian.jira.rest.client.api.domain.Field;
-
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
@@ -33,6 +30,8 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraUser;
+import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
+import me.glindholm.jira.rest.client.api.domain.Field;
 
 /**
  * @author Steffen Pingel

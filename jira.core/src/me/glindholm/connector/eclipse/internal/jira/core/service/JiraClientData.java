@@ -15,8 +15,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.atlassian.jira.rest.client.api.domain.Field;
-
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraGroup;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
@@ -26,6 +24,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraUser;
+import me.glindholm.jira.rest.client.api.domain.Field;
 
 /**
  * Caches repository configuration data.

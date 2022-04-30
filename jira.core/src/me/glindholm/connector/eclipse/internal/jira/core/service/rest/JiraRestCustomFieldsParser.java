@@ -19,13 +19,13 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.osgi.util.NLS;
 
-import com.atlassian.jira.rest.client.api.domain.CustomFieldOption;
-import com.atlassian.jira.rest.client.api.domain.IssueField;
-import com.atlassian.jira.rest.client.api.domain.User;
-import com.atlassian.jira.rest.client.internal.json.CustomFieldOptionJsonParser;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
-import com.atlassian.jira.rest.client.internal.json.UserJsonParser;
-import com.atlassian.jira.rest.client.internal.json.UsersJsonParser;
+import me.glindholm.jira.rest.client.api.domain.CustomFieldOption;
+import me.glindholm.jira.rest.client.api.domain.IssueField;
+import me.glindholm.jira.rest.client.api.domain.User;
+import me.glindholm.jira.rest.client.internal.json.CustomFieldOptionJsonParser;
+import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
+import me.glindholm.jira.rest.client.internal.json.UserJsonParser;
+import me.glindholm.jira.rest.client.internal.json.UsersJsonParser;
 
 public class JiraRestCustomFieldsParser {
     private static final UsersJsonParser usersParser = new UsersJsonParser();
