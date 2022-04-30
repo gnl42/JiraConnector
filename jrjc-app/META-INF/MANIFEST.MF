@@ -11,4 +11,5 @@ Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
 Require-Bundle: jira-rest-java-client-api;bundle-version="6.0.0",
  jira-rest-java-client-core;bundle-version="6.0.0",
- org.slf4j.api;bundle-version="1.7.30"
+ org.slf4j.api;bundle-version="1.7.30",
+ org.apache.commons.logging;bundle-version="1.2.0"
