@@ -27,7 +27,7 @@ import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraFieldType;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraFilter;
@@ -373,7 +373,7 @@ public class JiraUtil {
 			return new Date(Long.parseLong(dateString));
 		} catch (NumberFormatException nfe) {
 			try {
-				return new SimpleDateFormat(IJiraConstants.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
+				return new SimpleDateFormat(JiraConstants.JIRA_DATE_FORMAT, Locale.US).parse(dateString);
 			} catch (ParseException e) {
 				trace(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0, "Error while parsing date string " //$NON-NLS-1$
 						+ dateString, e));
@@ -451,8 +451,8 @@ public class JiraUtil {
 	}
 
 	public static boolean isCustomDateTimeAttribute(TaskAttribute attribute) {
-		if (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
-			String metaType = attribute.getMetaData().getValue(IJiraConstants.META_TYPE);
+		if (attribute.getId().startsWith(JiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
+			String metaType = attribute.getMetaData().getValue(JiraConstants.META_TYPE);
 			if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
 				return true;
 			}
@@ -461,8 +461,8 @@ public class JiraUtil {
 	}
 
 	public static boolean isCustomDateAttribute(TaskAttribute attribute) {
-		if (attribute.getId().startsWith(IJiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
-			String metaType = attribute.getMetaData().getValue(IJiraConstants.META_TYPE);
+		if (attribute.getId().startsWith(JiraConstants.ATTRIBUTE_CUSTOM_PREFIX)) {
+			String metaType = attribute.getMetaData().getValue(JiraConstants.META_TYPE);
 			if (JiraFieldType.DATE.getKey().equals(metaType)) {
 				return true;
 			}

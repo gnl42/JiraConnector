@@ -41,7 +41,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.WorkLogConverter;
 import me.glindholm.connector.eclipse.internal.jira.ui.JiraUiUtil;
@@ -150,7 +150,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 		}.setPath(PATH_ATTRIBUTES));
 
 		// and worklog at the very end
-		if (getModel().getTaskData().getRoot().getAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED) == null) {
+		if (getModel().getTaskData().getRoot().getAttribute(JiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED) == null) {
 			parts.add(new TaskEditorPartDescriptor("me.glindholm.connnector.eclipse.jira.worklog") { //$NON-NLS-1$
 				@Override
 				public AbstractTaskEditorPart createPart() {

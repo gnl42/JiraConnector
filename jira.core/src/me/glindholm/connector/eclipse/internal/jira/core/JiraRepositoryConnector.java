@@ -516,10 +516,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 		TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.TYPE.id());
 		if (attribute != null) {
 			boolean isSubTask = Boolean.parseBoolean(attribute.getMetaData()
-					.getValue(IJiraConstants.META_SUB_TASK_TYPE));
-			task.setAttribute(IJiraConstants.META_SUB_TASK_TYPE, Boolean.toString(isSubTask));
+					.getValue(JiraConstants.META_SUB_TASK_TYPE));
+			task.setAttribute(JiraConstants.META_SUB_TASK_TYPE, Boolean.toString(isSubTask));
 		} else {
-			task.setAttribute(IJiraConstants.META_SUB_TASK_TYPE, Boolean.toString(false));
+			task.setAttribute(JiraConstants.META_SUB_TASK_TYPE, Boolean.toString(false));
 		}
 
 		// add project id for Refresh Attributes (#290490)

@@ -49,7 +49,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
@@ -317,9 +317,9 @@ public class LogJiraTimeDialog extends MessageDialog {
             }
 
         } else if (adjustEstimate == AdjustEstimateMethod.REDUCE) {
-            TaskAttribute estimate = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_ESTIMATE);
+            TaskAttribute estimate = taskData.getRoot().getAttribute(JiraConstants.ATTRIBUTE_ESTIMATE);
             if (estimate == null) {
-                estimate = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE);
+                estimate = taskData.getRoot().getAttribute(JiraConstants.ATTRIBUTE_INITIAL_ESTIMATE);
             }
             final long estimateLong = estimate == null ? 0 : Long.parseLong(estimate.getValue());
 

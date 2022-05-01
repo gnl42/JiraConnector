@@ -26,7 +26,7 @@ import org.osgi.framework.BundleContext;
 
 import me.glindholm.connector.eclipse.internal.branding.ui.RuntimeUtil;
 import me.glindholm.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraClientFactory;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 
@@ -96,14 +96,14 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 				false);
 		TasksUi.getRepositoryManager().addListener(JiraClientFactory.getDefault());
 
-		if (!getPreferenceStore().getBoolean(IJiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)
+		if (!getPreferenceStore().getBoolean(JiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)
 				&& !RuntimeUtil.suppressConfigurationWizards()) {
 			Job migrateJob = new MigrateToSecureStorageJob(JiraCorePlugin.CONNECTOR_KIND);
 			migrateJob.addJobChangeListener(new JobChangeAdapter() {
 				@Override
 				public void done(IJobChangeEvent event) {
 					super.done(event);
-					getPreferenceStore().setValue(IJiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED, Boolean.TRUE);
+					getPreferenceStore().setValue(JiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED, Boolean.TRUE);
 				}
 			});
 			migrateJob.schedule();
