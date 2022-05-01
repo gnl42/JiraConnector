@@ -23,6 +23,7 @@ Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core.service;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service.rest;x-friends:="me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui"
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ target/lib/log4j-slf4j-impl.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Localization: plugin

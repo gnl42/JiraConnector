@@ -12,7 +12,7 @@
 package me.glindholm.connector.eclipse.internal.bamboo.ui;
 
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import me.glindholm.theplugin.commons.bamboo.BambooBuild;
 
@@ -23,23 +23,23 @@ import me.glindholm.theplugin.commons.bamboo.BambooBuild;
  */
 public class EclipseBambooBuild {
 
-	@NotNull
+	@Nonnull
 	private final BambooBuild build;
 
-	@NotNull
+	@Nonnull
 	private final TaskRepository taskRepository;
 
-	public EclipseBambooBuild(@NotNull BambooBuild build, @NotNull TaskRepository taskRepository) {
+	public EclipseBambooBuild(@Nonnull BambooBuild build, @Nonnull TaskRepository taskRepository) {
 		this.build = build;
 		this.taskRepository = taskRepository;
 	}
 
-	@NotNull
+	@Nonnull
 	public BambooBuild getBuild() {
 		return build;
 	}
 
-	@NotNull
+	@Nonnull
 	public TaskRepository getTaskRepository() {
 		return taskRepository;
 	}

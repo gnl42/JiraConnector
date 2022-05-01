@@ -18,7 +18,7 @@ package me.glindholm.theplugin.commons.cfg.xstream;
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import me.glindholm.theplugin.commons.cfg.PrivateConfigurationDao;
 import me.glindholm.theplugin.commons.cfg.PrivateServerCfgInfo;
@@ -77,7 +77,7 @@ public class HomeDirPrivateConfigurationDao
         return loadJDom(doc.getRootElement(), PrivateServerCfgInfo.class, false);
     }
 
-    public void save(@NotNull final PrivateServerCfgInfo info) throws ServerCfgFactoryException {
+    public void save(@Nonnull final PrivateServerCfgInfo info) throws ServerCfgFactoryException {
         Document document = createJDom(info);
 
         try {

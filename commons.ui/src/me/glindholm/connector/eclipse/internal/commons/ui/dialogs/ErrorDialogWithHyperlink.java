@@ -13,6 +13,9 @@ package me.glindholm.connector.eclipse.internal.commons.ui.dialogs;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -27,8 +30,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 
@@ -38,11 +39,11 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 
     private final String title;
 
-    public ErrorDialogWithHyperlink(Shell parentShell, @NotNull
-    String title, @NotNull
-    String message, @Nullable
-    String linkText, @Nullable
-    Runnable linkHandler) {
+    public ErrorDialogWithHyperlink(Shell parentShell, @Nonnull
+            String title, @Nonnull
+            String message, @Nullable
+            String linkText, @Nullable
+            Runnable linkHandler) {
         super(parentShell);
         this.title = title;
         setShellStyle(getShellStyle() | SWT.RESIZE);

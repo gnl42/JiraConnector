@@ -15,7 +15,7 @@
  */
 package me.glindholm.connector.commons.misc;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import me.glindholm.theplugin.commons.util.MiscUtil;
 
@@ -25,8 +25,8 @@ public final class IntRangesParser {
 	private IntRangesParser() {
 	}
 
-	@NotNull
-	public static IntRanges parse(@NotNull String rangesStr) throws NumberFormatException {
+	@Nonnull
+	public static IntRanges parse(@Nonnull String rangesStr) throws NumberFormatException {
 		if (rangesStr == null) {
 			throw new IllegalArgumentException("Parameter cannot be null");
 		}

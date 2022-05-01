@@ -15,7 +15,7 @@
  */
 package me.glindholm.theplugin.commons.util;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;

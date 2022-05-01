@@ -15,13 +15,13 @@
  */
 package me.glindholm.theplugin.commons.cfg;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 public interface PrivateConfigurationDao {
 	@Nullable
 	PrivateServerCfgInfo load(ServerId id) throws ServerCfgFactoryException;
 
-	void save(@NotNull PrivateServerCfgInfo info) throws ServerCfgFactoryException;
+	void save(@Nonnull PrivateServerCfgInfo info) throws ServerCfgFactoryException;
 }

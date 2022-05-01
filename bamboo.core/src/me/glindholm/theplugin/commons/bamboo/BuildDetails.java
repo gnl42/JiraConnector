@@ -16,7 +16,7 @@
 
 package me.glindholm.theplugin.commons.bamboo;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface BuildDetails {

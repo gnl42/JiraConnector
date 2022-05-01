@@ -16,7 +16,7 @@
 
 package me.glindholm.connector.cfg;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import me.glindholm.theplugin.commons.ServerType;
 import me.glindholm.theplugin.commons.bamboo.BambooServerData;

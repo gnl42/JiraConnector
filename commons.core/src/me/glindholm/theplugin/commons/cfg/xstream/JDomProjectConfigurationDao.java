@@ -15,6 +15,14 @@
  */
 package me.glindholm.theplugin.commons.cfg.xstream;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.jdom2.Element;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.JDom2Reader;
 import com.thoughtworks.xstream.io.xml.JDom2Writer;
@@ -29,12 +37,6 @@ import me.glindholm.theplugin.commons.cfg.ServerCfgFactoryException;
 import me.glindholm.theplugin.commons.cfg.SharedServerList;
 import me.glindholm.theplugin.commons.util.LoggerImpl;
 
-import org.jdom2.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-
 public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
 
     private final Element publicElement;
@@ -42,12 +44,12 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
     private final UserSharedConfigurationDao sharedCfg;
 
 
-    public JDomProjectConfigurationDao(final Element element, @NotNull PrivateConfigurationDao privateConfigurationDao,
-            @NotNull UserSharedConfigurationDao userSharedCfg) {
+    public JDomProjectConfigurationDao(final Element element, @Nonnull PrivateConfigurationDao privateConfigurationDao,
+            @Nonnull UserSharedConfigurationDao userSharedCfg) {
         if (element == null) {
             throw new IllegalArgumentException(Element.class.getSimpleName() + " cannot be null");
         }
-        // we compile using Maven2. @NotNull has no meaning in product
+        // we compile using Maven2. @Nonnull has no meaning in product
         //noinspection ConstantConditions
         if (privateConfigurationDao == null) {
             throw new IllegalArgumentException(PrivateConfigurationDao.class.getSimpleName() + " cannot be null");
@@ -58,6 +60,7 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
 
     }
 
+    @Override
     public ProjectConfiguration load() throws ServerCfgFactoryException {
         PrivateProjectConfiguration ppc = new PrivateProjectConfiguration();
         ProjectConfiguration res = load(publicElement, ProjectConfiguration.class);
@@ -66,7 +69,7 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
         @Nullable
         final SharedServerList sharedServers = sharedCfg.load();
         if (sharedServers != null) {
-            Collection<ServerCfg> serversToAdd = new ArrayList<ServerCfg>();
+            Collection<ServerCfg> serversToAdd = new ArrayList<>();
             if (res.getServers().size() > 0) {
                 for (ServerCfg sharedServer : sharedServers) {
 
@@ -77,7 +80,7 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
             } else {
                 serversToAdd.addAll(sharedServers);
             }
-//            res.getServers().addAll(sharedServers);
+            //            res.getServers().addAll(sharedServers);
             res.getServers().addAll(serversToAdd);
         }
 
@@ -86,7 +89,7 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
                 if (!serverCfg.isShared()) {
                     @Nullable
                     final PrivateServerCfgInfo privateServerCfgInfo
-                            = privateConfigurationDao.load(serverCfg.getServerId());
+                    = privateConfigurationDao.load(serverCfg.getServerId());
                     if (privateServerCfgInfo != null) {
                         ppc.add(privateServerCfgInfo);
                     }
@@ -100,7 +103,7 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
     }
 
 
-    public PrivateProjectConfiguration loadOldPrivateConfiguration(@NotNull Element privateElement)
+    public PrivateProjectConfiguration loadOldPrivateConfiguration(@Nonnull Element privateElement)
             throws ServerCfgFactoryException {
         return load(privateElement, PrivateProjectConfiguration.class);
     }
@@ -112,7 +115,7 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
             throw new ServerCfgFactoryException("Cannot travers JDom tree. Exactly one child node expected, but found ["
                     + childCount + "]");
         }
-		final JDom2Reader reader = new JDom2Reader(rootElement.getChildren().get(0));
+        final JDom2Reader reader = new JDom2Reader(rootElement.getChildren().get(0));
         final XStream xStream = JDomXStreamUtil.getProjectJDomXStream(false);
         try {
             return clazz.cast(xStream.unmarshal(reader));
@@ -138,17 +141,18 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
         return projectConfiguration;
     }
 
+    @Override
     public void save(final ProjectConfiguration projectConfiguration) {
-        final Collection<ServerCfg> privateServers = new ArrayList<ServerCfg>();
+        final Collection<ServerCfg> privateServers = new ArrayList<>();
         final SharedServerList gList = new SharedServerList();
         for (ServerCfg server : projectConfiguration.getServers()) {
             if (server.isShared()) {
                 gList.add(server);
-//                if (projectConfiguration.getServerCfg(server.getServerId()) == null) {
-//                    gList.add(server);
-//                } else {
-//                    projectConfiguration.getServerCfg(server.getServerId()).setShared(true);
-//                }
+                //                if (projectConfiguration.getServerCfg(server.getServerId()) == null) {
+                //                    gList.add(server);
+                //                } else {
+                //                    projectConfiguration.getServerCfg(server.getServerId()).setShared(true);
+                //                }
 
                 if (privateConfigurationDao instanceof HomeDirPrivateConfigurationDao) {
                     ((HomeDirPrivateConfigurationDao) privateConfigurationDao).deleteFile(server);
@@ -181,7 +185,7 @@ public class JDomProjectConfigurationDao implements ProjectConfigurationDao {
         if (object == null) {
             throw new NullPointerException("Serialized object cannot be null");
         }
-		final JDom2Writer writer = new JDom2Writer(rootElement);
+        final JDom2Writer writer = new JDom2Writer(rootElement);
         final XStream xStream = JDomXStreamUtil.getProjectJDomXStream(false);
         xStream.marshal(object, writer);
 

@@ -37,7 +37,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -421,7 +421,7 @@ public class JDomProjectConfigurationDaoTest extends ProjectConfigurationDaoTest
                 return null;
             }
 
-            public void save(@NotNull PrivateServerCfgInfo info) throws ServerCfgFactoryException {
+            public void save(@Nonnull PrivateServerCfgInfo info) throws ServerCfgFactoryException {
 
             }
         }, new HomeDirSharedConfigurationImpl());
@@ -444,7 +444,7 @@ public class JDomProjectConfigurationDaoTest extends ProjectConfigurationDaoTest
             return HomeDirPrivateConfigurationDao.load(document);
         }
 
-        public void save(@NotNull final PrivateServerCfgInfo info) {
+        public void save(@Nonnull final PrivateServerCfgInfo info) {
             HomeDirPrivateConfigurationDao p = new HomeDirPrivateConfigurationDao();
             final Document jDom = p.createJDom(info);
             documentMap.put(info.getServerId(), jDom);
@@ -466,7 +466,7 @@ public class JDomProjectConfigurationDaoTest extends ProjectConfigurationDaoTest
             return map.get(id);
         }
 
-        public void save(@NotNull final PrivateServerCfgInfo info) {
+        public void save(@Nonnull final PrivateServerCfgInfo info) {
             map.put(info.getServerId(), info);
         }
     }

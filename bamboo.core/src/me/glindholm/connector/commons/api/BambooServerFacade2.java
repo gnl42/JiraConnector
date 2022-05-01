@@ -23,7 +23,7 @@ import me.glindholm.theplugin.commons.exception.ServerPasswordNotProvidedExcepti
 import me.glindholm.theplugin.commons.remoteapi.ProductServerFacade;
 import me.glindholm.theplugin.commons.remoteapi.RemoteApiException;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 /**
@@ -48,19 +48,19 @@ public interface BambooServerFacade2 extends ProductServerFacade {
 			boolean isUseFavourities, boolean isShowBranches, boolean myBranchesOly, int timezoneOffset)
             throws ServerPasswordNotProvidedException, RemoteApiException;
 
-	BuildDetails getBuildDetails(ConnectionCfg bambooServer, @NotNull String planKey, int buildNumber)
+	BuildDetails getBuildDetails(ConnectionCfg bambooServer, @Nonnull String planKey, int buildNumber)
 		throws ServerPasswordNotProvidedException, RemoteApiException;
 
-	void addLabelToBuild(ConnectionCfg bambooServer, @NotNull String planKey, int buildNumber, String buildComment)
+	void addLabelToBuild(ConnectionCfg bambooServer, @Nonnull String planKey, int buildNumber, String buildComment)
 		throws ServerPasswordNotProvidedException, RemoteApiException;
 
-	void addCommentToBuild(ConnectionCfg bambooServer, @NotNull String planKey, int buildNumber, String buildComment)
+	void addCommentToBuild(ConnectionCfg bambooServer, @Nonnull String planKey, int buildNumber, String buildComment)
 		throws ServerPasswordNotProvidedException, RemoteApiException;
 
-	void executeBuild(ConnectionCfg bambooServer, @NotNull String planKey) throws ServerPasswordNotProvidedException,
+	void executeBuild(ConnectionCfg bambooServer, @Nonnull String planKey) throws ServerPasswordNotProvidedException,
 		RemoteApiException;
 
-	String getBuildLogs(ConnectionCfg bambooServer, @NotNull String planKey, int buildNumber)
+	String getBuildLogs(ConnectionCfg bambooServer, @Nonnull String planKey, int buildNumber)
 		throws ServerPasswordNotProvidedException, RemoteApiException;
 
 	/**
@@ -103,9 +103,9 @@ public interface BambooServerFacade2 extends ProductServerFacade {
 	Collection<BambooBuild> getRecentBuildsForUser(ConnectionCfg bambooServer, final int timezoneOffset)
 		throws ServerPasswordNotProvidedException;
 
-	BambooBuild getBuildForPlanAndNumber(ConnectionCfg bambooServer, @NotNull String planKey, final int buildNumber,
+	BambooBuild getBuildForPlanAndNumber(ConnectionCfg bambooServer, @Nonnull String planKey, final int buildNumber,
 			final int timezoneOffset) throws ServerPasswordNotProvidedException, RemoteApiException;
 
-    Collection<BuildIssue> getIssuesForBuild(ConnectionCfg bambooServer, @NotNull String planKey, int buildNumber)
+    Collection<BuildIssue> getIssuesForBuild(ConnectionCfg bambooServer, @Nonnull String planKey, int buildNumber)
             throws ServerPasswordNotProvidedException, RemoteApiException;
 }

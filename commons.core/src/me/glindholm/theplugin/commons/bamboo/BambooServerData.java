@@ -15,7 +15,7 @@
  */
 package me.glindholm.theplugin.commons.bamboo;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import me.glindholm.theplugin.commons.cfg.BambooServerCfg;
 import me.glindholm.theplugin.commons.cfg.Server;
@@ -29,7 +29,7 @@ import java.util.Collection;
  * @author Jacek Jaroczynski
  */
 public class BambooServerData extends ServerData {
-	public BambooServerData(@NotNull BambooServerCfg server) {
+	public BambooServerData(@Nonnull BambooServerCfg server) {
 		super(server);
 	}
 
