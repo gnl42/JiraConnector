@@ -16,50 +16,6 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import me.glindholm.jira.rest.client.api.domain.Attachment;
-import me.glindholm.jira.rest.client.api.domain.BasicComponent;
-import me.glindholm.jira.rest.client.api.domain.BasicIssue;
-import me.glindholm.jira.rest.client.api.domain.BasicPriority;
-import me.glindholm.jira.rest.client.api.domain.BasicProject;
-import me.glindholm.jira.rest.client.api.domain.BasicVotes;
-import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
-import me.glindholm.jira.rest.client.api.domain.ChangelogGroup;
-import me.glindholm.jira.rest.client.api.domain.Comment;
-import me.glindholm.jira.rest.client.api.domain.Issue;
-import me.glindholm.jira.rest.client.api.domain.IssueField;
-import me.glindholm.jira.rest.client.api.domain.IssueFieldId;
-import me.glindholm.jira.rest.client.api.domain.IssueLink;
-import me.glindholm.jira.rest.client.api.domain.IssueType;
-import me.glindholm.jira.rest.client.api.domain.Operations;
-import me.glindholm.jira.rest.client.api.domain.Resolution;
-import me.glindholm.jira.rest.client.api.domain.Status;
-import me.glindholm.jira.rest.client.api.domain.Subtask;
-import me.glindholm.jira.rest.client.api.domain.TimeTracking;
-import me.glindholm.jira.rest.client.api.domain.User;
-import me.glindholm.jira.rest.client.api.domain.Version;
-import me.glindholm.jira.rest.client.api.domain.Worklog;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.AFFECTS_VERSIONS_FIELD;
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.ASSIGNEE_FIELD;
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.ATTACHMENT_FIELD;
@@ -87,6 +43,50 @@ import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.WORKLOGS_FIE
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.WORKLOG_FIELD;
 import static me.glindholm.jira.rest.client.internal.json.JsonParseUtil.getStringKeys;
 import static me.glindholm.jira.rest.client.internal.json.JsonParseUtil.parseOptionalJsonObject;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+import javax.ws.rs.core.UriBuilder;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.joda.time.DateTime;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
+
+import me.glindholm.jira.rest.client.api.domain.Attachment;
+import me.glindholm.jira.rest.client.api.domain.BasicComponent;
+import me.glindholm.jira.rest.client.api.domain.BasicIssue;
+import me.glindholm.jira.rest.client.api.domain.BasicPriority;
+import me.glindholm.jira.rest.client.api.domain.BasicProject;
+import me.glindholm.jira.rest.client.api.domain.BasicVotes;
+import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
+import me.glindholm.jira.rest.client.api.domain.ChangelogGroup;
+import me.glindholm.jira.rest.client.api.domain.Comment;
+import me.glindholm.jira.rest.client.api.domain.Issue;
+import me.glindholm.jira.rest.client.api.domain.IssueField;
+import me.glindholm.jira.rest.client.api.domain.IssueFieldId;
+import me.glindholm.jira.rest.client.api.domain.IssueLink;
+import me.glindholm.jira.rest.client.api.domain.IssueType;
+import me.glindholm.jira.rest.client.api.domain.Operations;
+import me.glindholm.jira.rest.client.api.domain.Resolution;
+import me.glindholm.jira.rest.client.api.domain.Status;
+import me.glindholm.jira.rest.client.api.domain.Subtask;
+import me.glindholm.jira.rest.client.api.domain.TimeTracking;
+import me.glindholm.jira.rest.client.api.domain.User;
+import me.glindholm.jira.rest.client.api.domain.Version;
+import me.glindholm.jira.rest.client.api.domain.Worklog;
 
 public class IssueJsonParser implements JsonObjectParser<Issue> {
 
@@ -138,13 +138,13 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
     private <T> Collection<T> parseArray(final JSONObject jsonObject, final JsonWeakParser<T> jsonParser, final String arrayAttribute)
             throws JSONException {
-//        String type = jsonObject.getString("type");
-//        final String name = jsonObject.getString("name");
+        //        String type = jsonObject.getString("type");
+        //        final String name = jsonObject.getString("name");
         final JSONArray valueObject = jsonObject.optJSONArray(arrayAttribute);
         if (valueObject == null) {
-            return new ArrayList<T>();
+            return new ArrayList<>();
         }
-        Collection<T> res = new ArrayList<T>(valueObject.length());
+        Collection<T> res = new ArrayList<>(valueObject.length());
         for (int i = 0; i < valueObject.length(); i++) {
             res.add(jsonParser.parse(valueObject.get(i)));
         }
@@ -164,7 +164,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         if (jsonArray == null) {
             return null;
         }
-        final Collection<T> res = new ArrayList<T>(jsonArray.length());
+        final Collection<T> res = new ArrayList<>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
             res.add(jsonParser.parse(jsonArray.get(i)));
         }
@@ -216,13 +216,13 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         final Iterable<String> expandos = parseExpandos(issueJson);
         final JSONObject jsonFields = issueJson.getJSONObject(FIELDS);
         final JSONObject commentsJson = jsonFields.optJSONObject(COMMENT_FIELD.id);
-        final Collection<Comment> comments = (commentsJson == null) ? Collections.<Comment>emptyList()
-                : parseArray(commentsJson, new JsonWeakParserForJsonObject<Comment>(commentJsonParser), "comments");
+        final Collection<Comment> comments = commentsJson == null ? Collections.<Comment>emptyList()
+                : parseArray(commentsJson, new JsonWeakParserForJsonObject<>(commentJsonParser), "comments");
 
         final String summary = getFieldStringValue(issueJson, SUMMARY_FIELD.id);
         final String description = getOptionalFieldStringUnisex(issueJson, DESCRIPTION_FIELD.id);
 
-        final Collection<Attachment> attachments = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Attachment>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
+        final Collection<Attachment> attachments = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
         final Collection<IssueField> fields = parseFields(issueJson);
 
         final IssueType issueType = issueTypeJsonParser.parse(getFieldUnisex(issueJson, ISSUE_TYPE_FIELD.id));
@@ -239,16 +239,16 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
         final BasicProject project = projectJsonParser.parse(getFieldUnisex(issueJson, PROJECT_FIELD.id));
         final Collection<IssueLink> issueLinks;
-        issueLinks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<IssueLink>(issueLinkJsonParserV5), FIELDS, LINKS_FIELD.id);
+        issueLinks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(issueLinkJsonParserV5), FIELDS, LINKS_FIELD.id);
 
-        Collection<Subtask> subtasks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Subtask>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
+        Collection<Subtask> subtasks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
 
         final BasicVotes votes = getOptionalNestedField(issueJson, VOTES_FIELD.id, votesJsonParser);
         final Status status = statusJsonParser.parse(getFieldUnisex(issueJson, STATUS_FIELD.id));
 
-        final Collection<Version> fixVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
-        final Collection<Version> affectedVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<Version>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
-        final Collection<BasicComponent> components = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<BasicComponent>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
+        final Collection<Version> fixVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
+        final Collection<Version> affectedVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
+        final Collection<BasicComponent> components = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
 
         final Collection<Worklog> worklogs;
         final URI selfUri = basicIssue.getSelf();
@@ -256,7 +256,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         final String transitionsUriString;
         if (issueJson.has(IssueFieldId.TRANSITIONS_FIELD.id)) {
             Object transitionsObj = issueJson.get(IssueFieldId.TRANSITIONS_FIELD.id);
-            transitionsUriString = (transitionsObj instanceof String) ? (String) transitionsObj : null;
+            transitionsUriString = transitionsObj instanceof String ? (String) transitionsObj : null;
         } else {
             transitionsUriString = getOptionalFieldStringUnisex(issueJson, IssueFieldId.TRANSITIONS_FIELD.id);
         }
@@ -264,7 +264,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
         if (JsonParseUtil.getNestedOptionalObject(issueJson, FIELDS, WORKLOG_FIELD.id) != null) {
             worklogs = parseOptionalArray(issueJson,
-                    new JsonWeakParserForJsonObject<Worklog>(new WorklogJsonParserV5(selfUri)),
+                    new JsonWeakParserForJsonObject<>(new WorklogJsonParserV5(selfUri)),
                     FIELDS, WORKLOG_FIELD.id, WORKLOGS_FIELD.id);
         } else {
             worklogs = Collections.emptyList();
@@ -278,7 +278,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
                 .newHashSet(parseOptionalArrayNotNullable(issueJson, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
 
         final Collection<ChangelogGroup> changelog = parseOptionalArray(
-                issueJson, new JsonWeakParserForJsonObject<ChangelogGroup>(changelogJsonParser), "changelog", "histories");
+                issueJson, new JsonWeakParserForJsonObject<>(changelogJsonParser), "changelog", "histories");
         final Operations operations = parseOptionalJsonObject(issueJson, "operations", operationsJsonParser);
 
         return new Issue(summary, selfUri, basicIssue.getKey(), basicIssue.getId(), project, issueType, status,
@@ -291,7 +291,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) {
         return transitionsUriString != null
                 ? JsonParseUtil.parseURI(transitionsUriString)
-                : UriBuilder.fromUri(selfUri).path("transitions").queryParam("expand", "transitions.fields").build();
+                        : UriBuilder.fromUri(selfUri).path("transitions").queryParam("expand", "transitions.fields").build();
     }
 
     @Nullable
@@ -306,9 +306,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     }
 
     private Collection<IssueField> parseFields(final JSONObject issueJson) throws JSONException {
-        final JSONObject names = (providedNames != null) ? providedNames : issueJson.optJSONObject(NAMES_SECTION);
+        final JSONObject names = providedNames != null ? providedNames : issueJson.optJSONObject(NAMES_SECTION);
         final Map<String, String> namesMap = parseNames(names);
-        final JSONObject schema = (providedSchema != null) ? providedSchema : issueJson.optJSONObject(SCHEMA_SECTION);
+        final JSONObject schema = providedSchema != null ? providedSchema : issueJson.optJSONObject(SCHEMA_SECTION);
         final Map<String, String> typesMap = parseSchema(schema);
 
         final JSONObject json = issueJson.getJSONObject(FIELDS);
