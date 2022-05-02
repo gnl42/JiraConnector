@@ -76,6 +76,7 @@ import me.glindholm.jira.rest.client.api.domain.Subtask;
 import me.glindholm.jira.rest.client.api.domain.Transition;
 import me.glindholm.jira.rest.client.api.domain.Version;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
+import me.glindholm.jira.rest.client.api.domain.Watchers;
 import me.glindholm.jira.rest.client.api.domain.Worklog;
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
@@ -308,8 +309,11 @@ public class JiraRestConverter {
 
         issue.setVotes(rawIssue.getVotes().getVotes());
 
-        BasicWatchers watchers = rawIssue.getWatchers();
-        issue.setWatched(watchers.isWatching());
+        BasicWatchers watched = rawIssue.getWatched();
+        issue.setWatched(watched.isWatching());
+
+        Watchers watchers = rawIssue.getWatchers();
+        issue.setWatchers(watchers);
 
         return issue;
     }

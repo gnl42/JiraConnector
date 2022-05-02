@@ -27,3 +27,5 @@ Bundle-ClassPath: .,
  target/lib/log4j-slf4j-impl.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Localization: plugin
+Import-Package: org.apache.logging.log4j,
+ org.slf4j

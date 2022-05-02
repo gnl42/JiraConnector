@@ -32,73 +32,73 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
 @SuppressWarnings("restriction")
 public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
 
-	@Override
-	protected Composite createHeaderLayout(Composite parent, FormToolkit toolkit) {
-		Composite composite = super.createHeaderLayout(parent, toolkit);
+    @Override
+    protected Composite createHeaderLayout(Composite parent, FormToolkit toolkit) {
+        Composite composite = super.createHeaderLayout(parent, toolkit);
 
-		TaskAttribute attribute = getTaskData().getRoot().getMappedAttribute(JiraAttribute.VOTES.id());
-		if (attribute != null) {
-			addAttribute(composite, toolkit, attribute, true);
+        TaskAttribute attribute = getTaskData().getRoot().getMappedAttribute(JiraAttribute.VOTES.id());
+        if (attribute != null) {
+            addAttribute(composite, toolkit, attribute, true);
 
-			Layout layout = composite.getLayout();
-			if (layout instanceof GridLayout) {
-				GridLayout gl = (GridLayout) layout;
-				gl.numColumns = composite.getChildren().length;
+            Layout layout = composite.getLayout();
+            if (layout instanceof GridLayout) {
+                GridLayout gl = (GridLayout) layout;
+                gl.numColumns = composite.getChildren().length;
 
-				if (gl.numColumns == 0) {
-					gl.numColumns = 1;
-					toolkit.createLabel(composite, " "); //$NON-NLS-1$
-				}
-			}
-		}
+                if (gl.numColumns == 0) {
+                    gl.numColumns = 1;
+                    toolkit.createLabel(composite, " "); //$NON-NLS-1$
+                }
+            }
+        }
 
-		Layout layout = composite.getLayout();
-		if (layout instanceof GridLayout) {
-			GridLayout gLayout = (GridLayout) layout;
+        Layout layout = composite.getLayout();
+        if (layout instanceof GridLayout) {
+            GridLayout gLayout = (GridLayout) layout;
 
-			Composite secondLineComposite = new Composite(composite, SWT.NONE);
-			final RowLayout rowLayout = new RowLayout();
-			rowLayout.center = true;
-			rowLayout.marginLeft = 0;
-			secondLineComposite.setLayout(rowLayout);
-			rowLayout.spacing = 8;
-			GridDataFactory.fillDefaults().span(gLayout.numColumns, 1).applyTo(secondLineComposite);
-			toolkit.adapt(secondLineComposite);
+            Composite secondLineComposite = new Composite(composite, SWT.NONE);
+            final RowLayout rowLayout = new RowLayout();
+            rowLayout.center = true;
+            rowLayout.marginLeft = 0;
+            secondLineComposite.setLayout(rowLayout);
+            rowLayout.spacing = 8;
+            GridDataFactory.fillDefaults().span(gLayout.numColumns, 1).applyTo(secondLineComposite);
+            toolkit.adapt(secondLineComposite);
 
-			final TaskAttribute reporterAttribute = getTaskData().getRoot().getMappedAttribute(
-					JiraAttribute.USER_REPORTER.id());
-			if (reporterAttribute != null) {
-				addAttribute(secondLineComposite, toolkit, reporterAttribute, false);
-			}
+            final TaskAttribute reporterAttribute = getTaskData().getRoot().getMappedAttribute(
+                    JiraAttribute.USER_REPORTER.id());
+            if (reporterAttribute != null) {
+                addAttribute(secondLineComposite, toolkit, reporterAttribute, false);
+            }
 
-			final TaskAttribute assigneeAttribute = getTaskData().getRoot().getMappedAttribute(
-					JiraAttribute.USER_ASSIGNED.id());
-			if (assigneeAttribute != null) {
-				addAttribute(secondLineComposite, toolkit, assigneeAttribute, false);
-			}
+            final TaskAttribute assigneeAttribute = getTaskData().getRoot().getMappedAttribute(
+                    JiraAttribute.USER_ASSIGNED.id());
+            if (assigneeAttribute != null) {
+                addAttribute(secondLineComposite, toolkit, assigneeAttribute, false);
+            }
 
-		}
+        }
 
-		return composite;
-	}
+        return composite;
+    }
 
-	private void addAttribute(Composite composite, FormToolkit toolkit, TaskAttribute attribute,
-			boolean shouldInitializeGridData) {
-		AbstractAttributeEditor editor = createAttributeEditor(attribute);
-		if (editor != null) {
-			editor.setReadOnly(true);
-			editor.setDecorationEnabled(false);
+    private void addAttribute(Composite composite, FormToolkit toolkit, TaskAttribute attribute,
+            boolean shouldInitializeGridData) {
+        AbstractAttributeEditor editor = createAttributeEditor(attribute);
+        if (editor != null) {
+            editor.setReadOnly(true);
+            editor.setDecorationEnabled(false);
 
-			editor.createLabelControl(composite, toolkit);
-			if (shouldInitializeGridData) {
-				GridDataFactory.defaultsFor(editor.getLabelControl())
-						.indent(EditorUtil.HEADER_COLUMN_MARGIN, 0)
-						.applyTo(editor.getLabelControl());
-			}
+            editor.createLabelControl(composite, toolkit);
+            if (shouldInitializeGridData) {
+                GridDataFactory.defaultsFor(editor.getLabelControl())
+                .indent(EditorUtil.HEADER_COLUMN_MARGIN, 0)
+                .applyTo(editor.getLabelControl());
+            }
 
-			editor.createControl(composite, toolkit);
-			getTaskEditorPage().getAttributeEditorToolkit().adapt(editor);
-		}
-	}
+            editor.createControl(composite, toolkit);
+            getTaskEditorPage().getAttributeEditorToolkit().adapt(editor);
+        }
+    }
 
 }

@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import me.glindholm.jira.rest.client.api.domain.Issue;
+import me.glindholm.jira.rest.client.api.domain.Watchers;
 
 /**
  * @author Brock Janiczak
@@ -116,6 +117,8 @@ public class JiraIssue implements Serializable {
     private String[] labels = new String[0];
 
     private Issue rawIssue;
+
+    private Watchers watchers;
 
     public String getId() {
         return id;
@@ -335,7 +338,7 @@ public class JiraIssue implements Serializable {
         return isWatched;
     }
 
-	/**
+    /**
      * Determines if it is ok for the supplied user to vote on this issue. Users can
      * not vote on an issue if the issue is resolved or the user is the reporter.
      *
@@ -351,7 +354,7 @@ public class JiraIssue implements Serializable {
         this.hasVote = hasVote;
     }
 
-	/**
+    /**
      * Determines if this issue has been voted on by the current user
      *
      * @return <code>true</code> if the current user is voting for this issue.
@@ -427,7 +430,8 @@ public class JiraIssue implements Serializable {
 
     /**
      * @param field
-     * @return list of field actual values without faked "none" value for combo and radio buttons
+     * @return list of field actual values without faked "none" value for combo and
+     *         radio buttons
      */
     public String[] getFieldValues(String field) {
         if ("summary".equals(field)) { //$NON-NLS-1$
@@ -506,36 +510,38 @@ public class JiraIssue implements Serializable {
     }
 
     // TODO refactor RSS parser to use this call
-    //	public void setValue(String field, String value) {
-    //		if ("resolution".equals(field)) { //$NON-NLS-1$
-    //			if (value != null) {
-    //				resolution = new Resolution(value, value);
-    //			}
-    //		} else if ("assignee".equals(field)) { //$NON-NLS-1$
-    //			assignee = value;
+    // public void setValue(String field, String value) {
+    // if ("resolution".equals(field)) { //$NON-NLS-1$
+    // if (value != null) {
+    // resolution = new Resolution(value, value);
+    // }
+    // } else if ("assignee".equals(field)) { //$NON-NLS-1$
+    // assignee = value;
     //
-    //			// TODO add other fields
-    //		} else if (field.startsWith("customfield_")) { //$NON-NLS-1$
-    //			boolean found = false;
+    // // TODO add other fields
+    // } else if (field.startsWith("customfield_")) { //$NON-NLS-1$
+    // boolean found = false;
     //
-    //			for (int i = 0; i < customFields.length; i++) {
-    //				CustomField customField = customFields[i];
-    //				if (customField.getId().equals(field)) {
-    //					customFields[i] = new CustomField(customField.getId(), customField.getKey(), customField.getKey(),
-    //							Collections.singletonList(value));
-    //					found = true;
-    //					break;
-    //				}
+    // for (int i = 0; i < customFields.length; i++) {
+    // CustomField customField = customFields[i];
+    // if (customField.getId().equals(field)) {
+    // customFields[i] = new CustomField(customField.getId(), customField.getKey(),
+    // customField.getKey(),
+    // Collections.singletonList(value));
+    // found = true;
+    // break;
+    // }
     //
-    //			}
+    // }
     //
-    //			if (!found) {
-    //				List<CustomField> list = Arrays.asList(customFields);
-    //				list.add(new CustomField(field, "", "", Collections.singletonList(value))); //$NON-NLS-1$ //$NON-NLS-2$
-    //				customFields = list.toArray(new CustomField[list.size()]);
-    //			}
-    //		}
-    //	}
+    // if (!found) {
+    // List<CustomField> list = Arrays.asList(customFields);
+    // list.add(new CustomField(field, "", "", Collections.singletonList(value)));
+    // //$NON-NLS-1$ //$NON-NLS-2$
+    // customFields = list.toArray(new CustomField[list.size()]);
+    // }
+    // }
+    // }
 
     public JiraSecurityLevel getSecurityLevel() {
         return securityLevel;
@@ -613,4 +619,11 @@ public class JiraIssue implements Serializable {
         return rawIssue;
     }
 
+    public void setWatchers(Watchers watchers) {
+        this.watchers = watchers;
+    }
+
+    public Watchers getWatchers() {
+        return watchers;
+    }
 }

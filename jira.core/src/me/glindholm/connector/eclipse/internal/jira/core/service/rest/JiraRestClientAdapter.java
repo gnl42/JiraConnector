@@ -67,6 +67,7 @@ import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
+import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.CimIssueType;
 import me.glindholm.jira.rest.client.api.domain.CimProject;
@@ -75,6 +76,7 @@ import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.api.domain.Session;
+import me.glindholm.jira.rest.client.api.domain.Watchers;
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
@@ -264,7 +266,11 @@ public class JiraRestClientAdapter {
             @Override
             public Issue call() throws JiraException {
                 try {
-                    return restClient.getIssueClient().getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA)).get();
+                    Issue issue = restClient.getIssueClient().getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA)).get();
+                    final BasicWatchers watched = issue.getWatched();
+                    final Watchers watchers = restClient.getIssueClient().getWatchers(watched.getSelf()).get();
+                    issue.setWatchers(watchers);
+                    return issue;
                 } catch (InterruptedException | ExecutionException e) {
                     throw new JiraException(e);
                 }

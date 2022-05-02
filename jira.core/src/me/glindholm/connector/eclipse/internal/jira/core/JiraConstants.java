@@ -79,4 +79,6 @@ public abstract class JiraConstants {
 
     public static final String ATTRIBUTE_LABELS = "attribute.jira.labels"; //$NON-NLS-1$
 
+    public static final String ATTRIBUTE_WATCHERS = "attribute.jira.watchers";
+
 }
