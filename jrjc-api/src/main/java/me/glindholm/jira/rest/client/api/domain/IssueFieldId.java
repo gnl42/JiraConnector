@@ -48,7 +48,7 @@ public enum IssueFieldId {
     TRANSITIONS_FIELD("transitions"),
     UPDATED_FIELD("updated"),
     VOTES_FIELD("votes"),
-    WATCHER_FIELD("watches"),
+    WATCHED_FIELD("watches"),
     WATCHER_PRE_5_0_FIELD("watcher"),
     WORKLOG_FIELD("worklog"),
     WORKLOGS_FIELD("worklogs");

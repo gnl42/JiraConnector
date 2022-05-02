@@ -38,7 +38,7 @@ import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.SUMMARY_FIEL
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.TIMETRACKING_FIELD;
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.UPDATED_FIELD;
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.VOTES_FIELD;
-import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.WATCHER_FIELD;
+import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.WATCHED_FIELD;
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.WORKLOGS_FIELD;
 import static me.glindholm.jira.rest.client.api.domain.IssueFieldId.WORKLOG_FIELD;
 import static me.glindholm.jira.rest.client.internal.json.JsonParseUtil.getStringKeys;
@@ -271,7 +271,8 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         }
 
 
-        final BasicWatchers watchers = getOptionalNestedField(issueJson, WATCHER_FIELD.id, watchersJsonParser);
+        final BasicWatchers watched = getOptionalNestedField(issueJson, WATCHED_FIELD.id, watchersJsonParser);
+
         final TimeTracking timeTracking = getOptionalNestedField(issueJson, TIMETRACKING_FIELD.id, new TimeTrackingJsonParserV5());
 
         final Set<String> labels = Sets
@@ -285,7 +286,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
                 description, priority, resolution, attachments, reporter, assignee, creationDate, updateDate,
                 dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
                 transitionsUri, issueLinks,
-                votes, worklogs, watchers, expandos, subtasks, changelog, operations, labels);
+                votes, worklogs, watched, expandos, subtasks, changelog, operations, labels);
     }
 
     private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) {

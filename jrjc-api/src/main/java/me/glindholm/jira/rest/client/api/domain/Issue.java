@@ -41,7 +41,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
                 + ", components=" + components + ", summary=" + summary + ", description=" + description + ", reporter=" + reporter + ", assignee=" + assignee
                 + ", resolution=" + resolution + ", issueFields=" + issueFields + ", creationDate=" + creationDate + ", updateDate=" + updateDate + ", dueDate="
                 + dueDate + ", priority=" + priority + ", votes=" + votes + ", fixVersions=" + fixVersions + ", affectedVersions=" + affectedVersions
-                + ", comments=" + comments + ", issueLinks=" + issueLinks + ", attachments=" + attachments + ", worklogs=" + worklogs + ", watchers=" + watchers
+                + ", comments=" + comments + ", issueLinks=" + issueLinks + ", attachments=" + attachments + ", worklogs=" + worklogs + ", watchers=" + watched
                 + ", timeTracking=" + timeTracking + ", subtasks=" + subtasks + ", changelog=" + changelog + ", operations=" + operations + ", labels=" + labels
                 + "]";
     }
@@ -53,7 +53,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
             @Nullable TimeTracking timeTracking, Collection<IssueField> issueFields, Collection<Comment> comments,
             @Nullable URI transitionsUri,
             @Nullable Collection<IssueLink> issueLinks,
-            BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watchers, Iterable<String> expandos,
+            BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watched, Iterable<String> expandos,
             @Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, @Nullable Operations operations,
             Set<String> labels) {
         super(self, key, id);
@@ -76,7 +76,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
         this.issueLinks = issueLinks;
         this.votes = votes;
         this.worklogs = worklogs;
-        this.watchers = watchers;
+        this.watched = watched;
         this.fixVersions = fixVersions;
         this.affectedVersions = affectedVersions;
         this.components = components;
@@ -121,7 +121,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
     private final Collection<Attachment> attachments;
 
     private final Collection<Worklog> worklogs;
-    private final BasicWatchers watchers;
+    private final BasicWatchers watched;
 
     @Nullable
     private final TimeTracking timeTracking;
@@ -132,6 +132,8 @@ public class Issue extends BasicIssue implements ExpandableResource {
     @Nullable
     private final Operations operations;
     private final Set<String> labels;
+
+    private Watchers watchers;
 
     public Status getStatus() {
         return status;
@@ -279,7 +281,7 @@ public class Issue extends BasicIssue implements ExpandableResource {
      * @return <code>null</code> when watching is disabled in JIRA
      */
     @Nullable
-    public BasicWatchers getWatchers() {
+    public Watchers getWatchers() {
         return watchers;
     }
 
@@ -367,5 +369,17 @@ public class Issue extends BasicIssue implements ExpandableResource {
     @Override
     protected String getToStringHelper() {
         return toString();
+    }
+
+    public void setWatchers(Watchers watchers) {
+        this.watchers = watchers;
+    }
+
+    public Collection<IssueField> getIssueFields() {
+        return issueFields;
+    }
+
+    public BasicWatchers getWatched() {
+        return watched;
     }
 }
