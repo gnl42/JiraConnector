@@ -22,6 +22,7 @@ package me.glindholm.jira.rest.client.api.domain.input;
  * @since v1.0
  */
 public class CannotTransformValueException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("unused")
     public CannotTransformValueException() {

@@ -15,28 +15,6 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
-import com.atlassian.httpclient.api.DefaultResponseTransformation;
-import com.atlassian.httpclient.api.EntityBuilder;
-import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.Response;
-import com.atlassian.httpclient.api.ResponsePromise;
-import com.atlassian.httpclient.api.ResponseTransformation;
-import com.google.common.collect.ImmutableList;
-import io.atlassian.util.concurrent.Promise;
-import me.glindholm.jira.rest.client.api.RestClientException;
-import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
-import me.glindholm.jira.rest.client.internal.json.JsonArrayParser;
-import me.glindholm.jira.rest.client.internal.json.JsonObjectParser;
-import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
-import me.glindholm.jira.rest.client.internal.json.JsonParser;
-import me.glindholm.jira.rest.client.internal.json.gen.JsonGenerator;
-
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +24,30 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import com.atlassian.httpclient.api.DefaultResponseTransformation;
+import com.atlassian.httpclient.api.EntityBuilder;
+import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.httpclient.api.Response;
+import com.atlassian.httpclient.api.ResponsePromise;
+import com.atlassian.httpclient.api.ResponseTransformation;
+import com.google.common.collect.ImmutableList;
+
+import io.atlassian.util.concurrent.Promise;
+import me.glindholm.jira.rest.client.api.RestClientException;
+import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
+import me.glindholm.jira.rest.client.internal.json.JsonArrayParser;
+import me.glindholm.jira.rest.client.internal.json.JsonObjectParser;
+import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
+import me.glindholm.jira.rest.client.internal.json.JsonParser;
+import me.glindholm.jira.rest.client.internal.json.gen.JsonGenerator;
 
 /**
  * This is a base class for asynchronous REST clients.
@@ -71,7 +73,7 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     protected final <I, T> Promise<T> postAndParse(final URI uri, I entity, final JsonGenerator<I> jsonGenerator,
-                                                   final JsonObjectParser<T> parser) {
+            final JsonObjectParser<T> parser) {
         final ResponsePromise responsePromise = client.newRequest(uri)
                 .setEntity(toEntity(jsonGenerator, entity))
                 .post();
@@ -110,7 +112,7 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     protected final <I, T> Promise<T> putAndParse(final URI uri, I entity, final JsonGenerator<I> jsonGenerator,
-                                                  final JsonObjectParser<T> parser) {
+            final JsonObjectParser<T> parser) {
         final ResponsePromise responsePromise = client.newRequest(uri)
                 .setEntity(toEntity(jsonGenerator, entity))
                 .put();
@@ -141,13 +143,13 @@ public abstract class AbstractAsynchronousRestClient {
 
     @SuppressWarnings("unchecked")
     protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final JsonParser<?, T> parser) {
-        final ResponseHandler<T> responseHandler = new ResponseHandler<T>() {
+        final ResponseHandler<T> responseHandler = new ResponseHandler<>() {
             @Override
             public T handle(Response response) throws JSONException, IOException {
                 final String body = response.getEntity();
-                return (T) (parser instanceof JsonObjectParser ?
-                        ((JsonObjectParser) parser).parse(new JSONObject(body)) :
-                        ((JsonArrayParser) parser).parse(new JSONArray(body)));
+                return parser instanceof JsonObjectParser ?
+                        ((JsonObjectParser<T>) parser).parse(new JSONObject(body)) :
+                            ((JsonArrayParser<T>) parser).parse(new JSONArray(body));
             }
         };
         return callAndParse(responsePromise, responseHandler);
@@ -168,7 +170,7 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     private static <T> Function<Response, T> errorFunction() {
-        return new Function<Response, T>() {
+        return new Function<>() {
             @Override
             public T apply(Response response) {
                 try {
@@ -183,14 +185,12 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     private static <T> Function<Response, T> toFunction(final ResponseHandler<T> responseHandler) {
-        return new Function<Response, T>() {
+        return new Function<>() {
             @Override
             public T apply(@Nullable Response input) {
                 try {
                     return responseHandler.handle(input);
-                } catch (JSONException e) {
-                    throw new RestClientException(e);
-                } catch (IOException e) {
+                } catch (JSONException | IOException e) {
                     throw new RestClientException(e);
                 }
             }
@@ -198,7 +198,7 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     private static <T> Function<Response, T> constant(final T value) {
-        return new Function<Response, T>() {
+        return new Function<>() {
             @Override
             public T apply(Response input) {
                 return value;

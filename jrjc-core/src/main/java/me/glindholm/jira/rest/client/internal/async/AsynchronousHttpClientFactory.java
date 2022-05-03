@@ -52,7 +52,7 @@ public class AsynchronousHttpClientFactory {
 
         final DefaultHttpClientFactory defaultHttpClientFactory = new DefaultHttpClientFactory(new NoOpEventPublisher(),
                 new RestClientApplicationProperties(serverUri),
-                new ThreadLocalContextManager() {
+                new ThreadLocalContextManager<Object>() {
             @Override
             public Object getThreadLocalContext() {
                 return null;

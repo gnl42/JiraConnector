@@ -32,6 +32,7 @@ import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
  * @since v0.1
  */
 public class RestClientException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     private final Optional<Integer> statusCode;
     private final Collection<ErrorCollection> errorCollections;

@@ -16,27 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.util.Iterator;
+import java.util.Map;
 
-import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
-import me.glindholm.jira.rest.client.api.domain.FieldSchema;
-import me.glindholm.jira.rest.client.api.domain.StandardOperation;
-
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import javax.annotation.Nullable;
-import java.net.URI;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.Maps;
+
+import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 
 /**
  * JSON parser that produces Map of String =&gt; CimFieldInfo

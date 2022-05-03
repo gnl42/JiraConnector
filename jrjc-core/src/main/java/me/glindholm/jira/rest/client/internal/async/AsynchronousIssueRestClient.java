@@ -15,6 +15,30 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
+import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
+
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ws.rs.core.UriBuilder;
+
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import com.atlassian.httpclient.apache.httpcomponents.MultiPartEntityBuilder;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Message;
@@ -22,6 +46,7 @@ import com.atlassian.httpclient.api.ResponsePromise;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
@@ -33,7 +58,6 @@ import me.glindholm.jira.rest.client.api.domain.BulkOperationResult;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.CimProject;
 import me.glindholm.jira.rest.client.api.domain.Comment;
-import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Page;
@@ -67,29 +91,6 @@ import me.glindholm.jira.rest.client.internal.json.gen.IssuesInputJsonGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.WorklogInputJsonGenerator;
 
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
-import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
-
 /**
  * Asynchronous implementation of IssueRestClient.
  *
@@ -114,7 +115,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     private ServerInfo serverInfo;
 
     public AsynchronousIssueRestClient(final URI baseUri, final HttpClient client, final SessionRestClient sessionRestClient,
-                                       final MetadataRestClient metadataRestClient) {
+            final MetadataRestClient metadataRestClient) {
         super(client);
         this.baseUri = baseUri;
         this.sessionRestClient = sessionRestClient;
@@ -182,7 +183,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull final String projectIdOrKey, @Nullable final Long startAt,
-                                                                        @Nullable final Integer maxResults) {
+            @Nullable final Integer maxResults) {
         final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/createmeta/" + projectIdOrKey + "/issuetypes");
         addPagingParameters(uriBuilder, startAt, maxResults);
 
@@ -191,7 +192,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@Nonnull final String projectIdOrKey, @Nonnull final String issueTypeId,
-                                                                @Nullable final Long startAt, @Nullable final Integer maxResults) {
+            @Nullable final Long startAt, @Nullable final Integer maxResults) {
         final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path("issue/createmeta/" + projectIdOrKey + "/issuetypes/" + issueTypeId);
         addPagingParameters(uriBuilder, startAt, maxResults);
 
@@ -214,8 +215,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public Promise<Void> deleteIssue(String issueKey, boolean deleteSubtasks) {
-        return delete(UriBuilder.fromUri(baseUri).path("issue").path(issueKey)
-                .queryParam("deleteSubtasks", deleteSubtasks).build());
+        return delete(UriBuilder.fromUri(baseUri).path("issue").path(issueKey).queryParam("deleteSubtasks", deleteSubtasks).build());
     }
 
     @Override
@@ -230,31 +230,29 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public Promise<Iterable<Transition>> getTransitions(final URI transitionsUri) {
-        return callAndParse(client().newRequest(transitionsUri).get(),
-                (ResponseHandler<Iterable<Transition>>) response -> {
-                    final JSONObject jsonObject = new JSONObject(response.getEntity());
-                    if (jsonObject.has("transitions")) {
-                        return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
-                    } else {
-                        final Collection<Transition> transitions = new ArrayList<>(jsonObject.length());
-                        @SuppressWarnings("unchecked") final Iterator<String> iterator = jsonObject.keys();
-                        while (iterator.hasNext()) {
-                            final String key = iterator.next();
-                            try {
-                                final int id = Integer.parseInt(key);
-                                final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
-                                transitions.add(transition);
-                            } catch (JSONException e) {
-                                throw new RestClientException(e);
-                            } catch (NumberFormatException e) {
-                                throw new RestClientException(
-                                        "Transition id should be an integer, but found [" + key + "]", e);
-                            }
-                        }
-                        return transitions;
+        return callAndParse(client().newRequest(transitionsUri).get(), (ResponseHandler<Iterable<Transition>>) response -> {
+            final JSONObject jsonObject = new JSONObject(response.getEntity());
+            if (jsonObject.has("transitions")) {
+                return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
+            } else {
+                final Collection<Transition> transitions = new ArrayList<>(jsonObject.length());
+                @SuppressWarnings("unchecked")
+                final Iterator<String> iterator = jsonObject.keys();
+                while (iterator.hasNext()) {
+                    final String key = iterator.next();
+                    try {
+                        final int id = Integer.parseInt(key);
+                        final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
+                        transitions.add(transition);
+                    } catch (JSONException e) {
+                        throw new RestClientException(e);
+                    } catch (NumberFormatException e) {
+                        throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
                     }
                 }
-        );
+                return transitions;
+            }
+        });
     }
 
     @Override
@@ -279,13 +277,10 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
             }
             if (transitionInput.getComment() != null) {
                 if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
-                    jsonObject.put("update", new JSONObject().put("comment",
-                            new JSONArray().put(new JSONObject().put("add",
-                                    new CommentJsonGenerator(getVersionInfo())
-                                            .generate(transitionInput.getComment())))));
+                    jsonObject.put("update", new JSONObject().put("comment", new JSONArray()
+                            .put(new JSONObject().put("add", new CommentJsonGenerator(getVersionInfo()).generate(transitionInput.getComment())))));
                 } else {
-                    jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo())
-                            .generate(transitionInput.getComment()));
+                    jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo()).generate(transitionInput.getComment()));
                 }
             }
             final Iterable<FieldInput> fields = transitionInput.getFields();
@@ -357,37 +352,23 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public Promise<Void> addAttachment(final URI attachmentsUri, final InputStream inputStream, final String filename) {
-        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
-                .setLaxMode()
-                .setCharset(UTF_8)
-                .addBinaryBody(
-                        FILE_BODY_TYPE,
-                        inputStream,
-                        DEFAULT_BINARY,
-                        filename);
+        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create().setLaxMode().setCharset(UTF_8).addBinaryBody(FILE_BODY_TYPE, inputStream,
+                DEFAULT_BINARY, filename);
         return postAttachments(attachmentsUri, entityBuilder);
     }
 
     @Override
     public Promise<Void> addAttachments(final URI attachmentsUri, final AttachmentInput... attachments) {
-        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
-                .setLaxMode()
-                .setCharset(UTF_8);
+        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create().setLaxMode().setCharset(UTF_8);
         for (final AttachmentInput attachmentInput : attachments) {
-            entityBuilder.addBinaryBody(
-                    FILE_BODY_TYPE,
-                    attachmentInput.getInputStream(),
-                    DEFAULT_BINARY,
-                    attachmentInput.getFilename());
+            entityBuilder.addBinaryBody(FILE_BODY_TYPE, attachmentInput.getInputStream(), DEFAULT_BINARY, attachmentInput.getFilename());
         }
         return postAttachments(attachmentsUri, entityBuilder);
     }
 
     @Override
     public Promise<Void> addAttachments(final URI attachmentsUri, final File... files) {
-        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create()
-                .setLaxMode()
-                .setCharset(UTF_8);
+        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create().setLaxMode().setCharset(UTF_8);
         for (final File file : files) {
             entityBuilder.addBinaryBody(FILE_BODY_TYPE, file);
         }
@@ -406,16 +387,21 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public Promise<Void> addWorklog(URI worklogUri, WorklogInput worklogInput) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(worklogUri)
-                .queryParam("adjustEstimate", worklogInput.getAdjustEstimate().restValue);
+        final UriBuilder uriBuilder = UriBuilder.fromUri(worklogUri).queryParam("adjustEstimate", worklogInput.getAdjustEstimate().restValue);
 
         switch (worklogInput.getAdjustEstimate()) {
-            case NEW:
-                uriBuilder.queryParam("newEstimate", Strings.nullToEmpty(worklogInput.getAdjustEstimateValue()));
-                break;
-            case MANUAL:
-                uriBuilder.queryParam("reduceBy", Strings.nullToEmpty(worklogInput.getAdjustEstimateValue()));
-                break;
+        case NEW:
+            uriBuilder.queryParam("newEstimate", Strings.nullToEmpty(worklogInput.getAdjustEstimateValue()));
+            break;
+        case MANUAL:
+            uriBuilder.queryParam("reduceBy", Strings.nullToEmpty(worklogInput.getAdjustEstimateValue()));
+            break;
+        case AUTO: // FIXME What should we do?
+            break;
+        case LEAVE: // FIXME What should we do?
+            break;
+        default: // FIXME What should we do?
+            break;
         }
 
         return post(uriBuilder.build(), worklogInput, new WorklogInputJsonGenerator());
@@ -431,11 +417,8 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     private Promise<Void> postAttachments(final URI attachmentsUri, final MultipartEntityBuilder multipartEntityBuilder) {
-        final ResponsePromise responsePromise = client()
-                .newRequest(attachmentsUri)
-                .setEntity(new MultiPartEntityBuilder(multipartEntityBuilder.build()))
-                .setHeader("X-Atlassian-Token", "nocheck")
-                .post();
+        final ResponsePromise responsePromise = client().newRequest(attachmentsUri).setEntity(new MultiPartEntityBuilder(multipartEntityBuilder.build()))
+                .setHeader("X-Atlassian-Token", "nocheck").post();
         return call(responsePromise);
     }
 

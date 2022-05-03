@@ -31,6 +31,7 @@ import me.glindholm.jira.rest.client.api.IssueRestClient;
  * @since v1.0
  */
 public class CimProject extends BasicProject {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

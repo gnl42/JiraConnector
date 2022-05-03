@@ -16,13 +16,13 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import java.util.Map;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
-
-import java.util.Map;
 
 /**
  * Json Generator for ComplexIssueInputFieldValue

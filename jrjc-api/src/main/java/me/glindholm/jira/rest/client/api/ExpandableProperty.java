@@ -66,7 +66,7 @@ public class ExpandableProperty<T> {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ExpandableProperty) {
-            ExpandableProperty that = (ExpandableProperty) obj;
+            ExpandableProperty<T> that = (ExpandableProperty<T>) obj;
             return Objects.equals(this.size, that.size)
                     && Objects.equals(this.items, that.items);
         }

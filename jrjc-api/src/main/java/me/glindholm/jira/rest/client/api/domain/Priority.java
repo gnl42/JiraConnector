@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
  * @since v0.1
  */
 public class Priority extends BasicPriority {
+    private static final long serialVersionUID = 1L;
+
     @Override
     public String toString() {
         return "Priority [statusColor=" + statusColor + ", description=" + description + ", iconUrl=" + iconUrl + ", " + super.toString() + "]";

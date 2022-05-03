@@ -49,7 +49,7 @@ public class BulkOperationResult<T> {
     @Override
     public boolean equals(final Object obj) {
         if (obj instanceof BulkOperationResult) {
-            final BulkOperationResult that = (BulkOperationResult) obj;
+            final BulkOperationResult<T> that = (BulkOperationResult<T>) obj;
             return Objects.equals(this.issues, that.issues)
                     && Objects.equals(this.errors, that.errors);
         }

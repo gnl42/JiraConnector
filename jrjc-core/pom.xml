@@ -96,7 +96,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
-			<version>4.4.15</version>
 			<artifactId>httpcore-nio</artifactId>
 		</dependency>
 		<dependency>
@@ -113,12 +112,6 @@
 			<groupId>io.atlassian.fugue</groupId>
 			<artifactId>fugue</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
 		</dependency>
 
 		<dependency>
