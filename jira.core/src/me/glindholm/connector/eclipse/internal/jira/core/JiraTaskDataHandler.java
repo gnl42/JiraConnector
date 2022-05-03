@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
@@ -858,8 +858,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
             return ""; //$NON-NLS-1$
         }
         StringReader stringReader = new StringReader(text);
-        HTML2TextReader html2TextReader = new HTML2TextReader(stringReader);
-        try {
+        try (HTML2TextReader html2TextReader = new HTML2TextReader(stringReader)) {
             char[] chars = new char[text.length()];
             int len = html2TextReader.read(chars, 0, text.length());
             if (len == -1) {
@@ -1248,7 +1247,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
             JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
             if (!client.getCache().hasDetails()) {
-                client.getCache().refreshDetails(new SubProgressMonitor(monitor, 1));
+                client.getCache().refreshDetails(SubMonitor.convert(monitor, 1));
             }
 
             TaskAttribute projectAttribute = parentTaskData.getRoot().getAttribute(TaskAttribute.PRODUCT);

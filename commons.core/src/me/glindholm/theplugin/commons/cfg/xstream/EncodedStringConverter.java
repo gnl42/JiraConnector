@@ -25,19 +25,22 @@ import me.glindholm.theplugin.commons.util.StringUtil;
 
 public class EncodedStringConverter implements Converter {
 
-	public boolean canConvert(Class clazz) {
-		return clazz.equals(String.class);
-	}
+    @Override
+    public boolean canConvert(Class clazz) {
+        return clazz.equals(String.class);
+    }
 
-	public void marshal(Object value, HierarchicalStreamWriter writer,
-			MarshallingContext context) {
-		String string = (String) value;
-		writer.setValue(StringUtil.encode(string));
-	}
+    @Override
+    public void marshal(Object value, HierarchicalStreamWriter writer,
+            MarshallingContext context) {
+        String string = (String) value;
+        writer.setValue(StringUtil.encode(string));
+    }
 
-	public Object unmarshal(HierarchicalStreamReader reader,
-			UnmarshallingContext context) {
-		return StringUtil.decode(reader.getValue());
-	}
+    @Override
+    public Object unmarshal(HierarchicalStreamReader reader,
+            UnmarshallingContext context) {
+        return StringUtil.decode(reader.getValue());
+    }
 
 }

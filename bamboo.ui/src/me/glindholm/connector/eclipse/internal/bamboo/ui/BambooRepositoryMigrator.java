@@ -11,13 +11,13 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.ui;
 
+import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
+
 import me.glindholm.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 import me.glindholm.connector.eclipse.internal.commons.ui.CategoryAddingRepositoryMigrator;
 
-import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
-
 public class BambooRepositoryMigrator extends CategoryAddingRepositoryMigrator {
-	public BambooRepositoryMigrator() {
-		super(BambooCorePlugin.CONNECTOR_KIND, IRepositoryConstants.CATEGORY_BUILD);
-	}
+    public BambooRepositoryMigrator() {
+        super(BambooCorePlugin.CONNECTOR_KIND, IRepositoryConstants.CATEGORY_BUILD);
+    }
 }

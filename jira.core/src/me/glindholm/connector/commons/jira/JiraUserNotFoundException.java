@@ -21,5 +21,9 @@ package me.glindholm.connector.commons.jira;
  * Time: 6:22:09 PM
  */
 public class JiraUserNotFoundException extends Exception {
-	public JiraUserNotFoundException(String message) { super(message); }	
+    private static final long serialVersionUID = 1L;
+
+    public JiraUserNotFoundException(String message) {
+        super(message);
+    }
 }

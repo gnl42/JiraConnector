@@ -89,9 +89,9 @@ import me.glindholm.jira.rest.client.internal.async.AsynchronousJiraRestClientFa
  */
 public class JiraRestClientAdapter {
 
-    private static final Integer TIMEOUT_CONNECTION_IN_MS = new Integer(60 * 1000); // one minute
+    private static final Integer TIMEOUT_CONNECTION_IN_MS = 60 * 1000; // one minute
 
-    private static final Integer TIMEOUT_READ_IN_MS = new Integer(10 * 60 * 1000); // ten minutes
+    private static final Integer TIMEOUT_READ_IN_MS = 10 * 60 * 1000; // ten minutes
 
     private static final String CONNECT_TIMEOUT_EXCEPTION = "org.apache.commons.httpclient.ConnectTimeoutException"; //$NON-NLS-1$
 

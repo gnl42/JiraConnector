@@ -11,78 +11,74 @@
 
 package me.glindholm.connector.eclipse.internal.commons.ui;
 
+import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.internal.tasks.core.ITasksCoreConstants;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.UIJob;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Set;
 
 public class MigrateToSecureStorageJob extends UIJob {
 
-	public static class MutexRule implements ISchedulingRule {
-		public boolean isConflicting(ISchedulingRule rule) {
-			return rule == this;
-		}
+    public static class MutexRule implements ISchedulingRule {
+        @Override
+        public boolean isConflicting(ISchedulingRule rule) {
+            return rule == this;
+        }
 
-		public boolean contains(ISchedulingRule rule) {
-			return rule == this;
-		}
-	}
+        @Override
+        public boolean contains(ISchedulingRule rule) {
+            return rule == this;
+        }
+    }
 
-	private final String kind;
+    private final String kind;
 
-	private static final MutexRule mutex = new MutexRule();
+    private static final MutexRule mutex = new MutexRule();
 
-	public MigrateToSecureStorageJob(String kind) {
-		super("Migrating passwords to secure storage");
-		this.kind = kind;
+    public MigrateToSecureStorageJob(String kind) {
+        super("Migrating passwords to secure storage");
+        this.kind = kind;
 
-		setRule(mutex);
-	}
+        setRule(mutex);
+    }
 
-	@Override
-	public IStatus runInUIThread(IProgressMonitor monitor) {
-		Set<TaskRepository> repos = TasksUiPlugin.getRepositoryManager().getRepositories(kind);
-		if (repos != null) {
-			for (TaskRepository repo : repos) {
-				migrateToSecureStorage(repo);
-			}
-		}
-		return Status.OK_STATUS;
-	}
+    @Override
+    public IStatus runInUIThread(IProgressMonitor monitor) {
+        Set<TaskRepository> repos = TasksUiPlugin.getRepositoryManager().getRepositories(kind);
+        if (repos != null) {
+            for (TaskRepository repo : repos) {
+                migrateToSecureStorage(repo);
+            }
+        }
+        return Status.OK_STATUS;
+    }
 
-	public static boolean migrateToSecureStorage(TaskRepository repository) {
-		if (!"local".equals(repository.getUrl())) { //$NON-NLS-1$
-				AuthenticationCredentials creds = repository.getCredentials(AuthenticationType.REPOSITORY), httpCreds = repository.getCredentials(AuthenticationType.HTTP), proxyCreds = repository.getCredentials(AuthenticationType.PROXY);
-				boolean savePassword = repository.getSavePassword(AuthenticationType.REPOSITORY), httpSavePassword = repository.getSavePassword(AuthenticationType.HTTP), proxySavePassword = repository.getSavePassword(AuthenticationType.PROXY);
+    public static boolean migrateToSecureStorage(TaskRepository repository) {
+        if (!"local".equals(repository.getUrl())) { //$NON-NLS-1$
+            AuthenticationCredentials creds = repository.getCredentials(AuthenticationType.REPOSITORY), httpCreds = repository.getCredentials(AuthenticationType.HTTP), proxyCreds = repository.getCredentials(AuthenticationType.PROXY);
+            boolean savePassword = repository.getSavePassword(AuthenticationType.REPOSITORY), httpSavePassword = repository.getSavePassword(AuthenticationType.HTTP), proxySavePassword = repository.getSavePassword(AuthenticationType.PROXY);
 
-				if (creds != null) {
-					repository.setCredentials(AuthenticationType.REPOSITORY, creds, savePassword);
-				}
+            if (creds != null) {
+                repository.setCredentials(AuthenticationType.REPOSITORY, creds, savePassword);
+            }
 
-				if (httpCreds != null) {
-					repository.setCredentials(AuthenticationType.HTTP, httpCreds, httpSavePassword);
-				}
+            if (httpCreds != null) {
+                repository.setCredentials(AuthenticationType.HTTP, httpCreds, httpSavePassword);
+            }
 
-				if (proxyCreds != null) {
-					repository.setCredentials(AuthenticationType.PROXY, proxyCreds, proxySavePassword);
-				}
+            if (proxyCreds != null) {
+                repository.setCredentials(AuthenticationType.PROXY, proxyCreds, proxySavePassword);
+            }
 
-				return true;
-		}
-		return false;
-	}
+            return true;
+        }
+        return false;
+    }
 
 }

@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector for Eclipse Core
+Automatic-Module-Name: JiraConnector for Eclipse Core
 Bundle-SymbolicName: me.glindholm.connector.eclipse.core;singleton:=true
 Bundle-Version: 4.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11

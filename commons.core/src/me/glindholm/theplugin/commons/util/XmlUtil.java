@@ -15,13 +15,14 @@
  */
 package me.glindholm.theplugin.commons.util;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.List;
 
 /**
  * @author Jacek Jaroczynski
@@ -50,7 +51,6 @@ public final class XmlUtil {
 		return writer.toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	public static List<Element> getChildElements(Element node, String childName) {
 		return node.getChildren(childName);
 	}

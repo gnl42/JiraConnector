@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
@@ -121,10 +121,10 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         table.setHeaderVisible(true);
         table.setLayout(new GridLayout());
         GridDataFactory.fillDefaults()
-                .align(SWT.FILL, SWT.FILL)
-                .grab(true, false)
-                .hint(500, SWT.DEFAULT)
-                .applyTo(table);
+        .align(SWT.FILL, SWT.FILL)
+        .grab(true, false)
+        .hint(500, SWT.DEFAULT)
+        .applyTo(table);
 
         for (int i = 0; i < columns.length; i++) {
             TableColumn column = new TableColumn(table, SWT.LEFT, i);
@@ -138,7 +138,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         attachmentsViewer.setColumnProperties(columns);
         ColumnViewerToolTipSupport.enableFor(attachmentsViewer, ToolTip.NO_RECREATE);
 
-        attachmentsViewer.setSorter(new ViewerSorter() {
+        attachmentsViewer.setComparator(new ViewerComparator() {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
                 JiraWorkLog item1 = (JiraWorkLog) e1;
@@ -157,7 +157,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
             }
         });
 
-        List<JiraWorkLog> workLogList = new ArrayList<JiraWorkLog>(logEntries.size());
+        List<JiraWorkLog> workLogList = new ArrayList<>(logEntries.size());
         for (TaskAttribute attribute : logEntries) {
             JiraWorkLog log = new WorkLogConverter().createFrom(attribute);
             workLogList.add(log);
@@ -165,6 +165,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         attachmentsViewer.setContentProvider(new ArrayContentProvider());
         attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider(getJiraTimeFormat()));
         attachmentsViewer.addOpenListener(new IOpenListener() {
+            @Override
             public void open(OpenEvent event) {
                 TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(),
                         getModel().getTask()));
@@ -176,6 +177,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(true);
         menuManager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 // TODO provide popup menu
             }
@@ -314,8 +316,9 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         final String timeSpendTooltip = getTimeSpentTooltipText();
 
         toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Time_Spent);
-        timeSpentText = toolkit.createText(newWorkLogComposite, getJiraTimeFormat().format(new Long(newWorkDoneAmount)));
+        timeSpentText = toolkit.createText(newWorkLogComposite, getJiraTimeFormat().format(Long.valueOf(newWorkDoneAmount)));
         timeSpentText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 setTimeSpendDecorator();
                 timeSpentText.setToolTipText(timeSpendTooltip);
@@ -325,10 +328,10 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
         timeSpentText.setToolTipText(timeSpendTooltip);
         GridDataFactory.fillDefaults()
-                .span(2, 1)
-                .hint(135, SWT.DEFAULT)
-                .align(SWT.BEGINNING, SWT.FILL)
-                .applyTo(timeSpentText);
+        .span(2, 1)
+        .hint(135, SWT.DEFAULT)
+        .align(SWT.BEGINNING, SWT.FILL)
+        .applyTo(timeSpentText);
 
         toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Start_Date);
         dateWidget = new DateTime(newWorkLogComposite, SWT.DATE);
@@ -394,6 +397,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         final Text descriptionText = toolkit.createText(newWorkLogComposite, newWorkDoneDescription, SWT.WRAP
                 | SWT.MULTI | SWT.V_SCROLL);
         descriptionText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
                 newWorkDoneDescription = descriptionText.getText();
                 addWorkLogToModel();

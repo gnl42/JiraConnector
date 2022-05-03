@@ -11,6 +11,9 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.ui.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -19,33 +22,34 @@ import me.glindholm.connector.eclipse.internal.bamboo.ui.model.TestCaseElement;
 import me.glindholm.connector.eclipse.internal.bamboo.ui.model.TestRoot;
 import me.glindholm.connector.eclipse.internal.bamboo.ui.model.TestSuiteElement;
 
-import java.util.ArrayList;
-
 public class TestSessionTableContentProvider implements IStructuredContentProvider {
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	}
+    @Override
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+    }
 
-	public Object[] getElements(Object inputElement) {
-		ArrayList all = new ArrayList();
-		addAll(all, (TestRoot) inputElement);
-		return all.toArray();
-	}
+    @Override
+    public Object[] getElements(Object inputElement) {
+        List<ITestElement> all = new ArrayList<>();
+        addAll(all, (TestRoot) inputElement);
+        return all.toArray();
+    }
 
-	private void addAll(ArrayList all, TestSuiteElement suite) {
-		ITestElement[] children = suite.getChildren();
-		for (ITestElement element : children) {
-			if (element instanceof TestSuiteElement) {
-				if (((TestSuiteElement) element).getSuiteStatus().isError()) {
-					all.add(element); // add failed suite to flat list too
-				}
-				addAll(all, (TestSuiteElement) element);
-			} else if (element instanceof TestCaseElement) {
-				all.add(element);
-			}
-		}
-	}
+    private void addAll(List<ITestElement> all, TestSuiteElement suite) {
+        ITestElement[] children = suite.getChildren();
+        for (ITestElement element : children) {
+            if (element instanceof TestSuiteElement) {
+                if (((TestSuiteElement) element).getSuiteStatus().isError()) {
+                    all.add(element); // add failed suite to flat list too
+                }
+                addAll(all, (TestSuiteElement) element);
+            } else if (element instanceof TestCaseElement) {
+                all.add(element);
+            }
+        }
+    }
 
-	public void dispose() {
-	}
+    @Override
+    public void dispose() {
+    }
 }
