@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Atlassian Commons Tests Dependencies
-Bundle-SymbolicName: me.glindholm.connector.commons.tests.dependencies;singleton:=true
+Bundle-SymbolicName: tests.dependencies;singleton:=true
 Bundle-Version: 0.5.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
