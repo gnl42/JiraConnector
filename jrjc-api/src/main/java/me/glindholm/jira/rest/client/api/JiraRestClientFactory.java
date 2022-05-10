@@ -16,9 +16,10 @@
 
 package me.glindholm.jira.rest.client.api;
 
-import com.atlassian.httpclient.api.HttpClient;
-
 import java.net.URI;
+import java.net.URISyntaxException;
+
+import com.atlassian.httpclient.api.HttpClient;
 
 /**
  * Factory for producing JIRA REST com.atlassian.jira.client with selected authentication handler
@@ -32,8 +33,9 @@ public interface JiraRestClientFactory {
      *
      * @param serverUri             - URI of JIRA instance.
      * @param authenticationHandler - requests authenticator.
+     * @throws URISyntaxException
      */
-    JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler);
+    JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) throws URISyntaxException;
 
     /**
      * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will conduct a
@@ -43,7 +45,7 @@ public interface JiraRestClientFactory {
      * @param username  - username of the user used to log in to JIRA.
      * @param password  - password of the user used to log in to JIRA.
      */
-    JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password);
+    JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) throws URISyntaxException;
 
     /**
      * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will call the provided
@@ -52,7 +54,7 @@ public interface JiraRestClientFactory {
      * @param serverUri             - URI or JIRA instance.
      * @param authenticationHandler - Authentication handler.
      */
-    JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler);
+    JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler) throws URISyntaxException;
 
     /**
      * Creates an instance of JiraRestClient with given Atlassian HttpClient.
@@ -61,5 +63,5 @@ public interface JiraRestClientFactory {
      * @param serverUri  - URI of JIRA instance.
      * @param httpClient - instance of Atlassian HttpClient.
      */
-    JiraRestClient create(final URI serverUri, final HttpClient httpClient);
+    JiraRestClient create(final URI serverUri, final HttpClient httpClient) throws URISyntaxException;
 }

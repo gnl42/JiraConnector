@@ -15,7 +15,11 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
-import javax.ws.rs.core.UriBuilder;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.http.client.utils.URIBuilder;
 
 import me.glindholm.jira.rest.client.api.AuditRestClient;
 import me.glindholm.jira.rest.client.api.ComponentRestClient;
@@ -30,10 +34,6 @@ import me.glindholm.jira.rest.client.api.SearchRestClient;
 import me.glindholm.jira.rest.client.api.SessionRestClient;
 import me.glindholm.jira.rest.client.api.UserRestClient;
 import me.glindholm.jira.rest.client.api.VersionRestClient;
-
-import java.io.IOException;
-import java.net.URI;
-
 /**
  * Asynchronous implementation of JIRA REST com.atlassian.jira.rest.client.
  *
@@ -55,9 +55,9 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
     private final DisposableHttpClient httpClient;
     private final AuditRestClient auditRestClient;
 
-    public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) {
-        final URI baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
-
+    public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) throws URISyntaxException {
+        //         baseUri = UriBuilder.fromUri(serverUri).path("/rest/api/latest").build();
+        final URI baseUri = new URIBuilder(serverUri).setPath("/rest/api/latest").build();
         this.httpClient = httpClient;
         metadataRestClient = new AsynchronousMetadataRestClient(baseUri, httpClient);
         sessionRestClient = new AsynchronousSessionRestClient(serverUri, httpClient);
@@ -138,7 +138,7 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
         try {
             httpClient.destroy();
         } catch (Exception e) {
-            throw (e instanceof IOException) ? ((IOException) e) : new IOException(e);
+            throw e instanceof IOException ? (IOException) e : new IOException(e);
         }
     }
 }

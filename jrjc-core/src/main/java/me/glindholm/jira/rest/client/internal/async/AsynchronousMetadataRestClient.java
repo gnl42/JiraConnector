@@ -15,6 +15,10 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+
+import javax.ws.rs.core.UriBuilder;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import io.atlassian.util.concurrent.Promise;
@@ -35,9 +39,6 @@ import me.glindholm.jira.rest.client.internal.json.PriorityJsonParser;
 import me.glindholm.jira.rest.client.internal.json.ResolutionJsonParser;
 import me.glindholm.jira.rest.client.internal.json.ServerInfoJsonParser;
 import me.glindholm.jira.rest.client.internal.json.StatusJsonParser;
-
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 /**
  * Asynchronous implementation of MetadataRestClient.

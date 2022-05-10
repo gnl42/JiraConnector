@@ -15,14 +15,15 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.JiraRestClientFactory;
 import me.glindholm.jira.rest.client.auth.BasicHttpAuthenticationHandler;
-
-import java.net.URI;
 
 /**
  * Serves asynchronous implementations of the JiraRestClient.
@@ -32,24 +33,24 @@ import java.net.URI;
 public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory {
 
     @Override
-    public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) {
+    public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) throws URISyntaxException {
         final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory()
                 .createClient(serverUri, authenticationHandler);
         return new AsynchronousJiraRestClient(serverUri, httpClient);
     }
 
     @Override
-    public JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) {
+    public JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) throws URISyntaxException {
         return create(serverUri, new BasicHttpAuthenticationHandler(username, password));
     }
 
     @Override
-    public JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler) {
+    public JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler) throws URISyntaxException {
         return create(serverUri, authenticationHandler);
     }
 
     @Override
-    public JiraRestClient create(final URI serverUri, final HttpClient httpClient) {
+    public JiraRestClient create(final URI serverUri, final HttpClient httpClient) throws URISyntaxException {
         final DisposableHttpClient disposableHttpClient = new AsynchronousHttpClientFactory().createClient(httpClient);
         return new AsynchronousJiraRestClient(serverUri, disposableHttpClient);
     }
