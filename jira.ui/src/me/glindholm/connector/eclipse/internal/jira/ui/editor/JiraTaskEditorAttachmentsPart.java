@@ -12,6 +12,8 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.editor;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,8 +62,6 @@ import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-
-import com.jakewharton.byteunits.DecimalByteUnit;
 
 import me.glindholm.connector.eclipse.internal.jira.ui.JiraImages;
 
@@ -173,7 +173,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
                     text = element.getFileName();
                     break;
                 case 1:
-                    text = DecimalByteUnit.format(element.getLength());
+                    text = humanReadableByteCountSI(element.getLength());
                     break;
                 case 2:
                     text = element.getAuthor().getPersonId();
@@ -212,6 +212,26 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, true);
         Menu menu = menuManager.createContextMenu(attachmentsTable);
         attachmentsTable.setMenu(menu);
+    }
+
+    /**
+     * @author Andreas Lundblad
+     * @see <a href=
+     *      "https://programming.guide/java/formatting-byte-size-to-human-readable-format.html">Formatting
+     *      byte size to human readable format</a>
+     * @param bytes
+     * @return
+     */
+    public static String humanReadableByteCountSI(long bytes) {
+        if (-1000 < bytes && bytes < 1000) {
+            return bytes + " B";
+        }
+        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
+        while (bytes <= -999_950 || bytes >= 999_950) {
+            bytes /= 1000;
+            ci.next();
+        }
+        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
     }
 
     private void createButtons(Composite attachmentsComposite, FormToolkit toolkit) {

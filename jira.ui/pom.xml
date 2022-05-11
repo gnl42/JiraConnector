@@ -24,7 +24,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>byteunits</includeArtifactIds>
+                            <includeArtifactIds></includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -37,10 +37,5 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>com.jakewharton.byteunits</groupId>
-            <artifactId>byteunits</artifactId>
-            <version>0.9.1</version>
-        </dependency>
     </dependencies>
 </project>
