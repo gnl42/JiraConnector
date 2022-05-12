@@ -16,10 +16,12 @@
 
 package me.glindholm.jira.rest.client.api;
 
-import io.atlassian.util.concurrent.Promise;
-import me.glindholm.jira.rest.client.api.domain.Group;
+import java.net.URISyntaxException;
 
 import javax.annotation.Nullable;
+
+import io.atlassian.util.concurrent.Promise;
+import me.glindholm.jira.rest.client.api.domain.Group;
 
 /**
  * The me.glindholm.jira.rest.client.api handling group resources.
@@ -29,19 +31,23 @@ import javax.annotation.Nullable;
 public interface GroupRestClient {
 
     /**
-     * Find all groups, limited by the system property "jira.ajax.autocomplete.limit"
+     * Find all groups, limited by the system property
+     * "jira.ajax.autocomplete.limit"
      *
      * @return list of groups
+     * @throws URISyntaxException
      */
-    Promise<Iterable<Group>> findGroups();
+    Promise<Iterable<Group>> findGroups() throws URISyntaxException;
 
     /**
-     * Returns groups with substrings matching a given query.
-     * This is mainly for use with the group picker, so the returned groups contain html to be used as picker suggestions.
-     * The groups are also wrapped in a single response object that also contains a header for use in the picker,
-     * specifically showing X of Y matching groups.
+     * Returns groups with substrings matching a given query. This is mainly for use
+     * with the group picker, so the returned groups contain html to be used as
+     * picker suggestions. The groups are also wrapped in a single response object
+     * that also contains a header for use in the picker, specifically showing X of
+     * Y matching groups.
      *
-     * The number of groups returned is limited by the system property "jira.ajax.autocomplete.limit"
+     * The number of groups returned is limited by the system property
+     * "jira.ajax.autocomplete.limit"
      *
      * The groups will be unique and sorted.
      *
@@ -50,7 +56,9 @@ public interface GroupRestClient {
      * @param maxResults The maximum number of groups to return
      * @param userName   A user name
      * @return list of groups that match the search string
+     * @throws URISyntaxException
      */
-    Promise<Iterable<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName);
+    Promise<Iterable<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
+            throws URISyntaxException;
 
 }

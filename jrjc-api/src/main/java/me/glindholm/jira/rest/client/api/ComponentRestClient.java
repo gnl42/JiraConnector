@@ -16,12 +16,14 @@
 
 package me.glindholm.jira.rest.client.api;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.annotation.Nullable;
+
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.Component;
 import me.glindholm.jira.rest.client.api.domain.input.ComponentInput;
-
-import javax.annotation.Nullable;
-import java.net.URI;
 
 /**
  * The me.glindholm.jira.rest.client.api handling component resources
@@ -40,7 +42,7 @@ public interface ComponentRestClient {
 
     Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput);
 
-    Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri);
+    Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri) throws URISyntaxException;
 
-    Promise<Integer> getComponentRelatedIssuesCount(URI componentUri);
+    Promise<Integer> getComponentRelatedIssuesCount(URI componentUri) throws URISyntaxException;
 }

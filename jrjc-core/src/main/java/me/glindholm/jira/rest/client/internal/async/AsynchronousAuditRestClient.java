@@ -1,5 +1,12 @@
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.annotation.Nonnull;
+
+import org.apache.hc.core5.net.URIBuilder;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import io.atlassian.util.concurrent.Promise;
@@ -10,11 +17,6 @@ import me.glindholm.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import me.glindholm.jira.rest.client.internal.json.AuditRecordsJsonParser;
 import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
 import me.glindholm.jira.rest.client.internal.json.gen.AuditRecordInputJsonGenerator;
-
-import javax.annotation.Nonnull;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-
 /**
  * @since v2.0
  */
@@ -29,45 +31,44 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<AuditRecordsData> getAuditRecords(final AuditRecordSearchInput input) {
+    public Promise<AuditRecordsData> getAuditRecords(final AuditRecordSearchInput input) throws URISyntaxException {
         return getAndParse(createSearchPathFromInput(
                 input == null ? new AuditRecordSearchInput(null, null, null, null, null) : input), auditRecordsParser);
     }
 
-    protected UriBuilder createPathBuilder() {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri);
-        uriBuilder.path("auditing/record");
+    protected URIBuilder createPathBuilder() {
+        final URIBuilder uriBuilder = new URIBuilder(baseUri);
+        uriBuilder.appendPath("auditing/record");
         return uriBuilder;
     }
 
     @Override
-    public void addAuditRecord(@Nonnull final AuditRecordInput record) {
+    public void addAuditRecord(@Nonnull final AuditRecordInput record) throws URISyntaxException {
         post(createPathBuilder().build(), record, new AuditRecordInputJsonGenerator()).claim();
     }
 
-    private URI createSearchPathFromInput(final AuditRecordSearchInput input) {
-        final UriBuilder uriBuilder = createPathBuilder();
-
+    private URI createSearchPathFromInput(final AuditRecordSearchInput input) throws URISyntaxException {
+        final URIBuilder uriBuilder = createPathBuilder();
         if (input.getOffset() != null) {
-            uriBuilder.queryParam("offset", input.getOffset());
+            uriBuilder.addParameter("offset", String.valueOf(input.getOffset()));
         }
 
         if (input.getLimit() != null) {
-            uriBuilder.queryParam(("limit"), input.getLimit());
+            uriBuilder.addParameter("limit", String.valueOf(input.getLimit()));
         }
 
         if (input.getTextFilter() != null) {
-            uriBuilder.queryParam(("filter"), input.getTextFilter());
+            uriBuilder.addParameter("filter", input.getTextFilter());
         }
 
         if (input.getFrom() != null) {
             final String fromIsoString = JsonParseUtil.JIRA_DATE_TIME_FORMATTER.print(input.getFrom());
-            uriBuilder.queryParam(("from"), fromIsoString);
+            uriBuilder.addParameter("from", fromIsoString);
         }
 
         if (input.getTo() != null) {
             final String toIsoString = JsonParseUtil.JIRA_DATE_TIME_FORMATTER.print(input.getTo());
-            uriBuilder.queryParam(("to"), toIsoString);
+            uriBuilder.addParameter("to", toIsoString);
         }
 
         try {

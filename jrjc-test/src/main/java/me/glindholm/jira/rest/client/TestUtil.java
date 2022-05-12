@@ -24,7 +24,7 @@ import java.util.Collections;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+import org.apache.http.client.utils.URIBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
@@ -50,7 +50,7 @@ public class TestUtil {
     public static Iterable<OperationLink> EMPTY_LINKS = Collections.emptyList();
 
     public static URI toUri(String str) {
-        return UriBuilder.fromUri(str).build();
+        return new URIBuilder(str).build();
     }
 
     public static DateTime toDateTime(String isoDateTimeSt) {

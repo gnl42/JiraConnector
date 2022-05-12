@@ -15,13 +15,14 @@
  */
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.hc.core5.net.URIBuilder;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.RoleActor;
-
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 
 public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
@@ -33,7 +34,7 @@ public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
     }
 
     @Override
-    public RoleActor parse(final JSONObject json) throws JSONException {
+    public RoleActor parse(final JSONObject json) throws JSONException, URISyntaxException {
         // Workaround for a bug in API. Id field should not be optional, unfortunately it is not returned for an admin role actor.
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final String displayName = json.getString("displayName");
@@ -42,10 +43,10 @@ public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
         return new RoleActor(id, displayName, type, name, parseAvatarUrl(json));
     }
 
-    private URI parseAvatarUrl(final JSONObject json) {
+    private URI parseAvatarUrl(final JSONObject json) throws URISyntaxException {
         final String pathToAvatar = JsonParseUtil.getOptionalString(json, "avatarUrl");
         if (pathToAvatar != null) {
-            final URI avatarUri = UriBuilder.fromUri(pathToAvatar).build();
+            final URI avatarUri = new URIBuilder(pathToAvatar).build();
             return avatarUri.isAbsolute() ? avatarUri : baseJiraUri.resolve(pathToAvatar);
         } else {
             return null;

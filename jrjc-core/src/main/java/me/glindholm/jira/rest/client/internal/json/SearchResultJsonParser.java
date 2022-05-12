@@ -16,6 +16,9 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+import java.util.Collections;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -23,12 +26,10 @@ import org.codehaus.jettison.json.JSONObject;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.SearchResult;
 
-import java.util.Collections;
-
 public class SearchResultJsonParser implements JsonObjectParser<SearchResult> {
 
     @Override
-    public SearchResult parse(JSONObject json) throws JSONException {
+    public SearchResult parse(JSONObject json) throws JSONException, URISyntaxException {
         final int startAt = json.getInt("startAt");
         final int maxResults = json.getInt("maxResults");
         final int total = json.getInt("total");

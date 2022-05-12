@@ -16,6 +16,8 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -25,8 +27,8 @@ import me.glindholm.jira.rest.client.api.domain.Group;
  * @since v5.1.0
  */
 public class GroupsJsonParser implements JsonObjectParser<Iterable<Group>> {
-	@Override
-	public Iterable<Group> parse(JSONObject json) throws JSONException {
-		return JsonParseUtil.parseJsonArray(json.optJSONArray("groups"), new GroupJsonParser());
-	}
+    @Override
+    public Iterable<Group> parse(JSONObject json) throws JSONException, URISyntaxException {
+        return JsonParseUtil.parseJsonArray(json.optJSONArray("groups"), new GroupJsonParser());
+    }
 }

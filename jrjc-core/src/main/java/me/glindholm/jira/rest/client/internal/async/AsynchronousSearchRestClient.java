@@ -15,11 +15,26 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import static me.glindholm.jira.rest.client.api.IssueRestClient.Expandos.NAMES;
+import static me.glindholm.jira.rest.client.api.IssueRestClient.Expandos.SCHEMA;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.net.URIBuilder;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import com.atlassian.httpclient.api.HttpClient;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
 import me.glindholm.jira.rest.client.api.RestClientException;
@@ -30,19 +45,6 @@ import me.glindholm.jira.rest.client.internal.json.FilterJsonParser;
 import me.glindholm.jira.rest.client.internal.json.GenericJsonArrayParser;
 import me.glindholm.jira.rest.client.internal.json.SearchResultJsonParser;
 
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
-
-import static me.glindholm.jira.rest.client.api.IssueRestClient.Expandos.NAMES;
-import static me.glindholm.jira.rest.client.api.IssueRestClient.Expandos.SCHEMA;
-
-import java.net.URI;
-import java.util.Set;
-
 /**
  * Asynchronous implementation of SearchRestClient.
  *
@@ -50,7 +52,7 @@ import java.util.Set;
  */
 public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient implements SearchRestClient {
 
-    private static final Function<IssueRestClient.Expandos, String> EXPANDO_TO_PARAM = new Function<IssueRestClient.Expandos, String>() {
+    private static final Function<IssueRestClient.Expandos, String> EXPANDO_TO_PARAM = new Function<>() {
         @Override
         public String apply(IssueRestClient.Expandos from) {
             return from.name().toLowerCase();
@@ -75,19 +77,21 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     private final URI favouriteUri;
     private final URI baseUri;
 
-    public AsynchronousSearchRestClient(final URI baseUri, final HttpClient asyncHttpClient) {
+    public AsynchronousSearchRestClient(final URI baseUri, final HttpClient asyncHttpClient) throws URISyntaxException {
         super(asyncHttpClient);
         this.baseUri = baseUri;
-        this.searchUri = UriBuilder.fromUri(baseUri).path(SEARCH_URI_PREFIX).build();
-        this.favouriteUri = UriBuilder.fromUri(baseUri).path(FILTER_FAVOURITE_PATH).build();
+        this.searchUri = new URIBuilder(baseUri).appendPath(SEARCH_URI_PREFIX).build();
+        this.favouriteUri = new URIBuilder(baseUri).appendPath(FILTER_FAVOURITE_PATH).build();
     }
 
     @Override
-    public Promise<SearchResult> searchJql(@Nullable String jql) {
+    public Promise<SearchResult> searchJql(@Nullable String jql) throws URISyntaxException {
         return searchJql(jql, null, null, null);
     }
 
-    public Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable Set<String> fields) {
+    @Override
+    public Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable Set<String> fields)
+            throws URISyntaxException {
         final Iterable<String> expandosValues = Iterables.transform(ImmutableList.of(SCHEMA, NAMES), EXPANDO_TO_PARAM);
         final String notNullJql = StringUtils.defaultString(jql);
         if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
@@ -97,13 +101,14 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
         }
     }
 
-    private Promise<SearchResult> searchJqlImplGet(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql, @Nullable Set<String> fields) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(searchUri)
-                .queryParam(JQL_ATTRIBUTE, jql)
-                .queryParam(EXPAND_ATTRIBUTE, Joiner.on(",").join(expandosValues));
+    private Promise<SearchResult> searchJqlImplGet(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql,
+            @Nullable Set<String> fields) throws URISyntaxException {
+        final URIBuilder uriBuilder = new URIBuilder(searchUri)
+                .addParameter(JQL_ATTRIBUTE, jql)
+                .addParameter(EXPAND_ATTRIBUTE, Joiner.on(",").join(expandosValues));
 
         if (fields != null) {
-            uriBuilder.queryParam(FIELDS_ATTRIBUTE, Joiner.on(",").join(fields));
+            uriBuilder.addParameter(FIELDS_ATTRIBUTE, Joiner.on(",").join(fields));
         }
         addOptionalQueryParam(uriBuilder, MAX_RESULTS_ATTRIBUTE, maxResults);
         addOptionalQueryParam(uriBuilder, START_AT_ATTRIBUTE, startAt);
@@ -111,9 +116,9 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
         return getAndParse(uriBuilder.build(), searchResultJsonParser);
     }
 
-    private void addOptionalQueryParam(final UriBuilder uriBuilder, final String key, final Object... values) {
-        if (values != null && values.length > 0 && values[0] != null) {
-            uriBuilder.queryParam(key, values);
+    private void addOptionalQueryParam(final URIBuilder uriBuilder, final String key, final Object value) {
+        if (value != null) {
+            uriBuilder.addParameter(key, String.valueOf(value));
         }
     }
 
@@ -122,9 +127,9 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
 
         try {
             postEntity.put(JQL_ATTRIBUTE, jql)
-                    .put(EXPAND_ATTRIBUTE, ImmutableList.copyOf(expandosValues))
-                    .putOpt(START_AT_ATTRIBUTE, startAt)
-                    .putOpt(MAX_RESULTS_ATTRIBUTE, maxResults);
+            .put(EXPAND_ATTRIBUTE, ImmutableList.copyOf(expandosValues))
+            .putOpt(START_AT_ATTRIBUTE, startAt)
+            .putOpt(MAX_RESULTS_ATTRIBUTE, maxResults);
 
             if (fields != null) {
                 postEntity.put(FIELDS_ATTRIBUTE, fields); // putOpt doesn't work with collections
@@ -146,7 +151,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     }
 
     @Override
-    public Promise<Filter> getFilter(long id) {
-        return getFilter(UriBuilder.fromUri(baseUri).path(String.format(FILTER_PATH_FORMAT, id)).build());
+    public Promise<Filter> getFilter(long id) throws URISyntaxException {
+        return getFilter(new URIBuilder(baseUri).appendPath(String.format(FILTER_PATH_FORMAT, id)).build());
     }
 }

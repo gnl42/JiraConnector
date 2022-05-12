@@ -16,14 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.CustomFieldOption;
-
-import java.net.URI;
-import java.util.Collections;
 
 /**
  * JSON parser for CustomFieldOption
@@ -35,18 +36,18 @@ public class CustomFieldOptionJsonParser implements JsonObjectParser<CustomField
     private final JsonArrayParser<Iterable<CustomFieldOption>> childrenParser = GenericJsonArrayParser.create(this);
 
     @Override
-    public CustomFieldOption parse(JSONObject json) throws JSONException {
+    public CustomFieldOption parse(JSONObject json) throws JSONException, URISyntaxException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final long id = json.getLong("id");
         final String value = json.getString("value");
 
         final JSONArray childrenArray = json.optJSONArray("children");
-        final Iterable<CustomFieldOption> children = (childrenArray != null)
+        final Iterable<CustomFieldOption> children = childrenArray != null
                 ? childrenParser.parse(childrenArray)
-                : Collections.<CustomFieldOption>emptyList();
+                        : Collections.<CustomFieldOption>emptyList();
 
         final JSONObject childObject = json.optJSONObject("child");
-        final CustomFieldOption child = (childObject != null) ? parse(childObject) : null;
+        final CustomFieldOption child = childObject != null ? parse(childObject) : null;
 
         return new CustomFieldOption(id, selfUri, value, children, child);
     }

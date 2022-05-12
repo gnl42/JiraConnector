@@ -15,16 +15,19 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.annotation.Nullable;
+
+import org.apache.hc.core5.net.URIBuilder;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.GroupRestClient;
 import me.glindholm.jira.rest.client.api.domain.Group;
 import me.glindholm.jira.rest.client.internal.json.GroupsJsonParser;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 /**
  * Asynchronous implementation of GroupRestClient.
@@ -51,13 +54,14 @@ public class AsynchronousGroupRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Iterable<Group>> findGroups() {
+    public Promise<Iterable<Group>> findGroups() throws URISyntaxException {
         return findGroups(null, null, null, null);
     }
 
     @Override
-    public Promise<Iterable<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName) {
-         UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(GROUPS_URI_PREFIX).path(PICKER_URI_PREFIX);
+    public Promise<Iterable<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
+            throws URISyntaxException {
+        URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(GROUPS_URI_PREFIX).appendPath(PICKER_URI_PREFIX);
 
         addOptionalQueryParam(uriBuilder, QUERY_ATTRIBUTE, query);
         addOptionalQueryParam(uriBuilder, EXCLUDE_ATTRIBUTE, exclude);
@@ -68,9 +72,9 @@ public class AsynchronousGroupRestClient extends AbstractAsynchronousRestClient 
         return getAndParse(groupsUri, groupsJsonParser);
     }
 
-    private void addOptionalQueryParam(final UriBuilder uriBuilder, final String key, final Object value) {
+    private static void addOptionalQueryParam(final URIBuilder uriBuilder, final String key, final Object value) {
         if (value != null) {
-            uriBuilder.queryParam(key, value);
+            uriBuilder.addParameter(key, String.valueOf(value));
         }
     }
 }

@@ -16,17 +16,18 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+import java.util.Collection;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.Transition;
 
-import java.util.Collection;
-
 public class TransitionJsonParser {
     private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
 
-    public Transition parse(JSONObject json, int id) throws JSONException {
+    public Transition parse(JSONObject json, int id) throws JSONException, URISyntaxException {
         final String name = json.getString("name");
         final Collection<Transition.Field> fields = JsonParseUtil.parseJsonArray(json.getJSONArray("fields"),
                 transitionFieldJsonParser);

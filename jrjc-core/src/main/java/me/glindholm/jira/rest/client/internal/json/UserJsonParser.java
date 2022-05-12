@@ -17,6 +17,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,7 +33,7 @@ import me.glindholm.jira.rest.client.api.domain.User;
 
 public class UserJsonParser implements JsonObjectParser<User> {
     @Override
-    public User parse(JSONObject json) throws JSONException {
+    public User parse(JSONObject json) throws JSONException, URISyntaxException {
         final BasicUser basicUser = Preconditions.checkNotNull(JsonParseUtil.parseBasicUser(json));
         final String timezone = JsonParseUtil.getOptionalString(json, "timeZone");
         final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");

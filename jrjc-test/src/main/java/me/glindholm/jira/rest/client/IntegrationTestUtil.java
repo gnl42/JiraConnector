@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
+import org.apache.http.client.utils.URIBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -189,7 +189,7 @@ public class IntegrationTestUtil {
     }
 
     public static URI concat(URI uri, String path) {
-        return UriBuilder.fromUri(uri).path(path).build();
+        return new URIBuilder(uri).path(path).build();
     }
 
     public static URI resolveURI(URI relativeUri) {

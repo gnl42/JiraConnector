@@ -16,6 +16,11 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.Map;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -23,10 +28,6 @@ import org.codehaus.jettison.json.JSONObject;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.CimIssueType;
 import me.glindholm.jira.rest.client.api.domain.CimProject;
-
-import java.net.URI;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * JSON parser for CimProject
@@ -41,10 +42,10 @@ public class CimProjectJsonParser implements JsonObjectParser<CimProject> {
     private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
 
     @Override
-    public CimProject parse(final JSONObject json) throws JSONException {
+    public CimProject parse(final JSONObject json) throws JSONException, URISyntaxException {
         final BasicProject basicProject = basicProjectJsonParser.parse(json);
         final JSONArray issueTypesArray = json.optJSONArray("issuetypes");
-        final Iterable<CimIssueType> issueTypes = (issueTypesArray != null) ?
+        final Iterable<CimIssueType> issueTypes = issueTypesArray != null ?
                 issueTypesParser.parse(issueTypesArray) : Collections.<CimIssueType>emptyList();
 
         final Map<String, URI> avatarUris = JsonParseUtil.getAvatarUris(json.getJSONObject("avatarUrls"));

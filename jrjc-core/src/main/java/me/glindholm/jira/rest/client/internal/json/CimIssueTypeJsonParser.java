@@ -16,15 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.Map;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.CimIssueType;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * JSON parser for CimIssueType
@@ -37,11 +38,11 @@ public class CimIssueTypeJsonParser implements JsonObjectParser<CimIssueType> {
     final CimFieldsInfoMapJsonParser fieldsParser = new CimFieldsInfoMapJsonParser();
 
     @Override
-    public CimIssueType parse(final JSONObject json) throws JSONException {
+    public CimIssueType parse(final JSONObject json) throws JSONException, URISyntaxException {
         final IssueType issueType = issueTypeJsonParser.parse(json);
         final JSONObject jsonFieldsMap = json.optJSONObject("fields");
 
-        final Map<String, CimFieldInfo> fields = (jsonFieldsMap == null) ?
+        final Map<String, CimFieldInfo> fields = jsonFieldsMap == null ?
                 Collections.<String, CimFieldInfo>emptyMap() : fieldsParser.parse(jsonFieldsMap);
 
         return new CimIssueType(issueType.getSelf(), issueType.getId(), issueType.getName(),

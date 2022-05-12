@@ -16,11 +16,12 @@
 
 package me.glindholm.jira.rest.client.api;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.Project;
-
-import java.net.URI;
 
 /**
  * The me.glindholm.jira.rest.client.api handling project resources.
@@ -33,9 +34,11 @@ public interface ProjectRestClient {
      *
      * @param key unique key of the project (usually 2+ characters)
      * @return complete information about given project
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      */
-    Promise<Project> getProject(String key);
+    Promise<Project> getProject(String key) throws URISyntaxException;
 
     /**
      * Retrieves complete information about given project.
@@ -50,12 +53,14 @@ public interface ProjectRestClient {
     Promise<Project> getProject(URI projectUri);
 
     /**
-     * Returns all projects, which are visible for the currently logged in user. If no user is logged in, it returns the
-     * list of projects that are visible when using anonymous access.
+     * Returns all projects, which are visible for the currently logged in user. If
+     * no user is logged in, it returns the list of projects that are visible when
+     * using anonymous access.
      *
      * @return projects which the currently logged user can see
+     * @throws URISyntaxException
      * @since me.glindholm.jira.rest.client.api: 0.2, server 4.3
      */
-    Promise<Iterable<BasicProject>> getAllProjects();
+    Promise<Iterable<BasicProject>> getAllProjects() throws URISyntaxException;
 
 }

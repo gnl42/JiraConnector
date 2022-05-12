@@ -16,6 +16,8 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -28,7 +30,7 @@ public class OperationGroupJsonParser implements JsonObjectParser<OperationGroup
     final private OperationHeaderJsonParser headerJsonParser = new OperationHeaderJsonParser();
 
     @Override
-    public OperationGroup parse(final JSONObject json) throws JSONException {
+    public OperationGroup parse(final JSONObject json) throws JSONException, URISyntaxException {
         final String id = JsonParseUtil.getOptionalString(json, "id");
         final Iterable<OperationLink> links = JsonParseUtil.parseJsonArray(json.getJSONArray("links"), linkJsonParser);
         final Iterable<OperationGroup> groups = JsonParseUtil.parseJsonArray(json.getJSONArray("groups"), this);

@@ -15,15 +15,16 @@
  */
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-
-import java.util.ArrayList;
 
 public class GenericJsonArrayParser<T> implements JsonArrayParser<Iterable<T>> {
 
     public static <K> GenericJsonArrayParser<K> create(JsonObjectParser<K> jsonParser) {
-        return new GenericJsonArrayParser<K>(jsonParser);
+        return new GenericJsonArrayParser<>(jsonParser);
     }
 
     private final JsonObjectParser<T> jsonParser;
@@ -33,8 +34,8 @@ public class GenericJsonArrayParser<T> implements JsonArrayParser<Iterable<T>> {
     }
 
     @Override
-    public Iterable<T> parse(JSONArray json) throws JSONException {
-        ArrayList<T> res = new ArrayList<T>(json.length());
+    public Iterable<T> parse(JSONArray json) throws JSONException, URISyntaxException {
+        ArrayList<T> res = new ArrayList<>(json.length());
         for (int i = 0; i < json.length(); i++) {
             res.add(jsonParser.parse(json.getJSONObject(i)));
         }

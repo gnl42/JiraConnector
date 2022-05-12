@@ -15,6 +15,15 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.annotation.Nullable;
+
+import org.apache.hc.core5.net.URIBuilder;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import io.atlassian.util.concurrent.Promise;
@@ -26,13 +35,6 @@ import me.glindholm.jira.rest.client.internal.json.ComponentJsonParser;
 import me.glindholm.jira.rest.client.internal.json.JsonObjectParser;
 import me.glindholm.jira.rest.client.internal.json.gen.ComponentInputWithProjectKeyJsonGenerator;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-
 /**
  * Asynchronous implementation of ComponentRestClient.
  *
@@ -43,9 +45,9 @@ public class AsynchronousComponentRestClient extends AbstractAsynchronousRestCli
     private final ComponentJsonParser componentJsonParser = new ComponentJsonParser();
     private final URI componentUri;
 
-    public AsynchronousComponentRestClient(final URI baseUri, final HttpClient client) {
+    public AsynchronousComponentRestClient(final URI baseUri, final HttpClient client) throws URISyntaxException {
         super(client);
-        componentUri = UriBuilder.fromUri(baseUri).path("component").build();
+        componentUri = new URIBuilder(baseUri).appendPath("component").build();
     }
 
     @Override
@@ -66,17 +68,17 @@ public class AsynchronousComponentRestClient extends AbstractAsynchronousRestCli
     }
 
     @Override
-    public Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(componentUri);
+    public Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri) throws URISyntaxException {
+        final URIBuilder uriBuilder = new URIBuilder(componentUri);
         if (moveIssueToComponentUri != null) {
-            uriBuilder.queryParam("moveIssuesTo", moveIssueToComponentUri);
+            uriBuilder.addParameter("moveIssuesTo", String.valueOf(moveIssueToComponentUri));
         }
         return delete(uriBuilder.build());
     }
 
     @Override
-    public Promise<Integer> getComponentRelatedIssuesCount(URI componentUri) {
-        final URI relatedIssueCountsUri = UriBuilder.fromUri(componentUri).path("relatedIssueCounts").build();
+    public Promise<Integer> getComponentRelatedIssuesCount(URI componentUri) throws URISyntaxException {
+        final URI relatedIssueCountsUri = new URIBuilder(componentUri).appendPath("relatedIssueCounts").build();
         return getAndParse(relatedIssueCountsUri, new JsonObjectParser<Integer>() {
             @Override
             public Integer parse(JSONObject json) throws JSONException {

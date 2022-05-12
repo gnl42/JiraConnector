@@ -112,7 +112,6 @@ public class AsynchronousHttpClientFactory {
     /**
      * These properties are used to present JRJC as a User-Agent during http requests.
      */
-    @SuppressWarnings("deprecation")
     private static class RestClientApplicationProperties implements ApplicationProperties {
 
         private final String baseUrl;

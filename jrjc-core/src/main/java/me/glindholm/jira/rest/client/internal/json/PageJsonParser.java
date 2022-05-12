@@ -1,5 +1,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -14,7 +16,7 @@ public class PageJsonParser<T> implements JsonObjectParser<Page<T>> {
     }
 
     @Override
-    public Page<T> parse(JSONObject json) throws JSONException {
+    public Page<T> parse(JSONObject json) throws JSONException, URISyntaxException {
         final long start = json.getLong("startAt");
         final int size = json.getInt("maxResults");
         final long total = json.getLong("total");

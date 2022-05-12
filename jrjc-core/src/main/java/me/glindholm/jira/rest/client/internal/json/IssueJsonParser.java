@@ -45,6 +45,7 @@ import static me.glindholm.jira.rest.client.internal.json.JsonParseUtil.getStrin
 import static me.glindholm.jira.rest.client.internal.json.JsonParseUtil.parseOptionalJsonObject;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,8 +56,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
 
+import org.apache.hc.core5.net.URIBuilder;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -137,7 +138,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
 
     private <T> Collection<T> parseArray(final JSONObject jsonObject, final JsonWeakParser<T> jsonParser, final String arrayAttribute)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         //        String type = jsonObject.getString("type");
         //        final String name = jsonObject.getString("name");
         final JSONArray valueObject = jsonObject.optJSONArray(arrayAttribute);
@@ -152,14 +153,14 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     }
 
     private <T> Collection<T> parseOptionalArrayNotNullable(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         Collection<T> res = parseOptionalArray(json, jsonParser, path);
         return res == null ? Collections.<T>emptyList() : res;
     }
 
     @Nullable
     private <T> Collection<T> parseOptionalArray(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         final JSONArray jsonArray = JsonParseUtil.getNestedOptionalArray(json, path);
         if (jsonArray == null) {
             return null;
@@ -211,7 +212,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     }
 
     @Override
-    public Issue parse(final JSONObject issueJson) throws JSONException {
+    public Issue parse(final JSONObject issueJson) throws JSONException, URISyntaxException {
         final BasicIssue basicIssue = basicIssueJsonParser.parse(issueJson);
         final Iterable<String> expandos = parseExpandos(issueJson);
         final JSONObject jsonFields = issueJson.getJSONObject(FIELDS);
@@ -289,15 +290,15 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
                 votes, worklogs, watched, expandos, subtasks, changelog, operations, labels);
     }
 
-    private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) {
+    private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) throws URISyntaxException {
         return transitionsUriString != null
                 ? JsonParseUtil.parseURI(transitionsUriString)
-                        : UriBuilder.fromUri(selfUri).path("transitions").queryParam("expand", "transitions.fields").build();
+                : new URIBuilder(selfUri).appendPath("transitions").addParameter("expand", "transitions.fields").build();
     }
 
     @Nullable
     private <T> T getOptionalNestedField(final JSONObject s, final String fieldId, final JsonObjectParser<T> jsonParser)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         final JSONObject fieldJson = JsonParseUtil.getNestedOptionalObject(s, FIELDS, fieldId);
         // for fields like assignee (when unassigned) value attribute may be missing completely
         if (fieldJson != null) {

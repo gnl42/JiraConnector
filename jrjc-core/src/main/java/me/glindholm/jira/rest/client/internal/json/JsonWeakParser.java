@@ -16,8 +16,10 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+
 import org.codehaus.jettison.json.JSONException;
 
 interface JsonWeakParser<T> {
-    T parse(Object o) throws JSONException;
+    T parse(Object o) throws JSONException, URISyntaxException;
 }

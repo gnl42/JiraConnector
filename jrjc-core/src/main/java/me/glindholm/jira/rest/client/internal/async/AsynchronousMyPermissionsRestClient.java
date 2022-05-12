@@ -15,6 +15,11 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.hc.core5.net.URIBuilder;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import io.atlassian.util.concurrent.Promise;
@@ -22,9 +27,6 @@ import me.glindholm.jira.rest.client.api.MyPermissionsRestClient;
 import me.glindholm.jira.rest.client.api.domain.Permissions;
 import me.glindholm.jira.rest.client.api.domain.input.MyPermissionsInput;
 import me.glindholm.jira.rest.client.internal.json.PermissionsJsonParser;
-
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 public class AsynchronousMyPermissionsRestClient extends AbstractAsynchronousRestClient implements MyPermissionsRestClient {
     private static final String URI_PREFIX = "mypermissions";
@@ -37,25 +39,25 @@ public class AsynchronousMyPermissionsRestClient extends AbstractAsynchronousRes
     }
 
     @Override
-    public Promise<Permissions> getMyPermissions(final MyPermissionsInput permissionInput) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(URI_PREFIX);
+    public Promise<Permissions> getMyPermissions(final MyPermissionsInput permissionInput) throws URISyntaxException {
+        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(URI_PREFIX);
         addContextParams(uriBuilder, permissionInput);
         return getAndParse(uriBuilder.build(), permissionsJsonParser);
     }
 
-    private UriBuilder addContextParams(UriBuilder uriBuilder, MyPermissionsInput permissionInput) {
+    private URIBuilder addContextParams(URIBuilder uriBuilder, MyPermissionsInput permissionInput) {
         if (permissionInput != null) {
             if (permissionInput.getProjectKey() != null) {
-                uriBuilder.queryParam("projectKey", permissionInput.getProjectKey());
+                uriBuilder.addParameter("projectKey", permissionInput.getProjectKey());
             }
             if (permissionInput.getProjectId() != null) {
-                uriBuilder.queryParam("projectId", permissionInput.getProjectId());
+                uriBuilder.addParameter("projectId", String.valueOf(permissionInput.getProjectId()));
             }
             if (permissionInput.getIssueKey() != null) {
-                uriBuilder.queryParam("issueKey", permissionInput.getIssueKey());
+                uriBuilder.addParameter("issueKey", permissionInput.getIssueKey());
             }
             if (permissionInput.getIssueId() != null) {
-                uriBuilder.queryParam("issueId", permissionInput.getIssueId());
+                uriBuilder.addParameter("issueId", String.valueOf(permissionInput.getIssueId()));
             }
         }
         return uriBuilder;

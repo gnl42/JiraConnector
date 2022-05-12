@@ -16,8 +16,9 @@
 package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
-import javax.ws.rs.core.UriBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 
 import com.atlassian.httpclient.api.HttpClient;
 
@@ -73,14 +74,14 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     }
 
     @Override
-    public Promise<Iterable<IssueType>> getIssueTypes() {
-        final URI uri = UriBuilder.fromUri(baseUri).path("issuetype").build();
+    public Promise<Iterable<IssueType>> getIssueTypes() throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath("issuetype").build();
         return getAndParse(uri, issueTypesJsonParser);
     }
 
     @Override
-    public Promise<Iterable<IssuelinksType>> getIssueLinkTypes() {
-        final URI uri = UriBuilder.fromUri(baseUri).path("issueLinkType").build();
+    public Promise<Iterable<IssuelinksType>> getIssueLinkTypes() throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath("issueLinkType").build();
         return getAndParse(uri, issueLinkTypesJsonParser);
     }
 
@@ -90,8 +91,8 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     }
 
     @Override
-    public Promise<Iterable<Status>> getStatuses() {
-        final URI uri = UriBuilder.fromUri(baseUri).path("status").build();
+    public Promise<Iterable<Status>> getStatuses() throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath("status").build();
         return getAndParse(uri, statusesJsonParser);
     }
 
@@ -101,8 +102,8 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     }
 
     @Override
-    public Promise<Iterable<Priority>> getPriorities() {
-        final URI uri = UriBuilder.fromUri(baseUri).path("priority").build();
+    public Promise<Iterable<Priority>> getPriorities() throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath("priority").build();
         return getAndParse(uri, prioritiesJsonParser);
     }
 
@@ -112,20 +113,20 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     }
 
     @Override
-    public Promise<Iterable<Resolution>> getResolutions() {
-        final URI uri = UriBuilder.fromUri(baseUri).path("resolution").build();
+    public Promise<Iterable<Resolution>> getResolutions() throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath("resolution").build();
         return getAndParse(uri, resolutionsJsonParser);
     }
 
     @Override
-    public Promise<ServerInfo> getServerInfo() {
-        final URI serverInfoUri = UriBuilder.fromUri(baseUri).path(SERVER_INFO_RESOURCE).build();
+    public Promise<ServerInfo> getServerInfo() throws URISyntaxException {
+        final URI serverInfoUri = new URIBuilder(baseUri).appendPath(SERVER_INFO_RESOURCE).build();
         return getAndParse(serverInfoUri, serverInfoJsonParser);
     }
 
     @Override
-    public Promise<Iterable<Field>> getFields() {
-        final URI uri = UriBuilder.fromUri(baseUri).path("field").build();
+    public Promise<Iterable<Field>> getFields() throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath("field").build();
         return getAndParse(uri, fieldsJsonParser);
     }
 }

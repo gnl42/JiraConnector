@@ -15,28 +15,37 @@
  */
 package me.glindholm.jira.rest.client.api;
 
+import java.net.URISyntaxException;
+
+import javax.annotation.Nullable;
+
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.Permissions;
 import me.glindholm.jira.rest.client.api.domain.input.MyPermissionsInput;
 
-import javax.annotation.Nullable;
-
 public interface MyPermissionsRestClient {
     /**
-     * Returns permissions for current user and context defined by {@code permissionInput}
+     * Returns permissions for current user and context defined by
+     * {@code permissionInput}
      *
-     * @param permissionInput Permissions context ie. projectKey OR projectId OR issueKey OR issueId.
+     * @param permissionInput Permissions context ie. projectKey OR projectId OR
+     *                        issueKey OR issueId.
      *                        <ul>
-     *                        <li>When no context supplied (null) the project related permissions will return true
-     *                        if the user has that permission in ANY project</li>
-     *                        <li>If a project context is provided, project related permissions will return true
-     *                        if the user has the permissions in the specified project. For permissions
-     *                        that are determined using issue data (e.g Current Assignee), true will be returned
-     *                        if the user meets the permission criteria in ANY issue in that project</li>
-     *                        <li>If an issue context is provided, it will return whether or not the user
-     *                        has each permission in that specific issue</li>
+     *                        <li>When no context supplied (null) the project
+     *                        related permissions will return true if the user has
+     *                        that permission in ANY project</li>
+     *                        <li>If a project context is provided, project related
+     *                        permissions will return true if the user has the
+     *                        permissions in the specified project. For permissions
+     *                        that are determined using issue data (e.g Current
+     *                        Assignee), true will be returned if the user meets the
+     *                        permission criteria in ANY issue in that project</li>
+     *                        <li>If an issue context is provided, it will return
+     *                        whether or not the user has each permission in that
+     *                        specific issue</li>
      *                        </ul>
      * @return Permissions for user in the context
+     * @throws URISyntaxException
      */
-    Promise<Permissions> getMyPermissions(@Nullable MyPermissionsInput permissionInput);
+    Promise<Permissions> getMyPermissions(@Nullable MyPermissionsInput permissionInput) throws URISyntaxException;
 }

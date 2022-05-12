@@ -15,6 +15,13 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.annotation.Nullable;
+
+import org.apache.hc.core5.net.URIBuilder;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import io.atlassian.util.concurrent.Promise;
@@ -24,10 +31,6 @@ import me.glindholm.jira.rest.client.api.domain.input.UserInput;
 import me.glindholm.jira.rest.client.internal.json.UserJsonParser;
 import me.glindholm.jira.rest.client.internal.json.UsersJsonParser;
 import me.glindholm.jira.rest.client.internal.json.gen.UserInputJsonGenerator;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 /**
  * Asynchronous implementation of UserRestClient.
@@ -56,9 +59,9 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     }
 
     @Override
-    public Promise<User> getUser(final String username) {
-        final URI userUri = UriBuilder.fromUri(baseUri).path(USER_URI_PREFIX)
-                .queryParam("username", username).queryParam("expand", "groups").build();
+    public Promise<User> getUser(final String username) throws URISyntaxException {
+        final URI userUri = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX)
+                .addParameter("username", username).addParameter("expand", "groups").build();
         return getUser(userUri);
     }
 
@@ -68,8 +71,8 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     }
 
     @Override
-    public Promise<User> createUser(UserInput user) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(USER_URI_PREFIX);
+    public Promise<User> createUser(UserInput user) throws URISyntaxException {
+        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX);
         return postAndParse(uriBuilder.build(), user, new UserInputJsonGenerator(), userJsonParser);
     }
 
@@ -84,16 +87,15 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     }
 
     @Override
-    public Promise<Iterable<User>> findUsers(String username) {
+    public Promise<Iterable<User>> findUsers(String username) throws URISyntaxException {
         return findUsers(username, null, null, null, null);
     }
 
     @Override
     public Promise<Iterable<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults,
-            @Nullable Boolean includeActive, @Nullable Boolean includeInactive) {
+            @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException {
 
-         UriBuilder uriBuilder = UriBuilder.fromUri(baseUri).path(USER_URI_PREFIX).path(SEARCH_URI_PREFIX)
-                .queryParam(USERNAME_ATTRIBUTE, username);
+        URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX).appendPath(SEARCH_URI_PREFIX).addParameter(USERNAME_ATTRIBUTE, username);
 
         addOptionalQueryParam(uriBuilder, START_AT_ATTRIBUTE, startAt);
         addOptionalQueryParam(uriBuilder, MAX_RESULTS_ATTRIBUTE, maxResults);
@@ -104,9 +106,9 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
         return getAndParse(usersUri, usersJsonParser);
     }
 
-    private void addOptionalQueryParam(final UriBuilder uriBuilder, final String key, final Object value) {
+    private void addOptionalQueryParam(final URIBuilder uriBuilder, final String key, final Object value) {
         if (value != null) {
-            uriBuilder.queryParam(key, value);
+            uriBuilder.addParameter(key, String.valueOf(value));
         }
     }
 

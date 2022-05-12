@@ -15,18 +15,19 @@
  */
 package me.glindholm.jira.rest.client.internal.json;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
-
-import me.glindholm.jira.rest.client.api.domain.ProjectRole;
-import me.glindholm.jira.rest.client.api.domain.RoleActor;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.net.URI;
-import java.util.Collection;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
+
+import me.glindholm.jira.rest.client.api.domain.ProjectRole;
+import me.glindholm.jira.rest.client.api.domain.RoleActor;
 
 public class ProjectRoleJsonParser implements JsonObjectParser<ProjectRole> {
 
@@ -37,7 +38,7 @@ public class ProjectRoleJsonParser implements JsonObjectParser<ProjectRole> {
     }
 
     @Override
-    public ProjectRole parse(final JSONObject json) throws JSONException {
+    public ProjectRole parse(final JSONObject json) throws JSONException, URISyntaxException {
         final URI self = JsonParseUtil.getSelfUri(json);
         final long id = json.getLong("id");
         final String name = json.getString("name");

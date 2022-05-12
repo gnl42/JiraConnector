@@ -26,7 +26,7 @@ import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 
-import javax.ws.rs.core.UriBuilder;
+import org.apache.http.client.utils.URIBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -47,13 +47,13 @@ public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestC
 
     private void initUriFields() {
         try {
-            jiraUri = UriBuilder.fromUri(environmentData.getBaseUrl().toURI()).build();
+            jiraUri = new URIBuilder(environmentData.getBaseUrl().toURI()).build();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        jiraRestRootUri = UriBuilder.fromUri(jiraUri).path(
+        jiraRestRootUri = new URIBuilder(jiraUri).path(
                 IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? "/rest/api/2/" : "/rest/api/latest/").build();
-        jiraAuthRootUri = UriBuilder.fromUri(jiraUri).path("/rest/auth/latest/").build();
+        jiraAuthRootUri = new URIBuilder(jiraUri).path("/rest/auth/latest/").build();
     }
 
     protected void setAdmin() {

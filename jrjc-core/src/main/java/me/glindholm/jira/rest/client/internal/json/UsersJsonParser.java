@@ -16,6 +16,8 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
@@ -26,7 +28,7 @@ import me.glindholm.jira.rest.client.api.domain.User;
  */
 public class UsersJsonParser implements JsonArrayParser<Iterable<User>> {
     @Override
-    public Iterable<User> parse(JSONArray json) throws JSONException {
+    public Iterable<User> parse(JSONArray json) throws JSONException, URISyntaxException {
         return JsonParseUtil.parseJsonArray(json, new UserJsonParser());
     }
 }

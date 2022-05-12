@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
     private CimFieldsInfoJsonParser cimFieldsInfoJsonParser = new CimFieldsInfoJsonParser();
 
     @Override
-    public Map<String, CimFieldInfo> parse(JSONObject json) throws JSONException {
+    public Map<String, CimFieldInfo> parse(JSONObject json) throws JSONException, URISyntaxException {
         final Map<String, CimFieldInfo> res = Maps.newHashMapWithExpectedSize(json.length());
         final Iterator keysIterator = json.keys();
         while (keysIterator.hasNext()) {

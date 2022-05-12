@@ -19,6 +19,7 @@ package me.glindholm.jira.rest.client.api;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
@@ -54,10 +55,12 @@ public interface IssueRestClient {
      *
      * @param issue populated with data to create new issue
      * @return basicIssue with generated <code>issueKey</code>
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<BasicIssue> createIssue(IssueInput issue);
+    Promise<BasicIssue> createIssue(IssueInput issue) throws URISyntaxException;
 
     /**
      * Update an existing issue.
@@ -65,67 +68,88 @@ public interface IssueRestClient {
      * @param issueKey issue key (like TST-1, or JRA-9)
      * @param issue    populated with fields to set (no other verbs) in issue
      * @return Void
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      * @since me.glindholm.jira.rest.client.api 3.0, server 5.0
      */
-    Promise<Void> updateIssue(String issueKey, IssueInput issue);
+    Promise<Void> updateIssue(String issueKey, IssueInput issue) throws URISyntaxException;
 
     /**
      * Retrieves CreateIssueMetadata with specified filters.
      *
-     * @param options optional request configuration like filters and expandos. You may use {@link GetCreateIssueMetadataOptionsBuilder} to build them. Pass <code>null</code> if you don't want to set any option.
-     * @return List of {@link CimProject} describing projects, issue types and fields.
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @param options optional request configuration like filters and expandos. You
+     *                may use {@link GetCreateIssueMetadataOptionsBuilder} to build
+     *                them. Pass <code>null</code> if you don't want to set any
+     *                option.
+     * @return List of {@link CimProject} describing projects, issue types and
+     *         fields.
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Iterable<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options);
+    Promise<Iterable<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options) throws URISyntaxException;
 
     /**
      * Creates new issues in batch.
      *
      * @param issues populated with data to create new issue
-     * @return BulkOperationResult&lt;BasicIssues&gt; with generated <code>issueKey</code> and errors for failed issues
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @return BulkOperationResult&lt;BasicIssues&gt; with generated
+     *         <code>issueKey</code> and errors for failed issues
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      * @since me.glindholm.jira.rest.client.api 2.0, server 6.0
      */
 
-    Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues);
+    Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues) throws URISyntaxException;
 
-    Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults);
+    Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults)
+            throws URISyntaxException;
 
-    Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@Nonnull String projectIdOrKey, @Nonnull String issueTypeId, @Nullable Long startAt, @Nullable Integer maxResults);
+    Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@Nonnull String projectIdOrKey, @Nonnull String issueTypeId, @Nullable Long startAt,
+            @Nullable Integer maxResults) throws URISyntaxException;
 
     /**
      * Retrieves issue with selected issue key.
      *
      * @param issueKey issue key (like TST-1, or JRA-9)
      * @return issue with given <code>issueKey</code>
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      */
-    Promise<Issue> getIssue(String issueKey);
+    Promise<Issue> getIssue(String issueKey) throws URISyntaxException;
 
     /**
      * Retrieves issue with selected issue key, with specified additional expandos.
      *
      * @param issueKey issue key (like TST-1, or JRA-9)
-     * @param expand   additional expands. Currently CHANGELOG is the only supported expand that is not expanded by default.
+     * @param expand   additional expands. Currently CHANGELOG is the only supported
+     *                 expand that is not expanded by default.
      * @return issue with given <code>issueKey</code>
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      * @since 0.6
      */
-    Promise<Issue> getIssue(String issueKey, Iterable<Expandos> expand);
+    Promise<Issue> getIssue(String issueKey, Iterable<Expandos> expand) throws URISyntaxException;
 
     /**
-     * Deletes issue with given issueKey. You can set {@code deleteSubtasks} to delete issue with subtasks. If issue have
-     * subtasks and {@code deleteSubtasks} is set to false, then issue won't be deleted.
+     * Deletes issue with given issueKey. You can set {@code deleteSubtasks} to
+     * delete issue with subtasks. If issue have subtasks and {@code deleteSubtasks}
+     * is set to false, then issue won't be deleted.
      *
      * @param issueKey       issue key (like TST-1, or JRA-9)
-     * @param deleteSubtasks Determines if subtask of issue should be also deleted. If false, and issue has subtasks, then it
-     *                       won't be deleted.
+     * @param deleteSubtasks Determines if subtask of issue should be also deleted.
+     *                       If false, and issue has subtasks, then it won't be
+     *                       deleted.
      * @return Void
+     * @throws URISyntaxException
      * @since 2.0
      */
-    Promise<Void> deleteIssue(String issueKey, boolean deleteSubtasks);
+    Promise<Void> deleteIssue(String issueKey, boolean deleteSubtasks) throws URISyntaxException;
 
     /**
      * Retrieves complete information (if the caller has permission) about watchers for selected issue.
@@ -157,33 +181,45 @@ public interface IssueRestClient {
     Promise<Iterable<Transition>> getTransitions(URI transitionsUri);
 
     /**
-     * Retrieves complete information (if the caller has permission) about transitions available for the selected issue in its current state.
+     * Retrieves complete information (if the caller has permission) about
+     * transitions available for the selected issue in its current state.
      *
      * @param issue issue
-     * @return transitions about transitions available for the selected issue in its current state.
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @return transitions about transitions available for the selected issue in its
+     *         current state.
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      * @since v0.5
      */
-    Promise<Iterable<Transition>> getTransitions(Issue issue);
+    Promise<Iterable<Transition>> getTransitions(Issue issue) throws URISyntaxException;
 
     /**
      * Performs selected transition on selected issue.
      *
-     * @param transitionsUri  URI of transitions resource of selected issue. Usually obtained by calling <code>Issue.getTransitionsUri()</code>
-     * @param transitionInput data for this transition (fields modified, the comment, etc.)
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @param transitionsUri  URI of transitions resource of selected issue. Usually
+     *                        obtained by calling
+     *                        <code>Issue.getTransitionsUri()</code>
+     * @param transitionInput data for this transition (fields modified, the
+     *                        comment, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      */
-    Promise<Void> transition(URI transitionsUri, TransitionInput transitionInput);
+    Promise<Void> transition(URI transitionsUri, TransitionInput transitionInput) throws URISyntaxException;
 
     /**
      * Performs selected transition on selected issue.
      *
      * @param issue           selected issue
-     * @param transitionInput data for this transition (fields modified, the comment, etc.)
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @param transitionInput data for this transition (fields modified, the
+     *                        comment, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      * @since v0.5
      */
-    Promise<Void> transition(Issue issue, TransitionInput transitionInput);
+    Promise<Void> transition(Issue issue, TransitionInput transitionInput) throws URISyntaxException;
 
     /**
      * Casts your vote on the selected issue. Casting a vote on already votes issue by the caller, causes the exception.
@@ -212,10 +248,14 @@ public interface IssueRestClient {
     /**
      * Stops watching selected issue
      *
-     * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @param watchersUri URI of watchers resource for selected issue. Usually
+     *                    obtained by calling
+     *                    <code>Issue.getWatchers().getSelf()</code>
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      */
-    Promise<Void> unwatch(URI watchersUri);
+    Promise<Void> unwatch(URI watchersUri) throws URISyntaxException;
 
     /**
      * Adds selected person as a watcher for selected issue. You need to have permissions to do that (otherwise
@@ -228,23 +268,31 @@ public interface IssueRestClient {
     Promise<Void> addWatcher(final URI watchersUri, final String username);
 
     /**
-     * Removes selected person from the watchers list for selected issue. You need to have permissions to do that (otherwise
-     * the exception is thrown).
+     * Removes selected person from the watchers list for selected issue. You need
+     * to have permissions to do that (otherwise the exception is thrown).
      *
-     * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling <code>Issue.getWatchers().getSelf()</code>
+     * @param watchersUri URI of watchers resource for selected issue. Usually
+     *                    obtained by calling
+     *                    <code>Issue.getWatchers().getSelf()</code>
      * @param username    user to remove from the watcher list
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, etc.)
      */
-    Promise<Void> removeWatcher(final URI watchersUri, final String username);
+    Promise<Void> removeWatcher(final URI watchersUri, final String username) throws URISyntaxException;
 
     /**
-     * Creates link between two issues and adds a comment (optional) to the source issues.
+     * Creates link between two issues and adds a comment (optional) to the source
+     * issues.
      *
-     * @param linkIssuesInput details for the link and the comment (optional) to be created
-     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, permissions, etc.)
+     * @param linkIssuesInput details for the link and the comment (optional) to be
+     *                        created
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, invalid argument, permissions, etc.)
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
      */
-    Promise<Void> linkIssue(LinkIssuesInput linkIssuesInput);
+    Promise<Void> linkIssue(LinkIssuesInput linkIssuesInput) throws URISyntaxException;
 
     /**
      * Uploads attachments to JIRA (adding it to selected issue)
@@ -279,9 +327,10 @@ public interface IssueRestClient {
      *
      * @param commentsUri where to add comment
      * @param comment     the {@link Comment} to add
+     * @throws URISyntaxException
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Void> addComment(URI commentsUri, Comment comment);
+    Promise<Void> addComment(URI commentsUri, Comment comment) throws URISyntaxException;
 
     /**
      * Retrieves the content of given attachment.
@@ -296,8 +345,9 @@ public interface IssueRestClient {
      *
      * @param worklogUri   URI for worklog in issue
      * @param worklogInput worklog input object to create
+     * @throws URISyntaxException
      */
-    Promise<Void> addWorklog(URI worklogUri, WorklogInput worklogInput);
+    Promise<Void> addWorklog(URI worklogUri, WorklogInput worklogInput) throws URISyntaxException;
 
     /**
      * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable)}

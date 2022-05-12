@@ -94,7 +94,7 @@ public class App {
                     log.error("", e);
                 }
             }
-        } catch (RestClientException e) {
+        } catch (RestClientException | URISyntaxException e) {
             log.error("Error accessing JIRA, please check URL and credentials");
         }
     }

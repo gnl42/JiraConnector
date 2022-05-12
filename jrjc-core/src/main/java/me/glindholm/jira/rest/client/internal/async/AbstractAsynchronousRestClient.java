@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
@@ -65,7 +66,7 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     protected interface ResponseHandler<T> {
-        T handle(Response request) throws JSONException, IOException;
+        T handle(Response request) throws JSONException, IOException, URISyntaxException;
     }
 
     protected final <T> Promise<T> getAndParse(final URI uri, final JsonParser<?, T> parser) {
@@ -145,7 +146,7 @@ public abstract class AbstractAsynchronousRestClient {
     protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final JsonParser<?, T> parser) {
         final ResponseHandler<T> responseHandler = new ResponseHandler<>() {
             @Override
-            public T handle(Response response) throws JSONException, IOException {
+            public T handle(Response response) throws JSONException, IOException, URISyntaxException {
                 final String body = response.getEntity();
                 return parser instanceof JsonObjectParser ?
                         ((JsonObjectParser<T>) parser).parse(new JSONObject(body)) :
@@ -190,7 +191,7 @@ public abstract class AbstractAsynchronousRestClient {
             public T apply(@Nullable Response input) {
                 try {
                     return responseHandler.handle(input);
-                } catch (JSONException | IOException e) {
+                } catch (JSONException | IOException | URISyntaxException e) {
                     throw new RestClientException(e);
                 }
             }

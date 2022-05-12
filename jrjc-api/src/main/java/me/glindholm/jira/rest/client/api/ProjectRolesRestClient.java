@@ -15,10 +15,11 @@
  */
 package me.glindholm.jira.rest.client.api;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
-
-import java.net.URI;
 
 /**
  * The me.glindholm.jira.rest.client.api handling roles resources.
@@ -42,17 +43,21 @@ public interface ProjectRolesRestClient {
      * @param projectUri uri of the project of the role to retrieve.
      * @param roleId     unique role id.
      * @return full information about selected role.
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      */
-    Promise<ProjectRole> getRole(URI projectUri, Long roleId);
+    Promise<ProjectRole> getRole(URI projectUri, Long roleId) throws URISyntaxException;
 
     /**
      * Retrieves a collection of roles in the selected project.
      *
      * @param projectUri uri of the project of the roles to retrieve.
      * @return a collection of roles in the selected project.
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      */
-    Promise<Iterable<ProjectRole>> getRoles(URI projectUri);
+    Promise<Iterable<ProjectRole>> getRoles(URI projectUri) throws URISyntaxException;
 
 }

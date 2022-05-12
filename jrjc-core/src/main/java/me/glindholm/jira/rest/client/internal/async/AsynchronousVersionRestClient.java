@@ -15,6 +15,15 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.annotation.Nullable;
+
+import org.apache.hc.core5.net.URIBuilder;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import io.atlassian.util.concurrent.Promise;
@@ -30,13 +39,6 @@ import me.glindholm.jira.rest.client.internal.json.gen.JsonGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.VersionInputJsonGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.VersionPositionInputGenerator;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import javax.annotation.Nullable;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-
 /**
  * Asynchronous implementation of VersionRestClient.
  *
@@ -46,9 +48,9 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
 
     private final URI versionRootUri;
 
-    public AsynchronousVersionRestClient(URI baseUri, final HttpClient client) {
+    public AsynchronousVersionRestClient(URI baseUri, final HttpClient client) throws URISyntaxException {
         super(client);
-        versionRootUri = UriBuilder.fromUri(baseUri).path("version").build();
+        versionRootUri = new URIBuilder(baseUri).appendPath("version").build();
     }
 
     @Override
@@ -68,26 +70,26 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
 
     @Override
     public Promise<Void> removeVersion(final URI versionUri, final @Nullable URI moveFixIssuesToVersionUri,
-                                       final @Nullable URI moveAffectedIssuesToVersionUri) {
-        final UriBuilder uriBuilder = UriBuilder.fromUri(versionUri);
+            final @Nullable URI moveAffectedIssuesToVersionUri) throws URISyntaxException {
+        final URIBuilder uriBuilder = new URIBuilder(versionUri);
         if (moveFixIssuesToVersionUri != null) {
-            uriBuilder.queryParam("moveFixIssuesTo", moveFixIssuesToVersionUri);
+            uriBuilder.addParameter("moveFixIssuesTo", String.valueOf(moveFixIssuesToVersionUri));
         }
         if (moveAffectedIssuesToVersionUri != null) {
-            uriBuilder.queryParam("moveAffectedIssuesTo", moveAffectedIssuesToVersionUri);
+            uriBuilder.addParameter("moveAffectedIssuesTo", String.valueOf(moveAffectedIssuesToVersionUri));
         }
         return delete(uriBuilder.build());
     }
 
     @Override
-    public Promise<VersionRelatedIssuesCount> getVersionRelatedIssuesCount(final URI versionUri) {
-        final URI relatedIssueCountsUri = UriBuilder.fromUri(versionUri).path("relatedIssueCounts").build();
+    public Promise<VersionRelatedIssuesCount> getVersionRelatedIssuesCount(final URI versionUri) throws URISyntaxException {
+        final URI relatedIssueCountsUri = new URIBuilder(versionUri).appendPath("relatedIssueCounts").build();
         return getAndParse(relatedIssueCountsUri, new VersionRelatedIssueCountJsonParser());
     }
 
     @Override
-    public Promise<Integer> getNumUnresolvedIssues(final URI versionUri) {
-        final URI unresolvedIssueCountUri = UriBuilder.fromUri(versionUri).path("unresolvedIssueCount").build();
+    public Promise<Integer> getNumUnresolvedIssues(final URI versionUri) throws URISyntaxException {
+        final URI unresolvedIssueCountUri = new URIBuilder(versionUri).appendPath("unresolvedIssueCount").build();
         return getAndParse(unresolvedIssueCountUri, new JsonObjectParser<Integer>() {
             @Override
             public Integer parse(JSONObject json) throws JSONException {
@@ -97,7 +99,7 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
     }
 
     @Override
-    public Promise<Version> moveVersionAfter(final URI versionUri, final URI afterVersionUri) {
+    public Promise<Version> moveVersionAfter(final URI versionUri, final URI afterVersionUri) throws URISyntaxException {
         final URI moveUri = getMoveVersionUri(versionUri);
 
         return postAndParse(moveUri, afterVersionUri, new JsonGenerator<URI>() {
@@ -111,13 +113,13 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
     }
 
     @Override
-    public Promise<Version> moveVersion(final URI versionUri, final VersionPosition versionPosition) {
+    public Promise<Version> moveVersion(final URI versionUri, final VersionPosition versionPosition) throws URISyntaxException {
         final URI moveUri = getMoveVersionUri(versionUri);
         return postAndParse(moveUri, versionPosition, new VersionPositionInputGenerator(), new VersionJsonParser());
     }
 
-    private URI getMoveVersionUri(URI versionUri) {
-        return UriBuilder.fromUri(versionUri).path("move").build();
+    private URI getMoveVersionUri(URI versionUri) throws URISyntaxException {
+        return new URIBuilder(versionUri).appendPath("move").build();
     }
 
 }

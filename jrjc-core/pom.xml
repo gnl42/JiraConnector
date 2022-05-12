@@ -143,6 +143,12 @@
 			<artifactId>jersey-common</artifactId>
 			<version>${jersey.client.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents.core5</groupId>
+			<artifactId>httpcore5</artifactId>
+			<version>5.1.3</version>
+		</dependency>
+
 
 	</dependencies>
 
@@ -169,7 +175,7 @@
 								jettison,jakarta.ws.rs-api,spring-beans,
 								jersey-common,
 								slf4j-api,log4j-api,log4j-core,log4j-slf4j-impl,log4j-jcl,commons-logging,
-								httpasyncclient-cache,httpmime,httpcore,httpclient,httpcore-nio,httpclient-cache,httpasyncclient</includeArtifactIds>
+								httpcore5,httpclient,httpasyncclient-cache,httpmime,httpcore,httpcore-nio,httpclient-cache,httpasyncclient</includeArtifactIds>
 							<outputDirectory>target/lib</outputDirectory>
 							<stripVersion>true</stripVersion>
 							<overWriteReleases>true</overWriteReleases>

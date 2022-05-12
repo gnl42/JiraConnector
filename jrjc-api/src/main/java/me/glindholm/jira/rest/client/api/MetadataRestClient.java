@@ -16,6 +16,9 @@
 
 package me.glindholm.jira.rest.client.api;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
@@ -24,8 +27,6 @@ import me.glindholm.jira.rest.client.api.domain.Priority;
 import me.glindholm.jira.rest.client.api.domain.Resolution;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.Status;
-
-import java.net.URI;
 
 /**
  * Serves information about JIRA metadata like server information, issue types defined, stati, priorities and resolutions.
@@ -49,19 +50,24 @@ public interface MetadataRestClient {
      * Retrieves from the server complete list of available issue type
      *
      * @return complete information about issue type resource
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Iterable<IssueType>> getIssueTypes();
+    Promise<Iterable<IssueType>> getIssueTypes() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete list of available issue types
      *
      * @return list of available issue types for this JIRA instance
-     * @throws RestClientException in case of problems (if linking is disabled on the server, connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (if linking is disabled on
+     *                             the server, connectivity, malformed messages,
+     *                             etc.)
      * @since server 4.3, me.glindholm.jira.rest.client.api 0.5
      */
-    Promise<Iterable<IssuelinksType>> getIssueLinkTypes();
+    Promise<Iterable<IssuelinksType>> getIssueLinkTypes() throws URISyntaxException;
 
     /**
      * Retrieves complete information about selected status
@@ -77,9 +83,11 @@ public interface MetadataRestClient {
      * Retrieves lists of available statuses with complete information about them
      *
      * @return Lists of complete information about available statuses
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      */
-    Promise<Iterable<Status>> getStatuses();
+    Promise<Iterable<Status>> getStatuses() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete information about selected priority
@@ -94,10 +102,12 @@ public interface MetadataRestClient {
      * Retrieves from the server complete list of available priorities
      *
      * @return complete information about the selected priority
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Iterable<Priority>> getPriorities();
+    Promise<Iterable<Priority>> getPriorities() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete information about selected resolution
@@ -112,24 +122,30 @@ public interface MetadataRestClient {
      * Retrieves from the server complete information about selected resolution
      *
      * @return complete information about the selected resolution
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Iterable<Resolution>> getResolutions();
+    Promise<Iterable<Resolution>> getResolutions() throws URISyntaxException;
 
     /**
      * Retrieves information about this JIRA instance
      *
      * @return information about this JIRA instance
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      */
-    Promise<ServerInfo> getServerInfo();
+    Promise<ServerInfo> getServerInfo() throws URISyntaxException;
 
     /**
      * Retrieves information about JIRA custom and system fields.
      *
      * @return information about JIRA custom and system fields.
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      */
-    Promise<Iterable<Field>> getFields();
+    Promise<Iterable<Field>> getFields() throws URISyntaxException;
 }

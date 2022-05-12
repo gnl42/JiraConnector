@@ -48,7 +48,7 @@ public class JsonParseUtil {
     public static final String SELF_ATTR = "self";
 
     public static <T> Collection<T> parseJsonArray(final JSONArray jsonArray, final JsonObjectParser<T> jsonParser)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         final Collection<T> res = new ArrayList<>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
             res.add(jsonParser.parse(jsonArray.getJSONObject(i)));
@@ -57,7 +57,7 @@ public class JsonParseUtil {
     }
 
     public static <T> OptionalIterable<T> parseOptionalJsonArray(final JSONArray jsonArray, final JsonObjectParser<T> jsonParser)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         if (jsonArray == null) {
             return OptionalIterable.absent();
         } else {
@@ -66,26 +66,26 @@ public class JsonParseUtil {
     }
 
     public static <T> T parseOptionalJsonObject(final JSONObject json, final String attributeName, final JsonObjectParser<T> jsonParser)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         JSONObject attributeObject = getOptionalJsonObject(json, attributeName);
         return attributeObject != null ? jsonParser.parse(attributeObject) : null;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public static <T> ExpandableProperty<T> parseExpandableProperty(final JSONObject json, final JsonObjectParser<T> expandablePropertyBuilder)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         return parseExpandableProperty(json, false, expandablePropertyBuilder);
     }
 
     @Nullable
     public static <T> ExpandableProperty<T> parseOptionalExpandableProperty(@Nullable final JSONObject json, final JsonObjectParser<T> expandablePropertyBuilder)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         return parseExpandableProperty(json, true, expandablePropertyBuilder);
     }
 
     @Nullable
     private static <T> ExpandableProperty<T> parseExpandableProperty(@Nullable final JSONObject json, final Boolean optional, final JsonObjectParser<T> expandablePropertyBuilder)
-            throws JSONException {
+            throws JSONException, URISyntaxException {
         if (json == null) {
             if (!optional) {
                 throw new IllegalArgumentException("json object cannot be null while optional is false");
@@ -278,7 +278,8 @@ public class JsonParseUtil {
     }
 
     @Nullable
-    public static <T> T getOptionalJsonObject(final JSONObject jsonObject, final String attributeName, final JsonObjectParser<T> jsonParser) throws JSONException {
+    public static <T> T getOptionalJsonObject(final JSONObject jsonObject, final String attributeName, final JsonObjectParser<T> jsonParser)
+            throws JSONException, URISyntaxException {
         final JSONObject res = jsonObject.optJSONObject(attributeName);
         if (res == JSONObject.NULL || res == null) {
             return null;

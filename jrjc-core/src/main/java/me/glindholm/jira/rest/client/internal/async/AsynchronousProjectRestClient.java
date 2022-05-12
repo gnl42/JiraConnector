@@ -15,6 +15,11 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.hc.core5.net.URIBuilder;
+
 import com.atlassian.httpclient.api.HttpClient;
 
 import io.atlassian.util.concurrent.Promise;
@@ -23,9 +28,6 @@ import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.internal.json.BasicProjectsJsonParser;
 import me.glindholm.jira.rest.client.internal.json.ProjectJsonParser;
-
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 /**
  * Asynchronous implementation of ProjectRestClient.
@@ -46,8 +48,8 @@ public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClien
     }
 
     @Override
-    public Promise<Project> getProject(final String key) {
-        final URI uri = UriBuilder.fromUri(baseUri).path(PROJECT_URI_PREFIX).path(key).build();
+    public Promise<Project> getProject(final String key) throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).appendPath(key).build();
         return getAndParse(uri, projectJsonParser);
     }
 
@@ -57,8 +59,8 @@ public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClien
     }
 
     @Override
-    public Promise<Iterable<BasicProject>> getAllProjects() {
-        final URI uri = UriBuilder.fromUri(baseUri).path(PROJECT_URI_PREFIX).build();
+    public Promise<Iterable<BasicProject>> getAllProjects() throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).build();
         return getAndParse(uri, basicProjectsJsonParser);
     }
 }

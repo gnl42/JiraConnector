@@ -1,5 +1,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.joda.time.DateTime;
@@ -20,7 +22,7 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
     private final SingleAuditRecordJsonParser singleAuditRecordJsonParser = new SingleAuditRecordJsonParser();
 
     @Override
-    public AuditRecordsData parse(final JSONObject json) throws JSONException {
+    public AuditRecordsData parse(final JSONObject json) throws JSONException, URISyntaxException {
         final Integer offset = json.getInt("offset");
         final Integer limit = json.getInt("limit");
         final Integer total = json.getInt("total");
@@ -31,7 +33,7 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
 
     class SingleAuditRecordJsonParser implements JsonObjectParser<AuditRecord> {
         @Override
-        public AuditRecord parse(final JSONObject json) throws JSONException {
+        public AuditRecord parse(final JSONObject json) throws JSONException, URISyntaxException {
             final Long id = json.getLong("id");
             final String summary = json.getString("summary");
 

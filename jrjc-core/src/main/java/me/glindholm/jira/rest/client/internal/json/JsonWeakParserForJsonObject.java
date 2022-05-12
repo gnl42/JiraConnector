@@ -16,6 +16,8 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URISyntaxException;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -35,7 +37,7 @@ class JsonWeakParserForJsonObject<T> implements JsonWeakParser<T> {
     }
 
     @Override
-    public T parse(Object o) throws JSONException {
+    public T parse(Object o) throws JSONException, URISyntaxException {
         return jsonParser.parse(convert(o, JSONObject.class));
     }
 }

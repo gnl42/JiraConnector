@@ -16,6 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import com.google.common.base.Splitter;
 
 import me.glindholm.jira.rest.client.api.OptionalIterable;
@@ -25,15 +34,6 @@ import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.api.domain.Version;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Collections;
 
 public class ProjectJsonParser implements JsonObjectParser<Project> {
 
@@ -52,7 +52,7 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
     }
 
     @Override
-    public Project parse(JSONObject json) throws JSONException {
+    public Project parse(JSONObject json) throws JSONException, URISyntaxException {
         URI self = JsonParseUtil.getSelfUri(json);
         final Iterable<String> expandos = parseExpandos(json);
         final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));

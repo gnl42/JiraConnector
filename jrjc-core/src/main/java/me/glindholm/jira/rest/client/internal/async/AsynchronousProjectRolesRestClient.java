@@ -15,9 +15,16 @@
  */
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
+
+import org.apache.hc.core5.net.URIBuilder;
+
 import com.atlassian.httpclient.api.HttpClient;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+
 import io.atlassian.util.concurrent.Promise;
 import io.atlassian.util.concurrent.Promises;
 import me.glindholm.jira.rest.client.api.ProjectRolesRestClient;
@@ -25,10 +32,6 @@ import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
 import me.glindholm.jira.rest.client.internal.json.BasicProjectRoleJsonParser;
 import me.glindholm.jira.rest.client.internal.json.ProjectRoleJsonParser;
-
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-import java.util.Collection;
 
 /**
  * Asynchronous implementation of ProjectRolesRestClient.
@@ -52,20 +55,15 @@ public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRest
     }
 
     @Override
-    public Promise<ProjectRole> getRole(final URI projectUri, final Long roleId) {
-        final URI roleUri = UriBuilder
-                .fromUri(projectUri)
-                .path("role")
-                .path(String.valueOf(roleId))
+    public Promise<ProjectRole> getRole(final URI projectUri, final Long roleId) throws URISyntaxException {
+        final URI roleUri = new URIBuilder(projectUri).appendPath("role").appendPath(String.valueOf(roleId))
                 .build();
         return getAndParse(roleUri, projectRoleJsonParser);
     }
 
     @Override
-    public Promise<Iterable<ProjectRole>> getRoles(final URI projectUri) {
-        final URI rolesUris = UriBuilder
-                .fromUri(projectUri)
-                .path("role")
+    public Promise<Iterable<ProjectRole>> getRoles(final URI projectUri) throws URISyntaxException {
+        final URI rolesUris = new URIBuilder(projectUri).appendPath("role")
                 .build();
         final Promise<Collection<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
 
