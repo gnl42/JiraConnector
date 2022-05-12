@@ -70,7 +70,6 @@
 		<jira.version>8.18.0-QR-20210527053111</jira.version>
 		<jira.data.version>${jira.version}</jira.data.version>
 		<jira.test-lib.version>${jira.version}</jira.test-lib.version>
-		<jersey.client.version>2.35</jersey.client.version>
 		<atlassian.httpclient.version>3.0.0</atlassian.httpclient.version>
 		<joda.time.version>2.9.9</joda.time.version>
 		<httpcore.version>4.4.15</httpcore.version>
@@ -492,16 +491,6 @@
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
 				<version>${joda.time.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.jersey.core</groupId>
-				<artifactId>jersey-client</artifactId>
-				<version>${jersey.client.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.glassfish.jersey.media</groupId>
-				<artifactId>jersey-media-json-jettison</artifactId>
-				<version>${jersey.client.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
