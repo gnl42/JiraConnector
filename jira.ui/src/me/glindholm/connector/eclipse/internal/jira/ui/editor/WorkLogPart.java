@@ -79,7 +79,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
     private final String[] columns = { Messages.WorkLogPart_Creator, Messages.WorkLogPart_Date,
             Messages.WorkLogPart_Worked, Messages.WorkLogPart_Description };
 
-    private final int[] columnWidths = { 130, 70, 100, 150 };
+    private final int[] columnWidths = { 200, 250, 100, 300 };
 
     private List<TaskAttribute> logEntries;
 
