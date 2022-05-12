@@ -11,6 +11,7 @@
 
 package me.glindholm.connector.eclipse.internal.jira.core.service.rest;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class JiraRestCustomFieldsParser {
         throw new Exception("Utility class"); //$NON-NLS-1$
     }
 
-    public static List<String> parseMultiUserPicker(IssueField field) throws JSONException {
+    public static List<String> parseMultiUserPicker(IssueField field) throws JSONException, URISyntaxException {
         List<String> users = new ArrayList<>();
         for (User user : usersParser.parse((JSONArray) field.getValue())) {
             users.add(user.getName());
@@ -45,18 +46,18 @@ public class JiraRestCustomFieldsParser {
         return users;
     }
 
-    public static String parseUserPicker(IssueField field) throws JSONException {
+    public static String parseUserPicker(IssueField field) throws JSONException, URISyntaxException {
         User user = userParser.parse((JSONObject) field.getValue());
         return user.getName();
     }
 
-    public static String parseSelect(IssueField field) throws JSONException {
+    public static String parseSelect(IssueField field) throws JSONException, URISyntaxException {
         CustomFieldOption cfo = customParser.parse((JSONObject) field.getValue());
 
         return cfo.getValue();
     }
 
-    public static List<String> parseMultiSelect(IssueField field) throws JSONException {
+    public static List<String> parseMultiSelect(IssueField field) throws JSONException, URISyntaxException {
         List<String> values = new ArrayList<>();
 
         JSONArray jsonArray = (JSONArray) field.getValue();

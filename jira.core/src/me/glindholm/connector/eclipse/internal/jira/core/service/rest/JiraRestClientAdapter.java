@@ -27,9 +27,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import javax.ws.rs.core.UriBuilder;
-
 import org.apache.commons.lang.StringUtils;
+import org.apache.hc.core5.net.URIBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -271,7 +270,7 @@ public class JiraRestClientAdapter {
                     final Watchers watchers = restClient.getIssueClient().getWatchers(watched.getSelf()).get();
                     issue.setWatchers(watchers);
                     return issue;
-                } catch (InterruptedException | ExecutionException e) {
+                } catch (InterruptedException | ExecutionException | URISyntaxException e) {
                     throw new JiraException(e);
                 }
             }
@@ -294,7 +293,7 @@ public class JiraRestClientAdapter {
         Iterable<BasicProject> allProjects;
         try {
             allProjects = restClient.getProjectClient().getAllProjects().get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
 
@@ -315,7 +314,7 @@ public class JiraRestClientAdapter {
     public JiraResolution[] getResolutions() throws JiraException {
         try {
             return JiraRestConverter.convertResolutions(restClient.getMetadataClient().getResolutions().get());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
@@ -323,7 +322,7 @@ public class JiraRestClientAdapter {
     public JiraPriority[] getPriorities() throws JiraException {
         try {
             return JiraRestConverter.convertPriorities(restClient.getMetadataClient().getPriorities().get());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
@@ -332,7 +331,7 @@ public class JiraRestClientAdapter {
         try {
             Iterable<Field> metadata = restClient.getMetadataClient().getFields().get();
             return metadata;
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
@@ -344,7 +343,7 @@ public class JiraRestClientAdapter {
     public JiraStatus[] getStatuses() throws JiraException {
         try {
             return JiraRestConverter.convertStatuses(restClient.getMetadataClient().getStatuses().get());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
@@ -352,7 +351,7 @@ public class JiraRestClientAdapter {
     public JiraIssueType[] getIssueTypes() throws JiraException {
         try {
             return JiraRestConverter.convertIssueTypes(restClient.getMetadataClient().getIssueTypes().get());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
@@ -360,7 +359,7 @@ public class JiraRestClientAdapter {
     public JiraIssueType[] getIssueTypes(String projectKey) throws JiraException {
         try {
             return JiraRestConverter.convertIssueTypes(restClient.getProjectClient().getProject(projectKey).get().getIssueTypes());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
@@ -419,14 +418,18 @@ public class JiraRestClientAdapter {
             project.setComponents(JiraRestConverter.convertComponents(projectWithDetails.getComponents()));
             project.setVersions(JiraRestConverter.convertVersions(projectWithDetails.getVersions()));
             project.setIssueTypes(JiraRestConverter.convertIssueTypes(projectWithDetails.getIssueTypes()));
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
 
     public void addWorklog(String issueKey, JiraWorkLog jiraWorklog) throws JiraException {
         Issue issue = getIssue(issueKey);
-        restClient.getIssueClient().addWorklog(issue.getWorklogUri(), JiraRestConverter.convert(jiraWorklog, issue.getSelf())).claim();
+        try {
+            restClient.getIssueClient().addWorklog(issue.getWorklogUri(), JiraRestConverter.convert(jiraWorklog, issue.getSelf())).claim();
+        } catch (URISyntaxException e) {
+            throw new JiraException(e);
+        }
     }
 
     public JiraServerInfo getServerInfo() throws JiraException {
@@ -435,7 +438,7 @@ public class JiraRestClientAdapter {
             public JiraServerInfo call() throws JiraException {
                 try {
                     return JiraRestConverter.convert(restClient.getMetadataClient().getServerInfo().get());
-                } catch (InterruptedException | ExecutionException e) {
+                } catch (InterruptedException | ExecutionException | URISyntaxException e) {
                     throw new JiraException(e);
                 }
             }
@@ -448,7 +451,7 @@ public class JiraRestClientAdapter {
             public Session call() throws JiraException {
                 try {
                     return restClient.getSessionClient().getCurrentSession().get();
-                } catch (RestClientException | InterruptedException | ExecutionException e) {
+                } catch (RestClientException | InterruptedException | ExecutionException | URISyntaxException e) {
                     throw new JiraException(e);
                 }
             }
@@ -457,15 +460,17 @@ public class JiraRestClientAdapter {
 
     public Iterable<JiraAction> getTransitions(String issueKey) throws JiraException {
 
-        URI transitionUri = UriBuilder.fromUri(url).path("/rest/api/latest") //$NON-NLS-1$
-                .path("issue") //$NON-NLS-1$
-                .path(issueKey).path("transitions") //$NON-NLS-1$
-                .queryParam("expand", "transitions.fields") //$NON-NLS-1$ //$NON-NLS-2$
-                .build();
 
         try {
+            URI transitionUri = new URIBuilder(url)
+                    .appendPath("/rest/api/latest") //
+                    .appendPath("issue") //
+                    .appendPath(issueKey) //
+                    .appendPath("transitions") //$NON-NLS-1$
+                    .addParameter("expand", "transitions.fields") //$NON-NLS-1$ //$NON-NLS-2$
+                    .build();
             return JiraRestConverter.convertTransitions(restClient.getIssueClient().getTransitions(transitionUri).get());
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
@@ -550,7 +555,11 @@ public class JiraRestClientAdapter {
 
         TransitionInput transitionInput = new TransitionInput(Integer.parseInt(transitionKey), fields, outComment);
 
-        restClient.getIssueClient().transition(getIssue(issue.getKey()), transitionInput).claim();
+        try {
+            restClient.getIssueClient().transition(getIssue(issue.getKey()), transitionInput).claim();
+        } catch (URISyntaxException | JiraException e) {
+            throw new JiraException(e);
+        }
 
     }
 
@@ -558,7 +567,11 @@ public class JiraRestClientAdapter {
         Issue issue = getIssue(issueKey);
 
         IssueInput fields = IssueInput.createWithFields(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, user)));
-        restClient.getIssueClient().updateIssue(issue.getKey(), fields).claim();
+        try {
+            restClient.getIssueClient().updateIssue(issue.getKey(), fields).claim();
+        } catch (URISyntaxException e) {
+            throw new JiraException(e);
+        }
 
     }
 
@@ -875,7 +888,7 @@ public class JiraRestClientAdapter {
         try {
             createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(builder.withExpandedIssueTypesFields().withProjectKeys(projectKey).build())
                     .get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
 
@@ -916,8 +929,12 @@ public class JiraRestClientAdapter {
     public void deleteIssue(final String key, IProgressMonitor monitor) throws JiraException {
         call(new Callable<Void>() {
             @Override
-            public Void call() {
-                restClient.getIssueClient().deleteIssue(key, true).claim();
+            public Void call() throws JiraException {
+                try {
+                    restClient.getIssueClient().deleteIssue(key, true).claim();
+                } catch (URISyntaxException e) {
+                    throw new JiraException(e);
+                }
                 return null;
             }
         });

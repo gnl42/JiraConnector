@@ -12,6 +12,7 @@
 package me.glindholm.connector.eclipse.internal.jira.core.service.rest;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -516,7 +517,7 @@ public class JiraRestConverter {
 
                 return customField;
             }
-        } catch (JSONException e) {
+        } catch (JSONException | URISyntaxException e) {
             StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
         }
 
