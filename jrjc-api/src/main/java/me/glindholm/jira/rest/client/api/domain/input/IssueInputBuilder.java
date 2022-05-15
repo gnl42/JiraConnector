@@ -16,14 +16,12 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -45,7 +43,7 @@ import me.glindholm.jira.rest.client.api.domain.Version;
  */
 public class IssueInputBuilder {
 
-    private static final DateTimeFormatter JIRA_DATE_FORMATTER = ISODateTimeFormat.date();
+    private static final DateTimeFormatter JIRA_DATE_FORMATTER = DateTimeFormatter.ISO_DATE;
 
     private final ValueTransformerManager valueTransformerManager = new ValueTransformerManager()
             .registerTransformer(new BaseValueTransformer());
@@ -181,8 +179,8 @@ public class IssueInputBuilder {
         return setComponents(Lists.newArrayList(basicComponents));
     }
 
-    public IssueInputBuilder setDueDate(DateTime date) {
-        return setFieldInput(new FieldInput(IssueFieldId.DUE_DATE_FIELD, JIRA_DATE_FORMATTER.print(date)));
+    public IssueInputBuilder setDueDate(OffsetDateTime date) {
+        return setFieldInput(new FieldInput(IssueFieldId.DUE_DATE_FIELD, date.format(JIRA_DATE_FORMATTER)));
     }
 
     public IssueInputBuilder setFixVersionsNames(Iterable<String> names) {

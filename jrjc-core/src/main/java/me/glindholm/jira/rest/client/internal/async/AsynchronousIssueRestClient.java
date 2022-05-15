@@ -45,9 +45,8 @@ import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Message;
 import com.atlassian.httpclient.api.ResponsePromise;
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 
+import io.atlassian.fugue.Iterables;
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
@@ -392,10 +391,10 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
         switch (worklogInput.getAdjustEstimate()) {
         case NEW:
-            uriBuilder.addParameter("newEstimate", Strings.nullToEmpty(worklogInput.getAdjustEstimateValue()));
+            uriBuilder.addParameter("newEstimate", nullToEmpty(worklogInput.getAdjustEstimateValue()));
             break;
         case MANUAL:
-            uriBuilder.addParameter("reduceBy", Strings.nullToEmpty(worklogInput.getAdjustEstimateValue()));
+            uriBuilder.addParameter("reduceBy", nullToEmpty(worklogInput.getAdjustEstimateValue()));
             break;
         case AUTO: // FIXME What should we do?
             break;
@@ -406,6 +405,10 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         }
 
         return post(uriBuilder.build(), worklogInput, new WorklogInputJsonGenerator());
+    }
+
+    private static String nullToEmpty(final String value) {
+        return value == null ? "" : value;
     }
 
     private void addPagingParameters(URIBuilder uriBuilder, @Nullable Long startAt, @Nullable Integer maxResults) {

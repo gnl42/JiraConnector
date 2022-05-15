@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 import me.glindholm.jira.rest.client.api.NamedEntity;
@@ -40,9 +40,9 @@ public class Version implements AddressableEntity, NamedEntity {
     private final boolean isArchived;
     private final boolean isReleased;
     @Nullable
-    private final DateTime releaseDate;
+    private final OffsetDateTime releaseDate;
 
-    public Version(URI self, @Nullable Long id, String name, String description, boolean archived, boolean released, @Nullable DateTime releaseDate) {
+    public Version(URI self, @Nullable Long id, String name, String description, boolean archived, boolean released, @Nullable OffsetDateTime releaseDate) {
         this.self = self;
         this.id = id;
         this.description = description;
@@ -80,7 +80,7 @@ public class Version implements AddressableEntity, NamedEntity {
     }
 
     @Nullable
-    public DateTime getReleaseDate() {
+    public OffsetDateTime getReleaseDate() {
         return releaseDate;
     }
 

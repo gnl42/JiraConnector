@@ -26,8 +26,8 @@ public class LoginInfoJsonParserTest {
     public void testParse() throws Exception {
         final LoginInfoJsonParser parser = new LoginInfoJsonParser();
         final LoginInfo loginInfo = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/loginInfo/valid.json"));
-        Assert.assertEquals(new LoginInfo(5, 379, TestUtil.toDateTime("2010-09-13T17:19:20.752+0200"),
-                TestUtil.toDateTime("2010-09-13T17:19:38.220+0200")), loginInfo);
+        Assert.assertEquals(new LoginInfo(5, 379, TestUtil.toOffsetDateTime("2010-09-13T17:19:20.752+0200"),
+                TestUtil.toOffsetDateTime("2010-09-13T17:19:38.220+0200")), loginInfo);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class LoginInfoJsonParserTest {
         final LoginInfoJsonParser parser = new LoginInfoJsonParser();
         final LoginInfo loginInfo = parser.parse(ResourceUtil
                 .getJsonObjectFromResource("/json/loginInfo/valid-no-login-failure.json"));
-        Assert.assertEquals(new LoginInfo(0, 379, null, TestUtil.toDateTime("2010-09-13T17:19:38.220+0200")), loginInfo);
+        Assert.assertEquals(new LoginInfo(0, 379, null, TestUtil.toOffsetDateTime("2010-09-13T17:19:38.220+0200")), loginInfo);
     }
 
     @Test

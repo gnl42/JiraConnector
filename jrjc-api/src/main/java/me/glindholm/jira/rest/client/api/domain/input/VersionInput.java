@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Input data describing details of a project version to create.
@@ -32,11 +32,11 @@ public class VersionInput {
     private final String name;
     @Nullable
     private final String description;
-    private final DateTime releaseDate;
+    private final OffsetDateTime releaseDate;
     private boolean isArchived;
     private boolean isReleased;
 
-    public VersionInput(String projectKey, String name, @Nullable String description, @Nullable DateTime releaseDate,
+    public VersionInput(String projectKey, String name, @Nullable String description, @Nullable OffsetDateTime releaseDate,
             boolean isArchived, boolean isReleased) {
         this.projectKey = projectKey;
         this.name = name;
@@ -46,7 +46,7 @@ public class VersionInput {
         this.isReleased = isReleased;
     }
 
-    public static VersionInput create(String projectKey, String name, @Nullable String description, @Nullable DateTime releaseDate,
+    public static VersionInput create(String projectKey, String name, @Nullable String description, @Nullable OffsetDateTime releaseDate,
             boolean archived, boolean release) {
         return new VersionInput(projectKey, name, description, releaseDate, archived, release);
     }
@@ -64,7 +64,7 @@ public class VersionInput {
         return description;
     }
 
-    public DateTime getReleaseDate() {
+    public OffsetDateTime getReleaseDate() {
         return releaseDate;
     }
 

@@ -16,7 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.Version;
 
@@ -24,7 +24,7 @@ public class VersionInputBuilder {
     private final String projectKey;
     private String name;
     private String description;
-    private DateTime releaseDate;
+    private OffsetDateTime releaseDate;
     private boolean archived;
     private boolean released;
 
@@ -52,7 +52,7 @@ public class VersionInputBuilder {
         return this;
     }
 
-    public VersionInputBuilder setReleaseDate(DateTime releaseDate) {
+    public VersionInputBuilder setReleaseDate(OffsetDateTime releaseDate) {
         this.releaseDate = releaseDate;
         return this;
     }

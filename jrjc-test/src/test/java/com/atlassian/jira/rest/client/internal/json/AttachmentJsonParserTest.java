@@ -17,8 +17,8 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.Attachment;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.OffsetDateTime;
+import org.joda.time.OffsetDateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public class AttachmentJsonParserTest {
         Assert.assertEquals("admin", attachment.getAuthor().getName());
 
         Assert.assertEquals(new Attachment(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"),
-                "snipe.png", TestConstants.USER_ADMIN_BASIC_DEPRECATED, new DateTime(2010, 7, 26, 13, 31, 35, 577, DateTimeZone
+                "snipe.png", TestConstants.USER_ADMIN_BASIC_DEPRECATED, new OffsetDateTime(2010, 7, 26, 13, 31, 35, 577, OffsetDateTimeZone
                 .forOffsetHours(2)),
                 31020, "image/png", toUri("http://localhost:8090/jira/secure/attachment/10031/snipe.png"),
                 toUri("http://localhost:8090/jira/secure/thumbnail/10031/10031_snipe.png")), attachment);

@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.util.Objects;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Represents Issue change history group
@@ -27,10 +27,10 @@ import org.joda.time.DateTime;
  */
 public class ChangelogGroup {
     private final BasicUser author;
-    private final DateTime created;
+    private final OffsetDateTime created;
     private final Iterable<ChangelogItem> items;
 
-    public ChangelogGroup(BasicUser author, DateTime created, Iterable<ChangelogItem> items) {
+    public ChangelogGroup(BasicUser author, OffsetDateTime created, Iterable<ChangelogItem> items) {
         this.author = author;
         this.created = created;
         this.items = items;
@@ -40,7 +40,7 @@ public class ChangelogGroup {
         return author;
     }
 
-    public DateTime getCreated() {
+    public OffsetDateTime getCreated() {
         return created;
     }
 

@@ -36,8 +36,8 @@ public class CommentJsonParserTest {
         Assert.assertEquals("some comment", comment1.getBody());
         Assert.assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, comment1.getAuthor());
         Assert.assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, comment1.getUpdateAuthor());
-        Assert.assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getCreationDate());
-        Assert.assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getUpdateDate());
+        Assert.assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:40:57.791+0200"), comment1.getCreationDate());
+        Assert.assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:40:57.791+0200"), comment1.getUpdateDate());
         Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/comment/10020"), comment1.getSelf());
         Assert.assertEquals(Long.valueOf(10020), comment1.getId());
         Assert.assertEquals(Visibility.role("Administrators"), comment1.getVisibility());
@@ -63,8 +63,8 @@ public class CommentJsonParserTest {
         Assert.assertEquals("some comment", comment1.getBody());
         Assert.assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, comment1.getAuthor());
         Assert.assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, comment1.getUpdateAuthor());
-        Assert.assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getCreationDate());
-        Assert.assertEquals(TestUtil.toDateTime("2010-08-17T16:40:57.791+0200"), comment1.getUpdateDate());
+        Assert.assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:40:57.791+0200"), comment1.getCreationDate());
+        Assert.assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:40:57.791+0200"), comment1.getUpdateDate());
         Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/comment/10020"), comment1.getSelf());
         Assert.assertEquals(null, comment1.getId());
         Assert.assertEquals(Visibility.role("Administrators"), comment1.getVisibility());

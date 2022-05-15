@@ -20,8 +20,8 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableWithSize;
 import org.joda.time.DateMidnight;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.OffsetDateTime;
+import org.joda.time.OffsetDateTimeZone;
 import org.joda.time.Period;
 import org.junit.Test;
 
@@ -224,7 +224,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
 
     @Test
     public void shouldReturnNoRecordsWhenFilteringForTomorrow() {
-        final DateTime tomorrow = new DateMidnight().plus(Period.days(1)).toDateTime();
+        final OffsetDateTime tomorrow = new DateMidnight().plus(Period.days(1)).toOffsetDateTime();
 
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, tomorrow, tomorrow)).claim();
 
@@ -236,7 +236,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         // given
         final AuditRecordsData firstPageOfRecords = getAllAuditRecords();
         final AuditRecord latestCreatedRecord = getLatestCreatedRecord(firstPageOfRecords);
-        final DateTime latestCreatedDate = latestCreatedRecord.getCreated();
+        final OffsetDateTime latestCreatedDate = latestCreatedRecord.getCreated();
 
         // when
         final AuditRecordSearchInput toLatestSearchCriteria = new AuditRecordSearchInput(null, null, null, null, latestCreatedDate);
@@ -249,8 +249,8 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
     @Test
     public void shouldReturnLatestItemWhenFilteringFromLatestCreationDate() {
         final AuditRecord latestCreatedRecord = getLatestCreatedRecord();
-        final DateTime latestCreatedDate = latestCreatedRecord.getCreated();
-        final DateTime latestCreatedDateInStrangeTimezone = latestCreatedDate.toDateTime(DateTimeZone.forOffsetHours(-5));
+        final OffsetDateTime latestCreatedDate = latestCreatedRecord.getCreated();
+        final OffsetDateTime latestCreatedDateInStrangeTimezone = latestCreatedDate.toOffsetDateTime(OffsetDateTimeZone.forOffsetHours(-5));
 
         // when
         final AuditRecordSearchInput fromLatestSearchCriteria = new AuditRecordSearchInput(null, null, null, latestCreatedDateInStrangeTimezone, null);
@@ -295,8 +295,8 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         final Ordering<AuditRecord> createdTimeAscendingOrdering = new Ordering<AuditRecord>() {
             @Override
             public int compare(@Nullable AuditRecord left, @Nullable AuditRecord right) {
-                final DateTime leftCreatedTime = left.getCreated();
-                final DateTime rightCreatedTime = right.getCreated();
+                final OffsetDateTime leftCreatedTime = left.getCreated();
+                final OffsetDateTime rightCreatedTime = right.getCreated();
 
                 return leftCreatedTime.compareTo(rightCreatedTime);
             }

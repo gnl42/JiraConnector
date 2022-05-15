@@ -26,10 +26,6 @@
 			<artifactId>atlassian-httpclient-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
@@ -74,7 +70,6 @@
 						</goals>
 						<configuration>
 						<includeArtifactIds>atlassian-util-concurrent,atlassian-httpclient-api,jsr305,
-						joda-time,guava
 						</includeArtifactIds>
 							<outputDirectory>target/lib</outputDirectory>
 							<stripVersion>true</stripVersion>

@@ -1,6 +1,6 @@
 package me.glindholm.jira.rest.client.api.domain.input;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import javax.annotation.Nullable;
 
@@ -18,11 +18,11 @@ public class AuditRecordSearchInput {
     @Nullable
     private final String textFilter;
     @Nullable
-    private final DateTime from;
+    private final OffsetDateTime from;
     @Nullable
-    private final DateTime to;
+    private final OffsetDateTime to;
 
-    public AuditRecordSearchInput(final Integer offset, final Integer limit, final String textFilter, final DateTime from, final DateTime to) {
+    public AuditRecordSearchInput(final Integer offset, final Integer limit, final String textFilter, final OffsetDateTime from, final OffsetDateTime to) {
         this.offset = offset;
         this.limit = limit;
         this.textFilter = textFilter;
@@ -46,12 +46,12 @@ public class AuditRecordSearchInput {
     }
 
     @Nullable
-    public DateTime getFrom() {
+    public OffsetDateTime getFrom() {
         return from;
     }
 
     @Nullable
-    public DateTime getTo() {
+    public OffsetDateTime getTo() {
         return to;
     }
 }

@@ -8,22 +8,14 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: .,
  target/lib/atlassian-httpclient-api.jar,
  target/lib/atlassian-util-concurrent.jar,
- target/lib/guava.jar,
- target/lib/joda-time.jar,
  target/lib/jsr305.jar
 Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
 Export-Package: com.atlassian.httpclient.api,
- com.google.common.base,
- com.google.common.collect,
- com.google.common.io,
- com.google.common.primitives,
  io.atlassian.util.concurrent,
  javax.annotation,
  me.glindholm.jira.rest.client.api,
  me.glindholm.jira.rest.client.api.domain,
  me.glindholm.jira.rest.client.api.domain.input,
- me.glindholm.jira.rest.client.api.domain.util,
- org.joda.time,
- org.joda.time.base,
- org.joda.time.format
+ me.glindholm.jira.rest.client.api.domain.util
+Require-Bundle: com.google.guava

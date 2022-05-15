@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.LoginInfo;
 
@@ -27,8 +27,8 @@ public class LoginInfoJsonParser implements JsonObjectParser<LoginInfo> {
     public LoginInfo parse(JSONObject json) throws JSONException {
         final int failedLoginCount = json.optInt("failedLoginCount");
         final int loginCount = json.getInt("loginCount");
-        final DateTime lastFailedLoginTime = JsonParseUtil.parseOptionalDateTime(json, "lastFailedLoginTime");
-        final DateTime previousLoginTime = JsonParseUtil.parseOptionalDateTime(json, "previousLoginTime");
+        final OffsetDateTime lastFailedLoginTime = JsonParseUtil.parseOptionalOffsetDateTime(json, "lastFailedLoginTime");
+        final OffsetDateTime previousLoginTime = JsonParseUtil.parseOptionalOffsetDateTime(json, "previousLoginTime");
         return new LoginInfo(failedLoginCount, loginCount, lastFailedLoginTime, previousLoginTime);
     }
 }

@@ -39,7 +39,7 @@ public class CommentJsonParser implements JsonObjectParser<Comment> {
         final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
 
         final Visibility visibility = visibilityJsonParser.parseVisibility(json);
-        return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseDateTime(json.getString("created")),
-                JsonParseUtil.parseDateTime(json.getString("updated")), visibility, id);
+        return new Comment(selfUri, body, author, updateAuthor, JsonParseUtil.parseOffsetDateTime(json.getString("created")),
+                JsonParseUtil.parseOffsetDateTime(json.getString("updated")), visibility, id);
     }
 }

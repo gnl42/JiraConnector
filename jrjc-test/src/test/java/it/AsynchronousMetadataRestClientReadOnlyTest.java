@@ -38,7 +38,7 @@ import com.atlassian.jira.rest.client.test.matchers.RegularExpressionMatcher;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.hamcrest.Matchers;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,8 +80,8 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
         final ServerInfo serverInfo = client.getMetadataClient().getServerInfo().claim();
         assertThat(serverInfo.getServerTitle(), equalToIgnoringCase("Your Company Jira"));
         assertTrue(serverInfo.getBuildDate().isBeforeNow());
-        assertTrue(serverInfo.getServerTime().isAfter(new DateTime().minusMinutes(5)));
-        assertTrue(serverInfo.getServerTime().isBefore(new DateTime().plusMinutes(5)));
+        assertTrue(serverInfo.getServerTime().isAfter(new OffsetDateTime().minusMinutes(5)));
+        assertTrue(serverInfo.getServerTime().isBefore(new OffsetDateTime().plusMinutes(5)));
     }
 
     @Test

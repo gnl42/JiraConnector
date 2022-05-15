@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.OptionalIterable;
 
@@ -26,7 +26,7 @@ public class AuditRecord {
 
     private final String summary;
 
-    private final DateTime created;
+    private final OffsetDateTime created;
 
     private final String category;
 
@@ -46,7 +46,7 @@ public class AuditRecord {
     private final OptionalIterable<AuditChangedValue> changedValues;
 
     public AuditRecord(final Long id, final String summary, @Nullable final String remoteAddress,
-            final DateTime created, final String category, String eventSource,
+            final OffsetDateTime created, final String category, String eventSource,
             @Nullable final String authorKey,
             @Nullable final AuditAssociatedItem objectItem,
             final OptionalIterable<AuditAssociatedItem> associatedItem,
@@ -71,7 +71,7 @@ public class AuditRecord {
         return summary;
     }
 
-    public DateTime getCreated() {
+    public OffsetDateTime getCreated() {
         return created;
     }
 

@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
@@ -36,9 +36,9 @@ public class WorklogJsonParser implements JsonObjectParser<Worklog> {
         final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
         // it turns out that somehow it can be sometimes omitted in the resource representation - JRJC-49
         final String comment = JsonParseUtil.getOptionalString(json, "comment");
-        final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
-        final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
-        final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
+        final OffsetDateTime creationDate = JsonParseUtil.parseOffsetDateTime(json, "created");
+        final OffsetDateTime updateDate = JsonParseUtil.parseOffsetDateTime(json, "updated");
+        final OffsetDateTime startDate = JsonParseUtil.parseOffsetDateTime(json, "started");
         final int minutesSpent = json.getInt("minutesSpent");
         final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
         return new Worklog(self, issueUri, author, updateAuthor, comment, creationDate, updateDate, startDate, minutesSpent, visibility);

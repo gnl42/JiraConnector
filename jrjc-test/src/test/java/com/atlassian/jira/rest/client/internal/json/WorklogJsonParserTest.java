@@ -35,9 +35,9 @@ public class WorklogJsonParserTest {
         assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, worklog.getAuthor());
         assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED, worklog.getUpdateAuthor());
         assertEquals("my first work", worklog.getComment());
-        assertEquals(TestUtil.toDateTime("2010-08-17T16:35:47.466+0200"), worklog.getCreationDate());
-        assertEquals(TestUtil.toDateTime("2010-08-17T16:35:47.466+0200"), worklog.getUpdateDate());
-        assertEquals(TestUtil.toDateTime("2010-08-15T16:35:00.000+0200"), worklog.getStartDate());
+        assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:35:47.466+0200"), worklog.getCreationDate());
+        assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:35:47.466+0200"), worklog.getUpdateDate());
+        assertEquals(TestUtil.toOffsetDateTime("2010-08-15T16:35:00.000+0200"), worklog.getStartDate());
         assertEquals(60, worklog.getMinutesSpent());
         assertNull(worklog.getVisibility());
     }
@@ -51,9 +51,9 @@ public class WorklogJsonParserTest {
         assertEquals(TestConstants.USER1_BASIC_DEPRECATED, worklog.getAuthor());
         assertEquals(TestConstants.USER1_BASIC_DEPRECATED, worklog.getUpdateAuthor());
         assertEquals("another piece of work", worklog.getComment());
-        assertEquals(TestUtil.toDateTime("2010-08-17T16:38:00.013+0200"), worklog.getCreationDate());
-        assertEquals(TestUtil.toDateTime("2010-08-17T16:38:24.948+0200"), worklog.getUpdateDate());
-        assertEquals(TestUtil.toDateTime("2010-08-17T16:37:00.000+0200"), worklog.getStartDate());
+        assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:38:00.013+0200"), worklog.getCreationDate());
+        assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:38:24.948+0200"), worklog.getUpdateDate());
+        assertEquals(TestUtil.toOffsetDateTime("2010-08-17T16:37:00.000+0200"), worklog.getStartDate());
         assertEquals(Visibility.role("Developers"), worklog.getVisibility());
         assertEquals(15, worklog.getMinutesSpent());
     }

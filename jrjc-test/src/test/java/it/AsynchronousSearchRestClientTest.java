@@ -51,7 +51,7 @@ import java.util.Set;
 import static com.atlassian.jira.nimblefunctests.annotation.LongCondition.LESS_THAN;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
 import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
-import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
+import static com.atlassian.jira.rest.client.TestUtil.toOffsetDateTime;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6_1;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
@@ -233,8 +233,8 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         assertNull(issue.getChangelog());
         assertNull(issue.getAttachments());
         // JIRA does not store timezone information in its dump file, so no timezone here
-        assertEquals(toDateTime("2010-09-22T18:06:32.000"), issue.getUpdateDate());
-        assertEquals(toDateTime("2010-09-22T18:06:32.000"), issue.getCreationDate());
+        assertEquals(toOffsetDateTime("2010-09-22T18:06:32.000"), issue.getUpdateDate());
+        assertEquals(toOffsetDateTime("2010-09-22T18:06:32.000"), issue.getCreationDate());
         assertEquals(IntegrationTestUtil.USER1_FULL, issue.getReporter());
         assertEquals(IntegrationTestUtil.USER_ADMIN_FULL, issue.getAssignee());
         assertEquals(new BasicProject(resolveURI(projectSelf), "TST", 10000L, "Test Project"), issue.getProject());
@@ -291,8 +291,8 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         final Worklog actualWorklog = Iterables.getLast(worklogs);
         final Worklog expectedWorklog = new Worklog(resolveURI("rest/api/2/issue/10010/worklog/10021"),
                 resolveURI("rest/api/latest/issue/10010"), IntegrationTestUtil.USER_ADMIN, IntegrationTestUtil.USER_ADMIN,
-                "Another work for 7 min", toDateTime("2010-08-27T15:00:02.104"), toDateTime("2010-08-27T15:00:02.104"),
-                toDateTime("2010-08-27T14:59:00.000"), 7, null);
+                "Another work for 7 min", toOffsetDateTime("2010-08-27T15:00:02.104"), toOffsetDateTime("2010-08-27T15:00:02.104"),
+                toOffsetDateTime("2010-08-27T14:59:00.000"), 7, null);
         assertEquals(expectedWorklog, actualWorklog);
 
         // issue links
@@ -303,19 +303,19 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
         // fix versions
         final Version actualFixVersion = Iterables.getOnlyElement(issue.getFixVersions());
-        final Version expectedFixVersion = new Version(resolveURI("rest/api/2/version/10000"), 10000L, "1.1", "Some version", false, false, toDateTime("2010-08-25T00:00:00.000"));
+        final Version expectedFixVersion = new Version(resolveURI("rest/api/2/version/10000"), 10000L, "1.1", "Some version", false, false, toOffsetDateTime("2010-08-25T00:00:00.000"));
         assertEquals(expectedFixVersion, actualFixVersion);
 
         // affected versions
         assertThat(issue.getAffectedVersions(), IsIterableContainingInOrder.contains(
                 new Version(resolveURI("rest/api/2/version/10001"), 10001L, "1", "initial version", false, false, null),
-                new Version(resolveURI("rest/api/2/version/10000"), 10000L, "1.1", "Some version", false, false, toDateTime("2010-08-25T00:00:00.000"))
+                new Version(resolveURI("rest/api/2/version/10000"), 10000L, "1.1", "Some version", false, false, toOffsetDateTime("2010-08-25T00:00:00.000"))
         ));
 
         // dates
         assertNull(issue.getDueDate());
-        assertEquals(toDateTime("2010-08-30T10:49:33.000"), issue.getUpdateDate());
-        assertEquals(toDateTime("2010-07-26T13:29:18.000"), issue.getCreationDate());
+        assertEquals(toOffsetDateTime("2010-08-30T10:49:33.000"), issue.getUpdateDate());
+        assertEquals(toOffsetDateTime("2010-07-26T13:29:18.000"), issue.getCreationDate());
 
         // attachments
         final Iterable<String> attachmentsNames = EntityHelper.toFileNamesList(issue.getAttachments());
@@ -329,7 +329,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
         assertEquals("TST-1", issue.getKey());
         assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
-        assertEquals(toDateTime("2010-07-05T00:00:00.000"), issue.getDueDate());
+        assertEquals(toOffsetDateTime("2010-07-05T00:00:00.000"), issue.getDueDate());
     }
 
     @Test
@@ -340,8 +340,8 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         assertEquals("TST-1", issue.getKey());
         assertEquals("My sample test", issue.getSummary());
         assertEquals("Bug", issue.getIssueType().getName());
-        assertEquals(toDateTime("2010-07-23T12:16:56.000"), issue.getCreationDate());
-        assertEquals(toDateTime("2010-08-17T16:36:29.000"), issue.getUpdateDate());
+        assertEquals(toOffsetDateTime("2010-07-23T12:16:56.000"), issue.getCreationDate());
+        assertEquals(toOffsetDateTime("2010-08-17T16:36:29.000"), issue.getUpdateDate());
         assertEquals("Test Project", issue.getProject().getName());
         assertEquals(Long.valueOf(10000), issue.getId());
         assertEquals("Open", issue.getStatus().getName());

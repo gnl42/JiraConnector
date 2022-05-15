@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 
@@ -37,15 +37,15 @@ public class Worklog implements AddressableEntity {
     private final BasicUser author;
     private final BasicUser updateAuthor;
     private final String comment;
-    private final DateTime creationDate;
-    private final DateTime updateDate;
-    private final DateTime startDate;
+    private final OffsetDateTime creationDate;
+    private final OffsetDateTime updateDate;
+    private final OffsetDateTime startDate;
     private final int minutesSpent;
     @Nullable
     private final Visibility visibility;
 
     public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, @Nullable String comment,
-            DateTime creationDate, DateTime updateDate, DateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+            OffsetDateTime creationDate, OffsetDateTime updateDate, OffsetDateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
         this.self = self;
         this.issueUri = issueUri;
         this.author = author;
@@ -79,15 +79,15 @@ public class Worklog implements AddressableEntity {
         return comment;
     }
 
-    public DateTime getCreationDate() {
+    public OffsetDateTime getCreationDate() {
         return creationDate;
     }
 
-    public DateTime getUpdateDate() {
+    public OffsetDateTime getUpdateDate() {
         return updateDate;
     }
 
-    public DateTime getStartDate() {
+    public OffsetDateTime getStartDate() {
         return startDate;
     }
 

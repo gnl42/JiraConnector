@@ -23,7 +23,7 @@ import com.atlassian.jira.rest.client.api.JiraRestClientFactory;
 import com.atlassian.jira.rest.client.api.domain.Session;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,18 +75,18 @@ public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestC
                 .getName());
         final Session session2 = client.getSessionClient().getCurrentSession().claim();
         assertEquals(TestConstants.USER1.getName(), session2.getUsername());
-        final DateTime lastFailedLoginDate = session2.getLoginInfo().getLastFailedLoginDate();
+        final OffsetDateTime lastFailedLoginDate = session2.getLoginInfo().getLastFailedLoginDate();
 
         final JiraRestClient client2 = clientFactory.createWithBasicHttpAuthentication(jiraUri, TestConstants.USER1
                 .getName(), "bad-ppassword");
-        final DateTime now = new DateTime();
+        final OffsetDateTime now = new OffsetDateTime();
         TestUtil.assertErrorCode(401, new Runnable() {
             @Override
             public void run() {
                 client2.getSessionClient().getCurrentSession().claim();
             }
         });
-        while (!new DateTime().isAfter(lastFailedLoginDate)) {
+        while (!new OffsetDateTime().isAfter(lastFailedLoginDate)) {
             Thread.sleep(20);
         }
 

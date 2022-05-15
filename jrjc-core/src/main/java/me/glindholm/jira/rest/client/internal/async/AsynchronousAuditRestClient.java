@@ -62,12 +62,12 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
         }
 
         if (input.getFrom() != null) {
-            final String fromIsoString = JsonParseUtil.JIRA_DATE_TIME_FORMATTER.print(input.getFrom());
+            final String fromIsoString = input.getFrom().format(JsonParseUtil.JIRA_DATE_TIME_FORMATTER);
             uriBuilder.addParameter("from", fromIsoString);
         }
 
         if (input.getTo() != null) {
-            final String toIsoString = JsonParseUtil.JIRA_DATE_TIME_FORMATTER.print(input.getTo());
+            final String toIsoString = input.getTo().format(JsonParseUtil.JIRA_DATE_TIME_FORMATTER);
             uriBuilder.addParameter("to", toIsoString);
         }
 

@@ -17,10 +17,10 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.Version;
-import com.atlassian.jira.rest.client.test.matchers.DateTimeMatcher;
+import com.atlassian.jira.rest.client.test.matchers.OffsetDateTimeMatcher;
 import org.codehaus.jettison.json.JSONException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.OffsetDateTime;
+import org.joda.time.OffsetDateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,8 +43,8 @@ public class VersionJsonParserTest {
         assertEquals("Some version", version.getDescription());
         Assert.assertFalse(version.isReleased());
         Assert.assertTrue(version.isArchived());
-        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
-                new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
+        Assert.assertThat(version.getReleaseDate(), OffsetDateTimeMatcher.isEqual(
+                new OffsetDateTime(2010, 8, 25, 0, 0, 0, 0, OffsetDateTimeZone.forOffsetHours(2))));
     }
 
     @Test
@@ -72,8 +72,8 @@ public class VersionJsonParserTest {
         assertEquals("Some version", version.getDescription());
         Assert.assertFalse(version.isReleased());
         Assert.assertTrue(version.isArchived());
-        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
-                new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
+        Assert.assertThat(version.getReleaseDate(), OffsetDateTimeMatcher.isEqual(
+                new OffsetDateTime(2010, 8, 25, 0, 0, 0, 0, OffsetDateTimeZone.forOffsetHours(2))));
     }
 
     @Test
@@ -87,8 +87,8 @@ public class VersionJsonParserTest {
         assertNull(version.getDescription());
         Assert.assertFalse(version.isReleased());
         Assert.assertTrue(version.isArchived());
-        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
-                new DateTime(2010, 8, 25, 0, 0, 0, 0, DateTimeZone.forOffsetHours(2))));
+        Assert.assertThat(version.getReleaseDate(), OffsetDateTimeMatcher.isEqual(
+                new OffsetDateTime(2010, 8, 25, 0, 0, 0, 0, OffsetDateTimeZone.forOffsetHours(2))));
     }
 
 }

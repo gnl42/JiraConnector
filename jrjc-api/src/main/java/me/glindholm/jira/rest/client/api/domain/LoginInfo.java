@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 
 /**
@@ -32,11 +32,11 @@ public class LoginInfo {
     private final int failedLoginCount;
     private final int loginCount;
     @Nullable
-    private final DateTime lastFailedLoginDate;
+    private final OffsetDateTime lastFailedLoginDate;
     @Nullable
-    private final DateTime previousLoginDate;
+    private final OffsetDateTime previousLoginDate;
 
-    public LoginInfo(int failedLoginCount, int loginCount, @Nullable DateTime lastFailedLoginDate, @Nullable DateTime previousLoginDate) {
+    public LoginInfo(int failedLoginCount, int loginCount, @Nullable OffsetDateTime lastFailedLoginDate, @Nullable OffsetDateTime previousLoginDate) {
         this.failedLoginCount = failedLoginCount;
         this.loginCount = loginCount;
         this.lastFailedLoginDate = lastFailedLoginDate;
@@ -53,12 +53,12 @@ public class LoginInfo {
     }
 
     @Nullable
-    public DateTime getLastFailedLoginDate() {
+    public OffsetDateTime getLastFailedLoginDate() {
         return lastFailedLoginDate;
     }
 
     @Nullable
-    public DateTime getPreviousLoginDate() {
+    public OffsetDateTime getPreviousLoginDate() {
         return previousLoginDate;
     }
 

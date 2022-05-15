@@ -16,14 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import java.time.format.DateTimeFormatter;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.input.WorklogInput;
 import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.format.DateTimeFormatter;
 
 public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
 
@@ -44,7 +45,7 @@ public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
         final JSONObject res = new JSONObject()
                 .put("self", worklogInput.getSelf())
                 .put("comment", worklogInput.getComment())
-                .put("started", dateTimeFormatter.print(worklogInput.getStartDate()))
+                .put("started", worklogInput.getStartDate().format(dateTimeFormatter))
                 .put("timeSpent", worklogInput.getMinutesSpent() + "m");
 
         putGeneratedIfNotNull("visibility", worklogInput.getVisibility(), res, visibilityGenerator);

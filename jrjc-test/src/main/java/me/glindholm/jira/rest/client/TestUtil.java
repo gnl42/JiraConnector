@@ -28,10 +28,10 @@ import org.apache.http.client.utils.URIBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
+import java.time.OffsetDateTime;
+import org.joda.time.OffsetDateTimeZone;
+import org.joda.time.format.OffsetDateTimeFormatter;
+import org.joda.time.format.ISOOffsetDateTimeFormat;
 
 import com.google.common.collect.Iterators;
 
@@ -43,9 +43,9 @@ import me.glindholm.jira.rest.client.api.domain.Transition;
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 
 public class TestUtil {
-    private static DateTimeFormatter universalDateTimeParser = ISODateTimeFormat.dateTimeParser();
-    private static DateTimeFormatter formatter = ISODateTimeFormat.dateTime();
-    private static DateTimeFormatter dateFormatter = ISODateTimeFormat.date();
+    private static OffsetDateTimeFormatter universalOffsetDateTimeParser = ISOOffsetDateTimeFormat.dateTimeParser();
+    private static OffsetDateTimeFormatter formatter = ISOOffsetDateTimeFormat.dateTime();
+    private static OffsetDateTimeFormatter dateFormatter = ISOOffsetDateTimeFormat.date();
     public static Iterable<OperationGroup> EMPTY_GROUPS = Collections.emptyList();
     public static Iterable<OperationLink> EMPTY_LINKS = Collections.emptyList();
 
@@ -53,17 +53,17 @@ public class TestUtil {
         return new URIBuilder(str).build();
     }
 
-    public static DateTime toDateTime(String isoDateTimeSt) {
-        return universalDateTimeParser.parseDateTime(isoDateTimeSt);
+    public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt) {
+        return universalOffsetDateTimeParser.parseOffsetDateTime(isoOffsetDateTimeSt);
     }
 
     @SuppressWarnings("unused")
-    public static DateTime toDateTime(String isoDateTimeSt, DateTimeZone zone) {
-        return formatter.withZone(zone).parseDateTime(isoDateTimeSt);
+    public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt, OffsetDateTimeZone zone) {
+        return formatter.withZone(zone).parseOffsetDateTime(isoOffsetDateTimeSt);
     }
 
-    public static DateTime toDateTimeFromIsoDate(String isoDate) {
-        return dateFormatter.parseDateTime(isoDate);
+    public static OffsetDateTime toOffsetDateTimeFromIsoDate(String isoDate) {
+        return dateFormatter.parseOffsetDateTime(isoDate);
     }
 
     public static void assertErrorCode(int errorCode, Runnable runnable) {

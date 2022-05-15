@@ -31,7 +31,7 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -282,7 +282,7 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
     private WorklogInputBuilder createDefaulWorklogInputBuilder() {
         return new WorklogInputBuilder(toUri("dummy://uri"))
                 .setComment("I created test for adding worklog.")
-                .setStartDate(new DateTime())
+                .setStartDate(new OffsetDateTime())
                 .setMinutesSpent(20);
     }
 

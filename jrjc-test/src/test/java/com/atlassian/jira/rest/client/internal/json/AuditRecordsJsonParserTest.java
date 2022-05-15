@@ -4,8 +4,8 @@ import com.atlassian.jira.rest.client.api.domain.AuditAssociatedItem;
 import com.atlassian.jira.rest.client.api.domain.AuditChangedValue;
 import com.atlassian.jira.rest.client.api.domain.AuditRecord;
 import com.atlassian.jira.rest.client.api.domain.AuditRecordsData;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.time.OffsetDateTime;
+import org.joda.time.OffsetDateTimeZone;
 import org.joda.time.Instant;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
  */
 public class AuditRecordsJsonParserTest {
 
-    public static final Instant SAMPLE_DATE = new DateTime(1994, 11, 05, 13, 15, 30, 111, DateTimeZone.UTC).toInstant();
+    public static final Instant SAMPLE_DATE = new OffsetDateTime(1994, 11, 05, 13, 15, 30, 111, OffsetDateTimeZone.UTC).toInstant();
     private final AuditRecordsJsonParser parser = new AuditRecordsJsonParser();
 
     @Test

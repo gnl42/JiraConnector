@@ -21,11 +21,10 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import com.google.common.base.Preconditions;
 
 import me.glindholm.jira.rest.client.api.ExpandableProperty;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
@@ -34,7 +33,7 @@ import me.glindholm.jira.rest.client.api.domain.User;
 public class UserJsonParser implements JsonObjectParser<User> {
     @Override
     public User parse(JSONObject json) throws JSONException, URISyntaxException {
-        final BasicUser basicUser = Preconditions.checkNotNull(JsonParseUtil.parseBasicUser(json));
+        final BasicUser basicUser = Objects.requireNonNull(JsonParseUtil.parseBasicUser(json));
         final String timezone = JsonParseUtil.getOptionalString(json, "timeZone");
         final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
         Map<String, URI> avatarUris = new HashMap<>();

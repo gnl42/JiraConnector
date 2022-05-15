@@ -44,8 +44,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 import org.hamcrest.Matcher;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
+import java.time.OffsetDateTime;
+import org.joda.time.format.ISOOffsetDateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -95,7 +95,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     private static final String ISSUE_KEY_WITH_REMOVED_USER_DATA = "ANONEDIT-1";
 
     // no timezone here, as JIRA does not store timezone information in its dump file
-    private final DateTime dateTime = ISODateTimeFormat.dateTimeParser().parseDateTime("2010-08-04T17:46:45.454");
+    private final OffsetDateTime dateTime = ISOOffsetDateTimeFormat.dateTimeParser().parseOffsetDateTime("2010-08-04T17:46:45.454");
 
     private static boolean alreadyRestored;
 
@@ -197,7 +197,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
             final ChangelogGroup chg1 = Iterables.get(changelog, 18);
             assertEquals("admin", chg1.getAuthor().getName());
             assertEquals("Administrator", chg1.getAuthor().getDisplayName());
-            assertEquals(new DateTime(2010, 8, 17, 16, 40, 34, 924).toInstant(), chg1.getCreated().toInstant());
+            assertEquals(new OffsetDateTime(2010, 8, 17, 16, 40, 34, 924).toInstant(), chg1.getCreated().toInstant());
 
             assertEquals(singletonList(new ChangelogItem(FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
                     .getItems());
@@ -205,7 +205,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
             final ChangelogGroup chg2 = Iterables.get(changelog, 20);
             assertEquals("admin", chg2.getAuthor().getName());
             assertEquals("Administrator", chg2.getAuthor().getDisplayName());
-            assertEquals(new DateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
+            assertEquals(new OffsetDateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
 
             // there is not guarantee for the order of the items
             Matcher<Iterable<? extends ChangelogItem>> historyItemsMatcher = containsInAnyOrder(

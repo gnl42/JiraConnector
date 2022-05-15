@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.Version;
 
@@ -34,14 +34,14 @@ public class VersionJsonParser implements JsonObjectParser<Version> {
         final boolean isArchived = json.getBoolean("archived");
         final boolean isReleased = json.getBoolean("released");
         final String releaseDateStr = JsonParseUtil.getOptionalString(json, "releaseDate");
-        final DateTime releaseDate = parseReleaseDate(releaseDateStr);
+        final OffsetDateTime releaseDate = parseReleaseDate(releaseDateStr);
         return new Version(self, id, name, description, isArchived, isReleased, releaseDate);
     }
 
-    private DateTime parseReleaseDate(String releaseDateStr) {
+    private OffsetDateTime parseReleaseDate(String releaseDateStr) {
         if (releaseDateStr != null) {
             if (releaseDateStr.length() > "YYYY-MM-RR".length()) { // JIRA 4.4 introduces different format - just ISO date
-                return JsonParseUtil.parseDateTime(releaseDateStr);
+                return JsonParseUtil.parseOffsetDateTime(releaseDateStr);
             } else {
                 return JsonParseUtil.parseDate(releaseDateStr);
             }

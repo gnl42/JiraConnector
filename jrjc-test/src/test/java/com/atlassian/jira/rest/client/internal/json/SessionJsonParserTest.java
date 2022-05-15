@@ -31,7 +31,7 @@ public class SessionJsonParserTest {
         final Session session = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/session/valid.json"));
         Assert.assertEquals(TestConstants.USER_ADMIN_BASIC_DEPRECATED.getSelf(), session.getUserUri());
         Assert.assertEquals("admin", session.getUsername());
-        assertEquals(new LoginInfo(12, 413, TestUtil.toDateTime("2010-09-14T16:15:47.554+0200"),
-                TestUtil.toDateTime("2010-09-14T16:48:33.002+0200")), session.getLoginInfo());
+        assertEquals(new LoginInfo(12, 413, TestUtil.toOffsetDateTime("2010-09-14T16:15:47.554+0200"),
+                TestUtil.toOffsetDateTime("2010-09-14T16:48:33.002+0200")), session.getLoginInfo());
     }
 }

@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
-import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
+import static com.atlassian.jira.rest.client.TestUtil.toOffsetDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityById;
 import static com.atlassian.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
@@ -106,8 +106,8 @@ public class SearchResultJsonParserTest {
         assertNull(issue.getResolution());
         assertNull(issue.getChangelog());
         assertNull(issue.getAttachments());
-        assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getUpdateDate());
-        assertEquals(toDateTime("2010-09-22T18:06:32.000+02:00"), issue.getCreationDate());
+        assertEquals(toOffsetDateTime("2010-09-22T18:06:32.000+02:00"), issue.getUpdateDate());
+        assertEquals(toOffsetDateTime("2010-09-22T18:06:32.000+02:00"), issue.getCreationDate());
         assertEquals(TestConstants.USER1, issue.getReporter());
         assertEquals(TestConstants.USER_ADMIN, issue.getAssignee());
 

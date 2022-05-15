@@ -71,7 +71,6 @@
 		<jira.data.version>${jira.version}</jira.data.version>
 		<jira.test-lib.version>${jira.version}</jira.test-lib.version>
 		<atlassian.httpclient.version>3.0.0</atlassian.httpclient.version>
-		<joda.time.version>2.9.9</joda.time.version>
 		<httpcore.version>4.4.15</httpcore.version>
 		<amps.version>6.3.22-fc341f3d2</amps.version>
 		<testkit.version>8.1.5</testkit.version>
@@ -487,11 +486,6 @@
 				<artifactId>httpmime</artifactId>
 			</dependency>
 
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>${joda.time.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-core-asl</artifactId>

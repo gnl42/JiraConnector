@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 
@@ -34,7 +34,7 @@ public class Attachment implements AddressableEntity {
     private final URI self;
     private final String filename;
     private final BasicUser author;
-    private final DateTime creationDate;
+    private final OffsetDateTime creationDate;
     private final int size;
     private final String mimeType;
     private final URI contentUri;
@@ -42,7 +42,7 @@ public class Attachment implements AddressableEntity {
     @Nullable
     private final URI thumbnailUri;
 
-    public Attachment(URI self, String filename, BasicUser author, DateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
+    public Attachment(URI self, String filename, BasicUser author, OffsetDateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
         this.self = self;
         this.filename = filename;
         this.author = author;
@@ -70,7 +70,7 @@ public class Attachment implements AddressableEntity {
         return author;
     }
 
-    public DateTime getCreationDate() {
+    public OffsetDateTime getCreationDate() {
         return creationDate;
     }
 

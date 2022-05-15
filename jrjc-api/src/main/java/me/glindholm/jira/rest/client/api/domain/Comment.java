@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 
@@ -38,13 +38,13 @@ public class Comment implements AddressableEntity {
     private final BasicUser author;
     @Nullable
     private final BasicUser updateAuthor;
-    private final DateTime creationDate;
-    private final DateTime updateDate;
+    private final OffsetDateTime creationDate;
+    private final OffsetDateTime updateDate;
     private final String body;
     @Nullable
     private final Visibility visibility;
 
-    public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, DateTime creationDate, DateTime updateDate, Visibility visibility, @Nullable Long id) {
+    public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, OffsetDateTime creationDate, OffsetDateTime updateDate, Visibility visibility, @Nullable Long id) {
         this.author = author;
         this.updateAuthor = updateAuthor;
         this.creationDate = creationDate;
@@ -95,11 +95,11 @@ public class Comment implements AddressableEntity {
         return updateAuthor;
     }
 
-    public DateTime getCreationDate() {
+    public OffsetDateTime getCreationDate() {
         return creationDate;
     }
 
-    public DateTime getUpdateDate() {
+    public OffsetDateTime getUpdateDate() {
         return updateDate;
     }
 

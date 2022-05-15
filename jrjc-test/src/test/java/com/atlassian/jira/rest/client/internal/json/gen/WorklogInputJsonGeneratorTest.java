@@ -23,7 +23,7 @@ import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
 import com.atlassian.jira.rest.client.internal.json.ResourceUtil;
 import com.atlassian.jira.rest.client.test.matchers.JSONObjectMatcher;
 import org.codehaus.jettison.json.JSONException;
-import org.joda.time.DateTimeZone;
+import org.joda.time.OffsetDateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class WorklogInputJsonGeneratorTest {
     private final BasicUser USER;
     private final BasicUser ADMIN;
     private final WorklogInputJsonGenerator generator = new WorklogInputJsonGenerator(
-            JsonParseUtil.JIRA_DATE_TIME_FORMATTER.withZone(DateTimeZone.forID("+02:00"))
+            JsonParseUtil.JIRA_DATE_TIME_FORMATTER.withZone(OffsetDateTimeZone.forID("+02:00"))
     );
 
     public WorklogInputJsonGeneratorTest() throws URISyntaxException {
@@ -50,7 +50,7 @@ public class WorklogInputJsonGeneratorTest {
         final WorklogInput worklogInput = new WorklogInput(
                 toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, ADMIN, "my first work",
-                JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
+                JsonParseUtil.parseOffsetDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
 
         Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid.json")));
@@ -61,7 +61,7 @@ public class WorklogInputJsonGeneratorTest {
         final WorklogInput worklogInput = new WorklogInput(
                 toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), ADMIN, USER, "my first work",
-                JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 43, null);
+                JsonParseUtil.parseOffsetDateTime("2010-08-15T16:35:00.000+0200"), 43, null);
 
         Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-visibility.json")));
@@ -72,7 +72,7 @@ public class WorklogInputJsonGeneratorTest {
         final WorklogInput worklogInput = new WorklogInput(
                 toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), null, null, "my first work",
-                JsonParseUtil.parseDateTime("2010-08-15T16:35:00.000+0200"), 247, Visibility.group("some-group"));
+                JsonParseUtil.parseOffsetDateTime("2010-08-15T16:35:00.000+0200"), 247, Visibility.group("some-group"));
 
         Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-users.json")));

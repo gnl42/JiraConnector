@@ -47,15 +47,15 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsEmptyIterable;
-import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.ISOOffsetDateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Iterator;
 
-import static com.atlassian.jira.rest.client.TestUtil.toDateTime;
-import static com.atlassian.jira.rest.client.TestUtil.toDateTimeFromIsoDate;
+import static com.atlassian.jira.rest.client.TestUtil.toOffsetDateTime;
+import static com.atlassian.jira.rest.client.TestUtil.toOffsetDateTimeFromIsoDate;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findAttachmentByFileName;
 import static org.hamcrest.Matchers.is;
@@ -83,8 +83,8 @@ public class IssueJsonParserTest {
 
         assertEquals("Major", issue.getPriority().getName());
         assertNull(issue.getResolution());
-        assertEquals(toDateTime("2010-07-26T13:29:18.262+0200"), issue.getCreationDate());
-        assertEquals(toDateTime("2012-12-07T14:52:52.570+01:00"), issue.getUpdateDate());
+        assertEquals(toOffsetDateTime("2010-07-26T13:29:18.262+0200"), issue.getCreationDate());
+        assertEquals(toOffsetDateTime("2012-12-07T14:52:52.570+01:00"), issue.getUpdateDate());
         assertEquals(null, issue.getDueDate());
 
         final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L,
@@ -131,8 +131,8 @@ public class IssueJsonParserTest {
                 toUri("http://localhost:8090/jira/rest/api/2/issue/10010/worklog/10011"),
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/10010"), TestConstants.USER1_BASIC,
                 TestConstants.USER1_BASIC, "another piece of work",
-                toDateTime("2010-08-17T16:38:00.013+02:00"), toDateTime("2010-08-17T16:38:24.948+02:00"),
-                toDateTime("2010-08-17T16:37:00.000+02:00"), 15, Visibility.role("Developers"));
+                toOffsetDateTime("2010-08-17T16:38:00.013+02:00"), toOffsetDateTime("2010-08-17T16:38:24.948+02:00"),
+                toOffsetDateTime("2010-08-17T16:37:00.000+02:00"), 15, Visibility.role("Developers"));
         final Worklog worklog1 = Iterables.get(worklogs, 1);
         assertEquals(expectedWorklog1, worklog1);
 
@@ -243,7 +243,7 @@ public class IssueJsonParserTest {
         assertEquals("TST", issue.getProject().getKey());
         assertEquals(Long.valueOf(10000), issue.getId());
         assertNotNull(issue.getDueDate());
-        assertEquals(toDateTimeFromIsoDate("2010-07-05"), issue.getDueDate());
+        assertEquals(toOffsetDateTimeFromIsoDate("2010-07-05"), issue.getDueDate());
         assertEquals(4, Iterables.size(issue.getAttachments()));
         assertEquals(1, Iterables.size(issue.getIssueLinks()));
         assertEquals(1.457, issue.getField("customfield_10000").getValue());
@@ -373,7 +373,7 @@ public class IssueJsonParserTest {
     }
 
     private static void verifyChangelog(ChangelogGroup changelogGroup, String createdDate, BasicUser author, Iterable<ChangelogItem> expectedItems) {
-        assertEquals(ISODateTimeFormat.dateTime().parseDateTime(createdDate), changelogGroup.getCreated());
+        assertEquals(ISOOffsetDateTimeFormat.dateTime().parseOffsetDateTime(createdDate), changelogGroup.getCreated());
         assertEquals(author, changelogGroup.getAuthor());
         assertEquals(expectedItems, changelogGroup.getItems());
     }

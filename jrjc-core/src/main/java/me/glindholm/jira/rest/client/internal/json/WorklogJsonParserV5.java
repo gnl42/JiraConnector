@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
@@ -42,9 +42,9 @@ public class WorklogJsonParserV5 implements JsonObjectParser<Worklog> {
         final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
         // comment is optional due to JRJC-49: JIRA can return worklog without comment
         final String comment = json.optString("comment");
-        final DateTime creationDate = JsonParseUtil.parseDateTime(json, "created");
-        final DateTime updateDate = JsonParseUtil.parseDateTime(json, "updated");
-        final DateTime startDate = JsonParseUtil.parseDateTime(json, "started");
+        final OffsetDateTime creationDate = JsonParseUtil.parseOffsetDateTime(json, "created");
+        final OffsetDateTime updateDate = JsonParseUtil.parseOffsetDateTime(json, "updated");
+        final OffsetDateTime startDate = JsonParseUtil.parseOffsetDateTime(json, "started");
         // timeSpentSeconds is not required due to bug: JRADEV-8825 (fixed in 5.0, Iteration 14).
         final int secondsSpent = json.optInt("timeSpentSeconds", 0);
         final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);

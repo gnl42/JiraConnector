@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Basic information about JIRA server
@@ -32,13 +32,13 @@ public class ServerInfo {
     private final URI baseUri;
     private final String version;
     private final int buildNumber;
-    private final DateTime buildDate;
+    private final OffsetDateTime buildDate;
     @Nullable
-    private final DateTime serverTime;
+    private final OffsetDateTime serverTime;
     private final String scmInfo;
     private final String serverTitle;
 
-    public ServerInfo(URI baseUri, String version, int buildNumber, DateTime buildDate, @Nullable DateTime serverTime,
+    public ServerInfo(URI baseUri, String version, int buildNumber, OffsetDateTime buildDate, @Nullable OffsetDateTime serverTime,
             String scmInfo, String serverTitle) {
         this.baseUri = baseUri;
         this.version = version;
@@ -73,7 +73,7 @@ public class ServerInfo {
     /**
      * @return date when the version of this JIRA instance has been built
      */
-    public DateTime getBuildDate() {
+    public OffsetDateTime getBuildDate() {
         return buildDate;
     }
 
@@ -82,7 +82,7 @@ public class ServerInfo {
      * when the user is not authenticated.
      */
     @Nullable
-    public DateTime getServerTime() {
+    public OffsetDateTime getServerTime() {
         return serverTime;
     }
 

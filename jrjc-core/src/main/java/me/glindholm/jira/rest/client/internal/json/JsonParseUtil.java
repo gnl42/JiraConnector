@@ -18,6 +18,11 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,10 +34,6 @@ import javax.annotation.Nullable;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import com.google.common.base.Optional;
 
@@ -43,8 +44,8 @@ import me.glindholm.jira.rest.client.api.domain.BasicUser;
 
 public class JsonParseUtil {
     public static final String JIRA_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-    public static final DateTimeFormatter JIRA_DATE_TIME_FORMATTER = DateTimeFormat.forPattern(JIRA_DATE_TIME_PATTERN);
-    public static final DateTimeFormatter JIRA_DATE_FORMATTER = ISODateTimeFormat.date();
+    public static final DateTimeFormatter JIRA_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(JIRA_DATE_TIME_PATTERN);
+    public static final DateTimeFormatter JIRA_DATE_FORMATTER = DateTimeFormatter.ISO_DATE;
     public static final String SELF_ATTR = "self";
 
     public static <T> Collection<T> parseJsonArray(final JSONArray jsonArray, final JsonObjectParser<T> jsonParser)
@@ -204,19 +205,19 @@ public class JsonParseUtil {
                 json.optString("accountId", null));
     }
 
-    public static DateTime parseDateTime(final JSONObject jsonObject, final String attributeName) throws JSONException {
-        return parseDateTime(jsonObject.getString(attributeName));
+    public static OffsetDateTime parseOffsetDateTime(final JSONObject jsonObject, final String attributeName) throws JSONException {
+        return parseOffsetDateTime(jsonObject.getString(attributeName));
     }
 
     @Nullable
-    public static DateTime parseOptionalDateTime(final JSONObject jsonObject, final String attributeName) throws JSONException {
+    public static OffsetDateTime parseOptionalOffsetDateTime(final JSONObject jsonObject, final String attributeName) throws JSONException {
         final String s = getOptionalString(jsonObject, attributeName);
-        return s != null ? parseDateTime(s) : null;
+        return s != null ? parseOffsetDateTime(s) : null;
     }
 
-    public static DateTime parseDateTime(final String str) {
+    public static OffsetDateTime parseOffsetDateTime(final String str) {
         try {
-            return JIRA_DATE_TIME_FORMATTER.parseDateTime(str);
+            return OffsetDateTime.parse(str, JIRA_DATE_TIME_FORMATTER);
         } catch (Exception e) {
             throw new RestClientException(e);
         }
@@ -228,33 +229,33 @@ public class JsonParseUtil {
      * @param str String contains either date and time or date only
      * @return date and time or date only
      */
-    public static DateTime parseDateTimeOrDate(final String str) {
+    public static OffsetDateTime parseOffsetDateTimeOrDate(final String str) {
         try {
-            return JIRA_DATE_TIME_FORMATTER.parseDateTime(str);
+            return OffsetDateTime.parse(str, JIRA_DATE_TIME_FORMATTER);
         } catch (Exception ignored) {
             try {
-                return JIRA_DATE_FORMATTER.parseDateTime(str);
+                return LocalDate.parse(str, JIRA_DATE_FORMATTER).atTime(OffsetTime.now(ZoneId.systemDefault())); // FIXME
             } catch (Exception e) {
                 throw new RestClientException(e);
             }
         }
     }
 
-    public static DateTime parseDate(final String str) {
+    public static OffsetDateTime parseDate(final String str) {
         try {
-            return JIRA_DATE_FORMATTER.parseDateTime(str);
+            return OffsetDateTime.parse(str, JIRA_DATE_FORMATTER);
         } catch (Exception e) {
             throw new RestClientException(e);
         }
     }
 
-    public static String formatDate(final DateTime dateTime) {
-        return JIRA_DATE_FORMATTER.print(dateTime);
+    public static String formatDate(final OffsetDateTime dateTime) {
+        return dateTime.format(JIRA_DATE_FORMATTER);
     }
 
     @SuppressWarnings("unused")
-    public static String formatDateTime(final DateTime dateTime) {
-        return JIRA_DATE_TIME_FORMATTER.print(dateTime);
+    public static String formatOffsetDateTime(final OffsetDateTime dateTime) {
+        return dateTime.format(JIRA_DATE_TIME_FORMATTER);
     }
 
 

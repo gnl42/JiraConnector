@@ -17,23 +17,23 @@
 package me.glindholm.jira.rest.client.test.matchers;
 
 import org.hamcrest.Description;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 import org.junit.internal.matchers.TypeSafeMatcher;
 
-public class DateTimeMatcher extends TypeSafeMatcher<DateTime> {
-    private final DateTime expected;
+public class OffsetDateTimeMatcher extends TypeSafeMatcher<OffsetDateTime> {
+    private final OffsetDateTime expected;
 
-    public DateTimeMatcher(DateTime expected) {
+    public OffsetDateTimeMatcher(OffsetDateTime expected) {
         this.expected = expected;
     }
 
 
-    public static DateTimeMatcher isEqual(DateTime dateTime) {
-        return new DateTimeMatcher(dateTime);
+    public static OffsetDateTimeMatcher isEqual(OffsetDateTime dateTime) {
+        return new OffsetDateTimeMatcher(dateTime);
     }
 
     @Override
-    public boolean matchesSafely(DateTime given) {
+    public boolean matchesSafely(OffsetDateTime given) {
         return expected == null ? given == null : expected.isEqual(given);
     }
 
