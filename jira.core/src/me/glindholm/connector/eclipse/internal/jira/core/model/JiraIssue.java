@@ -16,7 +16,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
 import java.io.Serializable;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import me.glindholm.jira.rest.client.api.domain.Issue;
@@ -64,9 +64,9 @@ public class JiraIssue implements Serializable {
 
     private String reporterName;
 
-    private Date created;
+    private Instant created;
 
-    private Date updated;
+    private Instant updated;
 
     private JiraVersion[] reportedVersions = null;
 
@@ -74,7 +74,7 @@ public class JiraIssue implements Serializable {
 
     private JiraComponent[] components = null;
 
-    private Date due;
+    private Instant due;
 
     private boolean hasDueDate;
 
@@ -172,11 +172,11 @@ public class JiraIssue implements Serializable {
         this.components = components;
     }
 
-    public Date getCreated() {
+    public Instant getCreated() {
         return this.created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
@@ -188,11 +188,11 @@ public class JiraIssue implements Serializable {
         this.description = description;
     }
 
-    public Date getDue() {
+    public Instant getDue() {
         return this.due;
     }
 
-    public void setDue(Date due) {
+    public void setDue(Instant due) {
         this.due = due;
         this.hasDueDate = true;
     }
@@ -257,11 +257,11 @@ public class JiraIssue implements Serializable {
         this.type = type;
     }
 
-    public Date getUpdated() {
+    public Instant getUpdated() {
         return this.updated;
     }
 
-    public void setUpdated(Date updated) {
+    public void setUpdated(Instant updated) {
         this.updated = updated;
     }
 

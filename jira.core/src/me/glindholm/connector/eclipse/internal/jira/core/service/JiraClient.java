@@ -826,7 +826,7 @@ public class JiraClient {
     }
 
     public SimpleDateFormat getDateTimeFormat() {
-        return JiraRestClientAdapter.getDateTimeFormat();
+        return JiraRestClientAdapter.getOffsetDateTimeFormat();
     }
 
     public SimpleDateFormat getDateFormat() {

@@ -13,103 +13,103 @@
 package me.glindholm.connector.eclipse.internal.jira.core.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * @author Brock Janiczak
  */
 public class JiraVersion implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private boolean archived;
+    private boolean archived;
 
-	private Date releaseDate;
+    private Instant releaseDate;
 
-	private boolean released;
+    private boolean released;
 
-	private long sequence;
+    private long sequence;
 
-	public JiraVersion(String id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+    public JiraVersion(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-	public boolean isArchived() {
-		return this.archived;
-	}
+    public boolean isArchived() {
+        return this.archived;
+    }
 
-	public void setArchived(boolean archived) {
-		this.archived = archived;
-	}
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public boolean isReleased() {
-		return this.released;
-	}
+    public boolean isReleased() {
+        return this.released;
+    }
 
-	public void setReleased(boolean released) {
-		this.released = released;
-	}
+    public void setReleased(boolean released) {
+        this.released = released;
+    }
 
-	public Date getReleaseDate() {
-		return this.releaseDate;
-	}
+    public Instant getReleaseDate() {
+        return this.releaseDate;
+    }
 
-	public void setReleaseDate(Date releaseDate) {
-		this.releaseDate = releaseDate;
-	}
+    public void setReleaseDate(Instant releaseDate) {
+        this.releaseDate = releaseDate;
+    }
 
-	public long getSequence() {
-		return this.sequence;
-	}
+    public long getSequence() {
+        return this.sequence;
+    }
 
-	public void setSequence(long sequence) {
-		this.sequence = sequence;
-	}
+    public void setSequence(long sequence) {
+        this.sequence = sequence;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
 
-		if (!(obj instanceof JiraVersion)) {
-			return false;
-		}
+        if (!(obj instanceof JiraVersion)) {
+            return false;
+        }
 
-		JiraVersion that = (JiraVersion) obj;
+        JiraVersion that = (JiraVersion) obj;
 
-		return this.id.equals(that.id);
-	}
+        return this.id.equals(that.id);
+    }
 
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		return name;
-	}
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }

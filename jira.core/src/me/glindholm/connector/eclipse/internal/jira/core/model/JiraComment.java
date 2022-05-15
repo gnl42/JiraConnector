@@ -13,87 +13,87 @@
 package me.glindholm.connector.eclipse.internal.jira.core.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * @author Brock Janiczak
  */
 public final class JiraComment implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String roleLevel;
+    private String roleLevel;
 
-	private String comment;
+    private String comment;
 
-	private String author;
+    private String author;
 
-	private Date created;
+    private Instant created;
 
-	private boolean markupDetected;
+    private boolean markupDetected;
 
-	private String authorDisplayName;
+    private String authorDisplayName;
 
-	public JiraComment(String comment, String author, String roleLvel, Date created) {
-		this.comment = comment;
-		this.author = author;
-		this.roleLevel = roleLvel;
-		this.created = created;
-	}
+    public JiraComment(String comment, String author, String roleLvel, Instant created) {
+        this.comment = comment;
+        this.author = author;
+        this.roleLevel = roleLvel;
+        this.created = created;
+    }
 
-	public JiraComment() {
-	}
+    public JiraComment() {
+    }
 
-	public String getAuthor() {
-		return this.author;
-	}
+    public String getAuthor() {
+        return this.author;
+    }
 
-	public String getComment() {
-		return this.comment;
-	}
+    public String getComment() {
+        return this.comment;
+    }
 
-	public Date getCreated() {
-		return this.created;
-	}
+    public Instant getCreated() {
+        return this.created;
+    }
 
-	public String getRoleLevel() {
-		return this.roleLevel;
-	}
+    public String getRoleLevel() {
+        return this.roleLevel;
+    }
 
-	public boolean isMarkupDetected() {
-		return markupDetected;
-	}
+    public boolean isMarkupDetected() {
+        return markupDetected;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-	public void setCreated(Date created) {
-		this.created = created;
-	}
+    public void setCreated(Instant created) {
+        this.created = created;
+    }
 
-	public void setRoleLevel(String level) {
-		this.roleLevel = level;
-	}
+    public void setRoleLevel(String level) {
+        this.roleLevel = level;
+    }
 
-	public void setMarkupDetected(boolean markupDetected) {
-		this.markupDetected = markupDetected;
-	}
+    public void setMarkupDetected(boolean markupDetected) {
+        this.markupDetected = markupDetected;
+    }
 
-	@Override
-	public String toString() {
-		return this.author + ": " + this.comment; //$NON-NLS-1$
-	}
+    @Override
+    public String toString() {
+        return this.author + ": " + this.comment; //$NON-NLS-1$
+    }
 
-	public void setAuthorDisplayName(String displayName) {
-		this.authorDisplayName = displayName;
-	}
+    public void setAuthorDisplayName(String displayName) {
+        this.authorDisplayName = displayName;
+    }
 
-	public String getAuthorDisplayName() {
-		return authorDisplayName;
-	}
+    public String getAuthorDisplayName() {
+        return authorDisplayName;
+    }
 }

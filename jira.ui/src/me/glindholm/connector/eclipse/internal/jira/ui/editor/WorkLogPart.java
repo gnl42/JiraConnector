@@ -12,6 +12,7 @@
 package me.glindholm.connector.eclipse.internal.jira.ui.editor;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -143,8 +144,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
             public int compare(Viewer viewer, Object e1, Object e2) {
                 JiraWorkLog item1 = (JiraWorkLog) e1;
                 JiraWorkLog item2 = (JiraWorkLog) e2;
-                Date created1 = item1.getCreated();
-                Date created2 = item2.getCreated();
+                Instant created1 = item1.getCreated();
+                Instant created2 = item2.getCreated();
                 if (created1 != null && created2 != null) {
                     return created1.compareTo(created2);
                 } else if (created1 == null && created2 != null) {
@@ -272,7 +273,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
             newWorkDoneAmount = log.getTimeSpent();
             newWorkDoneDate = new GregorianCalendar();
             if (log.getStartDate() != null) {
-                newWorkDoneDate.setTime(log.getStartDate());
+                newWorkDoneDate.setTime(Date.from(log.getStartDate()));
             }
             newWorkDoneDescription = log.getComment();
             newWorkDoneAdjustEstimate = log.getAdjustEstimate();
@@ -438,7 +439,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         JiraWorkLog tempworkLog = new JiraWorkLog();
         tempworkLog.setAuthor(getTaskEditorPage().getTaskRepository().getUserName());
         tempworkLog.setComment(newWorkDoneDescription);
-        tempworkLog.setStartDate(newWorkDoneDate.getTime());
+        tempworkLog.setStartDate(newWorkDoneDate.getTime().toInstant());
         tempworkLog.setTimeSpent(newWorkDoneAmount);
         tempworkLog.setAdjustEstimate(newWorkDoneAdjustEstimate);
         if (tempworkLog.equals(newWorkLog)) {

@@ -13,99 +13,99 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * @author Steffen Pingel
  */
 public class JiraAttachment implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private long size;
+    private long size;
 
-	private String author;
+    private String author;
 
-	private Date created;
+    private Instant created;
 
-	private URI content;
+    private URI content;
 
-	private String authorDisplayName;
+    private String authorDisplayName;
 
-	public JiraAttachment() {
-	}
+    public JiraAttachment() {
+    }
 
-	public JiraAttachment(String id, String name, long size, String author, Date created) {
-		this.id = id;
-		this.name = name;
-		this.size = size;
-		this.author = author;
-		this.created = created;
-	}
+    public JiraAttachment(String id, String name, long size, String author, Instant created) {
+        this.id = id;
+        this.name = name;
+        this.size = size;
+        this.author = author;
+        this.created = created;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public long getSize() {
-		return size;
-	}
+    public long getSize() {
+        return size;
+    }
 
-	public void setSize(long size) {
-		this.size = size;
-	}
+    public void setSize(long size) {
+        this.size = size;
+    }
 
-	public String getAuthor() {
-		return author;
-	}
+    public String getAuthor() {
+        return author;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-	public Date getCreated() {
-		return created;
-	}
+    public Instant getCreated() {
+        return created;
+    }
 
-	public void setCreated(Date created) {
-		this.created = created;
-	}
+    public void setCreated(Instant created) {
+        this.created = created;
+    }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
-	public URI getContent() {
-		return content;
-	}
+    public URI getContent() {
+        return content;
+    }
 
-	public void setContent(URI content) {
-		this.content = content;
-	}
+    public void setContent(URI content) {
+        this.content = content;
+    }
 
-	public void setAuthorDisplayName(String authorDisplayName) {
-		this.authorDisplayName = authorDisplayName;
-	}
+    public void setAuthorDisplayName(String authorDisplayName) {
+        this.authorDisplayName = authorDisplayName;
+    }
 
-	public String getAuthorDisplayName() {
-		return authorDisplayName;
-	}
+    public String getAuthorDisplayName() {
+        return authorDisplayName;
+    }
 
 }

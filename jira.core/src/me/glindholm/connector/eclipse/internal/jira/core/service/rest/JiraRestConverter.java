@@ -13,6 +13,13 @@ package me.glindholm.connector.eclipse.internal.jira.core.service.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,8 +34,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
@@ -238,8 +243,8 @@ public class JiraRestConverter {
             }
         }
 
-        issue.setCreated(rawIssue.getCreationDate().toDate());
-        issue.setUpdated(rawIssue.getUpdateDate().toDate());
+        issue.setCreated(rawIssue.getCreationDate().toInstant());
+        issue.setUpdated(rawIssue.getUpdateDate().toInstant());
 
         if (project != null && project.getIssueTypeById(rawIssue.getIssueType().getId().toString()) != null) {
             issue.setType(project.getIssueTypeById(rawIssue.getIssueType().getId().toString()));
@@ -279,9 +284,9 @@ public class JiraRestConverter {
             cache.refreshProjectDetails(issue.getProject(), monitor);
         }
 
-        DateTime dueDate = rawIssue.getDueDate();
+        OffsetDateTime dueDate = rawIssue.getDueDate();
         if (dueDate != null) {
-            issue.setDue(dueDate.toDate());
+            issue.setDue(dueDate.toInstant());
         } else {
             issue.setDue(null);
         }
@@ -600,17 +605,17 @@ public class JiraRestConverter {
             outWorklog.setAuthor(worklog.getAuthor().getDisplayName());
         }
         outWorklog.setComment(worklog.getComment());
-        outWorklog.setCreated(worklog.getCreationDate().toDate());
+        outWorklog.setCreated(worklog.getCreationDate().toInstant());
         // outWorklog.setGroupLevel(worklog.get)
         // outWorklog.setId(worklog.get)
         // outWorklog.setNewRemainingEstimate(worklog.get);
         // outWorklog.setRoleLevelId(worklog.get);
-        outWorklog.setStartDate(worklog.getStartDate().toDate());
+        outWorklog.setStartDate(worklog.getStartDate().toInstant());
         outWorklog.setTimeSpent(worklog.getMinutesSpent() * 60);
         if (worklog.getUpdateAuthor() != null) {
             outWorklog.setUpdateAuthor(worklog.getUpdateAuthor().getDisplayName());
         }
-        outWorklog.setUpdated(worklog.getUpdateDate().toDate());
+        outWorklog.setUpdated(worklog.getUpdateDate().toInstant());
 
         return outWorklog;
     }
@@ -645,7 +650,7 @@ public class JiraRestConverter {
             outAttachment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
         }
 
-        outAttachment.setCreated(attachment.getCreationDate().toDate());
+        outAttachment.setCreated(attachment.getCreationDate().toInstant());
         outAttachment.setName(attachment.getFilename());
         outAttachment.setSize(attachment.getSize());
         outAttachment.setContent(attachment.getContentUri());
@@ -681,7 +686,7 @@ public class JiraRestConverter {
         }
 
         outComment.setComment(comment.getBody());
-        outComment.setCreated(comment.getCreationDate().toDate());
+        outComment.setCreated(comment.getCreationDate().toInstant());
         outComment.setMarkupDetected(false);
 
         Visibility visibility = comment.getVisibility();
@@ -729,9 +734,9 @@ public class JiraRestConverter {
     private static JiraVersion convert(Version version) {
         JiraVersion outVersion = new JiraVersion(version.getId().toString(), version.getName());
 
-        DateTime releaseDate = version.getReleaseDate();
+        OffsetDateTime releaseDate = version.getReleaseDate();
         if (releaseDate != null) {
-            outVersion.setReleaseDate(releaseDate.toDate());
+            outVersion.setReleaseDate(releaseDate.toInstant());
         }
 
         outVersion.setArchived(version.isArchived());
@@ -835,7 +840,7 @@ public class JiraRestConverter {
         }
 
         worklogInputBuilder.setComment(jiraWorklog.getComment());
-        worklogInputBuilder.setStartDate(new DateTime(jiraWorklog.getStartDate()));
+        worklogInputBuilder.setStartDate(OffsetDateTime.ofInstant(jiraWorklog.getStartDate(), ZoneId.systemDefault()));
         // worklogInputBuilder.setMinutesSpent(new Long(jiraWorklog.getTimeSpent() /
         // 60).intValue());
         worklogInputBuilder.setMinutesSpent((int) (jiraWorklog.getTimeSpent() / 60)); // $NON-NLS-1$
@@ -849,7 +854,7 @@ public class JiraRestConverter {
 
         serverInfoOut.setBaseUrl(serverInfo.getBaseUri().toString());
         serverInfoOut.setWebBaseUrl(serverInfo.getBaseUri().toString());
-        serverInfoOut.setBuildDate(serverInfo.getBuildDate().toDate());
+        serverInfoOut.setBuildDate(serverInfo.getBuildDate().toInstant());
         serverInfoOut.setBuildNumber(Integer.toString(serverInfo.getBuildNumber()));
         serverInfoOut.setVersion(serverInfo.getVersion());
 
@@ -974,11 +979,16 @@ public class JiraRestConverter {
 
             if (customField.getValues().size() > 0 && customField.getValues().get(0) != null && customField.getValues().get(0).length() > 0) {
                 String date = null;
-
+                final String dateValue = customField.getValues().get(0);
                 try {
-                    date = new DateTime(Long.valueOf(customField.getValues().get(0))).toString(JiraRestFields.DATE_FORMAT);
-                } catch (IllegalArgumentException e) {
-                    date = new DateTime(customField.getValues().get(0)).toString(JiraRestFields.DATE_FORMAT);
+
+                    final long epochTime = Long.parseLong(dateValue);
+                    date = LocalDate.ofInstant(Instant.ofEpochMilli(epochTime), ZoneId.systemDefault())
+                            .format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT));
+                } catch (Exception e) {
+                    date = LocalDate.parse(dateValue, DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT))
+                            .format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT));
+                    //                    date = new OffsetDateTime(dateValue).toString(JiraRestFields.DATE_FORMAT);
                 }
 
                 return new FieldInput(customField.getId(), date);
@@ -988,13 +998,18 @@ public class JiraRestConverter {
 
             if (customField.getValues().size() > 0 && customField.getValues().get(0) != null && customField.getValues().get(0).length() > 0) {
                 String date = null;
-
+                final String dateValue = customField.getValues().get(0);
                 try {
-                    date = new DateTime(customField.getValues().get(0)).toString(JiraRestFields.DATE_TIME_FORMAT);
-                } catch (IllegalArgumentException e) {
-
-                    date = DateTimeFormat.forPattern("EEE, dd MMM yyyy HH:mm:ss") //$NON-NLS-1$
-                            .withLocale(Locale.ENGLISH).parseDateTime(customField.getValues().get(0)).toString(JiraRestFields.DATE_TIME_FORMAT);
+                    final OffsetDateTime localDateTime = LocalDateTime.parse(dateValue, DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT))
+                            .atOffset(ZoneOffset.UTC);
+                    date = localDateTime
+                            .format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT));
+                } catch (Exception e) {
+                    date = LocalDateTime.parse(dateValue, DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss").localizedBy(Locale.ENGLISH))
+                            .atOffset(ZoneOffset.UTC)
+                            .format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT));
+                    //                    date = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss") //$NON-NLS-1$
+                    //                            .withLocale(Locale.ENGLISH).parseOffsetDateTime(dateValue).toString(JiraRestFields.DATE_TIME_FORMAT);
                 }
 
                 return new FieldInput(customField.getId(), date);

@@ -18,6 +18,9 @@ import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +37,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
-import org.joda.time.DateTime;
 
 import com.atlassian.httpclient.api.factory.HttpClientOptions;
 
@@ -493,7 +495,8 @@ public class JiraRestClientAdapter {
                         fields.add(new FieldInput(transitionField.getName(), values[0]));
 
                     } else if (transitionField.getName().equals(JiraRestFields.DUEDATE)) {
-                        String date = new DateTime(issue.getDue()).toString(JiraRestFields.DATE_FORMAT);
+
+                        String date = DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT).format(issue.getDue());
                         if (values[0] == null) {
                             date = null;
                         }
@@ -621,7 +624,7 @@ public class JiraRestClientAdapter {
         }
 
         if (issue.getDue() != null) {
-            issueInputBuilder.setDueDate(new DateTime(issue.getDue()));
+            issueInputBuilder.setDueDate(OffsetDateTime.ofInstant(issue.getDue(), ZoneId.systemDefault()));
         }
 
         if (issue.getReportedVersions() != null && issue.getReportedVersions().length > 0) {
@@ -687,7 +690,7 @@ public class JiraRestClientAdapter {
         }
 
         if (editableFields.contains(new JiraIssueField(JiraRestFields.DUEDATE, null))) {
-            String date = new DateTime(changedIssue.getDue()).toString(JiraRestFields.DATE_FORMAT);
+            String date = DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT).format(changedIssue.getDue());
             if (changedIssue.getDue() == null) {
                 date = null;
             }
@@ -872,7 +875,7 @@ public class JiraRestClientAdapter {
 
     }
 
-    public static SimpleDateFormat getDateTimeFormat() {
+    public static SimpleDateFormat getOffsetDateTimeFormat() {
         return REST_DATETIME_FORMAT;
     }
 

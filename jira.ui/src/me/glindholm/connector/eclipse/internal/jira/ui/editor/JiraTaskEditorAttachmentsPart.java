@@ -222,7 +222,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
      * @param bytes
      * @return
      */
-    public static String humanReadableByteCountSI(long bytes) {
+    private static String humanReadableByteCountSI(long bytes) {
         if (-1000 < bytes && bytes < 1000) {
             return bytes + " B";
         }

@@ -77,7 +77,7 @@ public final class JiraTimeFormatter {
             }
         }
 
-            return t;
-        }
-
+        return t;
     }
+
+}

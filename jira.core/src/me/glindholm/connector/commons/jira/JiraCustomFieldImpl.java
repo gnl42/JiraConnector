@@ -176,7 +176,7 @@ public class JiraCustomFieldImpl implements JiraCustomField {
             case DATE_PICKER:
                 return new JiraDatePickerCustomField(this);
                 //                case DATE_TIME:
-                //                    return new JiraDateTimeCustomField(this);
+                //                    return new JiraOffsetDateTimeCustomField(this);
             case URL:
                 return new JiraUrlCustomField(this);
             default:

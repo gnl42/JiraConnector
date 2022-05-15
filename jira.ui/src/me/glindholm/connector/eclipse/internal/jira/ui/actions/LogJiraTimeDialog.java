@@ -12,6 +12,8 @@
 package me.glindholm.connector.eclipse.internal.jira.ui.actions;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -343,23 +345,13 @@ public class LogJiraTimeDialog extends MessageDialog {
         getButton(0).setEnabled(ok);
     }
 
-    private GregorianCalendar collectDate() {
-        final GregorianCalendar cal = new GregorianCalendar();
-
-        cal.set(dateWidget.getYear(), dateWidget.getMonth(), dateWidget.getDay(), timeWidget.getHours(),
-                timeWidget.getMinutes(), timeWidget.getSeconds());
-
-        return cal;
-    }
-
     private void collectWorkLog() {
-
-        final GregorianCalendar cal = collectDate();
-
         final JiraWorkLog tempworkLog = new JiraWorkLog();
         tempworkLog.setAuthor(repository.getUserName());
         tempworkLog.setComment(descriptionText.getText());
-        tempworkLog.setStartDate(cal.getTime());
+        tempworkLog.setStartDate(LocalDateTime
+                .of(dateWidget.getYear(), dateWidget.getMonth(), dateWidget.getDay(), timeWidget.getHours(), timeWidget.getMinutes(), timeWidget.getSeconds())
+                .toInstant(ZoneOffset.UTC));
         tempworkLog.setTimeSpent(workDoneAmountInSeconds);
         tempworkLog.setAdjustEstimate(adjustEstimate);
         tempworkLog.setNewRemainingEstimate(remainingEstimateInSeconds);

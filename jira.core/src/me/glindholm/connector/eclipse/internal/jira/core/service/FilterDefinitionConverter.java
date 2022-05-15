@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -97,7 +98,7 @@ public class FilterDefinitionConverter {
     private final String encoding;
 
     /** Date format used for classic queries */
-    private final DateFormat classicQueryDateTimeFormat;
+    private final DateFormat classicQueryOffsetDateTimeFormat;
 
     /**
      * @param encoding
@@ -109,7 +110,7 @@ public class FilterDefinitionConverter {
         Assert.isNotNull(dateFormat);
         Assert.isNotNull(encoding);
         this.encoding = encoding;
-        this.classicQueryDateTimeFormat = dateFormat;
+        this.classicQueryOffsetDateTimeFormat = dateFormat;
     }
 
     public String toUrl(String repositoryUrl, FilterDefinition filter) {
@@ -508,18 +509,18 @@ public class FilterDefinitionConverter {
         String after = getId(params, key + ":after"); //$NON-NLS-1$
         String before = getId(params, key + ":before"); //$NON-NLS-1$
 
-        Date afterDate = null;
+        Instant afterDate = null;
         try {
             if (after != null) {
-                afterDate = classicQueryDateTimeFormat.parse(after);
+                afterDate = classicQueryOffsetDateTimeFormat.parse(after).toInstant();
             }
         } catch (ParseException ex) {
             // swallow
         }
-        Date beforeDate = null;
+        Instant beforeDate = null;
         try {
             if (before != null) {
-                beforeDate = classicQueryDateTimeFormat.parse(before);
+                beforeDate = classicQueryOffsetDateTimeFormat.parse(before).toInstant();
             }
         } catch (ParseException ex) {
             // swallow
@@ -604,10 +605,10 @@ public class FilterDefinitionConverter {
         if (filter instanceof DateRangeFilter) {
             DateRangeFilter rangeFilter = (DateRangeFilter) filter;
             if (rangeFilter.getFromDate() != null) {
-                addParameter(sb, type + ":after", classicQueryDateTimeFormat.format(rangeFilter.getFromDate())); //$NON-NLS-1$
+                addParameter(sb, type + ":after", classicQueryOffsetDateTimeFormat.format(Date.from(rangeFilter.getFromDate()))); //$NON-NLS-1$
             }
             if (rangeFilter.getToDate() != null) {
-                addParameter(sb, type + ":before", classicQueryDateTimeFormat.format(rangeFilter.getToDate())); //$NON-NLS-1$
+                addParameter(sb, type + ":before", classicQueryOffsetDateTimeFormat.format(Date.from(rangeFilter.getToDate()))); //$NON-NLS-1$
             }
             if (rangeFilter.getFrom() != null && rangeFilter.getFrom().length() > 0) {
                 addParameter(sb, type + ":previous", rangeFilter.getFrom()); //$NON-NLS-1$

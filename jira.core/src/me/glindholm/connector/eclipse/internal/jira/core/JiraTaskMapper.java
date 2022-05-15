@@ -14,6 +14,8 @@ package me.glindholm.connector.eclipse.internal.jira.core;
 import java.util.Date;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
@@ -24,48 +26,48 @@ import org.eclipse.mylyn.tasks.core.data.TaskMapper;
  */
 public class JiraTaskMapper extends TaskMapper {
 
-	public JiraTaskMapper(TaskData taskData) {
-		super(taskData);
-	}
+    public JiraTaskMapper(TaskData taskData) {
+        super(taskData);
+    }
 
-	@Override
-	public PriorityLevel getPriorityLevel() {
-		TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.PRIORITY.id());
-		if (attribute != null) {
-			return JiraRepositoryConnector.getPriorityLevel(attribute.getValue());
-		}
-		return PriorityLevel.getDefault();
-	}
+    @Override
+    public PriorityLevel getPriorityLevel() {
+        TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.PRIORITY.id());
+        if (attribute != null) {
+            return JiraRepositoryConnector.getPriorityLevel(attribute.getValue());
+        }
+        return PriorityLevel.getDefault();
+    }
 
-	@Override
-	public Date getCompletionDate() {
-		if (JiraRepositoryConnector.isCompleted(getTaskData())) {
-			return getModificationDate();
-		} else {
-			return null;
-		}
-	}
+    @Override
+    public @Nullable Date getCompletionDate() {
+        if (JiraRepositoryConnector.isCompleted(getTaskData())) {
+            return getModificationDate();
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public void setCompletionDate(Date dateCompleted) {
-		// ignore
-	}
+    @Override
+    public void setCompletionDate(Date dateCompleted) {
+        // ignore
+    }
 
-	@Override
-	public void setComponent(String component) {
-		TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.COMPONENTS.id());
-		if (attribute != null && !attribute.getMetaData().isReadOnly()) {
-			for (Map.Entry<String, String> entry : attribute.getOptions().entrySet()) {
-				if (entry.getValue().equals(component)) {
-					attribute.setValue(entry.getKey());
-				}
-			}
-		}
-	}
+    @Override
+    public void setComponent(String component) {
+        TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.COMPONENTS.id());
+        if (attribute != null && !attribute.getMetaData().isReadOnly()) {
+            for (Map.Entry<String, String> entry : attribute.getOptions().entrySet()) {
+                if (entry.getValue().equals(component)) {
+                    attribute.setValue(entry.getKey());
+                }
+            }
+        }
+    }
 
-	@Override
-	public void setProduct(String product) {
-		// ignore, set during task data initialization
-	}
+    @Override
+    public void setProduct(String product) {
+        // ignore, set during task data initialization
+    }
 
 }

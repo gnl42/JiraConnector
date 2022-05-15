@@ -16,6 +16,7 @@ package me.glindholm.connector.eclipse.internal.jira.core;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -613,7 +614,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
                 commentText = stripTags(commentText);
             }
             taskComment.setText(commentText);
-            taskComment.setCreationDate(comment.getCreated());
+            taskComment.setCreationDate(Date.from(comment.getCreated()));
             // TODO taskComment.setUrl()
             taskComment.applyTo(attribute);
 
@@ -642,7 +643,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
                 taskAttachment.setDescription(attachment.getName());
             }
             taskAttachment.setLength(attachment.getSize());
-            taskAttachment.setCreationDate(attachment.getCreated());
+            taskAttachment.setCreationDate(Date.from(attachment.getCreated()));
             //			taskAttachment.setUrl(client.getBaseUrl() + "/secure/attachment/" + attachment.getId() + "/" //$NON-NLS-1$ //$NON-NLS-2$
             //					+ attachment.getName());
             taskAttachment.setUrl(attachment.getContent().toString());
@@ -1443,9 +1444,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         return attribute != null ? attribute.getValue() : null;
     }
 
-    private static Date getDateValue(TaskData data, JiraAttribute key) {
+    private static Instant getDateValue(TaskData data, JiraAttribute key) {
         TaskAttribute attribute = data.getRoot().getAttribute(key.id());
-        return attribute != null ? data.getAttributeMapper().getDateValue(attribute) : null;
+        return attribute != null ? data.getAttributeMapper().getDateValue(attribute).toInstant() : null;
     }
 
     private static void trace(IStatus status) {

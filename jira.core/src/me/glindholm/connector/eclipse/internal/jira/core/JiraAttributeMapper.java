@@ -49,14 +49,14 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
     public Date getDateValue(TaskAttribute attribute) {
         if (JiraUtil.isCustomDateTimeAttribute(attribute)) {
             try {
-                //				return JiraRssHandler.getDateTimeFormat().parse(attribute.getValue());
+                //				return JiraRssHandler.getOffsetDateTimeFormat().parse(attribute.getValue());
                 return client.getDateTimeFormat().parse(attribute.getValue());
             } catch (ParseException e) {
                 return null;
             }
         } else if (JiraUtil.isCustomDateAttribute(attribute)) {
             try {
-                //				return JiraRssHandler.getDateTimeFormat().parse(attribute.getValue());
+                //				return JiraRssHandler.getOffsetDateTimeFormat().parse(attribute.getValue());
                 return client.getDateFormat().parse(attribute.getValue());
             } catch (ParseException e) {
                 return null;
