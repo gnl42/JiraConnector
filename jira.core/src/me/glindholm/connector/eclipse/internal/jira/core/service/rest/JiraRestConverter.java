@@ -63,6 +63,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
+import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
@@ -362,8 +363,6 @@ public class JiraRestConverter {
 
     }
 
-    private static final List<String> internalNames = List.of("Development", "Rank", "Flagged"); // internal fields to the jira server
-
     private static JiraCustomField[] getCustomFieldsFromIssue(Issue issue, JiraClientCache cache) throws JiraException {
         List<JiraCustomField> customFields = new ArrayList<>();
         Map<String, CimFieldInfo> cimFieldInfoForProject = cache.getFieldMetadata(issue.getProject().getId(), issue.getIssueType().getId());
@@ -385,8 +384,10 @@ public class JiraRestConverter {
                                         new Object[] { issueField.getId(), issueField.getName(), longType })));
                     }
                 } else {
-                    //                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN,
-                    //                            NLS.bind("Unable to find meta information for field [{0}:{1}].", issueField.getId(), issueField.getName()))); //$NON-NLS-1$
+                    // StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.INFO,
+                    // JiraCorePlugin.ID_PLUGIN,
+                    // NLS.bind("Unable to find meta information for field [{0}:{1}].",
+                    // issueField.getId(), issueField.getName()))); //$NON-NLS-1$
                 }
                 //
                 // } catch (JSONException e) {
@@ -416,42 +417,48 @@ public class JiraRestConverter {
         Map<String, CimFieldInfo> cimFieldInfoForProject = cache.getFieldMetadata(issue.getProject().getId(), issue.getIssueType().getId());
 
         for (IssueField issueField : issue.getFields()) {
-            if (issueField.getId().startsWith("customfield") && issueField.getValue() != null && !internalNames.contains(issueField.getName())) { //$NON-NLS-1$
-                CimFieldInfo cim = cimFieldInfoForProject.get(issueField.getId());
-                if (cim != null) {
-                    boolean required = cim.isRequired();
-                    String name = issueField.getName();
-                    JiraIssueField editableField = new JiraIssueField(issueField.getId(), name);
-                    editableField.setRequired(required);
-                    if (cim.getAllowedValues() != null) {
-                        List<JiraAllowedValue> allowedValues = new ArrayList<>();
-                        for (Object allowedValue : cim.getAllowedValues()) {
+            CimFieldInfo cim = cimFieldInfoForProject.get(issueField.getId());
+            if (cim != null) {
+                boolean required = cim.isRequired();
+                String name = issueField.getName();
+                JiraIssueField editableField = new JiraIssueField(issueField.getId(), name);
+                editableField.setRequired(required);
+                if (cim.getAllowedValues() != null) {
+                    List<JiraAllowedValue> allowedValues = new ArrayList<>();
+                    for (Object allowedValue : cim.getAllowedValues()) {
+                        if (allowedValue instanceof CustomFieldOption) {
                             CustomFieldOption value = (CustomFieldOption) allowedValue;
                             String optionalId = value.getId() + "";
                             String optionalValue = value.getValue();
                             if (optionalValue != null && optionalId != null) {
                                 allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
                             }
+                        } else if (allowedValue instanceof BasicPriority) {
+                            BasicPriority priority = (BasicPriority) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(priority.getId() + "", priority.getName()));
+                        } else {
+                            //                            System.out.println(allowedValue);
                         }
-                        editableField.setAllowedValues(allowedValues);
                     }
-
-                    String longTypeCustom = cim.getSchema().getCustom();
-                    String longTypeSystem = cim.getSchema().getSystem();
-
-                    if (longTypeCustom != null) {
-                        editableField.setType(longTypeCustom);
-                    } else if (longTypeSystem != null) {
-                        editableField.setType(longTypeSystem);
-                    }
-                    editableFields.add(editableField);
-                } else {
-                    //                    final String name = issueField.getName();
-                    //                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                    //                            NLS.bind("Unable to find metadata information  for field [{0}:{1}].", issueField.getId(), name))); //$NON-NLS-1$
+                    editableField.setAllowedValues(allowedValues);
                 }
-            }
 
+                String longTypeCustom = cim.getSchema().getCustom();
+                String longTypeSystem = cim.getSchema().getSystem();
+
+                if (longTypeCustom != null) {
+                    editableField.setType(longTypeCustom);
+                } else if (longTypeSystem != null) {
+                    editableField.setType(longTypeSystem);
+                }
+                editableFields.add(editableField);
+            } else {
+                // final String name = issueField.getName();
+                // StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING,
+                // JiraCorePlugin.ID_PLUGIN,
+                // NLS.bind("Unable to find metadata information for field [{0}:{1}].",
+                // issueField.getId(), name))); //$NON-NLS-1$
+            }
         }
 
         return editableFields.toArray(new JiraIssueField[0]);
@@ -532,7 +539,7 @@ public class JiraRestConverter {
     private static Long getRankFromIssue(Issue issue, JiraClientCache cache) throws JiraException {
         Map<String, CimFieldInfo> cimFieldInfoForProject = cache.getFieldMetadata(issue.getProject().getId(), issue.getIssueType().getId());
         for (IssueField issueField : issue.getFields()) {
-            if (issueField.getId().startsWith("customfield") && issueField.getValue() != null && !internalNames.contains(issueField.getName())) { //$NON-NLS-1$
+            if (issueField.getId().startsWith("customfield") && issueField.getValue() != null) { //$NON-NLS-1$
                 CimFieldInfo cim = cimFieldInfoForProject.get(issueField.getId());
                 if (cim != null) {
                     if (JiraAttribute.RANK.getType().getKey().equals(cim.getSchema().getCustom())) {
@@ -986,9 +993,9 @@ public class JiraRestConverter {
                     date = LocalDate.ofInstant(Instant.ofEpochMilli(epochTime), ZoneId.systemDefault())
                             .format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT));
                 } catch (Exception e) {
-                    date = LocalDate.parse(dateValue, DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT))
+                    date = LocalDate.parse(dateValue, DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT).withZone(ZoneId.systemDefault()))
                             .format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT));
-                    //                    date = new OffsetDateTime(dateValue).toString(JiraRestFields.DATE_FORMAT);
+                    // date = new OffsetDateTime(dateValue).toString(JiraRestFields.DATE_FORMAT);
                 }
 
                 return new FieldInput(customField.getId(), date);
@@ -1000,16 +1007,15 @@ public class JiraRestConverter {
                 String date = null;
                 final String dateValue = customField.getValues().get(0);
                 try {
-                    final OffsetDateTime localDateTime = LocalDateTime.parse(dateValue, DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT))
+                    final OffsetDateTime localDateTime = LocalDateTime
+                            .parse(dateValue, DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT).withZone(ZoneId.systemDefault()))
                             .atOffset(ZoneOffset.UTC);
-                    date = localDateTime
-                            .format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT));
+                    date = localDateTime.format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT));
                 } catch (Exception e) {
                     date = LocalDateTime.parse(dateValue, DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss").localizedBy(Locale.ENGLISH))
-                            .atOffset(ZoneOffset.UTC)
-                            .format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT));
-                    //                    date = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss") //$NON-NLS-1$
-                    //                            .withLocale(Locale.ENGLISH).parseOffsetDateTime(dateValue).toString(JiraRestFields.DATE_TIME_FORMAT);
+                            .atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(JiraRestFields.DATE_TIME_FORMAT));
+                    // date = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss") //$NON-NLS-1$
+                    // .withLocale(Locale.ENGLISH).parseOffsetDateTime(dateValue).toString(JiraRestFields.DATE_TIME_FORMAT);
                 }
 
                 return new FieldInput(customField.getId(), date);

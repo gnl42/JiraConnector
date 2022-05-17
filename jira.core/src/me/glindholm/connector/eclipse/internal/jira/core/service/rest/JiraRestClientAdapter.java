@@ -690,7 +690,7 @@ public class JiraRestClientAdapter {
         }
 
         if (editableFields.contains(new JiraIssueField(JiraRestFields.DUEDATE, null))) {
-            String date = DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT).format(changedIssue.getDue());
+            String date = DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT).withZone(ZoneId.systemDefault()).format(changedIssue.getDue());
             if (changedIssue.getDue() == null) {
                 date = null;
             }
