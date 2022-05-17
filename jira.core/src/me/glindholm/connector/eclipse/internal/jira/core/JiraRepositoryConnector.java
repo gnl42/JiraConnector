@@ -480,8 +480,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     @Override
     public boolean hasTaskChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
         TaskMapper scheme = getTaskMapping(taskData);
-        Instant repositoryDate = scheme.getModificationDate().toInstant();
-        Instant localDate = task.getModificationDate().toInstant();
+        final Instant repositoryDate = scheme.getModificationDate().toInstant();
+        final Instant localDate = task.getModificationDate() == null ? null : task.getModificationDate().toInstant();
         if (repositoryDate != null && repositoryDate.equals(localDate)) {
             return false;
         }
@@ -505,7 +505,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
     @Override
     public void updateTaskFromTaskData(TaskRepository repository, ITask task, TaskData taskData) {
-        final Instant originalModificationDate = task.getModificationDate().toInstant();
+        final Date modificationDate = task.getModificationDate();
+        final Instant originalModificationDate = modificationDate == null ? null : modificationDate.toInstant();
 
         TaskMapper scheme = getTaskMapping(taskData);
         scheme.applyTo(task);
@@ -531,7 +532,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
         // to detect changes and the synchronization will fail to store the task data when synchronized -- unless it's
         // run by the user.  This could have an adverse performance impact due to multiple task synchronizations.
         if (taskData.isPartial()) {
-            task.setModificationDate(Date.from(originalModificationDate));
+            task.setModificationDate(originalModificationDate == null ? null : Date.from(originalModificationDate));
         }
 
         // store rank for sorting

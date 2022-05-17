@@ -107,7 +107,7 @@ public enum JiraAttribute {
 
     RANK(TaskAttribute.RANK, JiraFieldType.RANK, Messages.JiraAttribute_unknown, true, true),
 
-    WATCHERS(JiraConstants.ATTRIBUTE_WATCHERS, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Watchers, false, true);
+    WATCHERS(JiraConstants.ATTRIBUTE_WATCHERS, JiraFieldType.TEXTFIELD, Messages.JiraAttribute_Watchers, true, false);
 
     public static JiraAttribute valueById(String id) {
         for (JiraAttribute attribute : values()) {
