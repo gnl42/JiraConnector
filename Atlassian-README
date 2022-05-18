@@ -1,0 +1,28 @@
+Please see project documentation at https://ecosystem.atlassian.net/wiki/display/JRJC/.
+
+In order to start JIRA please execute atlas-debug from test directory.
+
+If you want contribute to project feel free to send pull request (preferably with tests ;)).
+
+IMPORTANT: please do not touch the rest_api_guard branch - master is being auto-merged to that branch
+so there is no need to do any changes there (doing so will cause conflicts).
+
+To run a single test class, you can pass -Dit.test=ExamplesTest to maven.
+
+
+In order to run integration tests on a snapshot cloud version of JIRA run:
+
+mvn clean integration-test -Djira.version=1001.0.0-SNAPSHOT -Pjira-cloud -nsu
+
+To run integrations tests manually, you need to set up JIRA with a running instance of postgres.
+
+To start a pre-setup postgres run
+
+docker run -p 5434:5432 docker.atl-paas.net/jira-cloud/postgres-ci:9.5
+
+and then in another terminal
+
+mvn jira:debug -Ddocker.host.address=<Docker-machine Ip> -Ddatabase.port=5434
+
+you can find your docker machine ip when running docker quickstart.
+
