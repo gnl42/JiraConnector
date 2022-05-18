@@ -243,7 +243,7 @@ public class JsonParseUtil {
 
     public static OffsetDateTime parseDate(final String str) {
         try {
-            return OffsetDateTime.parse(str, JIRA_DATE_FORMATTER);
+            return LocalDate.parse(str, JIRA_DATE_FORMATTER).atTime(OffsetTime.now(ZoneId.systemDefault())); // FIXME;
         } catch (Exception e) {
             throw new RestClientException(e);
         }
