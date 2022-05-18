@@ -1,6 +1,0 @@
-owner: mmarzecki@atlassian.com
-lowerSeverityPaths:
-  - path: test/**
-    reasoning: "This is a test directory"
-
-fileSnykTicketsWithFutureSLODates: true
