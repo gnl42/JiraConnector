@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import me.glindholm.jira.rest.client.api.NamedEntity;
@@ -25,7 +26,9 @@ import me.glindholm.jira.rest.client.api.NamedEntity;
  *
  * @since v0.1
  */
-public class SessionCookie implements NamedEntity {
+public class SessionCookie implements Serializable, NamedEntity {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private final String value;
 

@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,8 @@ import me.glindholm.jira.rest.client.api.domain.TimeTracking;
  *
  * @since v1.0
  */
-public class BaseValueTransformer implements ValueTransformer {
+public class BaseValueTransformer implements Serializable, ValueTransformer {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public Object apply(Object rawValue) {

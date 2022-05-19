@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,7 +30,9 @@ import com.google.common.collect.Iterables;
  *
  * @since 2.0
  */
-public class OperationGroup implements Operation {
+public class OperationGroup implements Serializable, Operation {
+    private static final long serialVersionUID = 1L;
+
     @Nullable
     private final String id;
     @Nullable

@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -31,7 +32,9 @@ import com.google.common.collect.Lists;
  *
  * @since v1.0
  */
-public class ValueTransformerManager implements Function<Object, Object> {
+public class ValueTransformerManager implements Serializable, Function<Object, Object> {
+    private static final long serialVersionUID = 1L;
+
     public final List<ValueTransformer> valueTransformers = Lists.newArrayList();
 
     public ValueTransformerManager() {

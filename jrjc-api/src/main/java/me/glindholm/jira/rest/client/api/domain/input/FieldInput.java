@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import me.glindholm.jira.rest.client.api.IdentifiableEntity;
@@ -26,7 +27,9 @@ import me.glindholm.jira.rest.client.api.domain.IssueFieldId;
  *
  * @since v0.1
  */
-public class FieldInput implements IdentifiableEntity<String> {
+public class FieldInput implements Serializable, IdentifiableEntity<String> {
+    private static final long serialVersionUID = 1L;
+
     private final String id;
     private final Object value;
 

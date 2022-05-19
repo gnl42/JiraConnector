@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,7 +27,9 @@ import javax.annotation.Nullable;
  *
  * @since 2.0
  */
-public class OperationLink implements Operation {
+public class OperationLink implements Serializable, Operation {
+    private static final long serialVersionUID = 1L;
+
     @Nullable
     private final String id;
     @Nullable

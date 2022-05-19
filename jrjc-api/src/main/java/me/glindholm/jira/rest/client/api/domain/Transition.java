@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -26,7 +27,9 @@ import me.glindholm.jira.rest.client.api.NamedEntity;
  *
  * @since v0.1
  */
-public class Transition implements NamedEntity {
+public class Transition implements Serializable, NamedEntity {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private final int id;
     private final Collection<Field> fields;

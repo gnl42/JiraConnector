@@ -29,7 +29,7 @@ import me.glindholm.jira.rest.client.api.NamedEntity;
  *
  * @since v0.1
  */
-public class IssueType implements AddressableEntity, NamedEntity, IdentifiableEntity<Long>, Serializable {
+public class IssueType implements Serializable, AddressableEntity, NamedEntity, IdentifiableEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     private final URI self;

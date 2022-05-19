@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Objects;
 
@@ -27,7 +28,9 @@ import me.glindholm.jira.rest.client.api.IdentifiableEntity;
  *
  * @since v0.2
  */
-public class BasicIssue implements AddressableEntity, IdentifiableEntity<Long> {
+public class BasicIssue implements Serializable, AddressableEntity, IdentifiableEntity<Long> {
+    private static final long serialVersionUID = 1L;
+
     private final URI self;
 
     private final String key;

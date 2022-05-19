@@ -30,7 +30,7 @@ import me.glindholm.jira.rest.client.api.NamedEntity;
  *
  * @since v0.1
  */
-public class BasicProject implements AddressableEntity, NamedEntity, Serializable {
+public class BasicProject implements Serializable, AddressableEntity, NamedEntity {
     private static final long serialVersionUID = 1L;
 
     private final URI self;

@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Objects;
 
@@ -26,7 +27,9 @@ import me.glindholm.jira.rest.client.api.AddressableEntity;
  *
  * @since v0.1
  */
-public class BasicWatchers implements AddressableEntity {
+public class BasicWatchers implements Serializable, AddressableEntity {
+    private static final long serialVersionUID = 1L;
+
     private final URI self;
     private final boolean isWatching;
     private final int numWatchers;

@@ -16,13 +16,13 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-
-import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.ExpandableResource;
 import me.glindholm.jira.rest.client.api.IssueRestClient.Expandos;
@@ -33,7 +33,8 @@ import me.glindholm.jira.rest.client.api.domain.util.UriUtil;
  *
  * @since v0.1
  */
-public class Issue extends BasicIssue implements ExpandableResource {
+public class Issue extends BasicIssue implements Serializable, ExpandableResource {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

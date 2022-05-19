@@ -15,6 +15,7 @@
  */
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -25,7 +26,8 @@ import me.glindholm.jira.rest.client.api.NamedEntity;
 /**
  * Representation of JIRA field, either system or custom.
  */
-public class Field implements NamedEntity, IdentifiableEntity<String> {
+public class Field implements Serializable, NamedEntity, IdentifiableEntity<String> {
+    private static final long serialVersionUID = 1L;
 
     private final String id;
     private final String name;

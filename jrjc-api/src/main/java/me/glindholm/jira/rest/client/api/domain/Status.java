@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Objects;
 
@@ -27,7 +28,9 @@ import me.glindholm.jira.rest.client.api.StatusCategory;
  *
  * @since v0.1
  */
-public class Status extends AddressableNamedEntity implements IdentifiableEntity<Long> {
+public class Status extends AddressableNamedEntity implements Serializable, IdentifiableEntity<Long> {
+    private static final long serialVersionUID = 1L;
+
     private final Long id;
     private final String description;
     private final URI iconUrl;
@@ -44,7 +47,7 @@ public class Status extends AddressableNamedEntity implements IdentifiableEntity
     @Override
     public String toString() {
         return "Status [id=" + id + ", description=" + description + ", iconUrl=" + iconUrl + ", statusCategory=" + statusCategory + ", =" + super.toString()
-                + "]";
+        + "]";
     }
 
     @Override

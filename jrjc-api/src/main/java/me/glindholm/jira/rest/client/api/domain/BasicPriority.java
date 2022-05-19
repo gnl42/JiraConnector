@@ -28,7 +28,7 @@ import me.glindholm.jira.rest.client.api.IdentifiableEntity;
  *
  * @since v0.1
  */
-public class BasicPriority extends AddressableNamedEntity implements IdentifiableEntity<Long>, Serializable {
+public class BasicPriority extends AddressableNamedEntity implements Serializable, IdentifiableEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     @Nullable

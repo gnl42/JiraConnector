@@ -16,12 +16,12 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
-
-import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 
@@ -30,7 +30,9 @@ import me.glindholm.jira.rest.client.api.AddressableEntity;
  *
  * @since v0.1
  */
-public class Comment implements AddressableEntity {
+public class Comment implements Serializable, AddressableEntity {
+    private static final long serialVersionUID = 1L;
+
     private final URI self;
     @Nullable
     private final Long id;

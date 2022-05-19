@@ -15,6 +15,7 @@
  */
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Objects;
 
@@ -27,7 +28,8 @@ import me.glindholm.jira.rest.client.api.NamedEntity;
  *
  * @since 1.0
  */
-public class RoleActor implements NamedEntity {
+public class RoleActor implements Serializable, NamedEntity {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Type of a role actor which associates a project with some particular user.

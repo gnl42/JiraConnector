@@ -35,7 +35,7 @@ import me.glindholm.jira.rest.client.api.NamedEntity;
  *
  * @since v1.0
  */
-public class CimFieldInfo implements NamedEntity, IdentifiableEntity<String>, Serializable {
+public class CimFieldInfo implements Serializable, NamedEntity, IdentifiableEntity<String> {
     private static final long serialVersionUID = 1L;
 
     private final String id;

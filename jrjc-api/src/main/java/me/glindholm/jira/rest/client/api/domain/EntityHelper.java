@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.util.NoSuchElementException;
 
 import com.google.common.base.Function;
@@ -112,7 +113,7 @@ public class EntityHelper {
     }
 
 
-    public static class HasNamePredicate<T extends NamedEntity> implements Predicate<T> {
+    public static class HasNamePredicate<T extends NamedEntity> implements Serializable, Predicate<T> {
 
         private final String name;
 
@@ -130,7 +131,7 @@ public class EntityHelper {
         }
     }
 
-    public static class HasIdPredicate<T extends IdentifiableEntity<K>, K> implements Predicate<T> {
+    public static class HasIdPredicate<T extends IdentifiableEntity<K>, K> implements Serializable, Predicate<T> {
 
         private final K id;
 
@@ -148,7 +149,7 @@ public class EntityHelper {
         }
     }
 
-    public static class AddressEndsWithPredicate implements Predicate<AddressableEntity> {
+    public static class AddressEndsWithPredicate implements Serializable, Predicate<AddressableEntity> {
 
         private final String stringEnding;
 

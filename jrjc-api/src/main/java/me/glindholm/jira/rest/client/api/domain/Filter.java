@@ -15,6 +15,7 @@
  */
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Objects;
 
@@ -25,7 +26,9 @@ import me.glindholm.jira.rest.client.api.IdentifiableEntity;
  *
  * @since 2.0
  */
-public class Filter extends AddressableNamedEntity implements IdentifiableEntity<Long> {
+public class Filter extends AddressableNamedEntity implements Serializable, IdentifiableEntity<Long> {
+    private static final long serialVersionUID = 1L;
+
     @Override
     public String toString() {
         return "Filter [id=" + id + ", description=" + description + ", jql=" + jql + ", viewUrl=" + viewUrl + ", searchUrl=" + searchUrl + ", owner=" + owner

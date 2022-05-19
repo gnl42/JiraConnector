@@ -15,6 +15,7 @@
  */
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -23,7 +24,9 @@ import javax.annotation.Nullable;
 import me.glindholm.jira.rest.client.api.IdentifiableEntity;
 import me.glindholm.jira.rest.client.api.NamedEntity;
 
-public class Permission implements NamedEntity, IdentifiableEntity<Integer> {
+public class Permission implements Serializable, NamedEntity, IdentifiableEntity<Integer> {
+    private static final long serialVersionUID = 1L;
+
     private final Integer id;
     private final String key;
     private final String name;

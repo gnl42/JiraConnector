@@ -15,6 +15,7 @@
  */
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Objects;
@@ -30,7 +31,8 @@ import me.glindholm.jira.rest.client.api.IdentifiableEntity;
  * @see com.atlassian.jira.security.roles.ProjectRole
  */
 @SuppressWarnings("JavadocReference")
-public class ProjectRole extends BasicProjectRole implements IdentifiableEntity<Long> {
+public class ProjectRole extends BasicProjectRole implements Serializable, IdentifiableEntity<Long> {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

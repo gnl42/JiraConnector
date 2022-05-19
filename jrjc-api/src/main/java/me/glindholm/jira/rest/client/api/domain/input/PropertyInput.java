@@ -1,8 +1,11 @@
 package me.glindholm.jira.rest.client.api.domain.input;
 
+import java.io.Serializable;
+
 import me.glindholm.jira.rest.client.api.IdentifiableEntity;
 
-public class PropertyInput implements IdentifiableEntity<String> {
+public class PropertyInput implements Serializable, IdentifiableEntity<String> {
+    private static final long serialVersionUID = 1L;
 
     private final String key;
     private final String value;
@@ -27,12 +30,18 @@ public class PropertyInput implements IdentifiableEntity<String> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         PropertyInput that = (PropertyInput) o;
 
-        if (key != null ? !key.equals(that.key) : that.key != null) return false;
+        if (key != null ? !key.equals(that.key) : that.key != null) {
+            return false;
+        }
         return value != null ? value.equals(that.value) : that.value == null;
     }
 
