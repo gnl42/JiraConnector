@@ -8,4 +8,4 @@ Changes:
 - Uses java.time instead of joda time
 - OSGI bundles
 
-Updated for https://github.com/gnl42/JiraConnector">JiraConnector
+Updated for https://github.com/gnl42/JiraConnector"
