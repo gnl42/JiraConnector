@@ -20,6 +20,17 @@
 		</license>
 	</licenses>
 
+    <developers>
+        <developer>
+            <id>gnl</id>
+            <name>George Lindholm</name>
+            <organization>self</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
 	<repositories>
 		<repository>
 			<id>eclipse</id>
@@ -55,8 +66,8 @@
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
-		<system>JIRA</system>
-		<url>https://ecosystem.atlassian.net/browse/JRJC</url>
+		<system>GitHub</system>
+		<url>https://github.com/gnl42/jira-rest-java-client/issues</url>
 	</issueManagement>
 
 	<properties>
