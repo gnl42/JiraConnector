@@ -25,6 +25,7 @@ import java.util.Objects;
  * @since v0.1
  */
 public class BasicUser extends AddressableNamedEntity {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

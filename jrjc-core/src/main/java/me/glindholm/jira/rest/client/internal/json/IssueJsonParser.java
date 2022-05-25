@@ -46,6 +46,7 @@ import static me.glindholm.jira.rest.client.internal.json.JsonParseUtil.parseOpt
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,7 +62,6 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import java.time.OffsetDateTime;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
@@ -293,7 +293,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) throws URISyntaxException {
         return transitionsUriString != null
                 ? JsonParseUtil.parseURI(transitionsUriString)
-                : new URIBuilder(selfUri).appendPath("transitions").addParameter("expand", "transitions.fields").build();
+                        : new URIBuilder(selfUri).appendPath("transitions").addParameter("expand", "transitions.fields").build();
     }
 
     @Nullable
@@ -333,6 +333,8 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
                         value == JSONObject.NULL || value == JSONObject.EXPLICIT_NULL ? null : value));
             } catch (final Exception e) {
                 throw new JSONException("Error while parsing [" + key + "] field: " + e.getMessage()) {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public Throwable getCause() {
                         return e;

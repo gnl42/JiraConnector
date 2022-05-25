@@ -33,6 +33,7 @@ import me.glindholm.jira.rest.client.api.ExpandableProperty;
  * @since v0.1
  */
 public class User extends BasicUser {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public String toString() {

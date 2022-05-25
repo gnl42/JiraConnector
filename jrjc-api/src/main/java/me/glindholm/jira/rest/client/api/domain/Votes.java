@@ -26,6 +26,8 @@ import java.util.Objects;
  * @since v0.1
  */
 public class Votes extends BasicVotes {
+    private static final long serialVersionUID = 1L;
+
     private final Collection<BasicUser> users;
 
     public Votes(URI self, int votes, boolean hasVoted, Collection<BasicUser> users) {

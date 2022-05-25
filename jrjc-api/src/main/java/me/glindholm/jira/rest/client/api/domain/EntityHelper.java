@@ -114,6 +114,7 @@ public class EntityHelper {
 
 
     public static class HasNamePredicate<T extends NamedEntity> implements Serializable, Predicate<T> {
+        private static final long serialVersionUID = 1L;
 
         private final String name;
 
@@ -132,6 +133,7 @@ public class EntityHelper {
     }
 
     public static class HasIdPredicate<T extends IdentifiableEntity<K>, K> implements Serializable, Predicate<T> {
+        private static final long serialVersionUID = 1L;
 
         private final K id;
 
@@ -150,6 +152,7 @@ public class EntityHelper {
     }
 
     public static class AddressEndsWithPredicate implements Serializable, Predicate<AddressableEntity> {
+        private static final long serialVersionUID = 1L;
 
         private final String stringEnding;
 

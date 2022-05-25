@@ -10,6 +10,7 @@ import me.glindholm.jira.rest.client.api.domain.AddressableNamedEntity;
  *
  */
 public class StatusCategory extends AddressableNamedEntity implements IdentifiableEntity<Long> {
+    private static final long serialVersionUID = 1L;
 
     private final Long id;
     private final String key;

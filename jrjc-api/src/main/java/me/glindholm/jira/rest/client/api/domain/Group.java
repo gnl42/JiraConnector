@@ -26,6 +26,7 @@ import java.util.Objects;
  * @since v5.1.0
  */
 public class Group extends AddressableNamedEntity {
+    private static final long serialVersionUID = 1L;
 
     public Group(URI self, String name) {
         super(self, name);

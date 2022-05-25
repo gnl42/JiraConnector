@@ -8,6 +8,8 @@ import java.util.Objects;
  * @since v0.5
  */
 public class IssuelinksType extends AddressableNamedEntity {
+    private static final long serialVersionUID = 1L;
+
     private final String id;
     private final String inward;
     private final String outward;

@@ -28,6 +28,8 @@ import javax.annotation.Nullable;
  * @since v0.1
  */
 public class Component extends BasicComponent {
+    private static final long serialVersionUID = 1L;
+
     private final BasicUser lead;
 
     @Nullable

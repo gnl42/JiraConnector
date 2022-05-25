@@ -25,6 +25,8 @@ import java.util.Objects;
  * @since v0.1
  */
 public class Watchers extends BasicWatchers {
+    private static final long serialVersionUID = 1L;
+
     @Override
     public String toString() {
         return "Watchers [watchers=" + users + ", " + super.toString() + "]";
