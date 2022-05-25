@@ -67,8 +67,13 @@
 		<connection>         scm:git:git@github.com:gnl42/JiraConnector.git</connection>
 		<url>                scm:git:git@github.com:gnl42/JiraConnector.git</url>
 		<developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
-		<tag>4.0.1</tag>
+		<tag>4.1.0</tag>
 	</scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/gnl42/JiraConnector/issues</url>
+    </issueManagement>
 
 	<repositories>
 		<repository>
@@ -106,13 +111,13 @@
 	</pluginRepositories>
 
 	<properties>
-		<tycho.version>2.7.0</tycho.version>
+		<tycho.version>2.7.3</tycho.version>
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<modules>
-        <module>jira-rest-java-client</module>
+        <module>jrjc</module>
 		<module>commons-feature</module>
 		<module>commons.core</module>
 		<module>commons.ui</module>

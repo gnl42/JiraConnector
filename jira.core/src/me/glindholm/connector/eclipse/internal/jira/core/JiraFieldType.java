@@ -112,6 +112,7 @@ public enum JiraFieldType {
 
     EPIC_LINK("com.pyxis.greenhopper.jira:gh-epic-link", TaskAttribute.TYPE_URL), //$NON-NLS-1$
 
+    // Internal/Unsupported fields
     DEV_SUMMARY("com.atlassian.jira.plugins.jira-development-integration-plugin:devsummary"),
 
     JIRA_RANK("com.pyxis.greenhopper.jira:gh-lexo-rank"),
