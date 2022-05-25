@@ -1572,8 +1572,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             Text toField) {
         Calendar startDate = startDatePicker.getDate();
         Calendar endDate = endDatePicker.getDate();
-        return new DateRangeFilter(startDate == null ? null : startDate.getTime().toInstant(), endDate == null ? null : endDate.getTime().toInstant(),
-                fromField.getText(), toField.getText());
+        return new DateRangeFilter(startDate == null || startDate.getTime() == null ? null : startDate.getTime().toInstant(),
+                endDate == null || endDate.getTime() == null ? null : endDate.getTime().toInstant(),
+                        fromField.getText(), toField.getText());
     }
 
     private void initializeContentProviders() {
