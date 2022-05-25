@@ -22,7 +22,6 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.mylyn.internal.tasks.core.data.ITaskDataManagerListener;
 import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManagerEvent;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorAttributePart;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorDescriptionPart;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
@@ -128,7 +127,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
         parts.add(new TaskEditorPartDescriptor(ID_PART_ATTRIBUTES) {
             @Override
             public AbstractTaskEditorPart createPart() {
-                return new TaskEditorAttributePart() {
+                return new JiraTaskEditorAttributePart() {
                     @Override
                     protected boolean shouldExpandOnCreate() {
                         return true;
