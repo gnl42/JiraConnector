@@ -437,7 +437,7 @@ public class JiraRestConverter {
                             BasicPriority priority = (BasicPriority) allowedValue;
                             allowedValues.add(new JiraAllowedValue(priority.getId() + "", priority.getName()));
                         } else {
-                            //                            System.out.println(allowedValue);
+                            // System.out.println(allowedValue);
                         }
                     }
                     editableField.setAllowedValues(allowedValues);
@@ -516,10 +516,12 @@ public class JiraRestConverter {
                 values = List.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field), ", ")); //$NON-NLS-1$
                 break;
             default:
-                StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                        NLS.bind("Unable extract value for field [{0}:{1}].", new Object[] { field.getId(), field.getName(), longType }))); //$NON-NLS-1$
+                if (fieldType.getTaskType() != null) { // Ignore fields we don't care about, or don't support yet
+                    StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                            NLS.bind("Unable extract value for field [{0}:{1}:{2}].", new Object[] { field.getId(), field.getName(), longType }))); //$NON-NLS-1$
 
-                // not supported custom field
+                    // not supported custom field
+                }
             }
 
             if (values != null && !values.isEmpty()) {

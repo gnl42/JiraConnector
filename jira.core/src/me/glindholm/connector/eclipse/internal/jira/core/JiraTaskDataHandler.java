@@ -1446,7 +1446,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
     private static Instant getDateValue(TaskData data, JiraAttribute key) {
         TaskAttribute attribute = data.getRoot().getAttribute(key.id());
-        return attribute != null ? data.getAttributeMapper().getDateValue(attribute).toInstant() : null;
+        return attribute != null && data.getAttributeMapper().getDateValue(attribute) != null ? data.getAttributeMapper().getDateValue(attribute).toInstant()
+                : null;
     }
 
     private static void trace(IStatus status) {
