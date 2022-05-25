@@ -339,7 +339,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
         createAttribute(data, JiraAttribute.VOTES);
 
-        TaskAttribute watchers = createAttribute(data, JiraAttribute.WATCHERS);
+        createAttribute(data, JiraAttribute.WATCHERS);
 
     }
 
@@ -428,7 +428,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
                 getPerson(data, client, jiraIssue.getAssignee(), jiraIssue.getAssigneeDisplayName()));
         setAttributeValue(data, JiraAttribute.USER_REPORTER,
                 getPerson(data, client, jiraIssue.getReporter(), jiraIssue.getReporterName()));
-        setAttributeValue(data, JiraAttribute.WATCHERS, jiraIssue.getWatchers());
+        setAttributeWatchers(data, JiraAttribute.WATCHERS, jiraIssue.getWatchers());
 
         setAttributeValue(data, JiraAttribute.PROJECT, jiraIssue.getProject().getId());
 
@@ -800,14 +800,14 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         return attribute;
     }
 
-    private TaskAttribute setAttributeValue(TaskData data, JiraAttribute key, Watchers watchers) {
+    private TaskAttribute setAttributeWatchers(TaskData data, JiraAttribute key, Watchers watchers) {
         TaskAttribute attribute = data.getRoot().getAttribute(key.id());
         List<String> watchersList = new ArrayList<>(watchers.getNumWatchers());
         for (BasicUser watcher : watchers.getUsers()) {
             watchersList.add(watcher.getDisplayName());
         }
 
-        data.getAttributeMapper().setValue(attribute, String.join(", ", watchersList)); // FIXME Not seeing list of names
+        data.getAttributeMapper().setValue(attribute, String.join("\n", watchersList));
         return attribute;
     }
 
