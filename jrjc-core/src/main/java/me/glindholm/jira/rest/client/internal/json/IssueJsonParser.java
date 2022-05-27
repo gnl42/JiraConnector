@@ -319,9 +319,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         while (iterator.hasNext()) {
             final String key = iterator.next();
             try {
-                if (SPECIAL_FIELDS.contains(key)) {
-                    continue;
-                }
+                //                if (SPECIAL_FIELDS.contains(key)) {
+                //                    continue;
+                //                }
                 // TODO: JRJC-122
                 // we should use fieldParser here (some new version as the old one probably won't work)
                 // enable IssueJsonParserTest#testParseIssueWithUserPickerCustomFieldFilledOut after fixing this
