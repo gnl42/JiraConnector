@@ -117,7 +117,7 @@
 	</properties>
 
 	<modules>
-        <module>jrjc</module>
+        <module>jira-rest-java-client</module>
 		<module>commons-feature</module>
 		<module>commons.core</module>
 		<module>commons.ui</module>

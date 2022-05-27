@@ -13,16 +13,18 @@
 package me.glindholm.connector.eclipse.internal.jira.core.model;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author Brock Janiczak
  * @author Jacek Jaroczynski
  */
 public class JiraServerInfo implements Serializable {
-
     private static final long serialVersionUID = 1L;
+
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
 
     private String baseUrl;
 
@@ -116,10 +118,11 @@ public class JiraServerInfo implements Serializable {
         return statistics;
     }
 
+
     @Override
     public String toString() {
-        return this.baseUrl + " - Jira " + this.version + "#" + this.buildNumber + " (" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + DateFormat.getDateInstance(DateFormat.SHORT).format(this.buildDate) + ")"; //$NON-NLS-1$
+        final String dateStr = dateFormat.format(buildDate);
+        return baseUrl + " - Jira " + version + "#" + buildNumber + " (" + dateStr + ")";
     }
 
 }

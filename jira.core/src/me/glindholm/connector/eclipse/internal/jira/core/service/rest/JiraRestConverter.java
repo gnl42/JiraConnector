@@ -434,10 +434,17 @@ public class JiraRestConverter {
                                 allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
                             }
                         } else if (allowedValue instanceof BasicPriority) {
-                            BasicPriority priority = (BasicPriority) allowedValue;
-                            allowedValues.add(new JiraAllowedValue(priority.getId() + "", priority.getName()));
+                            BasicPriority priority2 = (BasicPriority) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(priority2.getId() + "", priority2.getName()));
+                        } else if (allowedValue instanceof IssueType) {
+                            IssueType issueType = (IssueType) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(issueType.getId() + "", issueType.getName()));
+                        } else if (allowedValue instanceof BasicProject) {
+                            BasicProject basicProject = (BasicProject) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(basicProject.getId() + "", basicProject.getName()));
                         } else {
-                            // System.out.println(allowedValue);
+                            StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, NLS.bind(
+                                    "Unable extract value for field [{0}:{1}:{2}].", new Object[] { issueField.getId(), issueField.getName(), allowedValue }))); //$NON-NLS-1$
                         }
                     }
                     editableField.setAllowedValues(allowedValues);
