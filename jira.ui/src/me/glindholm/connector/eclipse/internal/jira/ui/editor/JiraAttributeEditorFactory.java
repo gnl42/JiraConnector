@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.services.IServiceLocator;
 
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
 
 class JiraAttributeEditorFactory extends AttributeEditorFactory {
@@ -57,7 +57,7 @@ class JiraAttributeEditorFactory extends AttributeEditorFactory {
 			attributeEditor.setLayoutHint(new LayoutHint(RowSpan.SINGLE, ColumnSpan.SINGLE));
 			return attributeEditor;
 		}
-		if (IJiraConstants.TYPE_NUMBER.equals(type)) {
+		if (JiraConstants.TYPE_NUMBER.equals(type)) {
 			return new NumberAttributeEditor(model, taskAttribute);
 		}
 

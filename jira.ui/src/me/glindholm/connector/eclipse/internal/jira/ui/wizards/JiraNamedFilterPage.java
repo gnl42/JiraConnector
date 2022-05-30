@@ -49,9 +49,9 @@ import me.glindholm.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLocke
 import me.glindholm.connector.eclipse.internal.jira.core.JiraClientFactory;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
-import me.glindholm.connector.eclipse.internal.jira.core.model.NamedFilter;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraNamedFilter;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.CurrentUserFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.DateRangeFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.FilterDefinition;
@@ -85,11 +85,11 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 	private List savedFilterList;
 
-	private NamedFilter[] filters = null;
+	private JiraNamedFilter[] filters = null;
 
 	private JiraFilterDefinitionPage filterDefinitionPage;
 
-	private final NamedFilter workingCopy;
+	private final JiraNamedFilter workingCopy;
 
 	private Button buttonPredefined;
 
@@ -132,13 +132,13 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		setPageComplete(false);
 	}
 
-	private NamedFilter getFilter(IRepositoryQuery query) {
-		NamedFilter filter = null;
+	private JiraNamedFilter getFilter(IRepositoryQuery query) {
+		JiraNamedFilter filter = null;
 		if (query != null) {
 			filter = JiraUtil.getNamedFilter(query);
 		}
 		if (filter == null) {
-			filter = new NamedFilter();
+			filter = new JiraNamedFilter();
 		}
 		return filter;
 	}
@@ -147,7 +147,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 	public void applyTo(IRepositoryQuery query) {
 		JiraFilter filter = null;
 		if (buttonSaved.getSelection()) {
-			NamedFilter f = getSavedFilter();
+			JiraNamedFilter f = getSavedFilter();
 			query.setSummary(f.getName());
 			filter = f;
 		} else if (buttonPredefined.getSelection()) {
@@ -164,8 +164,8 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		IStructuredSelection projectSelection = (IStructuredSelection) projectList.getSelection();
 		if (projectSelection != null && !projectSelection.isEmpty()) {
 			Object selected = projectSelection.getFirstElement();
-			if (selected instanceof Project) {
-				filter.setProjectFilter(new ProjectFilter((Project) selected));
+			if (selected instanceof JiraProject) {
+				filter.setProjectFilter(new ProjectFilter((JiraProject) selected));
 			}
 		}
 
@@ -197,7 +197,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 				break;
 			case ASSIGNED_TO_ME:
 				// empty (but not null) resolution filter means UNRESOLVED 
-				filter.setResolutionFilter(new ResolutionFilter(new Resolution[0]));
+				filter.setResolutionFilter(new ResolutionFilter(new JiraResolution[0]));
 				filter.setAssignedToFilter(new CurrentUserFilter());
 				break;
 			case REPORTED_BY_ME:
@@ -409,7 +409,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 			}
 
 			public Object[] getElements(Object inputElement) {
-				Project[] projects = (Project[]) inputElement;
+				JiraProject[] projects = (JiraProject[]) inputElement;
 				Object[] elements = new Object[projects.length + 1];
 				elements[0] = Messages.JiraFilterDefinitionPage_All_Projects;
 				System.arraycopy(projects, 0, elements, 1, projects.length);
@@ -427,7 +427,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 				if (element instanceof String) {
 					return (String) element;
 				}
-				return ((Project) element).getName();
+				return ((JiraProject) element).getName();
 			}
 		});
 
@@ -463,7 +463,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 	/**
 	 * Called by the download job when the filters have been downloaded
 	 */
-	public void displayFilters(NamedFilter[] filters) {
+	public void displayFilters(JiraNamedFilter[] filters) {
 
 		savedFilterList.removeAll();
 
@@ -489,7 +489,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 		//getContainer().updateButtons();
 	}
 
-	private void showFilters(final NamedFilter[] loadedFilters) {
+	private void showFilters(final JiraNamedFilter[] loadedFilters) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (!savedFilterList.isDisposed()) {
@@ -504,7 +504,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 		IRunnableWithProgress job = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				NamedFilter[] loadedFilters = new NamedFilter[0];
+				JiraNamedFilter[] loadedFilters = new JiraNamedFilter[0];
 				try {
 					monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_list_of_filters,
 							IProgressMonitor.UNKNOWN);
@@ -633,8 +633,8 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
 					if (project instanceof String) {
 						projectName = (String) project;
-					} else if (project instanceof Project) {
-						projectName = ((Project) project).getName();
+					} else if (project instanceof JiraProject) {
+						projectName = ((JiraProject) project).getName();
 					}
 
 					if (projectName != null) {
@@ -650,7 +650,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 	}
 
 	/** Returns the filter selected by the user or null on failure */
-	private NamedFilter getSavedFilter() {
+	private JiraNamedFilter getSavedFilter() {
 		if (filters != null && filters.length > 0 && savedFilterList.getSelectionIndex() >= 0) {
 			return filters[savedFilterList.getSelectionIndex()];
 		}

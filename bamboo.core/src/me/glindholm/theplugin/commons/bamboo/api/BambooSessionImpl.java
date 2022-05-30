@@ -34,8 +34,8 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.xpath.XPath;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -208,7 +208,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    @NotNull
+    @Nonnull
     public List<BambooProject> listProjectNames() throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + LIST_PROJECT_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken);
 
@@ -234,7 +234,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return projects;
     }
 
-    @NotNull
+    @Nonnull
     private List<BambooPlan> listPlanNames() throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + LIST_PLAN_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken);
 
@@ -266,7 +266,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return plans;
     }
 
-    @NotNull
+    @Nonnull
     private List<BambooPlan> listPlanNames_40() throws RemoteApiException {
         // String buildResultUrl = getBaseUrl() + LIST_PLANS + "?auth=" + UrlUtil.encodeUrl(authToken);
         String buildResultUrl = getBaseUrl() + LIST_PLANS;
@@ -311,8 +311,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      *            ID of the plan to get info about
      * @return Information about the last build or error message
      */
-    @NotNull
-    public BambooBuild getLatestBuildForPlan(@NotNull String planKey, final int timezoneOffset)
+    @Nonnull
+    public BambooBuild getLatestBuildForPlan(@Nonnull String planKey, final int timezoneOffset)
             throws RemoteApiException {
         final List<BambooPlan> planList = listPlanNames();
         final Boolean isEnabled = isPlanEnabled(planList, planKey);
@@ -320,7 +320,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     }
 
     @Nullable
-    public static Boolean isPlanEnabled(@NotNull Collection<BambooPlan> allPlans, @NotNull String planKey) {
+    public static Boolean isPlanEnabled(@Nonnull Collection<BambooPlan> allPlans, @Nonnull String planKey) {
         for (BambooPlan bambooPlan : allPlans) {
             if (planKey.equals(bambooPlan.getKey())) {
                 return bambooPlan.isEnabled();
@@ -329,14 +329,14 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return null;
     }
 
-    @NotNull
-    public BambooBuild getLatestBuildForPlan(@NotNull final String planKey, final boolean isPlanEnabled,
+    @Nonnull
+    public BambooBuild getLatestBuildForPlan(@Nonnull final String planKey, final boolean isPlanEnabled,
             final int timezoneOffset) throws RemoteApiException {
         return getLatestBuildBuilderForPlan(planKey, timezoneOffset).enabled(isPlanEnabled).build();
     }
 
-    @NotNull
-    public BambooBuildInfo.Builder getLatestBuildBuilderForPlan(@NotNull final String planKey,
+    @Nonnull
+    public BambooBuildInfo.Builder getLatestBuildBuilderForPlan(@Nonnull final String planKey,
             final int timezoneOffset) throws RemoteApiException {
         String buildResultUrl =
                 getBaseUrl() + LATEST_BUILD_FOR_PLAN_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken) + "&buildKey="
@@ -367,8 +367,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    @NotNull
-    public BambooBuildInfo.Builder getLatestBuildBuilderForPlan_40(@NotNull final String planKey,
+    @Nonnull
+    public BambooBuildInfo.Builder getLatestBuildBuilderForPlan_40(@Nonnull final String planKey,
             final int timezoneOffset) throws RemoteApiException {
         // String buildResultUrl =
         // getBaseUrl() + LATEST_BUILD_FOR_PLAN_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken) + "&buildKey="
@@ -422,7 +422,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    public Set<String> getCommitersForBuild_40(@NotNull final String planKey, @NotNull final String buildNumber)
+    public Set<String> getCommitersForBuild_40(@Nonnull final String planKey, @Nonnull final String buildNumber)
             throws RemoteApiException {
 
         String buildResultUrl =
@@ -448,8 +448,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    @NotNull
-    public BambooPlan getPlanDetails(@NotNull final String planKey) throws RemoteApiException {
+    @Nonnull
+    public BambooPlan getPlanDetails(@Nonnull final String planKey) throws RemoteApiException {
         String planUrl = getBaseUrl() + PLAN_STATE + UrlUtil.encodeUrl(planKey);
 
         try {
@@ -478,8 +478,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      * @return
      * @throws RemoteApiException
      */
-    @NotNull
-    public BambooBuild getLatestBuildForPlanNew(@NotNull final String planKey, @Nullable final String masterPlanKey, final boolean isPlanEnabled,
+    @Nonnull
+    public BambooBuild getLatestBuildForPlanNew(@Nonnull final String planKey, @Nullable final String masterPlanKey, final boolean isPlanEnabled,
             final int timezoneOffset) throws RemoteApiException {
 
         String planUrl = getBaseUrl() + PLAN_STATE + UrlUtil.encodeUrl(planKey);
@@ -524,8 +524,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    @NotNull
-    public BambooBuild getBuildForPlanAndNumber(@NotNull String planKey, final int buildNumber, final int timezoneOffset)
+    @Nonnull
+    public BambooBuild getBuildForPlanAndNumber(@Nonnull String planKey, final int buildNumber, final int timezoneOffset)
             throws RemoteApiException {
 
         // try recent build first, as this API is availablke in older Bamboos also
@@ -577,7 +577,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    public Collection<BambooBuild> getRecentBuildsForPlan(@NotNull final String planKey, final int timezoneOffset)
+    public Collection<BambooBuild> getRecentBuildsForPlan(@Nonnull final String planKey, final int timezoneOffset)
             throws RemoteApiException {
         if (getBamboBuildNumber() >= BAMBOO_4_0_BUILD_NUMBER) {
             return getBuildsCollection_40(planKey, timezoneOffset);
@@ -594,7 +594,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return getBuildsCollection(buildResultUrl, getUsername(), timezoneOffset);
     }
 
-    private Collection<BambooBuild> getBuildsCollection(@NotNull final String url, @NotNull final String planKey,
+    private Collection<BambooBuild> getBuildsCollection(@Nonnull final String url, @Nonnull final String planKey,
             final int timezoneOffset) throws RemoteApiException {
 
         final Date pollingTime = new Date();
@@ -628,7 +628,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return builds;
     }
 
-    private Collection<BambooBuild> getBuildsCollection_40(@NotNull final String planKey,
+    private Collection<BambooBuild> getBuildsCollection_40(@Nonnull final String planKey,
                                                         final int timezoneOffset) throws RemoteApiException {
 
         String url = getBaseUrl() + LATEST_BUILD_FOR_PLAN + UrlUtil.encodeUrl(planKey) + "?expand="
@@ -679,7 +679,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return commiters;
     }
 
-    @NotNull
+    @Nonnull
     public List<String> getFavouriteUserPlans() throws RemoteApiException {
         List<String> builds = new ArrayList<String>();
         String buildResultUrl = getBaseUrl() + LATEST_USER_BUILDS_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken);
@@ -709,7 +709,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    @NotNull
+    @Nonnull
     public List<String> getFavouriteUserPlansNew() throws RemoteApiException {
         List<String> builds = new ArrayList<String>();
         String buildResultUrl = getBaseUrl() + PLAN_STATE + "?favourite&expand=plans";
@@ -739,8 +739,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    @NotNull
-    private BuildDetails getBuildResultDetailsOld(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    @Nonnull
+    private BuildDetails getBuildResultDetailsOld(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         final String buildResultUrl = getBaseUrl() + GET_BUILD_DETAILS_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken)
                 + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber;
 
@@ -867,7 +867,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return serverBuildNumber;
     }
 
-    public BuildDetails getBuildResultDetails(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    public BuildDetails getBuildResultDetails(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         // as we are phasing out BambooServerFacade and BambooServerFacade2,
         // but still make life of the clients using this lib easy, we make this decision here which API to use
 
@@ -971,8 +971,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return build;
     }
 
-    @NotNull
-    private BuildDetails getBuildResultDetailsNew(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    @Nonnull
+    private BuildDetails getBuildResultDetailsNew(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
 
         // tests are available for separate jobs since Bamboo v 2.7
         List<BambooJobImpl> jobs = getJobsForPlan(planKey);
@@ -1060,8 +1060,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return build;
     }
 
-    @NotNull
-    BuildDetails getBuildResultDetailsMoreRestish(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    @Nonnull
+    BuildDetails getBuildResultDetailsMoreRestish(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
 
         final String buildResultUrl = getBaseUrl() + GET_BUILD_BY_NUMBER_ACTION + "/" + UrlUtil.encodeUrl(planKey)
                 + "/" + buildNumber + "?auth=" + UrlUtil.encodeUrl(authToken)
@@ -1181,7 +1181,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      * Currently length of the comment is limited by poor implementation which uses GET HTTP method (sic!) to post a new comment
      * and the comment becomes part of URL, which is typically truncated by web servers.
      */
-    public void addLabelToBuild(@NotNull String planKey, int buildNumber, String buildLabel) throws RemoteApiException {
+    public void addLabelToBuild(@Nonnull String planKey, int buildNumber, String buildLabel) throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + ADD_LABEL_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken)
                 + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber + "&label="
                 + UrlUtil.encodeUrl(buildLabel);
@@ -1203,7 +1203,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      * Currently length of the comment is limited by poor implementation which uses GET HTTP method (sic!) to post a new comment
      * and the comment becomes part of URL, which is typically truncated by web servers.
      */
-    public void addCommentToBuild(@NotNull String planKey, int buildNumber, String buildComment)
+    public void addCommentToBuild(@Nonnull String planKey, int buildNumber, String buildComment)
             throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + ADD_COMMENT_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken)
                 + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber + "&content="
@@ -1222,7 +1222,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    public void executeBuild(@NotNull String planKey) throws RemoteApiException {
+    public void executeBuild(@Nonnull String planKey) throws RemoteApiException {
 
         if (getBamboBuildNumber() >= BAMBOO_2_7_2_BUILD_NUMBER) {
             executeBuildNewApi(planKey);
@@ -1432,7 +1432,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return builder.build();
     }
 
-    @NotNull
+    @Nonnull
     private BuildStatus getStatus(@Nullable String stateStr) {
         if (BUILD_SUCCESSFUL.equalsIgnoreCase(stateStr)) {
             return BuildStatus.SUCCESS;
@@ -1443,7 +1443,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    private Date parseDateUniversal(@Nullable String dateStr, @NotNull String element, final int timezoneOffset)
+    private Date parseDateUniversal(@Nullable String dateStr, @Nonnull String element, final int timezoneOffset)
             throws RemoteApiException {
         if (dateStr != null) {
             if (dateStr.indexOf('T') != -1) {
@@ -1513,7 +1513,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return child.getText();
     }
 
-    public String getBuildLogs(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    public String getBuildLogs(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
 
         String buildResultUrl = null;
 
@@ -1564,7 +1564,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return null;
     }
 
-    @NotNull
+    @Nonnull
     public Collection<String> getBranchKeys(String planKey, boolean useFavourites, boolean myBranchesOnly) throws RemoteApiException {
         List<String> branches = new ArrayList();
         String my = myBranchesOnly ? "&my" : "";
@@ -1643,7 +1643,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    public Collection<BuildIssue> getIssuesForBuild(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    public Collection<BuildIssue> getIssuesForBuild(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         int bambooBuild = getBamboBuildNumber();
         if (bambooBuild < BambooServerVersionNumberConstants.BAMBOO_1401_BUILD_NUMBER) {
             throw new RemoteApiBadServerVersionException("Bamboo build 1401 or newer required");
@@ -1691,7 +1691,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    @NotNull
+    @Nonnull
     public Collection<BambooPlan> getPlanList() throws RemoteApiException {
 
         List<BambooPlan> plans;
@@ -1724,7 +1724,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return plans;
     }
 
-    @NotNull
+    @Nonnull
     public Collection<BambooBuild> getSubscribedPlansResults(final Collection<SubscribedPlan> plans,
             boolean isUseFavourities,
             int timezoneOffset) throws RemoteApiLoginException {

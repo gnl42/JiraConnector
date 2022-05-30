@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
+Automatic-Module-Name: %Bundle-Name
 Bundle-SymbolicName: me.glindholm.connector.eclipse.jira.core;singleton:=true
-Bundle-Version: 4.0.1
+Bundle-Version: 4.1.0.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.apache.commons.io,
@@ -10,17 +11,12 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.mylyn.commons.core;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.commons.net;bundle-version="[3.0.0,4.0.0)",
  org.eclipse.mylyn.tasks.core;bundle-version="[3.0.0,4.0.0)",
- com.google.guava,
- me.glindholm.connector.eclipse.commons.core
+ me.glindholm.connector.eclipse.commons.core,
+ jira-rest-java-client-api;bundle-version="6.0.0",
+ jira-rest-java-client-core;bundle-version="6.0.0",
+ com.google.guava
 Bundle-ActivationPolicy: lazy
-Export-Package: com.sun.jersey.api.client,
- com.sun.jersey.api.client.config,
- com.sun.jersey.api.client.filter,
- com.sun.jersey.client.apache,
- com.sun.jersey.client.apache.config,
- com.sun.jersey.core.util,
- me.glindholm.connector.commons.jira.beans,
- me.glindholm.connector.commons.jira.cache,
+Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.html;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.model;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
@@ -28,14 +24,14 @@ Export-Package: com.sun.jersey.api.client,
  me.glindholm.connector.eclipse.internal.jira.core.service;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service.rest;x-friends:="me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui",
- org.codehaus.jettison.json
+ org.apache.commons.logging,
+ org.apache.commons.logging.impl,
+ org.apache.logging.log4j.jcl,
+ org.apache.logging.slf4j,
+ org.slf4j.impl
 Bundle-ClassPath: .,
- target/lib/jira-rest-java-client.jar,
- target/lib/jersey-apache-client.jar,
- target/lib/jersey-core.jar,
- target/lib/jersey-json.jar,
- target/lib/jersey-client.jar,
- target/lib/jettison.jar
+ target/lib/commons-logging.jar,
+ target/lib/log4j-jcl.jar,
+ target/lib/log4j-slf4j-impl.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Eclipse-RegisterBuddy: org.apache.axis
 Bundle-Localization: plugin

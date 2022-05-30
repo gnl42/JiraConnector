@@ -10,7 +10,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +27,7 @@ public abstract class BasePrivateConfigurationDao<T> {
     public BasePrivateConfigurationDao() {
     }
 
-    void writeXmlFile(final Element element, @NotNull final File outputFile) throws IOException {
+    void writeXmlFile(final Element element, @Nonnull final File outputFile) throws IOException {
         StringWriter sw = new StringWriter();
         new XMLOutputter(Format.getPrettyFormat()).output(element, sw);
         sw.flush();

@@ -16,8 +16,12 @@
 
 package me.glindholm.theplugin.commons.util;
 
-import org.joda.time.Period;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -25,78 +29,81 @@ import java.util.Date;
  *         Taken from the Bamboo project.
  */
 public abstract class DateUtil {
-	private static final String PRIOR_TEXT = "ago";
-	public static final int SECONDS_IN_MINUTE = 60;
-	public static final int MILISECONDS_IN_SECOND = 1000;
+    private static final String PRIOR_TEXT = "ago";
+    public static final int SECONDS_IN_MINUTE = 60;
+    public static final int MILISECONDS_IN_SECOND = 1000;
 
-	private DateUtil() {
-	}
+    private DateUtil() {
+    }
 
-	public static String getRelativePastDate(Date someDate) {
+    public static String getRelativePastDate(Date someDate) {
 
-		if (someDate != null) {
-			return DateUtil.getRelativePastDate(new Date(), someDate);
-		}
-		return "Unknown";
-	}
+        if (someDate != null) {
+            return DateUtil.getRelativePastDate(new Date(), someDate);
+        }
+        return "Unknown";
+    }
 
-	public static String getRelativePastDate(Date comparedTo, Date someDate) {
-		if (someDate != null) {
-			Period period = new Period(someDate.getTime(), comparedTo.getTime());
-			StringBuffer buffer = new StringBuffer();
+    public static String getRelativePastDate(Date comparedTo, Date someDate) {
+        if (someDate != null) {
+            Period period = Period.between(LocalDate.ofInstant(comparedTo.toInstant(), ZoneId.systemDefault()),
+                    LocalDate.ofInstant(someDate.toInstant(), ZoneId.systemDefault()));
+            StringBuilder buffer = new StringBuilder();
 
-			int years = period.getYears();
-			if (years > 0) {
-				return formatRelativeDateItem(buffer, years, " year");
-			}
+            int years = period.getYears();
+            if (years > 0) {
+                return formatRelativeDateItem(buffer, years, " year");
+            }
 
-			int months = period.getMonths();
-			if (months > 0) {
-				return formatRelativeDateItem(buffer, months, " month");
-			}
+            int months = period.getMonths();
+            if (months > 0) {
+                return formatRelativeDateItem(buffer, months, " month");
+            }
 
-			int weeks = period.getWeeks();
-			if (weeks > 0) {
-				return formatRelativeDateItem(buffer, weeks, " week");
-			}
+            int weeks = period.getDays() / 7;
+            if (weeks > 0) {
+                return formatRelativeDateItem(buffer, weeks, " week");
+            }
 
-			int days = period.getDays();
-			if (days > 0) {
-				return formatRelativeDateItem(buffer, days, " day");
-			}
+            int days = period.getDays();
+            if (days > 0) {
+                return formatRelativeDateItem(buffer, days, " day");
+            }
 
-			int hours = period.getHours();
-			if (hours > 0) {
-				return formatRelativeDateItem(buffer, hours, " hour");
-			}
-			int minutes = period.getMinutes();
-			if (minutes > 0) {
-				return formatRelativeDateItem(buffer, minutes, " minute");
-			}
+            Duration duration = Duration.between(LocalDateTime.ofInstant(comparedTo.toInstant(), ZoneId.systemDefault()),
+                    LocalDateTime.ofInstant(someDate.toInstant(), ZoneId.systemDefault()));
+            int hours = (int) duration.toHours();
+            if (hours > 0) {
+                return formatRelativeDateItem(buffer, hours, " hour");
+            }
+            int minutes = (int) duration.toMinutes();
+            if (minutes > 0) {
+                return formatRelativeDateItem(buffer, minutes, " minute");
+            }
 
-			int seconds = period.getSeconds();
-			if (seconds > 0) {
-				return formatRelativeDateItem(buffer, seconds, " second");
-			}
+            int seconds = (int) duration.getSeconds();
+            if (seconds > 0) {
+                return formatRelativeDateItem(buffer, seconds, " second");
+            }
 
-//			if (someDate.getTime() > comparedTo.getTime()) {
-//				return "in the future";
-//			}
+            // if (someDate.getTime() > comparedTo.getTime()) {
+            // return "in the future";
+            // }
 
-			return "< 1 second " + PRIOR_TEXT;
-		} else {
-			// Returning a blank string for relative date
-			return "";
-		}
+            return "< 1 second " + PRIOR_TEXT;
+        } else {
+            // Returning a blank string for relative date
+            return "";
+        }
 
-	}
+    }
 
-	private static String formatRelativeDateItem(StringBuffer buffer, int numberOfItems, String item) {
-		buffer.append(numberOfItems).append(item);
-		if (numberOfItems > 1) {
-			buffer.append("s");
-		}
-		buffer.append(" " + PRIOR_TEXT);
-		return buffer.toString();
-	}
+    private static String formatRelativeDateItem(StringBuilder buffer, int numberOfItems, String item) {
+        buffer.append(numberOfItems).append(item);
+        if (numberOfItems > 1) {
+            buffer.append("s");
+        }
+        buffer.append(" " + PRIOR_TEXT);
+        return buffer.toString();
+    }
 }

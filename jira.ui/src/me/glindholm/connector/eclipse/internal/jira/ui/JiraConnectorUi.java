@@ -42,7 +42,7 @@ import org.eclipse.mylyn.tasks.ui.wizards.TaskAttachmentPage;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraClientFactory;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraRepositoryConnector;
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
@@ -132,7 +132,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 				JiraClientCache cache = client != null ? client.getCache() : null;
 
 				if (cache != null) {
-					for (IssueType type : cache.getIssueTypes()) {
+					for (JiraIssueType type : cache.getIssueTypes()) {
 						if (type.getName().equals(task.getTaskKind())) {
 							if (type.isSubTaskType()) {
 								return JiraImages.OVERLAY_SUB_TASK;

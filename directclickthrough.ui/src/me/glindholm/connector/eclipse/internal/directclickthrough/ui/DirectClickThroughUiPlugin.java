@@ -9,10 +9,8 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler.Context;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -37,6 +35,7 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
     private static DirectClickThroughUiPlugin plugin;
 
     public static class EarlyStartup implements IStartup {
+        @Override
         public void earlyStartup() {
             Log.setLog(new JettyLogger());
         }
@@ -58,6 +57,7 @@ public class DirectClickThroughUiPlugin extends AbstractUIPlugin {
         plugin = this;
 
         getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent event) {
                 stopEmbeddedServer();
 

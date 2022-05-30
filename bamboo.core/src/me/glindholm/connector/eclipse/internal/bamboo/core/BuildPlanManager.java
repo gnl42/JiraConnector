@@ -24,7 +24,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.IRepositoryManager;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
 import me.glindholm.theplugin.commons.bamboo.BambooBuild;

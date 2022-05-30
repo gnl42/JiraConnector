@@ -16,8 +16,8 @@
 
 package me.glindholm.theplugin.commons.bamboo;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 
@@ -45,7 +45,7 @@ public interface BambooBuild {
     @Nullable
     String getMasterPlanKey();
 
-	@NotNull
+	@Nonnull
 	String getPlanKey();
 
 	boolean getEnabled();
@@ -60,7 +60,7 @@ public interface BambooBuild {
 
 	String getResultUrl();
 
-	@NotNull
+	@Nonnull
 	BuildStatus getStatus();
 
 	/**
@@ -114,7 +114,7 @@ public interface BambooBuild {
 
 	Set<String> getCommiters();
 
-	@NotNull
+	@Nonnull
 	Date getPollingTime();
 
 	@Nullable

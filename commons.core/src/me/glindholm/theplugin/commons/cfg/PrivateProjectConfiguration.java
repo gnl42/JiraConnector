@@ -15,30 +15,30 @@
  */
 package me.glindholm.theplugin.commons.cfg;
 
-import org.jetbrains.annotations.NotNull;
-
-import me.glindholm.theplugin.commons.util.MiscUtil;
-
 import java.util.Collection;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
+import me.glindholm.theplugin.commons.util.MiscUtil;
+
 public class PrivateProjectConfiguration {
-	public Collection<PrivateServerCfgInfo> getPrivateServerCfgInfos() {
-		return privateServerCfgInfos;
-	}
+    public Collection<PrivateServerCfgInfo> getPrivateServerCfgInfos() {
+        return privateServerCfgInfos;
+    }
 
-	private Set<PrivateServerCfgInfo> privateServerCfgInfos = MiscUtil.buildHashSet();
+    private Set<PrivateServerCfgInfo> privateServerCfgInfos = MiscUtil.buildHashSet();
 
-	public void add(@NotNull PrivateServerCfgInfo info) {
-		privateServerCfgInfos.add(info);
-	}
+    public void add(@Nonnull PrivateServerCfgInfo info) {
+        privateServerCfgInfos.add(info);
+    }
 
-	public PrivateServerCfgInfo getPrivateServerCfgInfo(final ServerId serverId) {
-		for (PrivateServerCfgInfo privateServerCfgInfo : privateServerCfgInfos) {
-			if (privateServerCfgInfo.getServerId().equals(serverId)) {
-				return privateServerCfgInfo;
-			}
-		}
-		return null;
-	}
+    public PrivateServerCfgInfo getPrivateServerCfgInfo(final ServerId serverId) {
+        for (PrivateServerCfgInfo privateServerCfgInfo : privateServerCfgInfos) {
+            if (privateServerCfgInfo.getServerId().equals(serverId)) {
+                return privateServerCfgInfo;
+            }
+        }
+        return null;
+    }
 }

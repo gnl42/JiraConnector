@@ -15,10 +15,14 @@
  */
 package me.glindholm.theplugin.commons.cfg.xstream;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.annotation.Nonnull;
+
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.jetbrains.annotations.NotNull;
 
 import me.glindholm.theplugin.commons.cfg.PrivateConfigurationDao;
 import me.glindholm.theplugin.commons.cfg.PrivateServerCfgInfo;
@@ -26,19 +30,17 @@ import me.glindholm.theplugin.commons.cfg.ServerCfg;
 import me.glindholm.theplugin.commons.cfg.ServerCfgFactoryException;
 import me.glindholm.theplugin.commons.cfg.ServerId;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * User: pmaruszak
  */
 
 public class HomeDirPrivateConfigurationDao
-        extends BasePrivateConfigurationDao<PrivateServerCfgInfo>
-        implements PrivateConfigurationDao {
+extends BasePrivateConfigurationDao<PrivateServerCfgInfo>
+implements PrivateConfigurationDao {
 
     private static final String ROOT_ELEMENT_NAME = "single-server-private-cfg";
 
+    @Override
     public PrivateServerCfgInfo load(final ServerId id) throws ServerCfgFactoryException {
         final File atlassianDir = getPrivateCfgDirectorySavePath();
 
@@ -47,7 +49,7 @@ public class HomeDirPrivateConfigurationDao
             if (serverCfgFile.isFile() && serverCfgFile.canRead()) {
                 Document doc;
 
-                final SAXBuilder builder = new SAXBuilder(false);
+                final SAXBuilder builder = new SAXBuilder();
                 try {
 
                     doc = builder.build(serverCfgFile.toURI().toString());
@@ -77,7 +79,8 @@ public class HomeDirPrivateConfigurationDao
         return loadJDom(doc.getRootElement(), PrivateServerCfgInfo.class, false);
     }
 
-    public void save(@NotNull final PrivateServerCfgInfo info) throws ServerCfgFactoryException {
+    @Override
+    public void save(@Nonnull final PrivateServerCfgInfo info) throws ServerCfgFactoryException {
         Document document = createJDom(info);
 
         try {

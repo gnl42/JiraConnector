@@ -12,6 +12,8 @@
 package me.glindholm.connector.eclipse.internal.jira.ui.actions;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -49,7 +51,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
@@ -317,9 +319,9 @@ public class LogJiraTimeDialog extends MessageDialog {
             }
 
         } else if (adjustEstimate == AdjustEstimateMethod.REDUCE) {
-            TaskAttribute estimate = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_ESTIMATE);
+            TaskAttribute estimate = taskData.getRoot().getAttribute(JiraConstants.ATTRIBUTE_ESTIMATE);
             if (estimate == null) {
-                estimate = taskData.getRoot().getAttribute(IJiraConstants.ATTRIBUTE_INITIAL_ESTIMATE);
+                estimate = taskData.getRoot().getAttribute(JiraConstants.ATTRIBUTE_INITIAL_ESTIMATE);
             }
             final long estimateLong = estimate == null ? 0 : Long.parseLong(estimate.getValue());
 
@@ -343,23 +345,13 @@ public class LogJiraTimeDialog extends MessageDialog {
         getButton(0).setEnabled(ok);
     }
 
-    private GregorianCalendar collectDate() {
-        final GregorianCalendar cal = new GregorianCalendar();
-
-        cal.set(dateWidget.getYear(), dateWidget.getMonth(), dateWidget.getDay(), timeWidget.getHours(),
-                timeWidget.getMinutes(), timeWidget.getSeconds());
-
-        return cal;
-    }
-
     private void collectWorkLog() {
-
-        final GregorianCalendar cal = collectDate();
-
         final JiraWorkLog tempworkLog = new JiraWorkLog();
         tempworkLog.setAuthor(repository.getUserName());
         tempworkLog.setComment(descriptionText.getText());
-        tempworkLog.setStartDate(cal.getTime());
+        tempworkLog.setStartDate(LocalDateTime
+                .of(dateWidget.getYear(), dateWidget.getMonth(), dateWidget.getDay(), timeWidget.getHours(), timeWidget.getMinutes(), timeWidget.getSeconds())
+                .toInstant(ZoneOffset.UTC));
         tempworkLog.setTimeSpent(workDoneAmountInSeconds);
         tempworkLog.setAdjustEstimate(adjustEstimate);
         tempworkLog.setNewRemainingEstimate(remainingEstimateInSeconds);

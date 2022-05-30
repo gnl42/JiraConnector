@@ -12,6 +12,8 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.editor;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +33,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.mylyn.commons.workbench.forms.CommonFormUtil;
@@ -61,8 +63,6 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-import com.jakewharton.byteunits.DecimalByteUnit;
-
 import me.glindholm.connector.eclipse.internal.jira.ui.JiraImages;
 
 /**
@@ -76,9 +76,9 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
             Messages.TaskEditorAttachmentPart_Description, /*"Type", */Messages.TaskEditorAttachmentPart_Size,
             Messages.TaskEditorAttachmentPart_Creator, Messages.TaskEditorAttachmentPart_Created };
 
-    private final int[] attachmentsColumnWidths = { 130, 150, /*100,*/70, 100, 100 };
+    private final int[] attachmentsColumnWidths = { 130, 150, /* 100, */70, 100, 250 }; // Not used
 
-    private final int[] attachmentsColumnWidthsNoDescription = { 150, 0, 100, 180, 100 };
+    private final int[] attachmentsColumnWidthsNoDescription = { 270, 0, 100, 180, 250 };
 
     private List<TaskAttribute> attachments;
 
@@ -106,10 +106,10 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachmentsTable.setHeaderVisible(true);
         attachmentsTable.setLayout(new GridLayout());
         GridDataFactory.fillDefaults()
-                .align(SWT.FILL, SWT.FILL)
-                .grab(true, false)
-                .hint(500, SWT.DEFAULT)
-                .applyTo(attachmentsTable);
+        .align(SWT.FILL, SWT.FILL)
+        .grab(true, false)
+        .hint(500, SWT.DEFAULT)
+        .applyTo(attachmentsTable);
         attachmentsTable.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
         for (int i = 0, columnIndex = 0; i < attachmentsColumns.length; i++) {
@@ -133,7 +133,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachmentsViewer.setColumnProperties(attachmentsColumns);
         ColumnViewerToolTipSupport.enableFor(attachmentsViewer, ToolTip.NO_RECREATE);
 
-        attachmentsViewer.setSorter(new ViewerSorter() {
+        ViewerComparator attachmentSorter = new ViewerComparator() {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
                 ITaskAttachment attachment1 = (ITaskAttachment) e1;
@@ -150,9 +150,10 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
                     return 0;
                 }
             }
-        });
+        };
+        attachmentsViewer.setComparator(attachmentSorter);
 
-        List<ITaskAttachment> attachmentList = new ArrayList<ITaskAttachment>(attachments.size());
+        List<ITaskAttachment> attachmentList = new ArrayList<>(attachments.size());
         for (TaskAttribute attribute : attachments) {
             TaskAttachment taskAttachment = new TaskAttachment(getModel().getTaskRepository(), getModel().getTask(),
                     attribute);
@@ -164,7 +165,6 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachmentsViewer.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(ViewerCell cell) {
-                // TODO Auto-generated method stub
                 final TaskAttachment element = (TaskAttachment) cell.getElement();
                 final String text;
                 final int columnIndex = cell.getColumnIndex();
@@ -173,7 +173,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
                     text = element.getFileName();
                     break;
                 case 1:
-                    text = DecimalByteUnit.format(element.getLength());
+                    text = humanReadableByteCountSI(element.getLength());
                     break;
                 case 2:
                     text = element.getAuthor().getPersonId();
@@ -189,6 +189,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         });
 
         attachmentsViewer.addOpenListener(new IOpenListener() {
+            @Override
             public void open(OpenEvent event) {
                 if (!event.getSelection().isEmpty()) {
                     StructuredSelection selection = (StructuredSelection) event.getSelection();
@@ -203,6 +204,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(true);
         menuManager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(IMenuManager manager) {
                 TasksUiMenus.fillTaskAttachmentMenu(manager);
             }
@@ -210,6 +212,26 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, true);
         Menu menu = menuManager.createContextMenu(attachmentsTable);
         attachmentsTable.setMenu(menu);
+    }
+
+    /**
+     * @author Andreas Lundblad
+     * @see <a href=
+     *      "https://programming.guide/java/formatting-byte-size-to-human-readable-format.html">Formatting
+     *      byte size to human readable format</a>
+     * @param bytes
+     * @return
+     */
+    private static String humanReadableByteCountSI(long bytes) {
+        if (-1000 < bytes && bytes < 1000) {
+            return bytes + " B";
+        }
+        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
+        while (bytes <= -999_950 || bytes >= 999_950) {
+            bytes /= 1000;
+            ci.next();
+        }
+        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
     }
 
     private void createButtons(Composite attachmentsComposite, FormToolkit toolkit) {

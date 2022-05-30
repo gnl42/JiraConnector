@@ -70,7 +70,7 @@ import me.glindholm.connector.eclipse.internal.commons.ui.MigrateToSecureStorage
 import me.glindholm.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraClientFactory;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import me.glindholm.connector.eclipse.internal.jira.core.model.ServerInfo;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
@@ -78,588 +78,593 @@ import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 import me.glindholm.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 
 /**
- * Wizard page used to specify a JIRA repository address, username, and password.
- * 
+ * Wizard page used to specify a JIRA repository address, username, and
+ * password.
+ *
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
  * @author Jacek Jaroczynski
  */
 public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
-	private Button compressionButton;
+    private Button compressionButton;
 
-	private boolean characterEncodingValidated;
+    private boolean characterEncodingValidated;
 
-	private Button autoRefreshConfigurationButton;
+    private Button autoRefreshConfigurationButton;
 
-	private Spinner workDaysPerWeekSpinner;
+    private Spinner workDaysPerWeekSpinner;
 
-	private Spinner workHoursPerDaySpinner;
+    private Spinner workHoursPerDaySpinner;
 
-	private Spinner maxSearchResultsSpinner;
+    private Spinner maxSearchResultsSpinner;
 
-	private Button linkedTasksAsSubtasksButton;
+    private Button linkedTasksAsSubtasksButton;
 
-	private FormToolkit toolkit;
+    private FormToolkit toolkit;
 
-	private JiraLocalConfiguration configuration;
+    private JiraLocalConfiguration configuration;
 
-	private Text dateTimePatternText;
+    private Text dateTimePatternText;
 
-	private Text datePatternText;
+    private Text datePatternText;
 
-	private Combo localeCombo;
+    private Combo localeCombo;
 
-	private Locale[] locales;
+    private Locale[] locales;
 
-	private Button limitSearchResultsButton;
+    private Button limitSearchResultsButton;
 
-	private Button followRedirectsButton;
+    private Button followRedirectsButton;
 
-	private Button useServerSettingsButton;
+    private Button useServerSettingsButton;
 
-	public JiraRepositorySettingsPage(TaskRepository taskRepository) {
-		super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings,
-				Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
-		setNeedsProxy(true);
-		setNeedsHttpAuth(false);
-	}
+    public JiraRepositorySettingsPage(TaskRepository taskRepository) {
+        super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings,
+                Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
+        setNeedsProxy(true);
+        setNeedsHttpAuth(false);
+    }
 
-	@Override
-	protected void repositoryTemplateSelected(RepositoryTemplate template) {
-		repositoryLabelEditor.setStringValue(template.label);
-		setUrl(template.repositoryUrl);
-		getContainer().updateButtons();
-	}
+    @Override
+    protected void repositoryTemplateSelected(RepositoryTemplate template) {
+        repositoryLabelEditor.setStringValue(template.label);
+        setUrl(template.repositoryUrl);
+        getContainer().updateButtons();
+    }
 
-	/** Create a button to validate the specified repository settings */
-	@Override
-	protected void createAdditionalControls(Composite parent) {
-		if (repository != null) {
-			configuration = JiraUtil.getLocalConfiguration(repository);
-		} else {
-			configuration = new JiraLocalConfiguration();
-		}
+    /** Create a button to validate the specified repository settings */
+    @Override
+    protected void createAdditionalControls(Composite parent) {
+        if (repository != null) {
+            configuration = JiraUtil.getLocalConfiguration(repository);
+        } else {
+            configuration = new JiraLocalConfiguration();
+        }
 
-		toolkit = new FormToolkit(parent.getDisplay());
+        toolkit = new FormToolkit(parent.getDisplay());
 
-		addRepositoryTemplatesToServerUrlCombo();
+        addRepositoryTemplatesToServerUrlCombo();
 
-		if (repository != null) {
-			this.characterEncodingValidated = JiraUtil.getCharacterEncodingValidated(repository);
-		}
-
-		Label compressionLabel = new Label(parent, SWT.NONE);
-		compressionLabel.setText(Messages.JiraRepositorySettingsPage_Compression);
-		compressionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
-		compressionButton.setText(Messages.JiraRepositorySettingsPage_Enabled);
-		if (repository != null) {
-			compressionButton.setSelection(JiraUtil.getCompression(repository));
-		}
-
-		Label label = new Label(parent, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_Refresh_configuration);
-		autoRefreshConfigurationButton = new Button(parent, SWT.CHECK | SWT.LEFT);
-		autoRefreshConfigurationButton.setText(Messages.JiraRepositorySettingsPage_Automatically);
-		autoRefreshConfigurationButton.setToolTipText(Messages.JiraRepositorySettingsPage_If_checked_the_repository_configuration_will_be_periodically_updated);
-		if (repository != null) {
-			autoRefreshConfigurationButton.setSelection(JiraUtil.getAutoRefreshConfiguration(repository));
-		}
-
-		label = new Label(parent, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_Subtasks);
-		linkedTasksAsSubtasksButton = new Button(parent, SWT.CHECK | SWT.LEFT);
-		linkedTasksAsSubtasksButton.setText(Messages.JiraRepositorySettingsPage_Show_linked_tasks);
-		linkedTasksAsSubtasksButton.setToolTipText(Messages.JiraRepositorySettingsPage_If_checked_linked_tasks_show_as_subtasks_in_the_task_list);
-		if (repository != null) {
-			linkedTasksAsSubtasksButton.setSelection(JiraUtil.getLinkedTasksAsSubtasks(repository));
-		}
-
-		Label followRedirectsLabel = new Label(parent, SWT.NONE);
-		followRedirectsLabel.setText(Messages.JiraRepositorySettingsPage_Follow_redirects);
-		followRedirectsButton = new Button(parent, SWT.CHECK | SWT.LEFT);
-		followRedirectsButton.setText(Messages.JiraRepositorySettingsPage_Enabled);
-		if (configuration != null) {
-			followRedirectsButton.setSelection(configuration.getFollowRedirects());
-		}
-
-		label = new Label(parent, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_Time_tracking);
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
-
-		Composite timeTrackingComposite = new Composite(parent, SWT.NONE);
-		timeTrackingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-
-//		useServerSettingsButton = new Button(timeTrackingComposite, SWT.CHECK | SWT.LEFT);
-//		useServerSettingsButton.setText(Messages.JiraRepositorySettingsPage_use_server_settings);
-//		useServerSettingsButton.setToolTipText(Messages.JiraRepositorySettingsPage_Administration_priviliges_required);
-//		GridDataFactory.fillDefaults().span(2, 1).applyTo(useServerSettingsButton);
-
-		workDaysPerWeekSpinner = new Spinner(timeTrackingComposite, SWT.BORDER | SWT.RIGHT);
-		workDaysPerWeekSpinner.setValues(JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, 1, 7, 0, 1, 1);
-
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).applyTo(workDaysPerWeekSpinner);
-		label = new Label(timeTrackingComposite, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_working_days_per_week);
-
-		workHoursPerDaySpinner = new Spinner(timeTrackingComposite, SWT.BORDER);
-		workHoursPerDaySpinner.setValues(JiraLocalConfiguration.DEFAULT_WORK_HOURS_PER_DAY, 1, 24, 0, 1, 1);
-
-		label = new Label(timeTrackingComposite, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_working_hours_per_day);
-
-		label = new Label(parent, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_Search_results);
-
-		if (repository != null) {
-
-			if (JiraUtil.isUseServerTimeTrackingSettings(repository)) {
-				useServerSettingsButton.setSelection(true);
-				workDaysPerWeekSpinner.setEnabled(false);
-				workHoursPerDaySpinner.setEnabled(false);
-			}
-			workDaysPerWeekSpinner.setSelection(JiraUtil.getWorkDaysPerWeekLocal(repository));
-			workHoursPerDaySpinner.setSelection(JiraUtil.getWorkHoursPerDayLocal(repository));
-
-		}
-
-//		useServerSettingsButton.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				workDaysPerWeekSpinner.setEnabled(!useServerSettingsButton.getSelection());
-//				workHoursPerDaySpinner.setEnabled(!useServerSettingsButton.getSelection());
-//			}
-//		});
-
-		Composite maxSearchResultsComposite = new Composite(parent, SWT.NONE);
-		maxSearchResultsComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-
-		limitSearchResultsButton = new Button(maxSearchResultsComposite, SWT.CHECK | SWT.LEFT);
-		limitSearchResultsButton.setText(Messages.JiraRepositorySettingsPage_Limit);
-
-		maxSearchResultsSpinner = new Spinner(maxSearchResultsComposite, SWT.BORDER);
-		maxSearchResultsSpinner.setValues(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS, 1, 99999, 0, 1, 1000);
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).applyTo(maxSearchResultsSpinner);
-		if (repository != null) {
-			int maxSearchResults = JiraUtil.getMaxSearchResults(repository);
-			if (maxSearchResults != -1) {
-				maxSearchResultsSpinner.setSelection(maxSearchResults);
-				limitSearchResultsButton.setSelection(true);
-			} else {
-				maxSearchResultsSpinner.setSelection(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
-				limitSearchResultsButton.setSelection(false);
-				maxSearchResultsSpinner.setEnabled(false);
-			}
-		} else {
-			maxSearchResultsSpinner.setSelection(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
-			limitSearchResultsButton.setSelection(true);
-		}
-		limitSearchResultsButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				maxSearchResultsSpinner.setEnabled(limitSearchResultsButton.getSelection());
-			}
-		});
-
-		createAdvancedComposite(parent);
-	}
-
-	private void createAdvancedComposite(final Composite parent) {
-		ExpandableComposite expandableComposite = toolkit.createExpandableComposite(parent,
-				ExpandableComposite.TITLE_BAR | ExpandableComposite.COMPACT | ExpandableComposite.TWISTIE);
-		GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
-		gd.horizontalSpan = 2;
-		gd.horizontalIndent = -5;
-		expandableComposite.setLayoutData(gd);
-		expandableComposite.setFont(parent.getFont());
-		expandableComposite.setBackground(parent.getBackground());
-		expandableComposite.setText(Messages.JiraRepositorySettingsPage_Advanced_Configuration);
-		expandableComposite.addExpansionListener(new ExpansionAdapter() {
-			@Override
-			public void expansionStateChanged(ExpansionEvent e) {
-				getControl().getShell().pack();
-			}
-		});
-		toolkit.paintBordersFor(expandableComposite);
-
-		Composite composite = toolkit.createComposite(expandableComposite, SWT.BORDER);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		composite.setLayout(layout);
-		expandableComposite.setClient(composite);
-
-//		compressionButton = new Button(composite, SWT.CHECK | SWT.LEFT);
-//		compressionButton.setText("Customize");
-//		if (repository != null) {
-//			compressionButton.setSelection(JiraUtil.getCompression(repository));
-//		}
-//
-//		new Label(composite, SWT.NONE);
-
-		Label label = new Label(composite, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_Date_Picker_Format);
-
-		datePatternText = new Text(composite, SWT.NONE);
-		datePatternText.setText(configuration.getDatePattern());
-
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(datePatternText);
-		label = new Label(composite, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_Date_Time_Picker_Format);
-
-		dateTimePatternText = new Text(composite, SWT.NONE);
-		dateTimePatternText.setText(configuration.getDateTimePattern());
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateTimePatternText);
-
-		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(datePatternText);
-		label = new Label(composite, SWT.NONE);
-		label.setText(Messages.JiraRepositorySettingsPage_Locale);
-
-		localeCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
-		locales = Locale.getAvailableLocales();
-		Arrays.sort(locales, new Comparator<Locale>() {
-			public int compare(Locale o1, Locale o2) {
-				return o1.getDisplayName().compareTo(o2.getDisplayName());
-			}
-		});
-		for (Locale locale : locales) {
-			localeCombo.add(locale.getDisplayName());
-		}
-		localeCombo.setText(configuration.getLocale().getDisplayName());
-
-		Hyperlink hyperlink = toolkit.createHyperlink(composite, Messages.JiraRepositorySettingsPage_Reset_to_defaults,
-				SWT.NONE);
-		hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
-			@Override
-			public void linkActivated(HyperlinkEvent e) {
-				datePatternText.setText(JiraLocalConfiguration.DEFAULT_DATE_PATTERN);
-				dateTimePatternText.setText(JiraLocalConfiguration.DEFAULT_DATE_TIME_PATTERN);
-				localeCombo.setText(JiraLocalConfiguration.DEFAULT_LOCALE.getDisplayName());
-			}
-		});
-
-		toolkit.paintBordersFor(composite);
-	}
-
-	@Override
-	protected boolean isValidUrl(String name) {
-		if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
-			try {
-				new URL(name);
-				return true;
-			} catch (MalformedURLException e) {
-			}
-		}
-		return false;
-	}
-
-	@Override
-	protected Validator getValidator(TaskRepository repository) {
-		return new JiraValidator(repository);
-	}
-
-	@SuppressWarnings("restriction")
-	@Override
-	public void applyTo(final TaskRepository repository) {
-//		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
-//		super.applyTo(repository);
-
-		this.repository = applyToValidate(repository);
-
-		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUGS);
-
-		configuration.setDatePattern(datePatternText.getText());
-		configuration.setDateTimePattern(dateTimePatternText.getText());
-		if (localeCombo.getSelectionIndex() != -1) {
-			configuration.setLocale(locales[localeCombo.getSelectionIndex()]);
-		}
-
-		JiraUtil.setConfiguration(repository, configuration);
-		JiraUtil.setCompression(repository, compressionButton.getSelection());
-		JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
-		JiraUtil.setLinkedTasksAsSubtasks(repository, linkedTasksAsSubtasksButton.getSelection());
-
-		JiraUtil.setWorkDaysPerWeekLocal(repository, workDaysPerWeekSpinner.getSelection());
-		JiraUtil.setWorkHoursPerDayLocal(repository, workHoursPerDaySpinner.getSelection());
-		if (limitSearchResultsButton.getSelection()) {
-			JiraUtil.setMaxSearchResults(repository, maxSearchResultsSpinner.getSelection());
-		} else {
-			JiraUtil.setMaxSearchResults(repository, -1);
-		}
-		if (characterEncodingValidated) {
-			JiraUtil.setCharacterEncodingValidated(repository, true);
-		}
-
-//		if (!JiraUtil.isUseServerTimeTrackingSettings(repository) && useServerSettingsButton.getSelection()) {
-//			Job refreshServerSettingsJob = new Job(Messages.JiraRepositorySettingsPage_Getting_repository_configuration) {
-//
-//				@Override
-//				protected IStatus run(IProgressMonitor monitor) {
-//					monitor.beginTask(Messages.JiraRepositorySettingsPage_Getting_repository_configuration,
-//							IProgressMonitor.UNKNOWN);
-//					JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-//					try {
-//						client.getCache().refreshConfiguration(monitor);
-//					} catch (JiraException e) {
-//						Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, NLS.bind(
-//								Messages.JiraRepositorySettingsPage_Failed_retrieve_repository_configuration,
-//								repository.getRepositoryUrl()));
-//						StatusHandler.log(status);
-//					} finally {
-//						monitor.done();
-//					}
-//					return Status.OK_STATUS;
-//				}
-//			};
-//
-//			refreshServerSettingsJob.setUser(false);
-//			refreshServerSettingsJob.schedule();
-//
-//		}
-//
-//		JiraUtil.setUseServerTimeTrackingSettings(repository, useServerSettingsButton.getSelection());
-	}
-
-	/**
-	 * Helper method for distinguishing between hitting Finish and Validate (because Validation leads to calling applyTo
-	 * in the superclass)
-	 */
-	public TaskRepository applyToValidate(TaskRepository repository) {
-		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
-		super.applyTo(repository);
-
-		JiraUtil.setFollowRedirects(repository, followRedirectsButton.getSelection());
-
-		return repository;
-	}
-
-	@Override
-	public TaskRepository createTaskRepository() {
-		TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
-		return applyToValidate(repository);
-	}
-
-	@Override
-	protected void validateSettings() {
-		if (repository != null) {
-			AuthenticationCredentials repoCredentials = repository.getCredentials(AuthenticationType.REPOSITORY);
-			AuthenticationCredentials proxyCredentials = repository.getCredentials(AuthenticationType.PROXY);
-			AuthenticationCredentials httpCredentials = repository.getCredentials(AuthenticationType.HTTP);
-
-			super.validateSettings();
-
-			repository.setCredentials(AuthenticationType.REPOSITORY, repoCredentials,
-					repository.getSavePassword(AuthenticationType.REPOSITORY));
-			repository.setCredentials(AuthenticationType.HTTP, httpCredentials,
-					repository.getSavePassword(AuthenticationType.HTTP));
-			repository.setCredentials(AuthenticationType.PROXY, proxyCredentials,
-					repository.getSavePassword(AuthenticationType.PROXY));
-		} else {
-			super.validateSettings();
-		}
-
-	}
-
-	@Override
-	protected void applyValidatorResult(Validator validator) {
-		JiraValidator jiraValidator = (JiraValidator) validator;
-		ServerInfo serverInfo = jiraValidator.getServerInfo();
-		if (serverInfo != null) {
-			String url = jiraValidator.getRepositoryUrl();
-			if (serverInfo.getBaseUrl() != null && !url.equals(serverInfo.getBaseUrl())) {
-				Set<String> urls = new LinkedHashSet<String>();
-				urls.add(url);
-				urls.add(serverInfo.getBaseUrl());
-				if (serverInfo.getWebBaseUrl() != null) {
-					urls.add(serverInfo.getWebBaseUrl());
-				}
-
-				UrlSelectionDialog dialog = new UrlSelectionDialog(getShell(), urls.toArray(new String[0]));
-				dialog.setSelectedUrl(serverInfo.getBaseUrl());
-				int result = dialog.open();
-				if (result == Window.OK) {
-					setUrl(dialog.getSelectedUrl());
-				}
-			}
-
-			if (serverInfo.getCharacterEncoding() != null) {
-				setEncoding(serverInfo.getCharacterEncoding());
-			} else {
-				setEncoding(TaskRepository.DEFAULT_CHARACTER_ENCODING);
-
-				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
-						Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_character_encodeing,
-						null));
-			}
-
-			if (serverInfo.isInsecureRedirect()) {
-				jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
-						Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_server_redirected,
-						null));
-			}
-
-			characterEncodingValidated = true;
-		}
-
-		super.applyValidatorResult(validator);
-
-	}
-
-	private class JiraValidator extends Validator {
-
-		final TaskRepository repository;
-
-		private ServerInfo serverInfo;
-
-		public JiraValidator(TaskRepository repository) {
-			this.repository = repository;
-		}
-
-		public ServerInfo getServerInfo() {
-			return serverInfo;
-		}
-
-		public String getRepositoryUrl() {
-			return repository.getRepositoryUrl();
-		}
-
-		@Override
-		public void run(IProgressMonitor monitor) throws CoreException {
-			try {
-				new URL(repository.getRepositoryUrl());
-			} catch (MalformedURLException ex) {
-				throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
-						INVALID_REPOSITORY_URL, null));
-			}
-
-			AbstractWebLocation location = new JiraTaskRepositoryLocation(repository);
-			JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(repository);
-			try {
-				this.serverInfo = JiraClientFactory.getDefault().validateConnection(location, configuration, monitor);
-			} catch (JiraCaptchaRequiredException e) {
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open();
-					}
-				});
-				throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
-						JiraUiPlugin.ID_PLUGIN, Messages.JiraRepositorySettingsPage_remote_api_locked));
-			} catch (JiraAuthenticationException e) {
-				throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
-						JiraUiPlugin.ID_PLUGIN, INVALID_LOGIN));
-			} catch (Exception e) {
-				StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, e.getMessage(), e));
-				throw new CoreException(JiraCorePlugin.toStatus(repository, e));
-			}
-
-			MultiStatus status = new MultiStatus(JiraUiPlugin.ID_PLUGIN, 0, NLS.bind("Validation results for {0}", //$NON-NLS-1$
-					repository.getRepositoryLabel()), null);
-//			status.addAll(serverInfo.getStatistics().getStatus());
-			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
-					"Web base: {0}", serverInfo.getWebBaseUrl()))); //$NON-NLS-1$
-//			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
-//					"Character encoding: {0}", serverInfo.getCharacterEncoding()))); //$NON-NLS-1$
-			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind("Version: {0}", serverInfo.toString()))); //$NON-NLS-1$
-			StatusHandler.log(status);
-		}
-
-	}
-
-	private static class UrlSelectionDialog extends Dialog {
-
-		private final String[] locations;
-
-		private String selectedUrl;
-
-		protected UrlSelectionDialog(Shell parentShell, String[] locations) {
-			super(parentShell);
-
-			if (locations == null || locations.length < 2) {
-				throw new IllegalArgumentException();
-			}
-
-			this.locations = locations;
-		}
-
-		@Override
-		protected Control createDialogArea(Composite parent) {
-			getShell().setText(Messages.JiraRepositorySettingsPage_Select_repository_location);
-
-			Composite composite = new Composite(parent, SWT.NONE);
-			GridLayout layout = new GridLayout();
-			layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-			layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-			layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-			layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-			composite.setLayout(layout);
-			composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-			applyDialogFont(composite);
-
-			Label label = new Label(composite, SWT.NONE);
-			label.setText(Messages.JiraRepositorySettingsPage_The_repository_location_reported_by_the_server_does_not_match_the_provided_location);
-
-			final List<Button> buttons = new ArrayList<Button>(locations.length);
-
-			if (getSelectedUrl() == null) {
-				setSelectedUrl(locations[0]);
-			}
-
-			for (int i = 1; i < locations.length; i++) {
-				Button button = new Button(composite, SWT.RADIO);
-				button.setText(Messages.JiraRepositorySettingsPage_Use_server_location_ + locations[i]);
-				button.setData(locations[i]);
-				button.setSelection(getSelectedUrl().equals(locations[i]));
-				buttons.add(button);
-			}
-
-			Button keepLocationButton = new Button(composite, SWT.RADIO);
-			keepLocationButton.setText(Messages.JiraRepositorySettingsPage_Keep_current_location_ + locations[0]);
-			keepLocationButton.setData(locations[0]);
-			keepLocationButton.setSelection(getSelectedUrl().equals(locations[0]));
-			buttons.add(keepLocationButton);
-
-			SelectionListener listener = new SelectionListener() {
-				public void widgetDefaultSelected(SelectionEvent e) {
-					widgetSelected(e);
-				}
-
-				public void widgetSelected(SelectionEvent e) {
-					Object source = e.getSource();
-					if (source instanceof Button && ((Button) source).getSelection()) {
-						setSelectedUrl((String) ((Button) source).getData());
-					}
-				}
-
-			};
-
-			for (Button button : buttons) {
-				button.addSelectionListener(listener);
-			}
-
-			return composite;
-		}
-
-		public void setSelectedUrl(String selectedUrl) {
-			this.selectedUrl = selectedUrl;
-		}
-
-		public String getSelectedUrl() {
-			return selectedUrl;
-		}
-
-	}
-
-	@Override
-	public String getConnectorKind() {
-		return JiraCorePlugin.CONNECTOR_KIND;
-	}
-
-	@Override
-	public void dispose() {
-		if (toolkit != null) {
-			toolkit.dispose();
-			toolkit = null;
-		}
-		super.dispose();
-	}
+        if (repository != null) {
+            this.characterEncodingValidated = JiraUtil.getCharacterEncodingValidated(repository);
+        }
+
+        Label compressionLabel = new Label(parent, SWT.NONE);
+        compressionLabel.setText(Messages.JiraRepositorySettingsPage_Compression);
+        compressionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+        compressionButton.setText(Messages.JiraRepositorySettingsPage_Enabled);
+        if (repository != null) {
+            compressionButton.setSelection(JiraUtil.getCompression(repository));
+        }
+
+        Label label = new Label(parent, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_Refresh_configuration);
+        autoRefreshConfigurationButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+        autoRefreshConfigurationButton.setText(Messages.JiraRepositorySettingsPage_Automatically);
+        autoRefreshConfigurationButton.setToolTipText(Messages.JiraRepositorySettingsPage_If_checked_the_repository_configuration_will_be_periodically_updated);
+        if (repository != null) {
+            autoRefreshConfigurationButton.setSelection(JiraUtil.getAutoRefreshConfiguration(repository));
+        }
+
+        label = new Label(parent, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_Subtasks);
+        linkedTasksAsSubtasksButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+        linkedTasksAsSubtasksButton.setText(Messages.JiraRepositorySettingsPage_Show_linked_tasks);
+        linkedTasksAsSubtasksButton.setToolTipText(Messages.JiraRepositorySettingsPage_If_checked_linked_tasks_show_as_subtasks_in_the_task_list);
+        if (repository != null) {
+            linkedTasksAsSubtasksButton.setSelection(JiraUtil.getLinkedTasksAsSubtasks(repository));
+        }
+
+        Label followRedirectsLabel = new Label(parent, SWT.NONE);
+        followRedirectsLabel.setText(Messages.JiraRepositorySettingsPage_Follow_redirects);
+        followRedirectsButton = new Button(parent, SWT.CHECK | SWT.LEFT);
+        followRedirectsButton.setText(Messages.JiraRepositorySettingsPage_Enabled);
+        if (configuration != null) {
+            followRedirectsButton.setSelection(configuration.getFollowRedirects());
+        }
+
+        label = new Label(parent, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_Time_tracking);
+        GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
+
+        Composite timeTrackingComposite = new Composite(parent, SWT.NONE);
+        timeTrackingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+
+        //		useServerSettingsButton = new Button(timeTrackingComposite, SWT.CHECK | SWT.LEFT);
+        //		useServerSettingsButton.setText(Messages.JiraRepositorySettingsPage_use_server_settings);
+        //		useServerSettingsButton.setToolTipText(Messages.JiraRepositorySettingsPage_Administration_priviliges_required);
+        //		GridDataFactory.fillDefaults().span(2, 1).applyTo(useServerSettingsButton);
+
+        workDaysPerWeekSpinner = new Spinner(timeTrackingComposite, SWT.BORDER | SWT.RIGHT);
+        workDaysPerWeekSpinner.setValues(JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, 1, 7, 0, 1, 1);
+
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).applyTo(workDaysPerWeekSpinner);
+        label = new Label(timeTrackingComposite, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_working_days_per_week);
+
+        workHoursPerDaySpinner = new Spinner(timeTrackingComposite, SWT.BORDER);
+        workHoursPerDaySpinner.setValues(JiraLocalConfiguration.DEFAULT_WORK_HOURS_PER_DAY, 1, 24, 0, 1, 1);
+
+        label = new Label(timeTrackingComposite, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_working_hours_per_day);
+
+        label = new Label(parent, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_Search_results);
+
+        if (repository != null) {
+
+            if (JiraUtil.isUseServerTimeTrackingSettings(repository)) {
+                useServerSettingsButton.setSelection(true);
+                workDaysPerWeekSpinner.setEnabled(false);
+                workHoursPerDaySpinner.setEnabled(false);
+            }
+            workDaysPerWeekSpinner.setSelection(JiraUtil.getWorkDaysPerWeekLocal(repository));
+            workHoursPerDaySpinner.setSelection(JiraUtil.getWorkHoursPerDayLocal(repository));
+
+        }
+
+        //		useServerSettingsButton.addSelectionListener(new SelectionAdapter() {
+        //			@Override
+        //			public void widgetSelected(SelectionEvent e) {
+        //				workDaysPerWeekSpinner.setEnabled(!useServerSettingsButton.getSelection());
+        //				workHoursPerDaySpinner.setEnabled(!useServerSettingsButton.getSelection());
+        //			}
+        //		});
+
+        Composite maxSearchResultsComposite = new Composite(parent, SWT.NONE);
+        maxSearchResultsComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
+
+        limitSearchResultsButton = new Button(maxSearchResultsComposite, SWT.CHECK | SWT.LEFT);
+        limitSearchResultsButton.setText(Messages.JiraRepositorySettingsPage_Limit);
+
+        maxSearchResultsSpinner = new Spinner(maxSearchResultsComposite, SWT.BORDER);
+        maxSearchResultsSpinner.setValues(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS, 1, 99999, 0, 1, 1000);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).applyTo(maxSearchResultsSpinner);
+        if (repository != null) {
+            int maxSearchResults = JiraUtil.getMaxSearchResults(repository);
+            if (maxSearchResults != -1) {
+                maxSearchResultsSpinner.setSelection(maxSearchResults);
+                limitSearchResultsButton.setSelection(true);
+            } else {
+                maxSearchResultsSpinner.setSelection(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
+                limitSearchResultsButton.setSelection(false);
+                maxSearchResultsSpinner.setEnabled(false);
+            }
+        } else {
+            maxSearchResultsSpinner.setSelection(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS);
+            limitSearchResultsButton.setSelection(true);
+        }
+        limitSearchResultsButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                maxSearchResultsSpinner.setEnabled(limitSearchResultsButton.getSelection());
+            }
+        });
+
+        createAdvancedComposite(parent);
+    }
+
+    private void createAdvancedComposite(final Composite parent) {
+        ExpandableComposite expandableComposite = toolkit.createExpandableComposite(parent,
+                ExpandableComposite.TITLE_BAR | ExpandableComposite.COMPACT | ExpandableComposite.TWISTIE);
+        GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+        gd.horizontalSpan = 2;
+        gd.horizontalIndent = -5;
+        expandableComposite.setLayoutData(gd);
+        expandableComposite.setFont(parent.getFont());
+        expandableComposite.setBackground(parent.getBackground());
+        expandableComposite.setText(Messages.JiraRepositorySettingsPage_Advanced_Configuration);
+        expandableComposite.addExpansionListener(new ExpansionAdapter() {
+            @Override
+            public void expansionStateChanged(ExpansionEvent e) {
+                getControl().getShell().pack();
+            }
+        });
+        toolkit.paintBordersFor(expandableComposite);
+
+        Composite composite = toolkit.createComposite(expandableComposite, SWT.BORDER);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        composite.setLayout(layout);
+        expandableComposite.setClient(composite);
+
+        //		compressionButton = new Button(composite, SWT.CHECK | SWT.LEFT);
+        //		compressionButton.setText("Customize");
+        //		if (repository != null) {
+        //			compressionButton.setSelection(JiraUtil.getCompression(repository));
+        //		}
+        //
+        //		new Label(composite, SWT.NONE);
+
+        Label label = new Label(composite, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_Date_Picker_Format);
+
+        datePatternText = new Text(composite, SWT.NONE);
+        datePatternText.setText(configuration.getDatePattern());
+
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(datePatternText);
+        label = new Label(composite, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_Date_Time_Picker_Format);
+
+        dateTimePatternText = new Text(composite, SWT.NONE);
+        dateTimePatternText.setText(configuration.getDateTimePattern());
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(dateTimePatternText);
+
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, false).applyTo(datePatternText);
+        label = new Label(composite, SWT.NONE);
+        label.setText(Messages.JiraRepositorySettingsPage_Locale);
+
+        localeCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+        locales = Locale.getAvailableLocales();
+        Arrays.sort(locales, new Comparator<Locale>() {
+            @Override
+            public int compare(Locale o1, Locale o2) {
+                return o1.getDisplayName().compareTo(o2.getDisplayName());
+            }
+        });
+        for (Locale locale : locales) {
+            localeCombo.add(locale.getDisplayName());
+        }
+        localeCombo.setText(configuration.getLocale().getDisplayName());
+
+        Hyperlink hyperlink = toolkit.createHyperlink(composite, Messages.JiraRepositorySettingsPage_Reset_to_defaults,
+                SWT.NONE);
+        hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+                datePatternText.setText(JiraLocalConfiguration.DEFAULT_DATE_PATTERN);
+                dateTimePatternText.setText(JiraLocalConfiguration.DEFAULT_DATE_TIME_PATTERN);
+                localeCombo.setText(JiraLocalConfiguration.DEFAULT_LOCALE.getDisplayName());
+            }
+        });
+
+        toolkit.paintBordersFor(composite);
+    }
+
+    @Override
+    protected boolean isValidUrl(String name) {
+        if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
+            try {
+                new URL(name);
+                return true;
+            } catch (MalformedURLException e) {
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected Validator getValidator(TaskRepository repository) {
+        return new JiraValidator(repository);
+    }
+
+    @SuppressWarnings("restriction")
+    @Override
+    public void applyTo(final TaskRepository repository) {
+        //		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+        //		super.applyTo(repository);
+
+        this.repository = applyToValidate(repository);
+
+        repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUGS);
+
+        configuration.setDatePattern(datePatternText.getText());
+        configuration.setDateTimePattern(dateTimePatternText.getText());
+        if (localeCombo.getSelectionIndex() != -1) {
+            configuration.setLocale(locales[localeCombo.getSelectionIndex()]);
+        }
+
+        JiraUtil.setConfiguration(repository, configuration);
+        JiraUtil.setCompression(repository, compressionButton.getSelection());
+        JiraUtil.setAutoRefreshConfiguration(repository, autoRefreshConfigurationButton.getSelection());
+        JiraUtil.setLinkedTasksAsSubtasks(repository, linkedTasksAsSubtasksButton.getSelection());
+
+        JiraUtil.setWorkDaysPerWeekLocal(repository, workDaysPerWeekSpinner.getSelection());
+        JiraUtil.setWorkHoursPerDayLocal(repository, workHoursPerDaySpinner.getSelection());
+        if (limitSearchResultsButton.getSelection()) {
+            JiraUtil.setMaxSearchResults(repository, maxSearchResultsSpinner.getSelection());
+        } else {
+            JiraUtil.setMaxSearchResults(repository, -1);
+        }
+        if (characterEncodingValidated) {
+            JiraUtil.setCharacterEncodingValidated(repository, true);
+        }
+
+        //		if (!JiraUtil.isUseServerTimeTrackingSettings(repository) && useServerSettingsButton.getSelection()) {
+        //			Job refreshServerSettingsJob = new Job(Messages.JiraRepositorySettingsPage_Getting_repository_configuration) {
+        //
+        //				@Override
+        //				protected IStatus run(IProgressMonitor monitor) {
+        //					monitor.beginTask(Messages.JiraRepositorySettingsPage_Getting_repository_configuration,
+        //							IProgressMonitor.UNKNOWN);
+        //					JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+        //					try {
+        //						client.getCache().refreshConfiguration(monitor);
+        //					} catch (JiraException e) {
+        //						Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+        //								Messages.JiraRepositorySettingsPage_Failed_retrieve_repository_configuration,
+        //								repository.getRepositoryUrl()));
+        //						StatusHandler.log(status);
+        //					} finally {
+        //						monitor.done();
+        //					}
+        //					return Status.OK_STATUS;
+        //				}
+        //			};
+        //
+        //			refreshServerSettingsJob.setUser(false);
+        //			refreshServerSettingsJob.schedule();
+        //
+        //		}
+        //
+        //		JiraUtil.setUseServerTimeTrackingSettings(repository, useServerSettingsButton.getSelection());
+    }
+
+    /**
+     * Helper method for distinguishing between hitting Finish and Validate (because Validation leads to calling applyTo
+     * in the superclass)
+     */
+    public TaskRepository applyToValidate(TaskRepository repository) {
+        MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+        super.applyTo(repository);
+
+        JiraUtil.setFollowRedirects(repository, followRedirectsButton.getSelection());
+
+        return repository;
+    }
+
+    @Override
+    public TaskRepository createTaskRepository() {
+        TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
+        return applyToValidate(repository);
+    }
+
+    @Override
+    protected void validateSettings() {
+        if (repository != null) {
+            AuthenticationCredentials repoCredentials = repository.getCredentials(AuthenticationType.REPOSITORY);
+            AuthenticationCredentials proxyCredentials = repository.getCredentials(AuthenticationType.PROXY);
+            AuthenticationCredentials httpCredentials = repository.getCredentials(AuthenticationType.HTTP);
+
+            super.validateSettings();
+
+            repository.setCredentials(AuthenticationType.REPOSITORY, repoCredentials,
+                    repository.getSavePassword(AuthenticationType.REPOSITORY));
+            repository.setCredentials(AuthenticationType.HTTP, httpCredentials,
+                    repository.getSavePassword(AuthenticationType.HTTP));
+            repository.setCredentials(AuthenticationType.PROXY, proxyCredentials,
+                    repository.getSavePassword(AuthenticationType.PROXY));
+        } else {
+            super.validateSettings();
+        }
+
+    }
+
+    @Override
+    protected void applyValidatorResult(Validator validator) {
+        JiraValidator jiraValidator = (JiraValidator) validator;
+        JiraServerInfo serverInfo = jiraValidator.getServerInfo();
+        if (serverInfo != null) {
+            String url = jiraValidator.getRepositoryUrl();
+            if (serverInfo.getBaseUrl() != null && !url.equals(serverInfo.getBaseUrl())) {
+                Set<String> urls = new LinkedHashSet<>();
+                urls.add(url);
+                urls.add(serverInfo.getBaseUrl());
+                if (serverInfo.getWebBaseUrl() != null) {
+                    urls.add(serverInfo.getWebBaseUrl());
+                }
+
+                UrlSelectionDialog dialog = new UrlSelectionDialog(getShell(), urls.toArray(new String[0]));
+                dialog.setSelectedUrl(serverInfo.getBaseUrl());
+                int result = dialog.open();
+                if (result == Window.OK) {
+                    setUrl(dialog.getSelectedUrl());
+                }
+            }
+
+            if (serverInfo.getCharacterEncoding() != null) {
+                setEncoding(serverInfo.getCharacterEncoding());
+            } else {
+                setEncoding(TaskRepository.DEFAULT_CHARACTER_ENCODING);
+
+                jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
+                        Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_character_encodeing,
+                        null));
+            }
+
+            if (serverInfo.isInsecureRedirect()) {
+                jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
+                        Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_server_redirected,
+                        null));
+            }
+
+            characterEncodingValidated = true;
+        }
+
+        super.applyValidatorResult(validator);
+
+    }
+
+    private class JiraValidator extends Validator {
+
+        final TaskRepository repository;
+
+        private JiraServerInfo serverInfo;
+
+        public JiraValidator(TaskRepository repository) {
+            this.repository = repository;
+        }
+
+        public JiraServerInfo getServerInfo() {
+            return serverInfo;
+        }
+
+        public String getRepositoryUrl() {
+            return repository.getRepositoryUrl();
+        }
+
+        @Override
+        public void run(IProgressMonitor monitor) throws CoreException {
+            try {
+                new URL(repository.getRepositoryUrl());
+            } catch (MalformedURLException ex) {
+                throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
+                        INVALID_REPOSITORY_URL, null));
+            }
+
+            AbstractWebLocation location = new JiraTaskRepositoryLocation(repository);
+            JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(repository);
+            try {
+                this.serverInfo = JiraClientFactory.getDefault().validateConnection(location, configuration, monitor);
+            } catch (JiraCaptchaRequiredException e) {
+                Display.getDefault().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open();
+                    }
+                });
+                throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
+                        JiraUiPlugin.ID_PLUGIN, Messages.JiraRepositorySettingsPage_remote_api_locked));
+            } catch (JiraAuthenticationException e) {
+                throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
+                        JiraUiPlugin.ID_PLUGIN, INVALID_LOGIN));
+            } catch (Exception e) {
+                StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, e.getMessage(), e));
+                throw new CoreException(JiraCorePlugin.toStatus(repository, e));
+            }
+
+            MultiStatus status = new MultiStatus(JiraUiPlugin.ID_PLUGIN, 0, NLS.bind("Validation results for {0}", //$NON-NLS-1$
+                    repository.getRepositoryLabel()), null);
+            //			status.addAll(serverInfo.getStatistics().getStatus());
+            status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+                    "Web base: {0}", serverInfo.getWebBaseUrl()))); //$NON-NLS-1$
+            //			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+            //					"Character encoding: {0}", serverInfo.getCharacterEncoding()))); //$NON-NLS-1$
+            status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind("Version: {0}", serverInfo.toString()))); //$NON-NLS-1$
+            StatusHandler.log(status);
+        }
+
+    }
+
+    private static class UrlSelectionDialog extends Dialog {
+
+        private final String[] locations;
+
+        private String selectedUrl;
+
+        protected UrlSelectionDialog(Shell parentShell, String[] locations) {
+            super(parentShell);
+
+            if (locations == null || locations.length < 2) {
+                throw new IllegalArgumentException();
+            }
+
+            this.locations = locations;
+        }
+
+        @Override
+        protected Control createDialogArea(Composite parent) {
+            getShell().setText(Messages.JiraRepositorySettingsPage_Select_repository_location);
+
+            Composite composite = new Composite(parent, SWT.NONE);
+            GridLayout layout = new GridLayout();
+            layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+            layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+            layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+            layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+            composite.setLayout(layout);
+            composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+            applyDialogFont(composite);
+
+            Label label = new Label(composite, SWT.NONE);
+            label.setText(Messages.JiraRepositorySettingsPage_The_repository_location_reported_by_the_server_does_not_match_the_provided_location);
+
+            final List<Button> buttons = new ArrayList<>(locations.length);
+
+            if (getSelectedUrl() == null) {
+                setSelectedUrl(locations[0]);
+            }
+
+            for (int i = 1; i < locations.length; i++) {
+                Button button = new Button(composite, SWT.RADIO);
+                button.setText(Messages.JiraRepositorySettingsPage_Use_server_location_ + locations[i]);
+                button.setData(locations[i]);
+                button.setSelection(getSelectedUrl().equals(locations[i]));
+                buttons.add(button);
+            }
+
+            Button keepLocationButton = new Button(composite, SWT.RADIO);
+            keepLocationButton.setText(Messages.JiraRepositorySettingsPage_Keep_current_location_ + locations[0]);
+            keepLocationButton.setData(locations[0]);
+            keepLocationButton.setSelection(getSelectedUrl().equals(locations[0]));
+            buttons.add(keepLocationButton);
+
+            SelectionListener listener = new SelectionListener() {
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    widgetSelected(e);
+                }
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    Object source = e.getSource();
+                    if (source instanceof Button && ((Button) source).getSelection()) {
+                        setSelectedUrl((String) ((Button) source).getData());
+                    }
+                }
+
+            };
+
+            for (Button button : buttons) {
+                button.addSelectionListener(listener);
+            }
+
+            return composite;
+        }
+
+        public void setSelectedUrl(String selectedUrl) {
+            this.selectedUrl = selectedUrl;
+        }
+
+        public String getSelectedUrl() {
+            return selectedUrl;
+        }
+
+    }
+
+    @Override
+    public String getConnectorKind() {
+        return JiraCorePlugin.CONNECTOR_KIND;
+    }
+
+    @Override
+    public void dispose() {
+        if (toolkit != null) {
+            toolkit.dispose();
+            toolkit = null;
+        }
+        super.dispose();
+    }
 
 }

@@ -25,23 +25,23 @@ public enum JiraFieldType {
 
     DATETIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime", TaskAttribute.TYPE_DATETIME), //$NON-NLS-1$
 
-    FLOATFIELD("com.atlassian.jira.plugin.system.customfieldtypes:float", IJiraConstants.TYPE_NUMBER), //$NON-NLS-1$
+    FLOATFIELD("com.atlassian.jira.plugin.system.customfieldtypes:float", JiraConstants.TYPE_NUMBER), //$NON-NLS-1$
 
     GROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:grouppicker", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
-	// field that has link to a single issue
-	ISSUELINK("org.mylar.jira.issuelink", TaskAttribute.TYPE_TASK_DEPENDENCY), //$NON-NLS-1$
+    // field that has link to a single issue
+    ISSUELINK("org.mylar.jira.issuelink", TaskAttribute.TYPE_TASK_DEPENDENCY), //$NON-NLS-1$
 
-	// field that has list of links to issues
-	ISSUELINKS("org.mylar.jira.issuelinks", TaskAttribute.TYPE_TASK_DEPENDENCY), //$NON-NLS-1$
+    // field that has list of links to issues
+    ISSUELINKS("org.mylar.jira.issuelinks", TaskAttribute.TYPE_TASK_DEPENDENCY), //$NON-NLS-1$
 
     LABELS("com.atlassian.jira.plugin.labels:labels", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
     LABELSS("com.atlassian.jira.plugin.system.customfieldtypes:labels", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
-	MULTICHECKBOXES(
+    MULTICHECKBOXES(
             "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
 
-	MULTIGROUPPICKER(
+    MULTIGROUPPICKER(
             "com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
     MULTISELECT("com.atlassian.jira.plugin.system.customfieldtypes:multiselect", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
@@ -62,7 +62,7 @@ public enum JiraFieldType {
 
     TEXTFIELD("com.atlassian.jira.plugin.system.customfieldtypes:textfield", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
-	// read only fields from JIRA Toolkit plug-in
+    // read only fields from JIRA Toolkit plug-in
 
     TOOLKIT_ASSIGNEEDOMAIN("com.atlassian.jira.toolkit:assigneedomain"), //$NON-NLS-1$
 
@@ -98,9 +98,9 @@ public enum JiraFieldType {
 
     TOOLKIT_VIEWMESSAGE("com.atlassian.jira.toolkit:viewmessage"), //$NON-NLS-1$
 
-	UNKNOWN(null),
+    UNKNOWN(null),
 
-	RANK("com.pyxis.greenhopper.jira:gh-global-rank"), //$NON-NLS-1$
+    RANK("com.pyxis.greenhopper.jira:gh-global-rank"), //$NON-NLS-1$
 
     URL("com.atlassian.jira.plugin.system.customfieldtypes:url", TaskAttribute.TYPE_URL), //$NON-NLS-1$
 
@@ -110,39 +110,48 @@ public enum JiraFieldType {
 
     EPIC_LABEL("com.pyxis.greenhopper.jira:gh-epic-label", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
-    EPIC_LINK("com.pyxis.greenhopper.jira:gh-epic-link",TaskAttribute.TYPE_URL); //$NON-NLS-1$
+    EPIC_LINK("com.pyxis.greenhopper.jira:gh-epic-link", TaskAttribute.TYPE_URL), //$NON-NLS-1$
 
-	public static JiraFieldType fromKey(String key) {
-		if (key != null) {
-			for (JiraFieldType type : values()) {
-				if (key.equals(type.getKey())) {
-					return type;
-				}
-			}
-		}
-		return JiraFieldType.UNKNOWN;
-	}
+    // Internal/Unsupported fields
+    DEV_SUMMARY("com.atlassian.jira.plugins.jira-development-integration-plugin:devsummary"),
 
-	private final String key;
+    JIRA_RANK("com.pyxis.greenhopper.jira:gh-lexo-rank"),
 
-	private final String taskType;
+    STORY_POINTS("com.atlassian.jpo:jpo-custom-field-original-story-points"),
 
-	private JiraFieldType(String key) {
-		this.key = key;
-		this.taskType = null;
-	}
+    SPRINT("com.pyxis.greenhopper.jira:gh-sprint");
 
-	private JiraFieldType(String key, String taskType) {
-		this.key = key;
-		this.taskType = taskType;
-	}
+    public static JiraFieldType fromKey(String key) {
+        if (key != null) {
+            for (JiraFieldType type : values()) {
+                if (key.equals(type.getKey())) {
+                    return type;
+                }
+            }
+        }
+        return JiraFieldType.UNKNOWN;
+    }
 
-	public String getKey() {
-		return key;
-	}
+    private final String key;
 
-	public String getTaskType() {
-		return taskType;
-	}
+    private final String taskType;
+
+    private JiraFieldType(String key) {
+        this.key = key;
+        this.taskType = null;
+    }
+
+    private JiraFieldType(String key, String taskType) {
+        this.key = key;
+        this.taskType = taskType;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
 
 }

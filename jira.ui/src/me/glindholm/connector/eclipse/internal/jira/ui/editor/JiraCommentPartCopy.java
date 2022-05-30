@@ -69,7 +69,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 
 /**
  * @author Robert Elves
@@ -395,7 +395,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
 		private void createCommentTitleExtention(final FormToolkit toolkit, Composite titleComposite) {
 			TaskAttribute visibleTo = taskComment.getTaskAttribute()
-					.getAttribute(IJiraConstants.COMMENT_SECURITY_LEVEL);
+					.getAttribute(JiraConstants.COMMENT_SECURITY_LEVEL);
 
 			if (visibleTo != null && visibleTo.getValue() != null) {
 				Label l = toolkit.createLabel(titleComposite, Messages.JiraCommetVisible);

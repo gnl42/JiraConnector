@@ -7,11 +7,9 @@
     <parent>
         <groupId>me.glindholm.connector.eclipse</groupId>
         <artifactId>JiraConnector</artifactId>
-        <version>4.0.1</version>
+        <version>4.1.0-SNAPSHOT</version>
     </parent>
-    <groupId>me.glindholm.connector.eclipse</groupId>
     <artifactId>me.glindholm.connector.eclipse.jira.core</artifactId>
-    <version>4.0.1</version>
     <packaging>eclipse-plugin</packaging>
 
     <properties>
@@ -31,7 +29,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jettison,jersey-client,jersey-apache-client,jersey-core,jersey-json,jira-rest-java-client,jdom</includeArtifactIds>
+                            <includeArtifactIds>log4j-slf4j-impl,commons-logging,log4j-jcl</includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -44,40 +42,20 @@
         </plugins>
     </build>
     <dependencies>
-        <dependency>
-            <groupId>org.codehaus.jettison</groupId>
-            <artifactId>jettison</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-rest-java-client</artifactId>
-            <version>1.1-ide-m09</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>${version.jersey}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-            <version>${version.jersey}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-            <version>${version.jersey}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-apache-client</artifactId>
-            <version>${version.jersey}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-        </dependency>
-
+    <dependency>
+    	<groupId>org.apache.logging.log4j</groupId>
+    	<artifactId>log4j-slf4j-impl</artifactId>
+    	<version>2.17.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.logging.log4j</groupId>
+    	<artifactId>log4j-jcl</artifactId>
+    	<version>2.17.2</version>
+    </dependency>
+    <dependency>
+    	<groupId>commons-logging</groupId>
+    	<artifactId>commons-logging</artifactId>
+    	<version>1.2</version>
+    </dependency>
     </dependencies>
 </project>

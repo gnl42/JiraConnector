@@ -30,7 +30,7 @@ import com.spartez.util.junit3.IAction;
 import com.spartez.util.junit3.TestUtil;
 import junit.framework.Assert;
 import org.ddsteps.mock.httpserver.JettyMockServer;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;

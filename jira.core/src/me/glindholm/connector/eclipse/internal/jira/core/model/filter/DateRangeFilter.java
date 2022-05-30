@@ -12,52 +12,52 @@
 
 package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * @author Brock Janiczak
  */
 public class DateRangeFilter extends DateFilter {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final Date fromDate;
+    private final Instant fromDate;
 
-	private final Date toDate;
+    private final Instant toDate;
 
-	private final String from;
+    private final String from;
 
-	private final String to;
+    private final String to;
 
-	public DateRangeFilter(Date fromDate, Date toDate) {
-		this(fromDate, toDate, null, null);
-	}
+    public DateRangeFilter(Instant fromDate, Instant toDate) {
+        this(fromDate, toDate, null, null);
+    }
 
-	public DateRangeFilter(Date fromDate, Date toDate, String from, String to) {
-		this.fromDate = fromDate;
-		this.toDate = toDate;
-		this.from = from;
-		this.to = to;
-	}
+    public DateRangeFilter(Instant fromDate, Instant toDate, String from, String to) {
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.from = from;
+        this.to = to;
+    }
 
-	public Date getFromDate() {
-		return this.fromDate;
-	}
+    public Instant getFromDate() {
+        return this.fromDate;
+    }
 
-	public Date getToDate() {
-		return this.toDate;
-	}
+    public Instant getToDate() {
+        return this.toDate;
+    }
 
-	public String getFrom() {
-		return from;
-	}
+    public String getFrom() {
+        return from;
+    }
 
-	public String getTo() {
-		return to;
-	}
+    public String getTo() {
+        return to;
+    }
 
-	@Override
-	DateFilter copy() {
-		return new DateRangeFilter(fromDate, toDate, from, to);
-	}
+    @Override
+    DateFilter copy() {
+        return new DateRangeFilter(fromDate, toDate, from, to);
+    }
 }

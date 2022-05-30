@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 import org.eclipse.core.runtime.Assert;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
 
 /**
  * Filter to restrict returned issues to a specific project. If a project filter is used you can add project specific
@@ -32,22 +32,22 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.Project;
 public class ProjectFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final Project[] projects;
+	private final JiraProject[] projects;
 
-	public ProjectFilter(Project[] projects) {
+	public ProjectFilter(JiraProject[] projects) {
 		Assert.isNotNull(projects);
 		Assert.isTrue(projects.length > 0);
-		for (Project project : projects) {
+		for (JiraProject project : projects) {
 			Assert.isNotNull(project);
 		}
 		this.projects = projects;
 	}
 
-	public ProjectFilter(Project project) {
-		this(new Project[] { project });
+	public ProjectFilter(JiraProject project) {
+		this(new JiraProject[] { project });
 	}
 
-	public Project[] getProjects() {
+	public JiraProject[] getProjects() {
 		return this.projects;
 	}
 

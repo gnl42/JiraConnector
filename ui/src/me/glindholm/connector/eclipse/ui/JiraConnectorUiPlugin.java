@@ -13,6 +13,7 @@ package me.glindholm.connector.eclipse.ui;
 
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -21,57 +22,57 @@ import org.osgi.framework.BundleContext;
  */
 public class JiraConnectorUiPlugin extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "me.glindholm.connector.eclipse.ui";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "me.glindholm.connector.eclipse.ui";
 
-	// The shared instance
-	private static JiraConnectorUiPlugin plugin;
+    // The shared instance
+    private static JiraConnectorUiPlugin plugin;
+
+    /**
+     * The constructor
+     */
+    public JiraConnectorUiPlugin() {
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     */
+    @Override
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        plugin = this;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        plugin = null;
+        super.stop(context);
+    }
 
 	/**
-	 * The constructor
-	 */
-	public JiraConnectorUiPlugin() {
-	}
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static JiraConnectorUiPlugin getDefault() {
+        return plugin;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
+    public static IWorkbenchWindow getActiveWorkbenchWindow() {
+        return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static JiraConnectorUiPlugin getDefault() {
-		return plugin;
-	}
-
-	public static IWorkbenchWindow getActiveWorkbenchWindow() {
-		return getDefault().getWorkbench().getActiveWorkbenchWindow();
-	}
-
-	public static Shell getActiveWorkbenchShell() {
-		IWorkbenchWindow window = getActiveWorkbenchWindow();
-		if (window != null) {
-			return window.getShell();
-		}
-		return null;
-	}
+    public static Shell getActiveWorkbenchShell() {
+        IWorkbenchWindow window = getActiveWorkbenchWindow();
+        if (window != null) {
+            return window.getShell();
+        }
+        return null;
+    }
 
 }

@@ -14,7 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
 
 /**
  * Filter for restricting issues by their resolution. If you are looking for unresolved issues, don't specify and
@@ -25,15 +25,15 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.Resolution;
 public class ResolutionFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final Resolution[] resolutions;
+	private final JiraResolution[] resolutions;
 
-	public ResolutionFilter(Resolution[] resolutions) {
+	public ResolutionFilter(JiraResolution[] resolutions) {
 		assert (resolutions != null);
 
 		this.resolutions = resolutions;
 	}
 
-	public Resolution[] getResolutions() {
+	public JiraResolution[] getResolutions() {
 		return this.resolutions;
 	}
 

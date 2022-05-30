@@ -22,7 +22,6 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.mylyn.internal.tasks.core.data.ITaskDataManagerListener;
 import org.eclipse.mylyn.internal.tasks.core.data.TaskDataManagerEvent;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
-import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorAttributePart;
 import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorDescriptionPart;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiInternal;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
@@ -41,7 +40,7 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.WorkLogConverter;
 import me.glindholm.connector.eclipse.internal.jira.ui.JiraUiUtil;
@@ -55,250 +54,260 @@ import me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkEditorTo
 @SuppressWarnings("restriction")
 public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
-	private StartWorkEditorToolbarAction startWorkAction;
+    private StartWorkEditorToolbarAction startWorkAction;
 
-	private boolean disposed = false;
+    private boolean disposed = false;
 
-	public JiraTaskEditorPage(TaskEditor editor) {
-		super(editor, JiraCorePlugin.CONNECTOR_KIND);
-		setNeedsPrivateSection(false);
-		setNeedsSubmitButton(true);
-	}
+    public JiraTaskEditorPage(TaskEditor editor) {
+        super(editor, JiraCorePlugin.CONNECTOR_KIND);
+        setNeedsPrivateSection(false);
+        setNeedsSubmitButton(true);
+    }
 
-	@Override
-	protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
-		Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
+    @Override
+    protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
+        Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
 
-		if (removePart(parts, ID_PART_ATTACHMENTS)) {
-			parts.add(new TaskEditorPartDescriptor(ID_PART_ATTACHMENTS) {
-				@Override
-				public AbstractTaskEditorPart createPart() {
-					final JiraTaskEditorAttachmentsPart jiraTaskEditorAttachmentsPart = new JiraTaskEditorAttachmentsPart();
-					jiraTaskEditorAttachmentsPart.setUseDescriptionColumn(false);
-					return jiraTaskEditorAttachmentsPart;
-				}
-			}.setPath(PATH_ATTACHMENTS));
+        if (removePart(parts, ID_PART_ATTACHMENTS)) {
+            parts.add(new TaskEditorPartDescriptor(ID_PART_ATTACHMENTS) {
+                @Override
+                public AbstractTaskEditorPart createPart() {
+                    final JiraTaskEditorAttachmentsPart jiraTaskEditorAttachmentsPart = new JiraTaskEditorAttachmentsPart();
+                    jiraTaskEditorAttachmentsPart.setUseDescriptionColumn(false);
+                    return jiraTaskEditorAttachmentsPart;
+                }
+            }.setPath(PATH_ATTACHMENTS));
 
-		}
+        }
 
-		// replace summary part
-		Iterator<TaskEditorPartDescriptor> iter = parts.iterator();
-		while (iter.hasNext()) {
-			TaskEditorPartDescriptor part = iter.next();
-			if (part.getId().equals(ID_PART_SUMMARY)) {
-				parts.remove(part);
+        // replace summary part
+        Iterator<TaskEditorPartDescriptor> iter = parts.iterator();
+        while (iter.hasNext()) {
+            TaskEditorPartDescriptor part = iter.next();
+            if (part.getId().equals(ID_PART_SUMMARY)) {
+                parts.remove(part);
 
-				// add JIRA specific summary part (with votes number)
-				parts.add(new TaskEditorPartDescriptor(ID_PART_SUMMARY) {
-					@Override
-					public AbstractTaskEditorPart createPart() {
-						return new JiraTaskEditorSummaryPart();
-					}
-				}.setPath(part.getPath()));
+                // add JIRA specific summary part (with votes number)
+                parts.add(new TaskEditorPartDescriptor(ID_PART_SUMMARY) {
+                    @Override
+                    public AbstractTaskEditorPart createPart() {
+                        return new JiraTaskEditorSummaryPart();
+                    }
+                }.setPath(part.getPath()));
 
-				break;
-			}
-		}
+                break;
+            }
+        }
 
-		// remove comments part
-		iter = parts.iterator();
-		while (iter.hasNext()) {
-			TaskEditorPartDescriptor part = iter.next();
-			if (part.getId().equals(ID_PART_COMMENTS)) {
-				parts.remove(part);
+        // remove comments part
+        iter = parts.iterator();
+        while (iter.hasNext()) {
+            TaskEditorPartDescriptor part = iter.next();
+            if (part.getId().equals(ID_PART_COMMENTS)) {
+                parts.remove(part);
 
-				// add JIRA specific comments part (with visibility restriction info for each comment)
-				parts.add(new TaskEditorPartDescriptor(ID_PART_COMMENTS) {
-					@Override
-					public AbstractTaskEditorPart createPart() {
-						return new JiraCommentPartCopy();
-//						return new JiraCommentPart();
-					}
-				}.setPath(part.getPath()));
+                // add JIRA specific comments part (with visibility restriction info for each comment)
+                parts.add(new TaskEditorPartDescriptor(ID_PART_COMMENTS) {
+                    @Override
+                    public AbstractTaskEditorPart createPart() {
+                        return new JiraCommentPartCopy();
+                        //						return new JiraCommentPart();
+                    }
+                }.setPath(part.getPath()));
 
-				break;
-			}
-		}
+                break;
+            }
+        }
 
-		// remove planning part - it's now in a separate tab
-		removePart(parts, ID_PART_PLANNING);
+        // remove planning part - it's now in a separate tab
+        removePart(parts, ID_PART_PLANNING);
 
-		removePart(parts, ID_PART_ATTRIBUTES);
+        removePart(parts, ID_PART_ATTRIBUTES);
 
-		parts.add(new TaskEditorPartDescriptor(ID_PART_ATTRIBUTES) {
-			@Override
-			public AbstractTaskEditorPart createPart() {
-				return new TaskEditorAttributePart() {
-					@Override
-					protected boolean shouldExpandOnCreate() {
-						return true;
-					}
-				};
-			}
-		}.setPath(PATH_ATTRIBUTES));
+        parts.add(new TaskEditorPartDescriptor(ID_PART_ATTRIBUTES) {
+            @Override
+            public AbstractTaskEditorPart createPart() {
+                return new JiraTaskEditorAttributePart() {
+                    @Override
+                    protected boolean shouldExpandOnCreate() {
+                        return true;
+                    }
+                };
+            }
+        }.setPath(PATH_ATTRIBUTES));
 
-		// move Description just below Attributes and expand it always
-		removePart(parts, ID_PART_DESCRIPTION);
-		parts.add(new TaskEditorPartDescriptor(ID_PART_DESCRIPTION) {
-			@Override
-			public AbstractTaskEditorPart createPart() {
-				TaskEditorDescriptionPart part = new TaskEditorDescriptionPart();
-				part.setExpandVertically(true);
-				part.setSectionStyle(ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
-				return part;
-			}
-		}.setPath(PATH_ATTRIBUTES));
+        // move Description just below Attributes and expand it always
+        removePart(parts, ID_PART_DESCRIPTION);
+        parts.add(new TaskEditorPartDescriptor(ID_PART_DESCRIPTION) {
+            @Override
+            public AbstractTaskEditorPart createPart() {
+                TaskEditorDescriptionPart part = new TaskEditorDescriptionPart();
+                part.setExpandVertically(true);
+                part.setSectionStyle(ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
+                return part;
+            }
+        }.setPath(PATH_ATTRIBUTES));
 
-		// and worklog at the very end
-		if (getModel().getTaskData().getRoot().getAttribute(IJiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED) == null) {
-			parts.add(new TaskEditorPartDescriptor("me.glindholm.connnector.eclipse.jira.worklog") { //$NON-NLS-1$
-				@Override
-				public AbstractTaskEditorPart createPart() {
-					return new WorkLogPart();
-				}
-			}.setPath(PATH_COMMENTS));
-		}
+        // and worklog at the very end
+        if (getModel().getTaskData().getRoot().getAttribute(JiraConstants.ATTRIBUTE_WORKLOG_NOT_SUPPORTED) == null) {
+            parts.add(new TaskEditorPartDescriptor("me.glindholm.connnector.eclipse.jira.worklog") { //$NON-NLS-1$
+                @Override
+                public AbstractTaskEditorPart createPart() {
+                    return new WorkLogPart();
+                }
+            }.setPath(PATH_COMMENTS));
+        }
+        removePart(parts, ID_PART_PEOPLE);
+        parts.add(new TaskEditorPartDescriptor(ID_PART_PEOPLE) {
+            @Override
+            public AbstractTaskEditorPart createPart() {
+                return new JiraPeoplePart();
+            }
+        }.setPath(PATH_PEOPLE));
 
-		return parts;
-	}
+        return parts;
+    }
 
-	private boolean removePart(Set<TaskEditorPartDescriptor> parts, String partId) {
-		Iterator<TaskEditorPartDescriptor> iter;
-		iter = parts.iterator();
-		while (iter.hasNext()) {
-			TaskEditorPartDescriptor part = iter.next();
-			if (part.getId().equals(partId)) {
-				parts.remove(part);
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean removePart(Set<TaskEditorPartDescriptor> parts, String partId) {
+        Iterator<TaskEditorPartDescriptor> iter;
+        iter = parts.iterator();
+        while (iter.hasNext()) {
+            TaskEditorPartDescriptor part = iter.next();
+            if (part.getId().equals(partId)) {
+                parts.remove(part);
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	protected AttributeEditorFactory createAttributeEditorFactory() {
-		return new JiraAttributeEditorFactory(getModel(), getTaskRepository(), getEditorSite());
-	}
+    @Override
+    protected AttributeEditorFactory createAttributeEditorFactory() {
+        return new JiraAttributeEditorFactory(getModel(), getTaskRepository(), getEditorSite());
+    }
 
-	@Override
-	public void fillToolBar(IToolBarManager toolBarManager) {
-		super.fillToolBar(toolBarManager);
+    @Override
+    public void fillToolBar(IToolBarManager toolBarManager) {
+        super.fillToolBar(toolBarManager);
 
-		if (getModel() != null && getModel().getTaskData() != null && !getModel().getTaskData().isNew()) {
-			startWorkAction = new StartWorkEditorToolbarAction(this);
-//			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
-			toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
-		}
-	}
+        if (getModel() != null && getModel().getTaskData() != null && !getModel().getTaskData().isNew()) {
+            startWorkAction = new StartWorkEditorToolbarAction(this);
+            //			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
+            toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
+        }
+    }
 
-	@Override
-	public void dispose() {
-		this.disposed = true;
-		TasksUiPlugin.getTaskDataManager().removeListener(updateStartWorkActionListener);
-		super.dispose();
-	}
+    @Override
+    public void dispose() {
+        this.disposed = true;
+        TasksUiPlugin.getTaskDataManager().removeListener(updateStartWorkActionListener);
+        super.dispose();
+    }
 
-	@Override
-	public void init(IEditorSite site, IEditorInput input) {
-		super.init(site, input);
+    @Override
+    public void init(IEditorSite site, IEditorInput input) {
+        super.init(site, input);
 
-		TasksUiPlugin.getTaskDataManager().addListener(updateStartWorkActionListener);
-	}
+        TasksUiPlugin.getTaskDataManager().addListener(updateStartWorkActionListener);
+    }
 
-	private final ITaskDataManagerListener updateStartWorkActionListener = new ITaskDataManagerListener() {
+    private final ITaskDataManagerListener updateStartWorkActionListener = new ITaskDataManagerListener() {
 
-		public void taskDataUpdated(TaskDataManagerEvent event) {
-			update(event);
-		}
+        @Override
+        public void taskDataUpdated(TaskDataManagerEvent event) {
+            update(event);
+        }
 
-		public void editsDiscarded(TaskDataManagerEvent event) {
-			update(event);
-		}
+        @Override
+        public void editsDiscarded(TaskDataManagerEvent event) {
+            update(event);
+        }
 
-		private void update(final TaskDataManagerEvent event) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					if (event.getTask() != null && getModel() != null) {
-						if (event.getTask().equals(getModel().getTask())) {
-							if (startWorkAction != null) {
-								// event.getTaskData() sometimes returns null
-								startWorkAction.update(getModel().getTaskData(), event.getTask());
-							}
-						}
-					}
-				}
-			});
-		}
-	};
+        private void update(final TaskDataManagerEvent event) {
+            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    if (event.getTask() != null && getModel() != null) {
+                        if (event.getTask().equals(getModel().getTask())) {
+                            if (startWorkAction != null) {
+                                // event.getTaskData() sometimes returns null
+                                startWorkAction.update(getModel().getTaskData(), event.getTask());
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
 
-	private boolean isWorkLogSubmit = false;
+    private boolean isWorkLogSubmit = false;
 
-	@Override
-	public void doSubmit() {
+    @Override
+    public void doSubmit() {
 
-		TaskAttribute attribute = getModel().getTaskData()
-				.getRoot()
-				.getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
-		if (attribute != null) {
-			TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
-			//if flag is set and true, submit worklog will happen
-			if (submitFlagAttribute != null && submitFlagAttribute.getValue().equals(String.valueOf(true))) {
-				isWorkLogSubmit = true;
-			}
-		}
+        TaskAttribute attribute = getModel().getTaskData()
+                .getRoot()
+                .getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+        if (attribute != null) {
+            TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
+            //if flag is set and true, submit worklog will happen
+            if (submitFlagAttribute != null && submitFlagAttribute.getValue().equals(String.valueOf(true))) {
+                isWorkLogSubmit = true;
+            }
+        }
 
-		super.doSubmit();
-	}
+        super.doSubmit();
+    }
 
-	@Override
-	protected void handleTaskSubmitted(SubmitJobEvent event) {
+    @Override
+    protected void handleTaskSubmitted(SubmitJobEvent event) {
 
-		if (isWorkLogSubmit) {
-			isWorkLogSubmit = false;
+        if (isWorkLogSubmit) {
+            isWorkLogSubmit = false;
 
-			IStatus status = event.getJob().getStatus();
-			if (status == null || status.getSeverity() == IStatus.OK) {
-				// remember submitted time
-				JiraUiUtil.setLoggedActivityTime(getModel().getTask());
-			}
-		}
+            IStatus status = event.getJob().getStatus();
+            if (status == null || status.getSeverity() == IStatus.OK) {
+                // remember submitted time
+                JiraUiUtil.setLoggedActivityTime(getModel().getTask());
+            }
+        }
 
-		IStatus status = event.getJob().getStatus();
-		if (status != null
-				&& status.getSeverity() != IStatus.CANCEL
-				&& status.getCode() == RepositoryStatus.ERROR_IO
-				&& status.getMessage()
-						.contains(
-								"com.atlassian.jira.rpc.exception.RemoteException: Error occurred when running workflow action")) { //$NON-NLS-1$
-			handleSubmitErrorCopy(event.getJob());
-		} else {
-			super.handleTaskSubmitted(event);
-		}
-	}
+        IStatus status = event.getJob().getStatus();
+        if (status != null
+                && status.getSeverity() != IStatus.CANCEL
+                && status.getCode() == RepositoryStatus.ERROR_IO
+                && status.getMessage()
+                .contains(
+                        "com.atlassian.jira.rpc.exception.RemoteException: Error occurred when running workflow action")) { //$NON-NLS-1$
+            handleSubmitErrorCopy(event.getJob());
+        } else {
+            super.handleTaskSubmitted(event);
+        }
+    }
 
-	private void handleSubmitErrorCopy(SubmitJob job) {
-		if (!this.disposed) {
-			final IStatus status = job.getStatus();
-			String message = Messages.JiraTaskEditorPage_Submit_Failed_Please_Refresh;
-			String detailedMessage = message + "\n\n" + status.getMessage(); //$NON-NLS-1$
+    private void handleSubmitErrorCopy(SubmitJob job) {
+        if (!this.disposed) {
+            final IStatus status = job.getStatus();
+            String message = Messages.JiraTaskEditorPage_Submit_Failed_Please_Refresh;
+            String detailedMessage = message + "\n\n" + status.getMessage(); //$NON-NLS-1$
 
-			final IStatus newStatus;
+            final IStatus newStatus;
 
-			if (status instanceof RepositoryStatus) {
-				newStatus = RepositoryStatus.createStatus(((RepositoryStatus) status).getRepositoryUrl(),
-						status.getSeverity(), status.getPlugin(), detailedMessage);
-			} else {
-				newStatus = new Status(status.getSeverity(), status.getPlugin(), detailedMessage);
-			}
+            if (status instanceof RepositoryStatus) {
+                newStatus = RepositoryStatus.createStatus(((RepositoryStatus) status).getRepositoryUrl(),
+                        status.getSeverity(), status.getPlugin(), detailedMessage);
+            } else {
+                newStatus = new Status(status.getSeverity(), status.getPlugin(), detailedMessage);
+            }
 
-			getTaskEditor().setMessage(message, IMessageProvider.ERROR, new HyperlinkAdapter() {
-				@Override
-				public void linkActivated(HyperlinkEvent e) {
-					TasksUiInternal.displayStatus(
-							org.eclipse.mylyn.internal.tasks.ui.editors.Messages.AbstractTaskEditorPage_Submit_failed,
-							newStatus);
-				}
-			});
-		}
-	}
+            getTaskEditor().setMessage(message, IMessageProvider.ERROR, new HyperlinkAdapter() {
+                @Override
+                public void linkActivated(HyperlinkEvent e) {
+                    TasksUiInternal.displayStatus(
+                            org.eclipse.mylyn.internal.tasks.ui.editors.Messages.AbstractTaskEditorPage_Submit_failed,
+                            newStatus);
+                }
+            });
+        }
+    }
 }

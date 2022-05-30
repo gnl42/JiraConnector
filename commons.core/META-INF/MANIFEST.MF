@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector for Eclipse Commons Core
+Automatic-Module-Name: JiraConnector for Eclipse Commons Core
 Bundle-SymbolicName: me.glindholm.connector.eclipse.commons.core;singleton:=true
-Bundle-Version: 4.0.1
+Bundle-Version: 4.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
@@ -13,14 +14,15 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.httpclient,
  org.apache.commons.codec;bundle-version="[1.3.0,2.0.0)",
  org.apache.commons.lang,
- org.apache.commons.logging,
  org.apache.commons.io
 Export-Package: com.thoughtworks.xstream,
  com.thoughtworks.xstream.converters.reflection,
  com.thoughtworks.xstream.io.xml,
  icons,
  icons.common,
+ javax.annotation,
  javax.servlet,
+ javax.servlet.annotation,
  javax.servlet.http,
  javax.xml.rpc,
  javax.xml.rpc.encoding,
@@ -39,28 +41,16 @@ Export-Package: com.thoughtworks.xstream,
  me.glindholm.theplugin.commons.ssl,
  me.glindholm.theplugin.commons.thirdparty.apache,
  me.glindholm.theplugin.commons.util,
- org.apache.axis,
- org.codehaus.jettison,
- org.codehaus.jettison.json,
- org.codehaus.jettison.util,
  org.jdom2,
- org.jdom2.xpath,
- org.jetbrains.annotations,
- org.joda.time,
- org.joda.time.base,
- org.joda.time.format
+ org.jdom2.xpath
 Bundle-ClassPath: .,
  target/lib/jdom.jar,
- target/lib/annotations.jar,
  target/lib/cssparser.jar,
  target/lib/guava.jar,
- target/lib/jettison.jar,
  target/lib/velocity.jar,
  target/lib/xstream.jar,
- target/lib/joda-time.jar,
- lib/jersey-apache-client-1.5.jar,
  target/lib/javax.xml.rpc-api.jar,
  target/lib/javax.servlet-api.jar,
  target/lib/jaxen.jar,
- target/lib/axis.jar,
- target/lib/commons-discovery.jar
+ target/lib/commons-discovery.jar,
+ target/lib/jsr305.jar

@@ -14,7 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 
 /**
  * @author Brock Janiczak
@@ -22,7 +22,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.Version;
 public class VersionFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final Version[] versions;
+	private final JiraVersion[] versions;
 
 	private final boolean unreleasedVersions;
 
@@ -30,7 +30,7 @@ public class VersionFilter implements Filter, Serializable {
 
 	private final boolean hasNoneVersion;
 
-	public VersionFilter(Version[] versions, boolean none, boolean released, boolean unreleased) {
+	public VersionFilter(JiraVersion[] versions, boolean none, boolean released, boolean unreleased) {
 		this.versions = versions;
 		this.releasedVersions = released;
 		this.unreleasedVersions = unreleased;
@@ -49,13 +49,13 @@ public class VersionFilter implements Filter, Serializable {
 		return this.hasNoneVersion;
 	}
 
-	public Version[] getVersions() {
+	public JiraVersion[] getVersions() {
 		return this.versions;
 	}
 
 	public VersionFilter copy() {
 		if (versions != null) {
-			Version[] copy = new Version[versions.length];
+			JiraVersion[] copy = new JiraVersion[versions.length];
 			System.arraycopy(versions, 0, copy, 0, versions.length);
 			return new VersionFilter(copy, hasNoneVersion, releasedVersions, unreleasedVersions);
 		}

@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jdom2.JDOMException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.theplugin.commons.bamboo.BambooBuild;
@@ -53,7 +53,7 @@ public class AutoRenewBambooSession implements BambooSession {
         this.delegate = bambooSession;
     }
 
-    public void addCommentToBuild(@NotNull String planKey, int buildNumber, String buildComment) throws RemoteApiException {
+    public void addCommentToBuild(@Nonnull String planKey, int buildNumber, String buildComment) throws RemoteApiException {
         try {
             delegate.addCommentToBuild(planKey, buildNumber, buildComment);
         } catch (RemoteApiSessionExpiredException e) {
@@ -62,7 +62,7 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    public void executeBuild(@NotNull String buildKey) throws RemoteApiException {
+    public void executeBuild(@Nonnull String buildKey) throws RemoteApiException {
         try {
             delegate.executeBuild(buildKey);
         } catch (RemoteApiSessionExpiredException e) {
@@ -71,7 +71,7 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    public void addLabelToBuild(@NotNull String planKey, int buildNumber, String buildLabel) throws RemoteApiException {
+    public void addLabelToBuild(@Nonnull String planKey, int buildNumber, String buildLabel) throws RemoteApiException {
         try {
             delegate.addLabelToBuild(planKey, buildNumber, buildLabel);
         } catch (RemoteApiSessionExpiredException e) {
@@ -80,8 +80,8 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
-    public BuildDetails getBuildResultDetails(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    @Nonnull
+    public BuildDetails getBuildResultDetails(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         try {
             return delegate.getBuildResultDetails(planKey, buildNumber);
         } catch (RemoteApiSessionExpiredException e) {
@@ -90,7 +90,7 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
+    @Nonnull
     public List<String> getFavouriteUserPlans() throws RemoteApiException {
         try {
             return delegate.getFavouriteUserPlans();
@@ -100,8 +100,8 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
-    public BambooBuild getLatestBuildForPlan(@NotNull final String planKey, final int timezoneOffset)
+    @Nonnull
+    public BambooBuild getLatestBuildForPlan(@Nonnull final String planKey, final int timezoneOffset)
             throws RemoteApiException {
         try {
             return delegate.getLatestBuildForPlan(planKey, timezoneOffset);
@@ -111,8 +111,8 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
-    public BambooBuild getBuildForPlanAndNumber(@NotNull String planKey, final int buildNumber, final int timezoneOffset)
+    @Nonnull
+    public BambooBuild getBuildForPlanAndNumber(@Nonnull String planKey, final int buildNumber, final int timezoneOffset)
             throws RemoteApiException {
         try {
             return delegate.getBuildForPlanAndNumber(planKey, buildNumber, timezoneOffset);
@@ -126,7 +126,7 @@ public class AutoRenewBambooSession implements BambooSession {
         return delegate.isLoggedIn();
     }
 
-    public String getBuildLogs(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    public String getBuildLogs(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         try {
             return delegate.getBuildLogs(planKey, buildNumber);
         } catch (RemoteApiSessionExpiredException e) {
@@ -135,7 +135,7 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    public Collection<BambooBuild> getRecentBuildsForPlan(@NotNull final String planKey, final int timezoneOffset)
+    public Collection<BambooBuild> getRecentBuildsForPlan(@Nonnull final String planKey, final int timezoneOffset)
             throws RemoteApiException {
         try {
             return delegate.getRecentBuildsForPlan(planKey, timezoneOffset);
@@ -155,8 +155,8 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
-    public Collection<BuildIssue> getIssuesForBuild(@NotNull String planKey, int buildNumber) throws RemoteApiException {
+    @Nonnull
+    public Collection<BuildIssue> getIssuesForBuild(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         try {
             return delegate.getIssuesForBuild(planKey, buildNumber);
         } catch (RemoteApiSessionExpiredException e) {
@@ -165,8 +165,8 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
-    public BambooPlan getPlanDetails(@NotNull final String planKey) throws RemoteApiException {
+    @Nonnull
+    public BambooPlan getPlanDetails(@Nonnull final String planKey) throws RemoteApiException {
         try {
             return delegate.getPlanDetails(planKey);
         } catch (RemoteApiSessionExpiredException e) {
@@ -175,8 +175,8 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
-    public BambooBuild getLatestBuildForPlanNew(@NotNull final String planKey, @Nullable String masterPlanKey, final boolean isPlanEnabled,
+    @Nonnull
+    public BambooBuild getLatestBuildForPlanNew(@Nonnull final String planKey, @Nullable String masterPlanKey, final boolean isPlanEnabled,
             final int timezoneOffset) throws RemoteApiException {
         try {
             return delegate.getLatestBuildForPlanNew(planKey, masterPlanKey, isPlanEnabled, timezoneOffset);
@@ -187,7 +187,7 @@ public class AutoRenewBambooSession implements BambooSession {
 
     }
 
-    @NotNull
+    @Nonnull
     public Collection<BambooPlan> getPlanList() throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             return delegate.getPlanList();
@@ -197,7 +197,7 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
+    @Nonnull
     public List<BambooProject> listProjectNames() throws RemoteApiException {
         try {
             return delegate.listProjectNames();
@@ -227,7 +227,7 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
+    @Nonnull
     public Collection<BambooBuild> getSubscribedPlansResults(Collection<SubscribedPlan> plans, boolean isUseFavourities,
             int timezoneOffset) throws RemoteApiException {
         try {
@@ -247,7 +247,7 @@ public class AutoRenewBambooSession implements BambooSession {
         }
     }
 
-    @NotNull
+    @Nonnull
     public Collection<String> getBranchKeys(String planKey, boolean useFavourites, boolean myBranchesOnly) throws RemoteApiException {
         try {
             return delegate.getBranchKeys(planKey, useFavourites, myBranchesOnly);

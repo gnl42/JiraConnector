@@ -16,7 +16,7 @@
 package me.glindholm.connector.commons.misc;
 
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * This class is immutable
  */
 public class IntRanges {
-	@NotNull
+	@Nonnull
 	private final ArrayList<IntRange> ranges;
 	private static final Comparator<IntRange> COMPARATOR = new Comparator<IntRange>() {
 		public int compare(final IntRange o1, final IntRange o2) {
@@ -35,7 +35,7 @@ public class IntRanges {
 	/**
 	 * @param ranges list cannot be empty. Copy is made here, so you may freely modify the array afterwards
 	 */
-	public IntRanges(@NotNull List<IntRange> ranges) {
+	public IntRanges(@Nonnull List<IntRange> ranges) {
 		this.ranges = new ArrayList<IntRange>(ranges);
 		if (this.ranges.isEmpty()) {
 			throw new IllegalArgumentException("Cannot create ranges object from the empty list");
@@ -43,7 +43,7 @@ public class IntRanges {
 		Collections.sort(this.ranges, COMPARATOR);
 	}
 
-	public IntRanges(@NotNull IntRange ... ranges) {
+	public IntRanges(@Nonnull IntRange ... ranges) {
 		if (ranges.length == 0) {
 			throw new IllegalArgumentException("Cannot create ranges object from the empty list");
 		}
@@ -59,7 +59,7 @@ public class IntRanges {
 		return ranges.get(ranges.size() - 1).getMax();
 	}
 
-	@NotNull
+	@Nonnull
 	public List<IntRange> getRanges() {
 		return Collections.unmodifiableList(ranges);
 	}

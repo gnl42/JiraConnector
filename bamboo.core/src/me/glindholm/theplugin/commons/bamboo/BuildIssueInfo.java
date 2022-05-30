@@ -1,6 +1,6 @@
 package me.glindholm.theplugin.commons.bamboo;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * User: kalamon
@@ -12,7 +12,7 @@ public class BuildIssueInfo implements BuildIssue {
     private final String issueKey;
     private final String issueUrl;
 
-    public BuildIssueInfo(@NotNull String issueKey, @NotNull String issueUrl) {
+    public BuildIssueInfo(@Nonnull String issueKey, @Nonnull String issueUrl) {
         this.issueKey = issueKey;
         this.issueUrl = issueUrl;
     }

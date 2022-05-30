@@ -14,7 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraPriority;
 
 /**
  * @author Brock Janiczak
@@ -22,16 +22,16 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.Priority;
 public class PriorityFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final Priority[] priorities;
+	private final JiraPriority[] priorities;
 
-	public PriorityFilter(Priority[] priorities) {
+	public PriorityFilter(JiraPriority[] priorities) {
 		assert (priorities != null);
 		assert (priorities.length > 0);
 
 		this.priorities = priorities;
 	}
 
-	public Priority[] getPriorities() {
+	public JiraPriority[] getPriorities() {
 		return this.priorities;
 	}
 

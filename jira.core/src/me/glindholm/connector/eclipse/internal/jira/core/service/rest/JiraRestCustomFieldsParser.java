@@ -11,6 +11,7 @@
 
 package me.glindholm.connector.eclipse.internal.jira.core.service.rest;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,114 +20,98 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.osgi.util.NLS;
 
-import com.atlassian.jira.rest.client.domain.Field;
-import com.atlassian.jira.rest.client.internal.json.JsonParseUtil;
+import me.glindholm.jira.rest.client.api.domain.CustomFieldOption;
+import me.glindholm.jira.rest.client.api.domain.IssueField;
+import me.glindholm.jira.rest.client.api.domain.User;
+import me.glindholm.jira.rest.client.internal.json.CustomFieldOptionJsonParser;
+import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
+import me.glindholm.jira.rest.client.internal.json.UserJsonParser;
+import me.glindholm.jira.rest.client.internal.json.UsersJsonParser;
 
 public class JiraRestCustomFieldsParser {
-	private JiraRestCustomFieldsParser() throws Exception {
-		throw new Exception("Utility class"); //$NON-NLS-1$
-	}
+    private static final UsersJsonParser usersParser = new UsersJsonParser();
+    private static final UserJsonParser userParser = new UserJsonParser();
+    private static final CustomFieldOptionJsonParser customParser = new CustomFieldOptionJsonParser();
 
-	public static List<String> parseMultiUserPicker(Field field) throws JSONException {
-		List<String> users = new ArrayList<String>();
+    private JiraRestCustomFieldsParser() throws Exception {
+        throw new Exception("Utility class"); //$NON-NLS-1$
+    }
 
-		JSONArray jsonArray = (JSONArray) field.getValue();
+    public static List<String> parseMultiUserPicker(IssueField field) throws JSONException, URISyntaxException {
+        List<String> users = new ArrayList<>();
+        for (User user : usersParser.parse((JSONArray) field.getValue())) {
+            users.add(user.getName());
+        }
 
-		for (int i = 0; i < jsonArray.length(); i++) {
-			Object o = jsonArray.get(i);
+        return users;
+    }
 
-			if (o instanceof JSONObject) {
-				users.add(JsonParseUtil.getOptionalString((JSONObject) o, "name"));
-			}
-		}
+    public static String parseUserPicker(IssueField field) throws JSONException, URISyntaxException {
+        User user = userParser.parse((JSONObject) field.getValue());
+        return user.getName();
+    }
 
-		return users;
-	}
+    public static String parseSelect(IssueField field) throws JSONException, URISyntaxException {
+        CustomFieldOption cfo = customParser.parse((JSONObject) field.getValue());
 
-	public static String parseUserPicker(Field field) throws JSONException {
+        return cfo.getValue();
+    }
 
-		JSONObject jsonValue = (JSONObject) field.getValue();
+    public static List<String> parseMultiSelect(IssueField field) throws JSONException, URISyntaxException {
+        List<String> values = new ArrayList<>();
 
-		String value = JsonParseUtil.getOptionalString(jsonValue, "name");
+        JSONArray jsonArray = (JSONArray) field.getValue();
 
-		if (value == null) {
-			throw new JSONException(NLS.bind("Cannot parse field [{0}]", field.getName())); //$NON-NLS-1$
-		}
+        for (int i = 0; i < jsonArray.length(); i++) {
+            CustomFieldOption cfo = customParser.parse((JSONObject) jsonArray.get(i));
+            values.add(cfo.getValue());
+        }
 
-		return value;
-	}
+        return values;
+    }
 
-	public static String parseSelect(Field field) throws JSONException {
+    public static List<String> parseLabels(IssueField field) throws JSONException {
+        List<String> labels = new ArrayList<>();
 
-		JSONObject jsonValue = (JSONObject) field.getValue();
+        JSONArray jsonArray = (JSONArray) field.getValue();
 
-		String value = JsonParseUtil.getOptionalString(jsonValue, "value");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            Object o = jsonArray.get(i);
 
-		if (value == null) {
-			throw new JSONException(NLS.bind("Cannot parse field [{0}]", field.getName())); //$NON-NLS-1$
-		}
+            if (o instanceof String) {
+                labels.add((String) o);
+            }
+        }
 
-		return value;
-	}
+        return labels;
+    }
 
-	public static List<String> parseMultiSelect(Field field) throws JSONException {
-		List<String> values = new ArrayList<String>();
+    public static String parseGroupPicker(IssueField field) throws JSONException {
+        JSONObject jsonValue = (JSONObject) field.getValue();
 
-		JSONArray jsonArray = (JSONArray) field.getValue();
+        String group = JsonParseUtil.getOptionalString(jsonValue, "name");
 
-		for (int i = 0; i < jsonArray.length(); i++) {
-			Object o = jsonArray.get(i);
+        if (group == null) {
+            throw new JSONException(NLS.bind("Cannot parse field [{0}]", field.getName())); //$NON-NLS-1$
+        }
 
-			if (o instanceof JSONObject) {
-				values.add(JsonParseUtil.getOptionalString((JSONObject) o, "value"));
-			}
-		}
+        return group;
+    }
 
-		return values;
-	}
+    public static List<String> parseMultiGroupPicker(IssueField field) throws JSONException {
+        List<String> groups = new ArrayList<>();
 
-	public static List<String> parseLabels(Field field) throws JSONException {
-		List<String> labels = new ArrayList<String>();
+        JSONArray jsonArray = (JSONArray) field.getValue();
 
-		JSONArray jsonArray = (JSONArray) field.getValue();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            Object o = jsonArray.get(i);
 
-		for (int i = 0; i < jsonArray.length(); i++) {
-			Object o = jsonArray.get(i);
+            if (o instanceof JSONObject) {
+                groups.add(JsonParseUtil.getOptionalString((JSONObject) o, "name"));
+            }
+        }
 
-			if (o instanceof String) {
-				labels.add((String) o);
-			}
-		}
-
-		return labels;
-	}
-
-	public static String parseGroupPicker(Field field) throws JSONException {
-		JSONObject jsonValue = (JSONObject) field.getValue();
-
-		String group = JsonParseUtil.getOptionalString(jsonValue, "name");
-
-		if (group == null) {
-			throw new JSONException(NLS.bind("Cannot parse field [{0}]", field.getName())); //$NON-NLS-1$
-		}
-
-		return group;
-	}
-
-	public static List<String> parseMultiGroupPicker(Field field) throws JSONException {
-		List<String> groups = new ArrayList<String>();
-
-		JSONArray jsonArray = (JSONArray) field.getValue();
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			Object o = jsonArray.get(i);
-
-			if (o instanceof JSONObject) {
-				groups.add(JsonParseUtil.getOptionalString((JSONObject) o, "name"));
-			}
-		}
-
-		return groups;
-	}
+        return groups;
+    }
 
 }

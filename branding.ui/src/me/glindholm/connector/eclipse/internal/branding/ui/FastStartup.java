@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.ui.IStartup;
 
 import me.glindholm.connector.eclipse.internal.ui.AtlassianBundlesInfo;
-import me.glindholm.connector.eclipse.internal.ui.IBrandingConstants;
+import me.glindholm.connector.eclipse.internal.ui.BrandingConstants;
 
 public class FastStartup implements IStartup {
 
@@ -38,6 +38,6 @@ public class FastStartup implements IStartup {
                 break;
             }
         }
-        System.setProperty(IBrandingConstants.JIRA_INSTALLED_SYSTEM_PROPERTY, Boolean.toString(onlyJira));
+        System.setProperty(BrandingConstants.JIRA_INSTALLED_SYSTEM_PROPERTY, Boolean.toString(onlyJira));
     }
 }

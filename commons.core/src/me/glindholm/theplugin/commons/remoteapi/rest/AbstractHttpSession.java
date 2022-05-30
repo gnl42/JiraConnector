@@ -37,7 +37,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPath;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.theplugin.commons.exception.HttpProxySettingsException;
@@ -66,15 +66,15 @@ import java.util.WeakHashMap;
  * immutable then this may be the cause of races
  */
 public abstract class AbstractHttpSession {
-    @NotNull
+    @Nonnull
     protected final HttpSessionCallback callback;
 
-    @NotNull
+    @Nonnull
     private final ConnectionCfg server;
     private static final int MAX_REDIRECTS = 3;
     private String responseCharSet;
 
-    @NotNull
+    @Nonnull
     protected ConnectionCfg getServer() {
         return server;
     }
@@ -151,7 +151,7 @@ public abstract class AbstractHttpSession {
      * @throws me.glindholm.theplugin.commons.remoteapi.RemoteApiMalformedUrlException
      *          for malformed url
      */
-    public AbstractHttpSession(@NotNull ConnectionCfg server, @NotNull HttpSessionCallback callback)
+    public AbstractHttpSession(@Nonnull ConnectionCfg server, @Nonnull HttpSessionCallback callback)
             throws RemoteApiMalformedUrlException {
         this.server = server;
         this.callback = callback;

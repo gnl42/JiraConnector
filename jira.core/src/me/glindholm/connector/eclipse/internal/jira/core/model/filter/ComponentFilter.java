@@ -14,7 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
 
 /**
  * Restricts to issues that have one of the specified components. This filter can only be used in conjunction with a
@@ -27,17 +27,17 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.Component;
 public class ComponentFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final Component[] components;
+	private final JiraComponent[] components;
 
 	private final boolean containsNone;
 
-	public ComponentFilter(Component[] components, boolean containsNone) {
+	public ComponentFilter(JiraComponent[] components, boolean containsNone) {
 		assert (components != null);
 		this.containsNone = containsNone;
 		this.components = components;
 	}
 
-	public Component[] getComponents() {
+	public JiraComponent[] getComponents() {
 		return this.components;
 	}
 
@@ -46,7 +46,7 @@ public class ComponentFilter implements Filter, Serializable {
 	}
 
 	public ComponentFilter copy() {
-		Component[] copy = new Component[components.length];
+		JiraComponent[] copy = new JiraComponent[components.length];
 		System.arraycopy(components, 0, copy, 0, components.length);
 		return new ComponentFilter(copy, containsNone);
 	}

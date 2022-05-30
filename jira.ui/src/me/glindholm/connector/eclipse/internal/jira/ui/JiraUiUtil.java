@@ -18,7 +18,7 @@ import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
 import org.eclipse.mylyn.tasks.core.ITask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
-import me.glindholm.connector.eclipse.internal.jira.core.IJiraConstants;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
 import me.glindholm.connector.eclipse.internal.jira.ui.actions.Messages;
@@ -38,7 +38,7 @@ public class JiraUiUtil {
 
 		long localTimeTicks = 0;
 
-		String stringLoggedTime = iTask.getAttribute(IJiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME);
+		String stringLoggedTime = iTask.getAttribute(JiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME);
 
 		if (stringLoggedTime != null && stringLoggedTime.length() > 0) {
 			try {
@@ -59,7 +59,7 @@ public class JiraUiUtil {
 	}
 
 	public static void clearLoggedActivityTime(ITask task) {
-		task.setAttribute(IJiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME, ""); //$NON-NLS-1$
+		task.setAttribute(JiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME, ""); //$NON-NLS-1$
 	}
 
 	/**
@@ -68,17 +68,17 @@ public class JiraUiUtil {
 	 * @param task
 	 */
 	public static void setLoggedActivityTime(ITask task) {
-		task.setAttribute(IJiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME,
+		task.setAttribute(JiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME,
 				Long.toString(TasksUiPlugin.getTaskActivityManager().getElapsedTime(task)));
 	}
 
 	public static void updateAdjustEstimateOption(AdjustEstimateMethod adjustEstimate, TaskRepository repository) {
-		repository.setProperty(IJiraConstants.ATTRIBUTE_ADJUST_ESTIMATE_OPTION, adjustEstimate.value());
+		repository.setProperty(JiraConstants.ATTRIBUTE_ADJUST_ESTIMATE_OPTION, adjustEstimate.value());
 	}
 
 	public static AdjustEstimateMethod getAdjustEstimateOption(TaskRepository repository) {
 		try {
-			return JiraWorkLog.AdjustEstimateMethod.fromValue(repository.getProperty(IJiraConstants.ATTRIBUTE_ADJUST_ESTIMATE_OPTION));
+			return JiraWorkLog.AdjustEstimateMethod.fromValue(repository.getProperty(JiraConstants.ATTRIBUTE_ADJUST_ESTIMATE_OPTION));
 		} catch (IllegalArgumentException e) {
 			return AdjustEstimateMethod.LEAVE;
 		}

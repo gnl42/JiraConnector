@@ -14,7 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 
 import java.io.Serializable;
 
-import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
+import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
 
 // TODO consider making this abstract and using subclasses to do the typing
 /**
@@ -23,13 +23,13 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.IssueType;
 public class IssueTypeFilter implements Filter, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private final IssueType[] issueTypes;
+	private final JiraIssueType[] issueTypes;
 
 	private final boolean standardTypes;
 
 	private final boolean subTaskTypes;
 
-	public IssueTypeFilter(IssueType[] issueTypes) {
+	public IssueTypeFilter(JiraIssueType[] issueTypes) {
 		this.issueTypes = issueTypes;
 		standardTypes = false;
 		subTaskTypes = false;
@@ -43,7 +43,7 @@ public class IssueTypeFilter implements Filter, Serializable {
 		this.subTaskTypes = subTaskTypes;
 	}
 
-	public IssueType[] getIsueTypes() {
+	public JiraIssueType[] getIsueTypes() {
 		return this.issueTypes;
 	}
 

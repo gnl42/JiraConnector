@@ -8,13 +8,13 @@ import me.glindholm.connector.eclipse.internal.directclickthrough.ui.DirectClick
 import me.glindholm.connector.eclipse.internal.directclickthrough.ui.IDirectClickThroughPreferenceConstants;
 
 public class DirectClickThroughPreferenceInitializer extends
-		AbstractPreferenceInitializer {
+AbstractPreferenceInitializer {
 
-	@Override
-	public void initializeDefaultPreferences() {
-		Preferences node = new DefaultScope().getNode(DirectClickThroughUiPlugin.PLUGIN_ID);
-		node.putBoolean(IDirectClickThroughPreferenceConstants.ENABLED, IDirectClickThroughPreferenceConstants.DEFAULT_ENABLED);
-		node.putInt(IDirectClickThroughPreferenceConstants.PORT_NUMBER, IDirectClickThroughPreferenceConstants.DEFAULT_PORT_NUMBER);
-	}
+    @Override
+    public void initializeDefaultPreferences() {
+        Preferences node = DefaultScope.INSTANCE.getNode(DirectClickThroughUiPlugin.PLUGIN_ID);
+        node.putBoolean(IDirectClickThroughPreferenceConstants.ENABLED, IDirectClickThroughPreferenceConstants.DEFAULT_ENABLED);
+        node.putInt(IDirectClickThroughPreferenceConstants.PORT_NUMBER, IDirectClickThroughPreferenceConstants.DEFAULT_PORT_NUMBER);
+    }
 
 }

@@ -27,8 +27,8 @@ import me.glindholm.theplugin.commons.exception.ServerPasswordNotProvidedExcepti
 import me.glindholm.theplugin.commons.remoteapi.ProductSession;
 import me.glindholm.theplugin.commons.remoteapi.RemoteApiException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -42,10 +42,10 @@ public interface BambooSession extends ProductSession {
 
 	int getBamboBuildNumber() throws RemoteApiException;
 
-	@NotNull
+	@Nonnull
 	List<BambooProject> listProjectNames() throws RemoteApiException;
 
-	@NotNull
+	@Nonnull
 	Collection<BambooPlan> getPlanList() throws ServerPasswordNotProvidedException, RemoteApiException;
 
 	/**
@@ -65,24 +65,24 @@ public interface BambooSession extends ProductSession {
 	 * @return last build for selected plan
 	 * @throws RemoteApiException in case of some communication problem or malformed response
 	 */
-	@NotNull
-	BambooBuild getLatestBuildForPlan(@NotNull String planKey, final int timezoneOffset) throws RemoteApiException;
+	@Nonnull
+	BambooBuild getLatestBuildForPlan(@Nonnull String planKey, final int timezoneOffset) throws RemoteApiException;
 
-	@NotNull
-	BambooBuild getBuildForPlanAndNumber(@NotNull String planKey, final int buildNumber, final int timezoneOffset)
+	@Nonnull
+	BambooBuild getBuildForPlanAndNumber(@Nonnull String planKey, final int buildNumber, final int timezoneOffset)
 			throws RemoteApiException;
 
-	@NotNull
+	@Nonnull
 	List<String> getFavouriteUserPlans() throws RemoteApiException;
 
-	@NotNull
+	@Nonnull
 	Collection<BambooBuild> getSubscribedPlansResults(final Collection<SubscribedPlan> plans, boolean isUseFavourities,
 			int timezoneOffset) throws RemoteApiException;
 
-	@NotNull
-	BuildDetails getBuildResultDetails(@NotNull String planKey, int buildNumber) throws RemoteApiException;
+	@Nonnull
+	BuildDetails getBuildResultDetails(@Nonnull String planKey, int buildNumber) throws RemoteApiException;
 
-	void addLabelToBuild(@NotNull String planKey, int buildNumber, String buildLabel) throws RemoteApiException;
+	void addLabelToBuild(@Nonnull String planKey, int buildNumber, String buildLabel) throws RemoteApiException;
 
 	/**
 	 * Adds comment to selected build.
@@ -92,28 +92,28 @@ public interface BambooSession extends ProductSession {
 	 * @param buildComment the comment to add.
 	 * @throws RemoteApiException in case of some communication problem
 	 */
-	void addCommentToBuild(@NotNull String planKey, int buildNumber, String buildComment) throws RemoteApiException;
+	void addCommentToBuild(@Nonnull String planKey, int buildNumber, String buildComment) throws RemoteApiException;
 
-	void executeBuild(@NotNull String planKey) throws RemoteApiException;
+	void executeBuild(@Nonnull String planKey) throws RemoteApiException;
 
-	String getBuildLogs(@NotNull String planKey, int buildNumber) throws RemoteApiException;
+	String getBuildLogs(@Nonnull String planKey, int buildNumber) throws RemoteApiException;
 
-	Collection<BambooBuild> getRecentBuildsForPlan(@NotNull String planKey, int timezoneOffset) throws RemoteApiException;
+	Collection<BambooBuild> getRecentBuildsForPlan(@Nonnull String planKey, int timezoneOffset) throws RemoteApiException;
 
 	Collection<BambooBuild> getRecentBuildsForUser(final int timezoneOffset) throws RemoteApiException;
 
-	@NotNull
-	BambooBuild getLatestBuildForPlanNew(@NotNull String planKey, @Nullable String masterPlanKey, boolean isPlanEnabled,
+	@Nonnull
+	BambooBuild getLatestBuildForPlanNew(@Nonnull String planKey, @Nullable String masterPlanKey, boolean isPlanEnabled,
 			int timezoneOffset) throws RemoteApiException;
 
-    @NotNull
-    Collection<BuildIssue> getIssuesForBuild(@NotNull String planKey, int buildNumber) throws RemoteApiException;
+    @Nonnull
+    Collection<BuildIssue> getIssuesForBuild(@Nonnull String planKey, int buildNumber) throws RemoteApiException;
 
-	@NotNull
-	BambooPlan getPlanDetails(@NotNull String planKey) throws RemoteApiException;
+	@Nonnull
+	BambooPlan getPlanDetails(@Nonnull String planKey) throws RemoteApiException;
 
 	List<BambooJobImpl> getJobsForPlan(String planKey) throws RemoteApiException;
 
-    @NotNull
+    @Nonnull
     Collection<String> getBranchKeys(String planKey, boolean useFavourites, boolean myBranchesOnly) throws RemoteApiException;
 }

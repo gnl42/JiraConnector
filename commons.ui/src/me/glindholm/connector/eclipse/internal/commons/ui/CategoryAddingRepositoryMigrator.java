@@ -32,7 +32,6 @@ public class CategoryAddingRepositoryMigrator extends AbstractRepositoryMigrator
 		return connectorKind;
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public boolean migrateRepository(TaskRepository repository) {
 		if (repository.getProperty(IRepositoryConstants.PROPERTY_CATEGORY) == null) {

@@ -15,6 +15,9 @@
  */
 package me.glindholm.theplugin.commons.cfg.xstream;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -34,9 +37,6 @@ import me.glindholm.theplugin.commons.cfg.ServerCfg;
 import me.glindholm.theplugin.commons.cfg.ServerIdImpl;
 import me.glindholm.theplugin.commons.cfg.SharedServerList;
 import me.glindholm.theplugin.commons.cfg.SubscribedPlan;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public final class JDomXStreamUtil {
     private static final String PLAN = "plan";
@@ -149,6 +149,7 @@ public final class JDomXStreamUtil {
 //		});
         xStream.registerConverter(new Converter() {
 
+            @Override
             public void marshal(final Object source, final HierarchicalStreamWriter writer, final MarshallingContext context) {
                 SubscribedPlan value = (SubscribedPlan) source;
                 writer.addAttribute(PLAN_KEY, value.getKey());
@@ -156,26 +157,31 @@ public final class JDomXStreamUtil {
                 //writer.setValue(value.getPlanId());
             }
 
+            @Override
             public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context) {
                 return new SubscribedPlan(reader.getAttribute(PLAN_KEY),
                         "1".equals(reader.getAttribute(GROUPED_KEY)));
             }
 
+            @Override
             public boolean canConvert(final Class aClass) {
                 return SubscribedPlan.class.isAssignableFrom(aClass);
             }
         });
         xStream.registerConverter(new Converter() {
 
+            @Override
             public void marshal(final Object source, final HierarchicalStreamWriter writer, final MarshallingContext context) {
                 ServerIdImpl value = (ServerIdImpl) source;
                 writer.setValue(value.getId());
             }
 
+            @Override
             public Object unmarshal(final HierarchicalStreamReader reader, final UnmarshallingContext context) {
                 return new ServerIdImpl(reader.getValue());
             }
 
+            @Override
             public boolean canConvert(final Class type) {
                 return type.equals(ServerIdImpl.class);
             }

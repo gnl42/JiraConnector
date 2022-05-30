@@ -36,15 +36,18 @@ public class EditorResourceAdapterFactory implements IAdapterFactory {
 			this(resource, null);
 		}
 
-		public LineRange getLineRange() {
+		@Override
+        public LineRange getLineRange() {
 			return lineRange;
 		}
 
-		public IResource getResource() {
+		@Override
+        public IResource getResource() {
 			return resource;
 		}
 
-		@SuppressWarnings("unchecked")
+		@Override
+        @SuppressWarnings("unchecked")
 		public Object getAdapter(Class adapter) {
 			if (!IResource.class.equals(adapter)) {
 				return null;
@@ -54,10 +57,10 @@ public class EditorResourceAdapterFactory implements IAdapterFactory {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private static final Class[] ADAPTERS = { IEditorResource.class };
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (!IEditorResource.class.equals(adapterType)) {
 			return null;
@@ -69,7 +72,7 @@ public class EditorResourceAdapterFactory implements IAdapterFactory {
 
 		if (adaptableObject instanceof IEditorInput) {
 			final IEditorInput editorInput = (IEditorInput) adaptableObject;
-			final IResource resource = (IResource) editorInput.getAdapter(IResource.class);
+			final IResource resource = editorInput.getAdapter(IResource.class);
 			if (resource == null) {
 				return null;
 			}
@@ -86,7 +89,7 @@ public class EditorResourceAdapterFactory implements IAdapterFactory {
 
 		if (adaptableObject instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) adaptableObject;
-			final IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+			final IResource resource = adaptable.getAdapter(IResource.class);
 			if (resource != null) {
 				return new BasicEditorResource(resource);
 			}
@@ -106,7 +109,8 @@ public class EditorResourceAdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Class[] getAdapterList() {
 		return ADAPTERS;
 	}

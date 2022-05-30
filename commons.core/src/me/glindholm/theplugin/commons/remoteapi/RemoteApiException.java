@@ -16,7 +16,7 @@
 
 package me.glindholm.theplugin.commons.remoteapi;
 
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * Generic exception related to a remote session.

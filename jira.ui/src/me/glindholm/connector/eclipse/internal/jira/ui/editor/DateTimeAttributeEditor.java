@@ -33,55 +33,56 @@ import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
  */
 public class DateTimeAttributeEditor extends AbstractAttributeEditor {
 
-	private Text text;
+    private Text text;
 
-	private final DateFormat format;
+    private final DateFormat format;
 
-	public DateTimeAttributeEditor(TaskDataModel model, TaskAttribute taskAttribute, boolean includeTime) {
-		super(model, taskAttribute);
-		JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(model.getTaskRepository());
-		if (includeTime) {
-			this.format = configuration.getDateTimeFormat();
-		} else {
-			this.format = configuration.getDateFormat();
-		}
-	}
+    public DateTimeAttributeEditor(TaskDataModel model, TaskAttribute taskAttribute, boolean includeTime) {
+        super(model, taskAttribute);
+        JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(model.getTaskRepository());
+        if (includeTime) {
+            this.format = configuration.getDateTimeFormat();
+        } else {
+            this.format = configuration.getDateFormat();
+        }
+    }
 
-	protected Text getText() {
-		return text;
-	}
+    protected Text getText() {
+        return text;
+    }
 
-	@Override
-	public void createControl(Composite parent, FormToolkit toolkit) {
-		if (isReadOnly()) {
-			text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
-			text.setFont(JFaceResources.getDefaultFont());
-			text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
-			text.setText(getValue());
-		} else {
-			text = toolkit.createText(parent, getValue(), SWT.FLAT);
-			text.setFont(JFaceResources.getDefaultFont());
-			text.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					setValue(text.getText());
-					//EditorUtil.ensureVisible(text);
-				}
-			});
-		}
-		toolkit.adapt(text, false, false);
-		setControl(text);
-	}
+    @Override
+    public void createControl(Composite parent, FormToolkit toolkit) {
+        if (isReadOnly()) {
+            text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
+            text.setFont(JFaceResources.getDefaultFont());
+            text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
+            text.setText(getValue());
+        } else {
+            text = toolkit.createText(parent, getValue(), SWT.FLAT);
+            text.setFont(JFaceResources.getDefaultFont());
+            text.addModifyListener(new ModifyListener() {
+                @Override
+                public void modifyText(ModifyEvent e) {
+                    setValue(text.getText());
+                    //EditorUtil.ensureVisible(text);
+                }
+            });
+        }
+        toolkit.adapt(text, false, false);
+        setControl(text);
+    }
 
-	public String getValue() {
-		return format.format(getAttributeMapper().getDateValue(getTaskAttribute()));
-	}
+    public String getValue() {
+        return format.format(getAttributeMapper().getDateValue(getTaskAttribute()));
+    }
 
-	public void setValue(String text) {
-		try {
-			getAttributeMapper().setDateValue(getTaskAttribute(), format.parse(text));
-		} catch (ParseException e) {
-			// XXX ignore
-		}
-		attributeChanged();
-	}
+    public void setValue(String text) {
+        try {
+            getAttributeMapper().setDateValue(getTaskAttribute(), format.parse(text));
+        } catch (ParseException e) {
+            // XXX ignore
+        }
+        attributeChanged();
+    }
 }

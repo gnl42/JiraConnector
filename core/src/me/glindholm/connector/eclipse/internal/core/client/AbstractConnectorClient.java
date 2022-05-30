@@ -21,7 +21,7 @@ import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.connector.eclipse.internal.core.CoreMessages;
@@ -113,7 +113,7 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
         }
     }
 
-    @NotNull
+    @Nonnull
     protected abstract S getSession(ConnectionCfg connectionCfg) throws RemoteApiException,
             ServerPasswordNotProvidedException;
 

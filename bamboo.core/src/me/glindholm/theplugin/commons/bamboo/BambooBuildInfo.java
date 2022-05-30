@@ -16,8 +16,8 @@
 
 package me.glindholm.theplugin.commons.bamboo;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 
@@ -36,13 +36,13 @@ public final class BambooBuildInfo implements BambooBuild {
     private final String projectKey;
 
 	private final String planName;
-	@NotNull
+	@Nonnull
 	private final String planKey;
     @Nullable
     private final String masterPlanKey;
 
 	private final boolean enabled;
-	@NotNull
+	@Nonnull
 	private final BuildStatus status;
 	@Nullable
 	private final Integer number;
@@ -65,9 +65,9 @@ public final class BambooBuildInfo implements BambooBuild {
 	@Nullable
 	private final PlanState planState;
 
-	public BambooBuildInfo(@NotNull String planKey, @Nullable String planName, @Nullable String masterPlanKey, @NotNull ConnectionCfg serverData,
-			@NotNull Date pollingTime, @Nullable String projectName, boolean isEnabled, @Nullable Integer number,
-			@NotNull BuildStatus status, @Nullable PlanState planState, @Nullable String reason, @Nullable Date startDate,
+	public BambooBuildInfo(@Nonnull String planKey, @Nullable String planName, @Nullable String masterPlanKey, @Nonnull ConnectionCfg serverData,
+			@Nonnull Date pollingTime, @Nullable String projectName, boolean isEnabled, @Nullable Integer number,
+			@Nonnull BuildStatus status, @Nullable PlanState planState, @Nullable String reason, @Nullable Date startDate,
 			@Nullable String testSummary, @Nullable String commitComment, final int testsPassedCount,
 			final int testsFailedCount, @Nullable Date completionDate, @Nullable String errorMessage,
 			final Throwable exception, @Nullable String relativeBuildDate, @Nullable String durationDescription,
@@ -147,7 +147,7 @@ public final class BambooBuildInfo implements BambooBuild {
 		return planName;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getPlanKey() {
 		return planKey;
 	}
@@ -193,7 +193,7 @@ public final class BambooBuildInfo implements BambooBuild {
 		return commitComment;
 	}
 
-	@NotNull
+	@Nonnull
 	public BuildStatus getStatus() {
 		return status;
 	}
@@ -246,7 +246,7 @@ public final class BambooBuildInfo implements BambooBuild {
 		return commiters;
 	}
 
-	@NotNull
+	@Nonnull
 	public Date getPollingTime() {
 		return new Date(pollingTime.getTime());
 	}
@@ -325,13 +325,13 @@ public final class BambooBuildInfo implements BambooBuild {
 		private final ConnectionCfg serverData;
 		private final String projectName;
 		private final Integer buildNumber;
-		@NotNull
+		@Nonnull
 		private final BuildStatus buildState;
 		private boolean isEnabled = true;
 		private String message;
 		private Date startTime;
 		private Collection<String> commiters;
-		@NotNull
+		@Nonnull
 		private Date pollingTime = new Date();
 		private String buildReason;
 		@Nullable
@@ -349,7 +349,7 @@ public final class BambooBuildInfo implements BambooBuild {
 		@Nullable
 		private PlanState planState;
 
-		public Builder(@NotNull String planKey, @NotNull ConnectionCfg serverData, @NotNull BuildStatus state) {
+		public Builder(@Nonnull String planKey, @Nonnull ConnectionCfg serverData, @Nonnull BuildStatus state) {
 			this.planKey = planKey;
 			this.serverData = serverData;
 			this.buildState = state;
@@ -358,8 +358,8 @@ public final class BambooBuildInfo implements BambooBuild {
 			buildNumber = null;
 		}
 
-		public Builder(@NotNull String planKey, @Nullable String planName, @NotNull ConnectionCfg serverData,
-				@Nullable String projectName, @Nullable Integer buildNumber, @NotNull BuildStatus state) {
+		public Builder(@Nonnull String planKey, @Nullable String planName, @Nonnull ConnectionCfg serverData,
+				@Nullable String projectName, @Nullable Integer buildNumber, @Nonnull BuildStatus state) {
 			this.planKey = planKey;
             this.planName = planName;
 			this.serverData = serverData;
@@ -419,7 +419,7 @@ public final class BambooBuildInfo implements BambooBuild {
 			return this;
 		}
 
-		public Builder pollingTime(@NotNull final Date aPollingTime) {
+		public Builder pollingTime(@Nonnull final Date aPollingTime) {
 			this.pollingTime = aPollingTime;
 			return this;
 		}

@@ -14,38 +14,40 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages {
-	private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.jira.core.service.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.jira.core.service.messages"; //$NON-NLS-1$
 
-	static {
-		// load message values from bundle file
-		reloadMessages();
-	}
+    static {
+        // load message values from bundle file
+        reloadMessages();
+    }
 
-	public static void reloadMessages() {
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    public static void reloadMessages() {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	public static String JiraClientCache_Getting_server_information;
+    public static String JiraClientCache_Getting_server_information;
 
-	public static String JiraClientCache_Updating_repository_configuration;
+    public static String JiraClientCache_Updating_repository_configuration;
 
-	public static String JiraClientCache_getting_issue_types;
+    public static String JiraClientCache_getting_issue_types;
 
-	public static String JiraClientCache_getting_priorities;
+    public static String JiraClientCache_getting_metadata;
 
-	public static String JiraClientCache_getting_projects;
+    public static String JiraClientCache_getting_priorities;
 
-	public static String JiraClientCache_getting_resolutions;
+    public static String JiraClientCache_getting_projects;
 
-	public static String JiraClientCache_getting_statuses;
+    public static String JiraClientCache_getting_resolutions;
 
-	public static String JiraClientCache_project_details_for;
+    public static String JiraClientCache_getting_statuses;
 
-	public static String JiraClientCache_getting_project_roles;
+    public static String JiraClientCache_project_details_for;
 
-	public static String JiraClientCache_getting_configuration;
+    public static String JiraClientCache_getting_project_roles;
 
-	public static String JiraClientCache_Update_repository_configuration;
+    public static String JiraClientCache_getting_configuration;
 
-	public static String JiraClient_attachment_too_large;
+    public static String JiraClientCache_Update_repository_configuration;
+
+    public static String JiraClient_attachment_too_large;
 }

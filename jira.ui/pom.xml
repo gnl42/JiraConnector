@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.glindholm.connector.eclipse</groupId>
         <artifactId>JiraConnector</artifactId>
-        <version>4.0.1</version>
+        <version>4.1.0-SNAPSHOT</version>
     </parent>
     <artifactId>me.glindholm.connector.eclipse.jira.ui</artifactId>
     <packaging>eclipse-plugin</packaging>
@@ -24,7 +24,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>byteunits</includeArtifactIds>
+                            <includeArtifactIds></includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -37,10 +37,5 @@
     </build>
 
     <dependencies>
-        <dependency>
-            <groupId>com.jakewharton.byteunits</groupId>
-            <artifactId>byteunits</artifactId>
-            <version>0.9.1</version>
-        </dependency>
     </dependencies>
 </project>
