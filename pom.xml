@@ -9,16 +9,16 @@
 	<version>4.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-    <developers>
-        <developer>
-            <id>gnl</id>
-            <name>George Lindholm</name>
-            <organization>self</organization>
-            <roles>
-                <role>developer</role>
-            </roles>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<id>gnl</id>
+			<name>George Lindholm</name>
+			<organization>self</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
 
 	<!-- Developers of the original code -->
 	<contributors>
@@ -70,10 +70,18 @@
 		<tag>4.1.0</tag>
 	</scm>
 
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/gnl42/JiraConnector/issues</url>
-    </issueManagement>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/gnl42/JiraConnector/issues</url>
+	</issueManagement>
+
+<!-- 	<distributionManagement> -->
+<!-- 		<repository> -->
+<!-- 			<id>JiraConnector-update</id> -->
+<!-- 			<name>github.io</name> -->
+<!-- 			<url>file:///home/thara/testesb/in</url> -->
+<!-- 		</repository> -->
+<!-- 	</distributionManagement> -->
 
 	<repositories>
 		<repository>
@@ -111,13 +119,21 @@
 	</pluginRepositories>
 
 	<properties>
+		<!-- Required properties for releasing -->
+		<github-update-repo>git@github.com:gnl42/JiraConnector-update.git</github-update-repo>
+		<github-local-clone>${project.build.directory}/checkout</github-local-clone>
+		<releases-directory>${github-local-clone}/releases</releases-directory>
+		<current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
+		<!-- The label for the Composite sites -->
+		<site.label>JiraConnector</site.label>
+
 		<tycho.version>2.7.3</tycho.version>
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<modules>
-        <module>jira-rest-java-client</module>
+		<module>jira-rest-java-client</module>
 		<module>commons-feature</module>
 		<module>commons.core</module>
 		<module>commons.ui</module>
@@ -151,6 +167,7 @@
 		<!-- Unable to resolve swtbot.eclipse.core <module>bamboo.testsUI</module> -->
 		<module>releng</module>
 	</modules>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -298,6 +315,26 @@
 					<artifactId>eclipse-jarsigner-plugin</artifactId>
 					<version>1.1.7</version>
 				</plugin>
+
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-packaging-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<format>'v'yyyyMMdd'-'HHmm</format>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-eclipserun-plugin</artifactId>
+					<version>${tycho.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -328,6 +365,7 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-repository-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
@@ -472,4 +510,32 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<profiles>
+		<profile>
+			<!-- Activate this profile to perform the release to GitHub Pages -->
+			<id>release-composite</id>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<artifactId>maven-install-plugin</artifactId>
+							<executions>
+								<execution>
+									<id>default-install</id>
+									<phase>none</phase>
+								</execution>
+							</executions>
+						</plugin>
+						<plugin>
+							<artifactId>maven-deploy-plugin</artifactId>
+							<configuration>
+								<skip>true</skip>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 </project>

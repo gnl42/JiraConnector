@@ -6,8 +6,8 @@
       provider-name="%providerName"
       plugin="me.glindholm.connector.eclipse.branding.ui">
 
-   <description url="http://atlassian.com">
-      %description
+   <description url="https://gnl42.github.io/gnl42/JiraConnector">
+      Eclipse Mylyn connector for Atlassian Jira/Bamboo
    </description>
 
    <copyright>
@@ -59,12 +59,6 @@
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.compare"/>
    </requires>
-
-         id="me.glindholm.connector.eclipse.branding.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="me.glindholm.connector.eclipse.core"
