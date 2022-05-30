@@ -1,0 +1,3 @@
+[submodule "jrjc"]
+	path = jrjc
+	url = git@github.com:gnl42/jira-rest-java-client.git
