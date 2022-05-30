@@ -1,4 +1,0 @@
-[submodule "jira-rest-java-client"]
-	path = jira-rest-java-client
-	url = https://github.com/gnl42/jira-rest-java-client.git
-	branch = master
