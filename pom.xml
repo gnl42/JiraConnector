@@ -7,7 +7,7 @@
 
 	<groupId>me.glindholm.jira</groupId>
 	<artifactId>jira-rest-java-client-parent</artifactId>
-	<version>6.0.0</version>
+	<version>6.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>JIRA REST Java Client</name>
@@ -55,7 +55,8 @@
 	<modules>
 		<module>jrjc-api</module>
 		<module>jrjc-core</module>
-		<!-- <module>jrjc-test</module> <module>jrjc-app</module> -->
+		<module>jrjc-test</module>
+		<module>jrjc-app</module>
 	</modules>
 
 	<scm>
