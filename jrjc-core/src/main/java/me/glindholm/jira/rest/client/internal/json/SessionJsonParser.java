@@ -16,13 +16,13 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.LoginInfo;
 import me.glindholm.jira.rest.client.api.domain.Session;
-
-import java.net.URI;
 
 public class SessionJsonParser implements JsonObjectParser<Session> {
     private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();
@@ -31,7 +31,13 @@ public class SessionJsonParser implements JsonObjectParser<Session> {
     public Session parse(JSONObject json) throws JSONException {
         final URI userUri = JsonParseUtil.getSelfUri(json);
         final String username = json.getString("name");
-        final LoginInfo loginInfo = loginInfoJsonParser.parse(json.getJSONObject("loginInfo"));
+        final JSONObject loginInfoJson = json.optJSONObject("loginInfo");
+        final LoginInfo loginInfo;
+        if (loginInfoJson != null) {
+            loginInfo = loginInfoJsonParser.parse(loginInfoJson);
+        } else {
+            loginInfo = null;
+        }
         return new Session(userUri, username, loginInfo);
     }
 }
