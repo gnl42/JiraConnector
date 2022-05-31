@@ -16,20 +16,21 @@
 
 package me.glindholm.jira.rest.client.test.matchers;
 
-import org.hamcrest.Description;
 import java.time.OffsetDateTime;
+
+import org.hamcrest.Description;
 import org.junit.internal.matchers.TypeSafeMatcher;
 
-public class OffsetDateTimeMatcher extends TypeSafeMatcher<OffsetDateTime> {
+public class DateTimeMatcher extends TypeSafeMatcher<OffsetDateTime> {
     private final OffsetDateTime expected;
 
-    public OffsetDateTimeMatcher(OffsetDateTime expected) {
+    public DateTimeMatcher(OffsetDateTime expected) {
         this.expected = expected;
     }
 
 
-    public static OffsetDateTimeMatcher isEqual(OffsetDateTime dateTime) {
-        return new OffsetDateTimeMatcher(dateTime);
+    public static DateTimeMatcher isEqual(OffsetDateTime dateTime) {
+        return new DateTimeMatcher(dateTime);
     }
 
     @Override

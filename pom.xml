@@ -56,6 +56,7 @@
 		<module>jrjc-api</module>
 		<module>jrjc-core</module>
 		<module>jrjc-test</module>
+<!-- 		<module>jrjc-test-it</module> -->
 		<module>jrjc-app</module>
 	</modules>
 

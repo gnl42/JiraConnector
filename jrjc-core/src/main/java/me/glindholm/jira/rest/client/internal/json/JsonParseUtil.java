@@ -19,10 +19,11 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -234,7 +235,7 @@ public class JsonParseUtil {
             return OffsetDateTime.parse(str, JIRA_DATE_TIME_FORMATTER);
         } catch (Exception ignored) {
             try {
-                return LocalDate.parse(str, JIRA_DATE_FORMATTER).atTime(OffsetTime.now(ZoneId.systemDefault())); // FIXME
+                return parseDate(str);
             } catch (Exception e) {
                 throw new RestClientException(e);
             }
@@ -243,7 +244,8 @@ public class JsonParseUtil {
 
     public static OffsetDateTime parseDate(final String str) {
         try {
-            return LocalDate.parse(str, JIRA_DATE_FORMATTER).atTime(OffsetTime.now(ZoneId.systemDefault())); // FIXME;
+            final LocalDate date = LocalDate.parse(str, JIRA_DATE_FORMATTER);
+            return OffsetDateTime.of(date, LocalTime.MIDNIGHT, ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS);
         } catch (Exception e) {
             throw new RestClientException(e);
         }

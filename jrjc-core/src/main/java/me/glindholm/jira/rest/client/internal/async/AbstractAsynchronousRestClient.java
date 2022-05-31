@@ -207,7 +207,7 @@ public abstract class AbstractAsynchronousRestClient {
         };
     }
 
-    static Collection<ErrorCollection> extractErrors(final int status, final String body) throws JSONException {
+    public static Collection<ErrorCollection> extractErrors(final int status, final String body) throws JSONException {
         if (body == null) {
             return Collections.emptyList();
         }

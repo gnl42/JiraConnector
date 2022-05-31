@@ -59,25 +59,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.atlassian.jira</groupId>
-			<version>8.18.0-QR-20210527053111</version>
-			<artifactId>jira-func-tests</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>jta</groupId>
-					<artifactId>jta</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>jndi</groupId>
-					<artifactId>jndi</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>com.atlassian.jira.tests</groupId>
 			<artifactId>jira-testkit-common</artifactId>
 			<version>8.1.28</version>
@@ -150,28 +131,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>com.atlassian.maven.plugins</groupId>
-				<artifactId>maven-jira-plugin</artifactId>
-				<version>${amps.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<productVersion>${jira.version}</productVersion>
-					<productDataVersion>${jira.data.version}</productDataVersion>
-					<jvmArgs>${jira.jvm.args}</jvmArgs>
-					<enableFastdev>false</enableFastdev>
-					<skipITs>true</skipITs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>integration-test</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>integration-test</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M6</version>
@@ -217,131 +176,12 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
+				<version>0.8.8</version>
 			</plugin>
 		</plugins>
 	</build>
 
 	<profiles>
-		<profile>
-			<id>jira-post-7.2</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>com.atlassian.jira</groupId>
-					<artifactId>jira-func-tests-legacy</artifactId>
-					<version>${jira.test-lib.version}</version>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>jira-cloud</id> <!-- Fails to find dependencies needed -->
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<properties>
-				<jira.version>1000.29.0</jira.version>
-				<amps.version>5.1.18</amps.version>
-				<testkit.version>1000.1.7</testkit.version>
-				<postgres.docker.image>docker.atl-paas.net/jira-cloud/postgres-ci:9.5</postgres.docker.image>
-				<postgres.docker.wait.log.regex>database system is ready to accept
-					connections</postgres.docker.wait.log.regex>
-				<postgres.docker.wait.timeout>600000</postgres.docker.wait.timeout>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>com.atlassian.jira</groupId>
-					<artifactId>jira-func-tests-legacy</artifactId>
-					<version>${jira.test-lib.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>org.postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-					<version>9.4.1208</version>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.atlassian.maven.plugins</groupId>
-						<artifactId>maven-jira-plugin</artifactId>
-						<version>${amps.version}</version>
-						<configuration>
-							<libArtifacts>
-								<libArtifact>
-									<groupId>org.postgresql</groupId>
-									<artifactId>postgresql</artifactId>
-									<version>9.4.1208</version>
-								</libArtifact>
-							</libArtifacts>
-
-							<systemPropertyVariables>
-								<PG_DB_ROLE>jira</PG_DB_ROLE>
-								<PG_DB_HOST>${docker.host.address}</PG_DB_HOST>
-								<PG_DB_NAME>jira</PG_DB_NAME>
-								<PG_DB_PASSWORD>jira</PG_DB_PASSWORD>
-								<PG_DB_PORT>${database.port}</PG_DB_PORT>
-							</systemPropertyVariables>
-						</configuration>
-					</plugin>
-
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<version>0.14.2</version>
-						<configuration>
-							<autoPull>always</autoPull>
-							<images>
-								<image>
-									<alias>postgres-db</alias>
-									<name>${postgres.docker.image}</name>
-									<run>
-										<ports>
-											<port>database.port:5432</port>
-										</ports>
-										<wait>
-											<log>${postgres.docker.wait.log.regex}</log>
-											<time>${postgres.docker.wait.timeout}</time>
-										</wait>
-										<log>
-											<prefix>postgres</prefix>
-											<date>default</date>
-											<color>cyan</color>
-										</log>
-									</run>
-								</image>
-							</images>
-						</configuration>
-
-						<executions>
-							<execution>
-								<id>start</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>start</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>stop</id>
-								<phase>post-integration-test</phase>
-								<goals>
-									<goal>stop</goal>
-									<goal>remove</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>releaseProfile</id>
-			<properties>
-				<maven.test.skip>true</maven.test.skip>
-			</properties>
-		</profile>
 		<profile>
 			<id>jacoco</id>
 			<build>

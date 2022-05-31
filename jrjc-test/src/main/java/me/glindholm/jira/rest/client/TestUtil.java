@@ -19,23 +19,25 @@ package me.glindholm.jira.rest.client;
 import static com.google.common.collect.Iterators.getOnlyElement;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.core.Response;
-import org.apache.http.client.utils.URIBuilder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
-import java.time.OffsetDateTime;
-import org.joda.time.OffsetDateTimeZone;
-import org.joda.time.format.OffsetDateTimeFormatter;
-import org.joda.time.format.ISOOffsetDateTimeFormat;
+import org.junit.Assert;
 
 import com.google.common.collect.Iterators;
 
-import junit.framework.Assert;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.OperationGroup;
 import me.glindholm.jira.rest.client.api.domain.OperationLink;
@@ -43,27 +45,32 @@ import me.glindholm.jira.rest.client.api.domain.Transition;
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 
 public class TestUtil {
-    private static OffsetDateTimeFormatter universalOffsetDateTimeParser = ISOOffsetDateTimeFormat.dateTimeParser();
-    private static OffsetDateTimeFormatter formatter = ISOOffsetDateTimeFormat.dateTime();
-    private static OffsetDateTimeFormatter dateFormatter = ISOOffsetDateTimeFormat.date();
+    //    private static DateTimeFormatter universalOffsetDateTimeParser = ISOOffsetDateTimeFormat.dateTimeParser();
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
     public static Iterable<OperationGroup> EMPTY_GROUPS = Collections.emptyList();
     public static Iterable<OperationLink> EMPTY_LINKS = Collections.emptyList();
 
     public static URI toUri(String str) {
-        return new URIBuilder(str).build();
+        try {
+            return new URIBuilder(str).build();
+        } catch (URISyntaxException e) {
+            return null;
+        }
     }
+
+    //    public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt) {
+    //        return universalOffsetDateTimeParser.parseOffsetDateTime(isoOffsetDateTimeSt);
+    //    }
 
     public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt) {
-        return universalOffsetDateTimeParser.parseOffsetDateTime(isoOffsetDateTimeSt);
-    }
-
-    @SuppressWarnings("unused")
-    public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt, OffsetDateTimeZone zone) {
-        return formatter.withZone(zone).parseOffsetDateTime(isoOffsetDateTimeSt);
+        return OffsetDateTime.parse(isoOffsetDateTimeSt, formatter);
+        //         formatter.withZone(zone).parseOffsetDateTime(isoOffsetDateTimeSt);
     }
 
     public static OffsetDateTime toOffsetDateTimeFromIsoDate(String isoDate) {
-        return dateFormatter.parseOffsetDateTime(isoDate);
+        final LocalDate date = LocalDate.parse(isoDate, dateFormatter);
+        return OffsetDateTime.of(date, LocalTime.MIDNIGHT, ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS);
     }
 
     public static void assertErrorCode(int errorCode, Runnable runnable) {
@@ -89,21 +96,21 @@ public class TestUtil {
 
     }
 
-    public static void assertErrorCode(Response.Status status, String message, Runnable runnable) {
-        assertErrorCode(status.getStatusCode(), message, runnable);
-    }
-
     public static void assertExpectedErrorCollection(final Collection<ErrorCollection> errors, final Runnable runnable) {
         assertExpectedErrors(errors, runnable);
     }
 
-    public static void assertErrorCodeWithRegexp(Response.Status status, String regexp, Runnable runnable) {
-        assertErrorCodeWithRegexp(status.getStatusCode(), regexp, runnable);
-    }
-
-    public static void assertErrorCode(Response.Status status, Runnable runnable) {
-        assertErrorCode(status.getStatusCode(), null, runnable);
-    }
+    //    public static void assertErrorCode(Response.Status status, String message, Runnable runnable) {
+    //        assertErrorCode(status.getStatusCode(), message, runnable);
+    //    }
+    //
+    //   public static void assertErrorCodeWithRegexp(Response.Status status, String regexp, Runnable runnable) {
+    //        assertErrorCodeWithRegexp(status.getStatusCode(), regexp, runnable);
+    //    }
+    //
+    //    public static void assertErrorCode(Response.Status status, Runnable runnable) {
+    //        assertErrorCode(status.getStatusCode(), null, runnable);
+    //    }
 
     public static void assertErrorCode(int errorCode, String message, Runnable runnable) {
         try {
@@ -191,6 +198,6 @@ public class TestUtil {
     }
 
     public static <K> void assertEmptyIterable(Iterable<K> iterable) {
-        org.junit.Assert.assertThat(iterable, Matchers.<K>emptyIterable());
+        Assert.assertThat(iterable, Matchers.<K>emptyIterable());
     }
 }

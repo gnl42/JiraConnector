@@ -1,0 +1,24 @@
+{
+	"self": "http://localhost:8090/jira/rest/api/latest/filter/10000",
+	"id": "10000",
+	"name": "Bugs in Test project",
+	"owner": {
+		"self": "http://localhost:8090/jira/rest/api/latest/user?username=admin",
+		"name": "admin",
+		"avatarUrls": {
+			"16x16": "http://localhost:8090/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+			"48x48": "http://localhost:8090/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+		},
+		"displayName": "Administrator",
+		"active": true
+	},
+	"jql": "project = TST AND issuetype = Bug",
+	"viewUrl": "http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10000",
+	"searchUrl": "http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug",
+	"favourite": true,
+	"sharePermissions": [],
+	"subscriptions": {
+		"size": 0,
+		"items": []
+	}
+}
