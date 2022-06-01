@@ -483,24 +483,22 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
                 }
             }
 
-            MultiStatus status = new MultiStatus(JiraUiPlugin.ID_PLUGIN, 0,
-                    NLS.bind("{0}, Version=:{1}", repository.getRepositoryLabel(), serverInfo));
             if (serverInfo.getCharacterEncoding() != null) {
                 setEncoding(serverInfo.getCharacterEncoding());
             } else {
                 setEncoding(TaskRepository.DEFAULT_CHARACTER_ENCODING);
 
-                status.add(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
+                jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
                         Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_character_encodeing,
                         null));
             }
 
             if (serverInfo.isInsecureRedirect()) {
-                status.add(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
+                jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
                         Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_server_redirected,
                         null));
             }
-            jiraValidator.setStatus(status);
+
             characterEncodingValidated = true;
         }
 
