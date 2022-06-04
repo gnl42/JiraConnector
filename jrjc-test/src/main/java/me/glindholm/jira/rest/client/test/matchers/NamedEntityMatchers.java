@@ -25,7 +25,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 
-import java.util.Collection;
+import java.util.List;
 
 public class NamedEntityMatchers {
     public static Matcher<? super NamedEntity> withName(String name) {
@@ -39,7 +39,7 @@ public class NamedEntityMatchers {
     }
 
     public static Matcher<Iterable<? extends NamedEntity>> entitiesWithNames(String... names) {
-        final Collection<Matcher<? super NamedEntity>> matchers = Lists.newArrayListWithCapacity(names.length);
+        final List<Matcher<? super NamedEntity>> matchers = Lists.newArrayListWithCapacity(names.length);
         for (String key : names) {
             matchers.add(withName(key));
         }

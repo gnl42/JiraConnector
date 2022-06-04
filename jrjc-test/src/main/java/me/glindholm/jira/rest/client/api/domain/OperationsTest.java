@@ -16,10 +16,6 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-import org.junit.Test;
-
-import java.util.Collections;
-
 import static me.glindholm.jira.rest.client.TestUtil.EMPTY_GROUPS;
 import static me.glindholm.jira.rest.client.TestUtil.EMPTY_LINKS;
 import static org.hamcrest.Matchers.allOf;
@@ -27,6 +23,10 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import java.util.Collections;
+
+import org.junit.Test;
 
 public class OperationsTest {
 
@@ -38,7 +38,7 @@ public class OperationsTest {
                 EMPTY_GROUPS,
                 null,
                 null
-        )));
+                )));
 
         Operation operation = operations.getOperationById("action_id_4");
 
@@ -46,7 +46,7 @@ public class OperationsTest {
                 instanceOf(OperationLink.class),
                 hasProperty("id", is("action_id_4"))
                 )
-        );
+                );
     }
 
     @Test
@@ -57,7 +57,7 @@ public class OperationsTest {
                 EMPTY_GROUPS,
                 null,
                 null
-        )));
+                )));
 
         Operation operation = operations.getOperationById("group_self");
 
@@ -65,7 +65,7 @@ public class OperationsTest {
                 instanceOf(OperationGroup.class),
                 hasProperty("id", is("group_self"))
                 )
-        );
+                );
     }
 
     @Test
@@ -76,7 +76,7 @@ public class OperationsTest {
                 Collections.singleton(new OperationGroup("group_5", EMPTY_LINKS, EMPTY_GROUPS, null, null)),
                 null,
                 null
-        )));
+                )));
 
         Operation operation = operations.getOperationById("group_5");
 
@@ -84,18 +84,19 @@ public class OperationsTest {
                 instanceOf(OperationGroup.class),
                 hasProperty("id", is("group_5"))
                 )
-        );
+                );
     }
 
     @Test
     public void testGetHeaderById() throws Exception {
-        Operations operations = new Operations(Collections.singleton(new OperationGroup(
-                null,
-                EMPTY_LINKS,
-                EMPTY_GROUPS,
-                new OperationHeader("header_6", "header_6", null, null),
-                null
-        )));
+        Operations operations = new Operations(
+                Collections.singleton(new OperationGroup(
+                        null,
+                        EMPTY_LINKS,
+                        EMPTY_GROUPS,
+                        new OperationHeader("header_6", "header_6", null, null),
+                        null
+                        )));
 
         Operation operation = operations.getOperationById("header_6");
 
@@ -103,6 +104,6 @@ public class OperationsTest {
                 instanceOf(OperationHeader.class),
                 hasProperty("id", is("header_6"))
                 )
-        );
+                );
     }
 }

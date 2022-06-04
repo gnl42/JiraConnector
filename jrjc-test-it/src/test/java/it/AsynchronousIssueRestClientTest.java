@@ -68,7 +68,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.NumberFormat;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Lists;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -637,13 +637,13 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                         client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "RST-1", "Duplicate", null)).claim();
                     }
                 });
-        final ErrorCollection.Builder ecb = ErrorCollection.builder();
+        final ErrorList.Builder ecb = ErrorList.builder();
         ecb.status(Response.Status.BAD_REQUEST.getStatusCode())
                 .errorMessage("Failed to create comment for issue 'TST-6'")
                 .error("commentLevel", "You are currently not a member of the project role: Administrators.");
-        final ImmutableList<ErrorCollection> errorCollections = ImmutableList.of(ecb.build());
+        final ImmutableList<ErrorList> errorLists = ImmutableList.of(ecb.build());
 
-        assertExpectedErrorCollection(errorCollections, new Runnable() {
+        assertExpectedErrorCollection(errorLists, new Runnable() {
             @Override
             public void run() {
                 client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate",
@@ -988,17 +988,17 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
         final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
         assertEquals(4, Iterables.size(transitions));
-        final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
+        final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Lists
                 .<Transition.Field>emptyList());
         assertTrue(Iterables.contains(transitions, startProgressTransition));
 
         client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
-                Collections.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).claim();
+                Lists.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).claim();
         final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1").claim();
         assertEquals("In Progress", transitionedIssue.getStatus().getName());
         final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue).claim();
         assertFalse(Iterables.contains(transitionsAfterTransition, startProgressTransition));
-        final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Collections
+        final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Lists
                 .<Transition.Field>emptyList());
         assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
     }

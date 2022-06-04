@@ -65,7 +65,7 @@ public class OperationGroup implements Serializable, Operation {
             return result;
         } else {
             final Iterable<Operation> operations = Iterables.concat(
-                    header != null ? Collections.singleton(header) : Collections.<Operation>emptyList(),
+                    header != null ? Collections.singleton(header) : Collections.emptyList(),
                             links, groups);
             return accept(operations, visitor);
         }

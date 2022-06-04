@@ -16,16 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.BulkOperationErrorResult;
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * Parses collection of errors returned from bulk issue create operation
@@ -44,9 +44,9 @@ public class IssueErrorJsonParser implements JsonObjectParser<BulkOperationError
         final JSONObject jsonErrors = elementErrors.optJSONObject("errors");
         final JSONArray jsonErrorMessages = elementErrors.optJSONArray("errorMessages");
 
-        final Collection<String> errorMessages;
+        final List<String> errorMessages;
         if (jsonErrorMessages != null) {
-            errorMessages = JsonParseUtil.toStringCollection(jsonErrorMessages);
+            errorMessages = JsonParseUtil.toStringList(jsonErrorMessages);
         } else {
             errorMessages = Collections.emptyList();
         }

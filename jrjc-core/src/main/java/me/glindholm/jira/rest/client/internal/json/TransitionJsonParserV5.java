@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Iterator;
 
 import org.codehaus.jettison.json.JSONException;
@@ -34,7 +34,7 @@ public class TransitionJsonParserV5 implements JsonObjectParser<Transition> {
         final String name = json.getString("name");
         final JSONObject fieldsObj = json.getJSONObject("fields");
         final Iterator keys = fieldsObj.keys();
-        final Collection<Transition.Field> fields = new ArrayList<>();
+        final List<Transition.Field> fields = new ArrayList<>();
         while (keys.hasNext()) {
             final String fieldId = keys.next().toString();
             fields.add(transitionFieldJsonParser.parse(fieldsObj.getJSONObject(fieldId), fieldId));

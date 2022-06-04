@@ -1,14 +1,14 @@
 package me.glindholm.jira.rest.client.test.matchers;
 
-import com.google.common.collect.ImmutableList;
-
-import me.glindholm.jira.rest.client.api.RestClientException;
-import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
-
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+
+import com.google.common.collect.ImmutableList;
+
+import me.glindholm.jira.rest.client.api.RestClientException;
+import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 
 /**
  * Matchers for RestClientException
@@ -18,7 +18,7 @@ import org.hamcrest.Matchers;
 public class RestClientExceptionMatchers {
 
     public static Matcher<RestClientException> rceWithSingleError(final Integer statusCode, final String expectedErrorMessage) {
-        return new BaseMatcher<RestClientException>() {
+        return new BaseMatcher<>() {
 
             @Override
             public boolean matches(final Object item) {

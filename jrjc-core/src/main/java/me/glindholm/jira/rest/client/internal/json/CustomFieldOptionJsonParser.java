@@ -44,7 +44,7 @@ public class CustomFieldOptionJsonParser implements JsonObjectParser<CustomField
         final JSONArray childrenArray = json.optJSONArray("children");
         final Iterable<CustomFieldOption> children = childrenArray != null
                 ? childrenParser.parse(childrenArray)
-                        : Collections.<CustomFieldOption>emptyList();
+                : Collections.emptyList();
 
         final JSONObject childObject = json.optJSONObject("child");
         final CustomFieldOption child = childObject != null ? parse(childObject) : null;

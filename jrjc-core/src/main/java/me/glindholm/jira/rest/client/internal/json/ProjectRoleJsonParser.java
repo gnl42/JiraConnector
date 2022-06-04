@@ -17,14 +17,13 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
 
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
 import me.glindholm.jira.rest.client.api.domain.RoleActor;
@@ -44,8 +43,8 @@ public class ProjectRoleJsonParser implements JsonObjectParser<ProjectRole> {
         final String name = json.getString("name");
         final String description = json.getString("description");
         final Optional<JSONArray> roleActorsOpt = JsonParseUtil.getOptionalArray(json, "actors");
-        final Collection<RoleActor> roleActors = roleActorsOpt.isPresent() ?
-                JsonParseUtil.parseJsonArray(roleActorsOpt.get(), roleActorJsonParser) : ImmutableSet.<RoleActor>of();
+        final List<RoleActor> roleActors = roleActorsOpt.isPresent() ?
+                JsonParseUtil.parseJsonArray(roleActorsOpt.get(), roleActorJsonParser) : List.of();
         return new ProjectRole(id, self, name, description, roleActors);
     }
 

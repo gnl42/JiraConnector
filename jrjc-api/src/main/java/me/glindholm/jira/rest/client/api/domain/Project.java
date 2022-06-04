@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -42,7 +42,7 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     private final BasicUser lead;
     @Nullable
     private final URI uri;
-    private final Collection<Version> versions;
+    private final List<Version> versions;
 
     @Override
     public String toString() {
@@ -50,13 +50,13 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
                 + components + ", issueTypes=" + issueTypes + ", projectRoles=" + projectRoles + ", " + super.toString() + "]";
     }
 
-    private final Collection<BasicComponent> components;
+    private final List<BasicComponent> components;
     private final OptionalIterable<IssueType> issueTypes;
-    private final Collection<BasicProjectRole> projectRoles;
+    private final List<BasicProjectRole> projectRoles;
 
     public Project(final Iterable<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
-            Collection<Version> versions, Collection<BasicComponent> components,
-            OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
+            List<Version> versions, List<BasicComponent> components,
+            OptionalIterable<IssueType> issueTypes, List<BasicProjectRole> projectRoles) {
         super(self, key, id, name);
         this.expandos = expandos;
         this.description = description;

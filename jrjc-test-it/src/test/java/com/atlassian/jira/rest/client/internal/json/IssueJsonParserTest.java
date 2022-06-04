@@ -45,13 +45,13 @@ import com.google.common.collect.Iterables;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.hamcrest.collection.IsEmptyCollection;
+import org.hamcrest.collection.IsEmptyList;
 import org.hamcrest.collection.IsEmptyIterable;
 import org.joda.time.format.ISOOffsetDateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collections;
+import java.util.Lists;
 import java.util.Iterator;
 
 import static com.atlassian.jira.rest.client.TestUtil.toOffsetDateTime;
@@ -393,21 +393,21 @@ public class IssueJsonParserTest {
     @Test
     public void testParseIssueWithoutLabelsForJira5x0() throws JSONException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-without-labels.json");
-        assertThat(issue.getLabels(), IsEmptyCollection.<String>empty());
+        assertThat(issue.getLabels(), IsEmptyList.<String>empty());
     }
 
     @Test
     public void testParseIssueWithOperations() throws JSONException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-with-operations.json");
-        assertThat(issue.getOperations(), is(new Operations(Collections.singleton(new OperationGroup(
+        assertThat(issue.getOperations(), is(new Operations(Lists.singleton(new OperationGroup(
                 "opsbar-transitions",
-                Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
+                Lists.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
                         "Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
                         10, null)),
-                Collections.singleton(new OperationGroup(
+                Lists.singleton(new OperationGroup(
                         null,
-                        Collections.<OperationLink>emptyList(),
-                        Collections.<OperationGroup>emptyList(),
+                        Lists.<OperationLink>emptyList(),
+                        Lists.<OperationGroup>emptyList(),
                         new OperationHeader("opsbar-transitions_more", "Workflow", null, null),
                         null)),
                 null,

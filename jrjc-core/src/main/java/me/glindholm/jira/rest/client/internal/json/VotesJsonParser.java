@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -33,7 +33,7 @@ public class VotesJsonParser implements JsonObjectParser<Votes> {
     @Override
     public Votes parse(JSONObject json) throws JSONException, URISyntaxException {
         final BasicVotes basicVotes = basicVotesJsonParser.parse(json);
-        final Collection<BasicUser> users = JsonParseUtil.parseJsonArray(json.getJSONArray("voters"), basicUserJsonParser);
+        final List<BasicUser> users = JsonParseUtil.parseJsonArray(json.getJSONArray("voters"), basicUserJsonParser);
         return new Votes(basicVotes.getSelf(), basicVotes.getVotes(), basicVotes.hasVoted(), users);
     }
 }

@@ -16,7 +16,6 @@
 package me.glindholm.jira.rest.client.internal.async;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
 import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
 
 import java.io.File;
@@ -24,9 +23,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -142,7 +142,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues) throws URISyntaxException {
+    public Promise<BulkOperationResult<BasicIssue>> createIssues(List<IssueInput> issues) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/bulk");
 
         return postAndParse(uriBuilder.build(), issues, new IssuesInputJsonGenerator(), new BasicIssuesJsonParser());
@@ -201,7 +201,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public Promise<Issue> getIssue(final String issueKey) throws URISyntaxException {
-        return getIssue(issueKey, emptyList());
+        return getIssue(issueKey, Collections.emptyList());
     }
 
     @Override
@@ -235,7 +235,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
             if (jsonObject.has("transitions")) {
                 return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
             } else {
-                final Collection<Transition> transitions = new ArrayList<>(jsonObject.length());
+                final List<Transition> transitions = new ArrayList<>(jsonObject.length());
                 @SuppressWarnings("unchecked")
                 final Iterator<String> iterator = jsonObject.keys();
                 while (iterator.hasNext()) {

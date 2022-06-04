@@ -52,7 +52,7 @@ import org.junit.Test;
 import javax.ws.rs.core.Response;
 import org.apache.http.client.utils.URIBuilder;
 import java.net.URISyntaxException;
-import java.util.Collections;
+import java.util.Lists;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.stream.Collectors;
@@ -66,7 +66,7 @@ import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_8_4;
 import static com.google.common.collect.Iterables.size;
 import static com.google.common.collect.Iterables.toArray;
-import static java.util.Collections.singletonList;
+import static java.util.Lists.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.contains;
@@ -292,7 +292,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
         assertEquals(4, size(transitions));
         assertTrue(Iterables
-                .contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Collections
+                .contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Lists
                         .<Transition.Field>emptyList())));
     }
 

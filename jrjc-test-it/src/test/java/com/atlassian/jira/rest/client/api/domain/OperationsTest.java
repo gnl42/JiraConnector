@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client.api.domain;
 
 import org.junit.Test;
 
-import java.util.Collections;
+import java.util.Lists;
 
 import static com.atlassian.jira.rest.client.TestUtil.EMPTY_GROUPS;
 import static com.atlassian.jira.rest.client.TestUtil.EMPTY_LINKS;
@@ -32,9 +32,9 @@ public class OperationsTest {
 
     @Test
     public void testGetLinkById() throws Exception {
-        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+        Operations operations = new Operations(Lists.singleton(new OperationGroup(
                 null,
-                Collections.singleton(new OperationLink("action_id_4", null, "Start", null, "/start", null, null)),
+                Lists.singleton(new OperationLink("action_id_4", null, "Start", null, "/start", null, null)),
                 EMPTY_GROUPS,
                 null,
                 null
@@ -51,7 +51,7 @@ public class OperationsTest {
 
     @Test
     public void testGetSelfGroupById() throws Exception {
-        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+        Operations operations = new Operations(Lists.singleton(new OperationGroup(
                 "group_self",
                 EMPTY_LINKS,
                 EMPTY_GROUPS,
@@ -70,10 +70,10 @@ public class OperationsTest {
 
     @Test
     public void testGetGroupById() throws Exception {
-        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+        Operations operations = new Operations(Lists.singleton(new OperationGroup(
                 null,
                 EMPTY_LINKS,
-                Collections.singleton(new OperationGroup("group_5", EMPTY_LINKS, EMPTY_GROUPS, null, null)),
+                Lists.singleton(new OperationGroup("group_5", EMPTY_LINKS, EMPTY_GROUPS, null, null)),
                 null,
                 null
         )));
@@ -89,7 +89,7 @@ public class OperationsTest {
 
     @Test
     public void testGetHeaderById() throws Exception {
-        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+        Operations operations = new Operations(Lists.singleton(new OperationGroup(
                 null,
                 EMPTY_LINKS,
                 EMPTY_GROUPS,

@@ -27,8 +27,8 @@ public class RestClientExceptionMatchers {
                     final Matcher<Iterable<? extends String>> errorMessageMatcher = Matchers
                             .contains(expectedErrorMessage);
                     return ex.getStatusCode().get().equals(statusCode)
-                            && ex.getErrorCollections().size() == 1
-                            && errorMessageMatcher.matches(ex.getErrorCollections().iterator().next().getErrorMessages());
+                            && ex.getErrorLists().size() == 1
+                            && errorMessageMatcher.matches(ex.getErrorLists().iterator().next().getErrorMessages());
 
                 }
                 return false;
@@ -36,7 +36,7 @@ public class RestClientExceptionMatchers {
 
             @Override
             public void describeTo(final Description description) {
-                final ErrorCollection expectedErrorCollection = ErrorCollection.builder()
+                final ErrorCollection expectedErrorCollection = ErrorList.builder()
                         .errorMessage(expectedErrorMessage).status(statusCode).build();
 
                 final RestClientException expectedException = new RestClientException(

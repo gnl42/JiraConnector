@@ -1,8 +1,9 @@
 package me.glindholm.jira.rest.client.api;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Iterator;
+
+import javax.annotation.Nullable;
 
 /**
  * Represent iterable which is optional (for example due to lack of field in old REST API version).
@@ -37,7 +38,7 @@ public class OptionalIterable<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         return isSupported()
                 ? iterable.iterator()
-                : Collections.<T>emptyList().iterator();
+                        : Collections.<T>emptyList().iterator();
     }
 
     /**

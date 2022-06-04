@@ -75,7 +75,7 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
             testAddWorklogImpl(ISSUE_KEY, createDefaulWorklogInputBuilder());
             fail("error expected, no permissions");
         } catch (RestClientException ex) {
-            final ErrorCollection errors = Iterators.getOnlyElement(ex.getErrorCollections().iterator());
+            final ErrorCollection errors = Iterators.getOnlyElement(ex.getErrorLists().iterator());
             assertThat(errors.getErrorMessages(),
                     containsInAnyOrder("You do not have the permission to see the specified issue.", "Login Required"));
         }

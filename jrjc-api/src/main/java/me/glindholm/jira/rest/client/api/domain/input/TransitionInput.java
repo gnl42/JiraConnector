@@ -16,12 +16,12 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.domain.Comment;
-
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Input data used while transitioning an issue including new values for this issue and the optional comment.
@@ -33,13 +33,13 @@ public class TransitionInput {
     @Nullable
     private final Comment comment;
 
-    private final Collection<FieldInput> fields;
+    private final List<FieldInput> fields;
 
     /**
      * @param id     id of the issue transition which should be performed
      * @param fields new values for the issue fields. Use empty collection if no fields are to be changed
      */
-    public TransitionInput(int id, Collection<FieldInput> fields) {
+    public TransitionInput(int id, List<FieldInput> fields) {
         this(id, fields, null);
     }
 
@@ -49,7 +49,7 @@ public class TransitionInput {
      * @param fields  new values for the issue fields. Use empty collection if no fields are to be changed
      * @param comment optional comment
      */
-    public TransitionInput(int id, Collection<FieldInput> fields, @Nullable Comment comment) {
+    public TransitionInput(int id, List<FieldInput> fields, @Nullable Comment comment) {
         this.id = id;
         this.comment = comment;
         this.fields = fields;
@@ -60,11 +60,11 @@ public class TransitionInput {
      * @param comment optional comment
      */
     public TransitionInput(int id, @Nullable Comment comment) {
-        this(id, Collections.<FieldInput>emptyList(), comment);
+        this(id, Collections.emptyList(), comment);
     }
 
     public TransitionInput(int id) {
-        this(id, Collections.<FieldInput>emptyList(), null);
+        this(id, Collections.emptyList(), null);
     }
 
     /**

@@ -67,8 +67,8 @@ import org.junit.rules.ExpectedException;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
+import java.util.Lists;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +80,7 @@ import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_
 import static com.google.common.collect.Iterables.toArray;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.core.IsListContaining.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -135,7 +135,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         final String summary = "My new issue!";
         final String description = "Some description";
         final BasicUser assignee = IntegrationTestUtil.USER1;
-        final List<String> affectedVersionsNames = Collections.emptyList();
+        final List<String> affectedVersionsNames = Lists.emptyList();
         final OffsetDateTime dueDate = new OffsetDateTime(new Date().getTime());
         final ArrayList<String> fixVersionsNames = Lists.newArrayList("1.1");
 
@@ -232,7 +232,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         final String summary = "My first substask!";
         final String description = "Some description for substask";
         final BasicUser assignee = IntegrationTestUtil.USER1;
-        final List<String> affectedVersionsNames = Collections.emptyList();
+        final List<String> affectedVersionsNames = Lists.emptyList();
         final OffsetDateTime dueDate = new OffsetDateTime(new Date().getTime());
         final ArrayList<String> fixVersionsNames = Lists.newArrayList("1.1");
 
@@ -311,7 +311,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // build issue input
         final String description = "Some description for substask";
         final BasicUser assignee = IntegrationTestUtil.USER1;
-        final List<String> affectedVersionsNames = Collections.emptyList();
+        final List<String> affectedVersionsNames = Lists.emptyList();
         final OffsetDateTime dueDate = new OffsetDateTime(new Date().getTime());
         final ArrayList<String> fixVersionsNames = Lists.newArrayList("1.1");
 
@@ -410,7 +410,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // build issue input
         final String description = "Some description for substask";
         final BasicUser assignee = IntegrationTestUtil.USER1;
-        final List<String> affectedVersionsNames = Collections.emptyList();
+        final List<String> affectedVersionsNames = Lists.emptyList();
         final OffsetDateTime dueDate = new OffsetDateTime(new Date().getTime());
         final ArrayList<String> fixVersionsNames = Lists.newArrayList("1.1");
 
@@ -521,7 +521,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // build issue input
         final String description = "Some description for substask";
         final BasicUser assignee = IntegrationTestUtil.USER1;
-        final List<String> affectedVersionsNames = Collections.emptyList();
+        final List<String> affectedVersionsNames = Lists.emptyList();
         final OffsetDateTime dueDate = new OffsetDateTime(new Date().getTime());
         final ArrayList<String> fixVersionsNames = Lists.newArrayList("1.1");
 
@@ -558,10 +558,10 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         try {
             issueClient.createIssues(issuesToCreate).claim();
         } catch (RestClientException ex) {
-            assertEquals(issuesInErrorCount, ex.getErrorCollections().size());
-            for (final ErrorCollection errorCollection : ex.getErrorCollections()) {
-                assertTrue("Unexpected error messages", errorCollection.getErrorMessages().isEmpty());
-                final String message = errorCollection.getErrors().get("project");
+            assertEquals(issuesInErrorCount, ex.getErrorLists().size());
+            for (final ErrorCollection errorList : ex.getErrorLists()) {
+                assertTrue("Unexpected error messages", errorList.getErrorMessages().isEmpty());
+                final String message = errorList.getErrors().get("project");
                 assertEquals("project is required", message);
             }
         }
@@ -879,13 +879,13 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
                             // there is option with children - set it
                             final CustomFieldOption option = (CustomFieldOption) optionsWithChildren.iterator().next();
                             value = new CustomFieldOption(option.getId(), option.getSelf(), option.getValue(),
-                                    Collections.<CustomFieldOption>emptyList(), option.getChildren().iterator().next());
+                                    Lists.<CustomFieldOption>emptyList(), option.getChildren().iterator().next());
                         } else {
                             // no sub-values available, set only top level value
                             value = allowedValues.iterator().next();
                         }
                     } else {
-                        value = expectedArray ? Collections.singletonList(singleValue) : singleValue;
+                        value = expectedArray ? Lists.singletonList(singleValue) : singleValue;
                     }
                     log.log("\t\t| selecting value: " + value);
                 } else {
@@ -954,8 +954,8 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
                 .setAssignee(createdIssue.getAssignee())
                 .setDescription(createdIssue.getDescription());
 
-        final Collection<FieldInput> actualValues = actualBuilder.build().getFields().values();
-        final Collection<FieldInput> expectedValues = issueInput.getFields().values();
+        final List<FieldInput> actualValues = actualBuilder.build().getFields().values();
+        final List<FieldInput> expectedValues = issueInput.getFields().values();
 
         assertThat(expectedValues, hasItems(toArray(actualValues, FieldInput.class)));
     }

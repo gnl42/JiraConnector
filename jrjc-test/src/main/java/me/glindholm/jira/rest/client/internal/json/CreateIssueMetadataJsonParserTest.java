@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jettison.json.JSONException;
@@ -30,9 +32,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
@@ -64,7 +64,7 @@ public class CreateIssueMetadataJsonParserTest {
         assertEquals("http://localhost:2990/jira/rest/api/2/project/ANONEDIT", project.getSelf().toString());
         assertEquals("ANONEDIT", project.getKey());
         assertEquals("Anonymous Editable Project", project.getName());
-        Assert.assertEquals(ImmutableMap.of(
+        Assert.assertEquals(Map.of(
                 "16x16", toUri("http://localhost:2990/jira/secure/projectavatar?size=small&pid=10030&avatarId=10011"),
                 "48x48", toUri("http://localhost:2990/jira/secure/projectavatar?pid=10030&avatarId=10011")
                 ), project.getAvatarUris());
@@ -74,19 +74,19 @@ public class CreateIssueMetadataJsonParserTest {
         Assert.assertThat(project.getIssueTypes(), IsIterableContainingInAnyOrder.containsInAnyOrder(
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false,
                         "A problem which impairs or prevents the functions of the product.", toUri("http://localhost:2990/jira/images/icons/bug.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap()),
+                        Collections.emptyMap()),
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false,
                         "A new feature of the product, which has yet to be developed.", toUri("http://localhost:2990/jira/images/icons/newfeature.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap()),
+                        Collections.emptyMap()),
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false,
                         "A task that needs to be done.", toUri("http://localhost:2990/jira/images/icons/task.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap()),
+                        Collections.emptyMap()),
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false,
                         "An improvement or enhancement to an existing feature or task.", toUri("http://localhost:2990/jira/images/icons/improvement.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap()),
+                        Collections.emptyMap()),
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true,
                         "The sub-task of the issue", toUri("http://localhost:2990/jira/images/icons/issue_subtask.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap())
+                        Collections.emptyMap())
                 ));
     }
 
@@ -115,7 +115,7 @@ public class CreateIssueMetadataJsonParserTest {
         final CimFieldInfo componentsFieldInfo = issueTypeFields.get("components");
         final CimFieldInfo expectedComponentsFieldInfo = new CimFieldInfo(
                 "components", false, "Component/s", new FieldSchema("array", "component", "components", null, null),
-                Sets.newHashSet(StandardOperation.ADD, StandardOperation.REMOVE, StandardOperation.SET),
+                new HashSet<StandardOperation>(List.of(StandardOperation.ADD, StandardOperation.REMOVE, StandardOperation.SET)),
                 Collections.emptyList(), null
                 );
         Assert.assertEquals(expectedComponentsFieldInfo, componentsFieldInfo);

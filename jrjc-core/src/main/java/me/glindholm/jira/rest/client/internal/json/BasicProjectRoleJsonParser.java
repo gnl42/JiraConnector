@@ -15,39 +15,40 @@
  */
 package me.glindholm.jira.rest.client.internal.json;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterators;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import me.glindholm.jira.rest.client.api.RestClientException;
-import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
+import javax.annotation.Nullable;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
+import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 
-public class BasicProjectRoleJsonParser implements JsonObjectParser<Collection<BasicProjectRole>> {
+public class BasicProjectRoleJsonParser implements JsonObjectParser<List<BasicProjectRole>> {
 
     @Override
-    public Collection<BasicProjectRole> parse(@Nullable final JSONObject json) throws JSONException {
-        return json == null ?
-                ImmutableSet.<BasicProjectRole>of() :
-                ImmutableSet.copyOf(Iterators.transform(
-                        JsonParseUtil.getStringKeys(json),
-                        new Function<String, BasicProjectRole>() {
-                            @Override
-                            public BasicProjectRole apply(@Nullable final String key) {
-                                try {
-                                    return new BasicProjectRole(JsonParseUtil.parseURI(json.getString(key)), key);
-                                } catch (JSONException e) {
-                                    throw new RestClientException(e);
-                                }
-                            }
-                        }
-                ));
+    public List<BasicProjectRole> parse(@Nullable final JSONObject json) throws JSONException {
+        if (json == null) {
+            return List.of();
+        } else {
+            Iterable<String> it = () -> JsonParseUtil.getStringKeys(json);
+            try {
+                return StreamSupport.stream(it.spliterator(), false).map(key -> extracted(json, key))
+                        .collect(Collectors.toUnmodifiableList());
+            } catch (Exception e) {
+                throw new JSONException(e);
+            }
+        }
     }
 
+    private static BasicProjectRole extracted(final JSONObject json, String key) throws RuntimeException {
+        try {
+            return new BasicProjectRole(JsonParseUtil.parseURI(json.getString(key)), key);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

@@ -25,7 +25,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -49,9 +49,9 @@ public class JsonParseUtil {
     public static final DateTimeFormatter JIRA_DATE_FORMATTER = DateTimeFormatter.ISO_DATE;
     public static final String SELF_ATTR = "self";
 
-    public static <T> Collection<T> parseJsonArray(final JSONArray jsonArray, final JsonObjectParser<T> jsonParser)
+    public static <T> List<T> parseJsonArray(final JSONArray jsonArray, final JsonObjectParser<T> jsonParser)
             throws JSONException, URISyntaxException {
-        final Collection<T> res = new ArrayList<>(jsonArray.length());
+        final List<T> res = new ArrayList<>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
             res.add(jsonParser.parse(jsonArray.getJSONObject(i)));
         }
@@ -96,7 +96,7 @@ public class JsonParseUtil {
         }
 
         final int numItems = json.getInt("size");
-        final Collection<T> items;
+        final List<T> items;
         JSONArray itemsJa = json.getJSONArray("items");
 
         if (itemsJa.length() > 0) {
@@ -301,7 +301,7 @@ public class JsonParseUtil {
     }
 
 
-    public static Collection<String> toStringCollection(final JSONArray jsonArray) throws JSONException {
+    public static List<String> toStringList(final JSONArray jsonArray) throws JSONException {
         final ArrayList<String> res = new ArrayList<>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
             res.add(jsonArray.getString(i));

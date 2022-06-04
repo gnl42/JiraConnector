@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -33,10 +33,10 @@ public class BasicIssuesJsonParser implements JsonObjectParser<BulkOperationResu
 
     @Override
     public BulkOperationResult<BasicIssue> parse(final JSONObject json) throws JSONException, URISyntaxException {
-        final Collection<BasicIssue> issues =
+        final List<BasicIssue> issues =
                 JsonParseUtil.parseJsonArray(json.getJSONArray("issues"), new BasicIssueJsonParser());
 
-        final Collection<BulkOperationErrorResult> errors =
+        final List<BulkOperationErrorResult> errors =
                 JsonParseUtil.parseJsonArray(json.getJSONArray("errors"), new IssueErrorJsonParser());
 
         return new BulkOperationResult<>(issues, errors);

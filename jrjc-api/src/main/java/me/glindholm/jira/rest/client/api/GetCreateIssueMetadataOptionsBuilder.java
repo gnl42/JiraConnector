@@ -17,7 +17,6 @@
 package me.glindholm.jira.rest.client.api;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -61,7 +60,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
 
     @SuppressWarnings("UnusedDeclaration")
     public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(String... issueTypeNames) {
-        return withIssueTypeNames(Collections.unmodifiableList(Arrays.asList(issueTypeNames)));
+        return withIssueTypeNames(List.copyOf(Arrays.asList(issueTypeNames)));
     }
 
     public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Iterable<Long> issueTypeIds) {
@@ -71,7 +70,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
 
     @SuppressWarnings("UnusedDeclaration")
     public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Long... issueTypeIds) {
-        return withIssueTypeIds(Collections.unmodifiableList(Arrays.asList(issueTypeIds)));
+        return withIssueTypeIds(List.copyOf(Arrays.asList(issueTypeIds)));
     }
 
     public GetCreateIssueMetadataOptionsBuilder withProjectKeys(Iterable<String> projectKeys) {

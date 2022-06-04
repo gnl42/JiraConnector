@@ -16,16 +16,17 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import me.glindholm.jira.rest.client.api.domain.input.UserInput;
-import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
-import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
-import java.util.Collections;
-
-import static org.junit.Assert.assertThat;
+import me.glindholm.jira.rest.client.api.domain.input.UserInput;
+import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
+import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 
 /**
  * @since v5.1.0
@@ -43,8 +44,8 @@ public class UserInputJsonGeneratorTest {
                 "admin@atlassian.com",
                 "Administrator",
                 null,
-                Collections.singleton("jira-core")
-        );
+                List.of("jira-core")
+                );
 
         final JSONObject actual = generator.generate(userInput);
         final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/userInput/valid.json");

@@ -23,7 +23,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
-import java.util.Collections;
+import java.util.Lists;
 
 import static org.junit.Assert.assertThat;
 
@@ -43,7 +43,7 @@ public class UserInputJsonGeneratorTest {
                 "admin@atlassian.com",
                 "Administrator",
                 null,
-                Collections.singleton("jira-core")
+                Lists.singleton("jira-core")
         );
 
         final JSONObject actual = generator.generate(userInput);

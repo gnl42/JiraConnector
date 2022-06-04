@@ -16,7 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -32,9 +32,9 @@ public class Watchers extends BasicWatchers {
         return "Watchers [watchers=" + users + ", " + super.toString() + "]";
     }
 
-    private final Collection<BasicUser> users;
+    private final List<BasicUser> users;
 
-    public Watchers(BasicWatchers basicWatchers, Collection<BasicUser> users) {
+    public Watchers(BasicWatchers basicWatchers, List<BasicUser> users) {
         super(basicWatchers.getSelf(), basicWatchers.isWatching(), basicWatchers.getNumWatchers());
         this.users = users;
     }

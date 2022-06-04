@@ -26,8 +26,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -96,7 +96,7 @@ public class TestUtil {
 
     }
 
-    public static void assertExpectedErrorCollection(final Collection<ErrorCollection> errors, final Runnable runnable) {
+    public static void assertExpectedErrorCollection(final List<ErrorCollection> errors, final Runnable runnable) {
         assertExpectedErrors(errors, runnable);
     }
 
@@ -188,7 +188,7 @@ public class TestUtil {
         return transitionFound;
     }
 
-    private static void assertExpectedErrors(final Collection<ErrorCollection> expectedErrors, final Runnable runnable) {
+    private static void assertExpectedErrors(final List<ErrorCollection> expectedErrors, final Runnable runnable) {
         try {
             runnable.run();
             Assert.fail(RestClientException.class + " exception expected");

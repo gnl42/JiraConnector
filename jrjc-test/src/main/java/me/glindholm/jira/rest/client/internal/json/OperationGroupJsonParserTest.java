@@ -16,18 +16,19 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.api.domain.OperationGroup;
-import me.glindholm.jira.rest.client.api.domain.OperationHeader;
-import me.glindholm.jira.rest.client.api.domain.OperationLink;
-import org.junit.Test;
-
-import java.util.Collections;
-import java.util.Set;
-
 import static me.glindholm.jira.rest.client.TestUtil.EMPTY_GROUPS;
 import static me.glindholm.jira.rest.client.TestUtil.EMPTY_LINKS;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import java.util.Collections;
+import java.util.Set;
+
+import org.junit.Test;
+
+import me.glindholm.jira.rest.client.api.domain.OperationGroup;
+import me.glindholm.jira.rest.client.api.domain.OperationHeader;
+import me.glindholm.jira.rest.client.api.domain.OperationLink;
 
 public class OperationGroupJsonParserTest {
 
@@ -44,7 +45,8 @@ public class OperationGroupJsonParserTest {
         Set<OperationLink> links = Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
                 "Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
                 10, null));
-        Set<OperationGroup> groups = Collections.singleton(new OperationGroup(null, EMPTY_LINKS, EMPTY_GROUPS,
+        Set<OperationGroup> groups = Collections
+                .singleton(new OperationGroup(null, EMPTY_LINKS, EMPTY_GROUPS,
                 new OperationHeader("opsbar-transitions_more", "Workflow", null, null), null));
         int weight = 20;
         assertThat(actual, is(new OperationGroup(id, links, groups, null, weight)));

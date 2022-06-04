@@ -16,8 +16,8 @@
 
 package me.glindholm.jira.rest.client.api.domain.util;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,17 +34,17 @@ import com.google.common.collect.ImmutableMap;
 public class ErrorCollection {
 
     private final Integer status;
-    private final Collection<String> errorMessages;
+    private final List<String> errorMessages;
     private final Map<String, String> errors;
 
-    public ErrorCollection(@Nullable final Integer status, final Collection<String> errorMessages, final Map<String, String> errors) {
+    public ErrorCollection(@Nullable final Integer status, final List<String> errorMessages, final Map<String, String> errors) {
         this.status = status;
         this.errors = ImmutableMap.copyOf(errors);
         this.errorMessages = ImmutableList.copyOf(errorMessages);
     }
 
     public ErrorCollection(final String errorMessage) {
-        this(null, ImmutableList.of(errorMessage), Collections.<String, String>emptyMap());
+        this(null, List.of(errorMessage), Collections.emptyMap());
     }
 
     @SuppressWarnings("unused")
@@ -53,7 +53,7 @@ public class ErrorCollection {
         return status;
     }
 
-    public Collection<String> getErrorMessages() {
+    public List<String> getErrorMessages() {
         return errorMessages;
     }
 
@@ -67,7 +67,7 @@ public class ErrorCollection {
 
     @Override
     public String toString() {
-        return "ErrorCollection [status=" + status + ", errorMessages=" + errorMessages + ", errors=" + errors + "]";
+        return "ErrorList [status=" + status + ", errorMessages=" + errorMessages + ", errors=" + errors + "]";
     }
 
     @Override

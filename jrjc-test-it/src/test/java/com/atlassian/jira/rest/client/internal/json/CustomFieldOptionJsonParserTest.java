@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableList;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import java.util.Collections;
+import java.util.Lists;
 
 /**
  * @since v1.0
@@ -37,7 +37,7 @@ public class CustomFieldOptionJsonParserTest {
 
         final CustomFieldOption expected = new CustomFieldOption(10017L,
                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10017"), "colors",
-                Collections.<CustomFieldOption>emptyList(), null);
+                Lists.<CustomFieldOption>emptyList(), null);
         Assert.assertEquals(expected, customFieldOption);
     }
 
@@ -52,13 +52,13 @@ public class CustomFieldOptionJsonParserTest {
                 ImmutableList.of(
                         new CustomFieldOption(10019L,
                                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10019"), "red",
-                                Collections.<CustomFieldOption>emptyList(), null),
+                                Lists.<CustomFieldOption>emptyList(), null),
                         new CustomFieldOption(10020L,
                                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10020"), "blue",
-                                Collections.<CustomFieldOption>emptyList(), null),
+                                Lists.<CustomFieldOption>emptyList(), null),
                         new CustomFieldOption(10021L,
                                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10021"), "green",
-                                Collections.<CustomFieldOption>emptyList(), null)
+                                Lists.<CustomFieldOption>emptyList(), null)
                 ), null);
         Assert.assertEquals(expected, customFieldOption);
     }
@@ -71,11 +71,11 @@ public class CustomFieldOptionJsonParserTest {
 
         final CustomFieldOption child = new CustomFieldOption(10019L,
                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10019"), "red",
-                Collections.<CustomFieldOption>emptyList(), null);
+                Lists.<CustomFieldOption>emptyList(), null);
 
         final CustomFieldOption expected = new CustomFieldOption(10017L,
                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10017"), "colors",
-                Collections.<CustomFieldOption>emptyList(), child);
+                Lists.<CustomFieldOption>emptyList(), child);
         Assert.assertEquals(expected, customFieldOption);
     }
 }

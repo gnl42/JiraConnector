@@ -17,7 +17,7 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.hc.core5.net.URIBuilder;
 
@@ -65,7 +65,7 @@ public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRest
     public Promise<Iterable<ProjectRole>> getRoles(final URI projectUri) throws URISyntaxException {
         final URI rolesUris = new URIBuilder(projectUri).appendPath("role")
                 .build();
-        final Promise<Collection<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
+        final Promise<List<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
 
         return Promises.promise(Iterables.transform(basicProjectRoles.claim(), new Function<BasicProjectRole, ProjectRole>() {
             @Override

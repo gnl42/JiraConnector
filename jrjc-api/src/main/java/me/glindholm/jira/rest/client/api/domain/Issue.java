@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.api.domain;
 import java.io.Serializable;
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -48,14 +48,14 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     public Issue(String summary, URI self, String key, Long id, BasicProject project, IssueType issueType, Status status,
-            String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, Collection<Attachment> attachments,
+            String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, List<Attachment> attachments,
             @Nullable User reporter, @Nullable User assignee, OffsetDateTime creationDate, OffsetDateTime updateDate, OffsetDateTime dueDate,
-            Collection<Version> affectedVersions, Collection<Version> fixVersions, Collection<BasicComponent> components,
-            @Nullable TimeTracking timeTracking, Collection<IssueField> issueFields, Collection<Comment> comments,
+            List<Version> affectedVersions, List<Version> fixVersions, List<BasicComponent> components,
+            @Nullable TimeTracking timeTracking, List<IssueField> issueFields, List<Comment> comments,
             @Nullable URI transitionsUri,
-            @Nullable Collection<IssueLink> issueLinks,
-            BasicVotes votes, Collection<Worklog> worklogs, BasicWatchers watched, Iterable<String> expandos,
-            @Nullable Collection<Subtask> subtasks, @Nullable Collection<ChangelogGroup> changelog, @Nullable Operations operations,
+            @Nullable List<IssueLink> issueLinks,
+            BasicVotes votes, List<Worklog> worklogs, BasicWatchers watched, Iterable<String> expandos,
+            @Nullable List<Subtask> subtasks, @Nullable List<ChangelogGroup> changelog, @Nullable Operations operations,
             Set<String> labels) {
         super(self, key, id);
         this.summary = summary;
@@ -94,7 +94,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     private final BasicProject project;
     private final URI transitionsUri;
     private final Iterable<String> expandos;
-    private final Collection<BasicComponent> components;
+    private final List<BasicComponent> components;
     private final String summary;
     @Nullable
     private final String description;
@@ -103,33 +103,33 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     private final User assignee;
     @Nullable
     private final Resolution resolution;
-    private final Collection<IssueField> issueFields;
+    private final List<IssueField> issueFields;
     private final OffsetDateTime creationDate;
     private final OffsetDateTime updateDate;
     private final OffsetDateTime dueDate;
     private final BasicPriority priority;
     private final BasicVotes votes;
     @Nullable
-    private final Collection<Version> fixVersions;
+    private final List<Version> fixVersions;
     @Nullable
-    private final Collection<Version> affectedVersions;
+    private final List<Version> affectedVersions;
 
-    private final Collection<Comment> comments;
+    private final List<Comment> comments;
 
     @Nullable
-    private final Collection<IssueLink> issueLinks;
+    private final List<IssueLink> issueLinks;
 
-    private final Collection<Attachment> attachments;
+    private final List<Attachment> attachments;
 
-    private final Collection<Worklog> worklogs;
+    private final List<Worklog> worklogs;
     private final BasicWatchers watched;
 
     @Nullable
     private final TimeTracking timeTracking;
     @Nullable
-    private final Collection<Subtask> subtasks;
+    private final List<Subtask> subtasks;
     @Nullable
-    private final Collection<ChangelogGroup> changelog;
+    private final List<ChangelogGroup> changelog;
     @Nullable
     private final Operations operations;
     private final Set<String> labels;
@@ -376,7 +376,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
         this.watchers = watchers;
     }
 
-    public Collection<IssueField> getIssueFields() {
+    public List<IssueField> getIssueFields() {
         return issueFields;
     }
 

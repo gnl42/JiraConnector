@@ -21,8 +21,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -176,7 +176,7 @@ public abstract class AbstractAsynchronousRestClient {
             public T apply(Response response) {
                 try {
                     final String body = response.getEntity();
-                    final Collection<ErrorCollection> errorMessages = extractErrors(response.getStatusCode(), body);
+                    final List<ErrorCollection> errorMessages = extractErrors(response.getStatusCode(), body);
                     throw new RestClientException(errorMessages, response.getStatusCode());
                 } catch (JSONException e) {
                     throw new RestClientException(e, response.getStatusCode());
@@ -207,7 +207,7 @@ public abstract class AbstractAsynchronousRestClient {
         };
     }
 
-    public static Collection<ErrorCollection> extractErrors(final int status, final String body) throws JSONException {
+    public static List<ErrorCollection> extractErrors(final int status, final String body) throws JSONException {
         if (body == null) {
             return Collections.emptyList();
         }
@@ -231,9 +231,9 @@ public abstract class AbstractAsynchronousRestClient {
         final JSONObject jsonErrors = jsonObject.optJSONObject("errors");
         final JSONArray jsonErrorMessages = jsonObject.optJSONArray("errorMessages");
 
-        final Collection<String> errorMessages;
+        final List<String> errorMessages;
         if (jsonErrorMessages != null) {
-            errorMessages = JsonParseUtil.toStringCollection(jsonErrorMessages);
+            errorMessages = JsonParseUtil.toStringList(jsonErrorMessages);
         } else {
             errorMessages = Collections.emptyList();
         }

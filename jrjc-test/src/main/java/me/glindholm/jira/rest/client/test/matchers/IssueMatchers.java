@@ -25,7 +25,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 
-import java.util.Collection;
+import java.util.List;
 
 public class IssueMatchers {
     public static Matcher<? super BasicIssue> withIssueKey(String issueKey) {
@@ -39,7 +39,7 @@ public class IssueMatchers {
     }
 
     public static Matcher<Iterable<? extends BasicIssue>> issuesWithKeys(String... keys) {
-        final Collection<Matcher<? super BasicIssue>> matchers = Lists.newArrayListWithCapacity(keys.length);
+        final List<Matcher<? super BasicIssue>> matchers = Lists.newArrayListWithCapacity(keys.length);
         for (String key : keys) {
             matchers.add(withIssueKey(key));
         }

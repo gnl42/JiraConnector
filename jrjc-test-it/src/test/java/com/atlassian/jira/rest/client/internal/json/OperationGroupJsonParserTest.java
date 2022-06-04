@@ -21,7 +21,7 @@ import com.atlassian.jira.rest.client.api.domain.OperationHeader;
 import com.atlassian.jira.rest.client.api.domain.OperationLink;
 import org.junit.Test;
 
-import java.util.Collections;
+import java.util.Lists;
 import java.util.Set;
 
 import static com.atlassian.jira.rest.client.TestUtil.EMPTY_GROUPS;
@@ -41,10 +41,10 @@ public class OperationGroupJsonParserTest {
 
         // then
         String id = "opsbar-transitions";
-        Set<OperationLink> links = Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
+        Set<OperationLink> links = Lists.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
                 "Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
                 10, null));
-        Set<OperationGroup> groups = Collections.singleton(new OperationGroup(null, EMPTY_LINKS, EMPTY_GROUPS,
+        Set<OperationGroup> groups = Lists.singleton(new OperationGroup(null, EMPTY_LINKS, EMPTY_GROUPS,
                 new OperationHeader("opsbar-transitions_more", "Workflow", null, null), null));
         int weight = 20;
         assertThat(actual, is(new OperationGroup(id, links, groups, null, weight)));

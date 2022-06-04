@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.api.domain.input;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Details about user to be created or updated;
@@ -38,10 +38,10 @@ public class UserInput {
     @Nullable
     private final String notification;
     @Nullable
-    private final Collection<String> applicationKeys;
+    private final List<String> applicationKeys;
 
     public UserInput(@Nullable String key, @Nullable String name, @Nullable String password, @Nullable String emailAddress,
-            @Nullable String displayName, @Nullable String notification, Collection<String> applicationKeys) {
+            @Nullable String displayName, @Nullable String notification, List<String> applicationKeys) {
         this.key = key;
         this.name = name;
         this.password = password;
@@ -82,7 +82,7 @@ public class UserInput {
     }
 
     @Nullable
-    public Collection<String> getApplicationKeys() {
+    public List<String> getApplicationKeys() {
         return applicationKeys;
     }
 }

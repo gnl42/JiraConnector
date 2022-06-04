@@ -417,8 +417,8 @@ public class IssueJsonParserTest {
                         10, null)),
                 Collections.singleton(new OperationGroup(
                         null,
-                        Collections.<OperationLink>emptyList(),
-                        Collections.<OperationGroup>emptyList(),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
                         new OperationHeader("opsbar-transitions_more", "Workflow", null, null),
                         null)),
                 null,

@@ -36,7 +36,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 
-import java.util.Collections;
+import java.util.Lists;
 import java.util.Map;
 
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
@@ -71,19 +71,19 @@ public class CreateIssueMetadataJsonParserTest {
         Assert.assertThat(project.getIssueTypes(), IsIterableContainingInAnyOrder.containsInAnyOrder(
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false,
                         "A problem which impairs or prevents the functions of the product.", toUri("http://localhost:2990/jira/images/icons/bug.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap()),
+                        Lists.<String, CimFieldInfo>emptyMap()),
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/2"), 2L, "New Feature", false,
                         "A new feature of the product, which has yet to be developed.", toUri("http://localhost:2990/jira/images/icons/newfeature.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap()),
+                        Lists.<String, CimFieldInfo>emptyMap()),
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/3"), 3L, "Task", false,
                         "A task that needs to be done.", toUri("http://localhost:2990/jira/images/icons/task.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap()),
+                        Lists.<String, CimFieldInfo>emptyMap()),
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/4"), 4L, "Improvement", false,
                         "An improvement or enhancement to an existing feature or task.", toUri("http://localhost:2990/jira/images/icons/improvement.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap()),
+                        Lists.<String, CimFieldInfo>emptyMap()),
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/5"), 5L, "Sub-task", true,
                         "The sub-task of the issue", toUri("http://localhost:2990/jira/images/icons/issue_subtask.gif"),
-                        Collections.<String, CimFieldInfo>emptyMap())
+                        Lists.<String, CimFieldInfo>emptyMap())
         ));
     }
 
@@ -113,7 +113,7 @@ public class CreateIssueMetadataJsonParserTest {
         final CimFieldInfo expectedComponentsFieldInfo = new CimFieldInfo(
                 "components", false, "Component/s", new FieldSchema("array", "component", "components", null, null),
                 Sets.newHashSet(StandardOperation.ADD, StandardOperation.REMOVE, StandardOperation.SET),
-                Collections.emptyList(), null
+                Lists.emptyList(), null
         );
         Assert.assertEquals(expectedComponentsFieldInfo, componentsFieldInfo);
 

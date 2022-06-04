@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -103,7 +103,7 @@ public interface IssueRestClient {
      * @since me.glindholm.jira.rest.client.api 2.0, server 6.0
      */
 
-    Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues) throws URISyntaxException;
+    Promise<BulkOperationResult<BasicIssue>> createIssues(List<IssueInput> issues) throws URISyntaxException;
 
     Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults)
             throws URISyntaxException;

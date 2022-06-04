@@ -16,7 +16,6 @@
 
 package me.glindholm.jira.rest.client.api;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -35,49 +34,49 @@ public class RestClientException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     private final Optional<Integer> statusCode;
-    private final Collection<ErrorCollection> errorCollections;
+    private final List<ErrorCollection> ErrorCollections;
 
     public RestClientException(final RestClientException exception) {
         super(exception.getMessage(), exception);
         this.statusCode = exception.getStatusCode();
-        this.errorCollections = exception.errorCollections;
+        this.ErrorCollections = exception.ErrorCollections;
     }
 
     public RestClientException(final Throwable cause) {
         super(cause);
-        this.errorCollections = Collections.emptyList();
+        this.ErrorCollections = Collections.emptyList();
         this.statusCode = Optional.empty();
     }
 
     public RestClientException(final Throwable cause, final int statusCode) {
         super(cause);
-        this.errorCollections = Collections.emptyList();
+        this.ErrorCollections = Collections.emptyList();
         this.statusCode = Optional.of(statusCode);
     }
 
     public RestClientException(final String errorMessage, final Throwable cause) {
         super(errorMessage, cause);
-        this.errorCollections = List.of(new ErrorCollection(errorMessage));
+        this.ErrorCollections = List.of(new ErrorCollection(errorMessage));
         statusCode = Optional.empty();
     }
 
-    public RestClientException(final Collection<ErrorCollection> errorCollections, final int statusCode) {
-        super(errorCollections.toString());
-        this.errorCollections = Collections.unmodifiableCollection(errorCollections);
+    public RestClientException(final List<ErrorCollection> ErrorCollections, final int statusCode) {
+        super(ErrorCollections.toString());
+        this.ErrorCollections = List.copyOf(ErrorCollections);
         this.statusCode = Optional.of(statusCode);
     }
 
-    public RestClientException(final Collection<ErrorCollection> errorCollections, final Throwable cause, final int statusCode) {
-        super(errorCollections.toString(), cause);
-        this.errorCollections = ImmutableList.copyOf(errorCollections);
+    public RestClientException(final List<ErrorCollection> ErrorCollections, final Throwable cause, final int statusCode) {
+        super(ErrorCollections.toString(), cause);
+        this.ErrorCollections = ImmutableList.copyOf(ErrorCollections);
         this.statusCode = Optional.of(statusCode);
     }
 
     /**
      * @return error messages used while building this exception object
      */
-    public Collection<ErrorCollection> getErrorCollections() {
-        return errorCollections;
+    public List<ErrorCollection> getErrorCollections() {
+        return ErrorCollections;
     }
 
     /**
@@ -91,7 +90,7 @@ public class RestClientException extends RuntimeException {
     public String toString() {
         return "RestClientException{" +
                 "statusCode=" + statusCode +
-                ", errorCollections=" + errorCollections +
+                ", ErrorCollections=" + ErrorCollections +
                 '}';
     }
 }

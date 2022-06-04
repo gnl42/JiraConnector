@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -35,7 +35,7 @@ public class WatchersJsonParserBuilder {
 
             @Override
             public Watchers parse(JSONObject json) throws JSONException, URISyntaxException {
-                final Collection<BasicUser> watchers = JsonParseUtil.parseJsonArray(json
+                final List<BasicUser> watchers = JsonParseUtil.parseJsonArray(json
                         .getJSONArray("watchers"), userJsonParser);
                 return new Watchers(parseValueImpl(json), watchers);
             }

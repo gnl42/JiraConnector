@@ -26,7 +26,7 @@ import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 
 import java.net.URI;
-import java.util.Collection;
+import java.util.List;
 
 public class AddressableEntityMatchers {
 
@@ -41,7 +41,7 @@ public class AddressableEntityMatchers {
     }
 
     public static Matcher<Iterable<? extends AddressableEntity>> entitiesWithSelf(URI... uris) {
-        final Collection<Matcher<? super AddressableEntity>> matchers = Lists.newArrayListWithCapacity(uris.length);
+        final List<Matcher<? super AddressableEntity>> matchers = Lists.newArrayListWithCapacity(uris.length);
         for (URI uri : uris) {
             matchers.add(withSelf(uri));
         }

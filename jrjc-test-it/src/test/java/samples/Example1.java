@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.List;
 
 /**
@@ -94,7 +94,7 @@ public class Example1 {
 
             // and now let's resolve it as Incomplete
             final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
-            final Collection<FieldInput> fieldInputs;
+            final List<FieldInput> fieldInputs;
 
             // Starting from JIRA 5, fields are handled in different way -
             if (buildNumber > ServerVersionConstants.BN_JIRA_5) {

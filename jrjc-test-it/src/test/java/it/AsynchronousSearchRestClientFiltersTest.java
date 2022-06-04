@@ -160,7 +160,7 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
 
     @Test
     public void testGetNotExistent() throws Exception {
-        final ErrorCollection.Builder ecb = ErrorCollection.builder();
+        final ErrorList.Builder ecb = ErrorList.builder();
         ecb.errorMessage("The selected filter is not available to you, perhaps it has been deleted or had its permissions changed.")
                 .status(400);
 
@@ -174,7 +174,7 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
 
     @Test
     public void testGetNotExistentById() throws Exception {
-        final ErrorCollection.Builder ecb = ErrorCollection.builder();
+        final ErrorList.Builder ecb = ErrorList.builder();
         ecb.errorMessage("The selected filter is not available to you, perhaps it has been deleted or had its permissions changed.")
                 .status(400);
 

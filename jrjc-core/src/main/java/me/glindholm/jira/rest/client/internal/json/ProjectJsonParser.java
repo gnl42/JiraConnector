@@ -18,8 +18,8 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -70,12 +70,12 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
         if ("".equals(description)) {
             description = null;
         }
-        final Collection<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
-        final Collection<BasicComponent> components = JsonParseUtil.parseJsonArray(json
+        final List<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
+        final List<BasicComponent> components = JsonParseUtil.parseJsonArray(json
                 .getJSONArray("components"), componentJsonParser);
         final JSONArray issueTypesArray = json.optJSONArray("issueTypes");
         final OptionalIterable<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
-        final Collection<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
+        final List<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
                 .getOptionalJsonObject(json, "roles"));
         return new Project(expandos, self, key, id, name, description, lead, uri, versions, components, issueTypes, projectRoles);
     }
