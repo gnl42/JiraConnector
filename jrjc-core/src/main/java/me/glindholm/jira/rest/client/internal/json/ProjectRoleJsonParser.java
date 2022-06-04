@@ -18,12 +18,11 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import com.google.common.base.Optional;
 
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
 import me.glindholm.jira.rest.client.api.domain.RoleActor;

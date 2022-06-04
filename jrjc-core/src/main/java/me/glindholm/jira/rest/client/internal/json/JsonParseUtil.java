@@ -25,10 +25,12 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -36,10 +38,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.google.common.base.Optional;
-
 import me.glindholm.jira.rest.client.api.ExpandableProperty;
-import me.glindholm.jira.rest.client.api.OptionalIterable;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 
@@ -58,12 +57,12 @@ public class JsonParseUtil {
         return res;
     }
 
-    public static <T> OptionalIterable<T> parseOptionalJsonArray(final JSONArray jsonArray, final JsonObjectParser<T> jsonParser)
+    public static <T> List<T> parseOptionalJsonArray(final JSONArray jsonArray, final JsonObjectParser<T> jsonParser)
             throws JSONException, URISyntaxException {
         if (jsonArray == null) {
-            return OptionalIterable.absent();
+            return Collections.emptyList();
         } else {
-            return new OptionalIterable<>(JsonParseUtil.<T>parseJsonArray(jsonArray, jsonParser));
+            return new ArrayList<>(JsonParseUtil.<T>parseJsonArray(jsonArray, jsonParser));
         }
     }
 
@@ -321,7 +320,7 @@ public class JsonParseUtil {
     public static Optional<JSONArray> getOptionalArray(final JSONObject jsonObject, final String attributeName)
             throws JSONException {
         return jsonObject.has(attributeName) ?
-                Optional.of(jsonObject.getJSONArray(attributeName)) : Optional.<JSONArray>absent();
+                Optional.of(jsonObject.getJSONArray(attributeName)) : Optional.<JSONArray>empty();
     }
 
     public static Map<String, URI> getAvatarUris(final JSONObject jsonObject) throws JSONException {

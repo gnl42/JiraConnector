@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
-import com.atlassian.jira.rest.client.api.OptionalIterable;
+import com.atlassian.jira.rest.client.api.List;
 import com.atlassian.jira.rest.client.api.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.Project;
@@ -52,7 +52,7 @@ public class ProjectJsonParserTest {
         Assert.assertThat(project.getComponents(), IsIterableContainingInAnyOrder
                 .containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
         Assert.assertNull(project.getName());
-        final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
+        final List<IssueType> issueTypes = project.getIssueTypes();
         Assert.assertFalse(issueTypes.isSupported());
         Assert.assertThat(issueTypes, IsEmptyIterable.<IssueType>emptyIterable());
     }
@@ -79,7 +79,7 @@ public class ProjectJsonParserTest {
         Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate()
                 .toInstant());
         Assert.assertEquals("Test Project", project.getName());
-        final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
+        final List<IssueType> issueTypes = project.getIssueTypes();
         Assert.assertTrue(issueTypes.isSupported());
         Assert.assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
                 new IssueType(TestUtil

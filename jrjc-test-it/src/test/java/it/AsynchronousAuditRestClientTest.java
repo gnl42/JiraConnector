@@ -1,7 +1,7 @@
 package it;
 
 import com.atlassian.jira.rest.client.api.AuditRestClient;
-import com.atlassian.jira.rest.client.api.OptionalIterable;
+import com.atlassian.jira.rest.client.api.List;
 import com.atlassian.jira.rest.client.api.domain.AuditAssociatedItem;
 import com.atlassian.jira.rest.client.api.domain.AuditChangedValue;
 import com.atlassian.jira.rest.client.api.domain.AuditRecord;
@@ -306,7 +306,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         return latestAuditRecord;
     }
 
-    private Map<String, List<AuditChangedValue>> createMap(final OptionalIterable<AuditChangedValue> changedValues) {
+    private Map<String, List<AuditChangedValue>> createMap(final List<AuditChangedValue> changedValues) {
         return StreamSupport
                 .stream(changedValues.spliterator(), false)
                 .collect(Collectors.groupingBy(AuditChangedValue::getFieldName));
@@ -320,7 +320,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
     }
 
     private boolean findPersonThroughChangedValueFullName(final AuditRecord record, final String fullName) {
-        final OptionalIterable<AuditChangedValue> changedValues = record.getChangedValues();
+        final List<AuditChangedValue> changedValues = record.getChangedValues();
         return StreamSupport.stream(changedValues.spliterator(), false)
                 .filter(val -> val.getFieldName().equals("Full name") && val.getChangedTo().equals(fullName))
                 .count() == 1;

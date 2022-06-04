@@ -27,7 +27,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.google.common.base.Splitter;
 
-import me.glindholm.jira.rest.client.api.OptionalIterable;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
@@ -74,7 +73,7 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
         final List<BasicComponent> components = JsonParseUtil.parseJsonArray(json
                 .getJSONArray("components"), componentJsonParser);
         final JSONArray issueTypesArray = json.optJSONArray("issueTypes");
-        final OptionalIterable<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
+        final List<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
         final List<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
                 .getOptionalJsonObject(json, "roles"));
         return new Project(expandos, self, key, id, name, description, lead, uri, versions, components, issueTypes, projectRoles);

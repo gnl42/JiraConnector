@@ -1,12 +1,11 @@
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import java.time.OffsetDateTime;
-
-import me.glindholm.jira.rest.client.api.OptionalIterable;
 
 /**
  * Represents record from JIRA Audit Log.
@@ -41,16 +40,16 @@ public class AuditRecord {
     @Nullable
     private final AuditAssociatedItem objectItem;
 
-    private final OptionalIterable<AuditAssociatedItem> associatedItem;
+    private final List<AuditAssociatedItem> associatedItem;
 
-    private final OptionalIterable<AuditChangedValue> changedValues;
+    private final List<AuditChangedValue> changedValues;
 
     public AuditRecord(final Long id, final String summary, @Nullable final String remoteAddress,
             final OffsetDateTime created, final String category, String eventSource,
             @Nullable final String authorKey,
             @Nullable final AuditAssociatedItem objectItem,
-            final OptionalIterable<AuditAssociatedItem> associatedItem,
-            final OptionalIterable<AuditChangedValue> changedValues) {
+            final List<AuditAssociatedItem> associatedItem,
+            final List<AuditChangedValue> changedValues) {
         this.id = id;
         this.summary = summary;
         this.remoteAddress = remoteAddress;
@@ -98,11 +97,11 @@ public class AuditRecord {
         return objectItem;
     }
 
-    public OptionalIterable<AuditAssociatedItem> getAssociatedItems() {
+    public List<AuditAssociatedItem> getAssociatedItems() {
         return associatedItem;
     }
 
-    public OptionalIterable<AuditChangedValue> getChangedValues() {
+    public List<AuditChangedValue> getChangedValues() {
         return changedValues;
     }
 

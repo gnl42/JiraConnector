@@ -1,12 +1,12 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import java.time.OffsetDateTime;
 
-import me.glindholm.jira.rest.client.api.OptionalIterable;
 import me.glindholm.jira.rest.client.api.domain.AuditAssociatedItem;
 import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;
 import me.glindholm.jira.rest.client.api.domain.AuditRecord;
@@ -26,7 +26,7 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
         final Integer offset = json.getInt("offset");
         final Integer limit = json.getInt("limit");
         final Integer total = json.getInt("total");
-        final OptionalIterable<AuditRecord> records = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("records"), singleAuditRecordJsonParser);
+        final List<AuditRecord> records = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("records"), singleAuditRecordJsonParser);
 
         return new AuditRecordsData(offset, limit, total, records);
     }
@@ -44,8 +44,8 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
             final String authorKey = JsonParseUtil.getOptionalString(json, "authorKey");
             final String remoteAddress = JsonParseUtil.getOptionalString(json, "remoteAddress");
             final AuditAssociatedItem objectItem = JsonParseUtil.getOptionalJsonObject(json, "objectItem", associatedItemJsonParser);
-            final OptionalIterable<AuditAssociatedItem> associatedItem = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("associatedItems"), associatedItemJsonParser);
-            final OptionalIterable<AuditChangedValue> changedValues = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("changedValues"), changedValueJsonParser);
+            final List<AuditAssociatedItem> associatedItem = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("associatedItems"), associatedItemJsonParser);
+            final List<AuditChangedValue> changedValues = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("changedValues"), changedValueJsonParser);
 
             return new AuditRecord(id, summary, remoteAddress, created, category, eventSource, authorKey, objectItem, associatedItem, changedValues);
         }

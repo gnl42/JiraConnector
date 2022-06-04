@@ -20,7 +20,7 @@ import com.atlassian.jira.nimblefunctests.annotation.JiraBuildNumberDependent;
 import com.atlassian.jira.rest.client.IntegrationTestUtil;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.AddressableEntity;
-import com.atlassian.jira.rest.client.api.OptionalIterable;
+import com.atlassian.jira.rest.client.api.List;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.Priority;
@@ -85,7 +85,7 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
         assertEquals(IntegrationTestUtil.USER_ADMIN_60, project.getLead());
         assertEquals(2, Iterables.size(project.getVersions()));
         assertEquals(2, Iterables.size(project.getComponents()));
-        final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
+        final List<IssueType> issueTypes = project.getIssueTypes();
         if (isJira4x4OrNewer()) {
             assertTrue(issueTypes.isSupported());
             final Iterator<IssueType> issueTypesIterator = issueTypes.iterator();

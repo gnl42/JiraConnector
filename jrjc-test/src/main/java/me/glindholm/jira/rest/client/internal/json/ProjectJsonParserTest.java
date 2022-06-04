@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.collection.IsEmptyIterable;
@@ -31,7 +32,6 @@ import org.junit.Test;
 import com.google.common.collect.Iterables;
 
 import me.glindholm.jira.rest.client.TestUtil;
-import me.glindholm.jira.rest.client.api.OptionalIterable;
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Project;
@@ -55,8 +55,8 @@ public class ProjectJsonParserTest {
         Assert.assertThat(project.getComponents(), IsIterableContainingInAnyOrder
                 .containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
         Assert.assertNull(project.getName());
-        final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
-        Assert.assertFalse(issueTypes.isSupported());
+        final List<IssueType> issueTypes = project.getIssueTypes();
+        Assert.assertFalse(!issueTypes.isEmpty());
         Assert.assertThat(issueTypes, IsEmptyIterable.<IssueType>emptyIterable());
     }
 
@@ -83,8 +83,8 @@ public class ProjectJsonParserTest {
                 Iterables.getLast(project.getVersions()).getReleaseDate()
                 .toInstant());
         Assert.assertEquals("Test Project", project.getName());
-        final OptionalIterable<IssueType> issueTypes = project.getIssueTypes();
-        Assert.assertTrue(issueTypes.isSupported());
+        final List<IssueType> issueTypes = project.getIssueTypes();
+        Assert.assertTrue(!issueTypes.isEmpty());
         Assert.assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
                 new IssueType(TestUtil
                         .toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", TestUtil
