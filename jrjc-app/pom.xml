@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>jira-rest-java-client-app</artifactId>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-test-plugin</packaging>
 
 	<name>JIRA REST Java Client - Application Stub</name>
 	<description>The application stub for JIRA REST Java Client</description>
