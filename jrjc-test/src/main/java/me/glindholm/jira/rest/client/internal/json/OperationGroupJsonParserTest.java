@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.internal.json;
 import static me.glindholm.jira.rest.client.TestUtil.EMPTY_GROUPS;
 import static me.glindholm.jira.rest.client.TestUtil.EMPTY_LINKS;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 

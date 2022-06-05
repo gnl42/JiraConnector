@@ -16,11 +16,13 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import org.junit.Test;
+
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class VisibilityJsonGeneratorTest {
 
@@ -29,17 +31,17 @@ public class VisibilityJsonGeneratorTest {
     @Test
     public void testGenerateWithGroupType() throws Exception {
         final Visibility visibility = Visibility.group("jira-users");
-        Assert.assertThat(generator.generate(visibility), JSONObjectMatcher.isEqual(
+        assertThat(generator.generate(visibility), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/visibility/group.json")
-        ));
+                ));
     }
 
     @Test
     public void testGenerateWithRoleType() throws Exception {
         final Visibility visibility = Visibility.role("Developers");
-        Assert.assertThat(generator.generate(visibility), JSONObjectMatcher.isEqual(
+        assertThat(generator.generate(visibility), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/visibility/role.json")
-        ));
+                ));
     }
 
 }

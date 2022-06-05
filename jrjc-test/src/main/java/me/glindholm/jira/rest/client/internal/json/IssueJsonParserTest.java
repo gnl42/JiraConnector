@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -99,7 +99,7 @@ public class IssueJsonParserTest {
         assertEquals(TestConstants.USER1, issue.getAssignee());
 
         // issue links
-        Assert.assertThat(issue.getIssueLinks(), containsInAnyOrder(
+        assertThat(issue.getIssueLinks(), containsInAnyOrder(
                 new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
                         new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
                 new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),

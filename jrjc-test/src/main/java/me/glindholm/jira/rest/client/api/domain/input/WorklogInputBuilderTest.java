@@ -1,15 +1,16 @@
 package me.glindholm.jira.rest.client.api.domain.input;
 
-import me.glindholm.jira.rest.client.TestUtil;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static me.glindholm.jira.rest.client.api.domain.input.WorklogInputBuilder.ESTIMATE_UNIT_MINUTES;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.URI;
 
-import static me.glindholm.jira.rest.client.api.domain.input.WorklogInput.AdjustEstimate;
-import static me.glindholm.jira.rest.client.api.domain.input.WorklogInputBuilder.ESTIMATE_UNIT_MINUTES;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+
+import me.glindholm.jira.rest.client.TestUtil;
+import me.glindholm.jira.rest.client.api.domain.input.WorklogInput.AdjustEstimate;
 
 public class WorklogInputBuilderTest {
 
@@ -27,12 +28,12 @@ public class WorklogInputBuilderTest {
     }
 
     private void testAdjustEstimateImpl(WorklogInputBuilder worklogInputBuilder, String expectedEstimateValue,
-                                        AdjustEstimate expectedAdjustEstimate) throws Exception {
+            AdjustEstimate expectedAdjustEstimate) throws Exception {
 
         final WorklogInput worklogInput = worklogInputBuilder.build();
 
-        Assert.assertThat(worklogInput.getAdjustEstimate(), Matchers.equalTo(expectedAdjustEstimate));
-        Assert.assertThat(worklogInput.getAdjustEstimateValue(), Matchers.equalTo(expectedEstimateValue));
+        assertThat(worklogInput.getAdjustEstimate(), Matchers.equalTo(expectedAdjustEstimate));
+        assertThat(worklogInput.getAdjustEstimateValue(), Matchers.equalTo(expectedEstimateValue));
     }
 
     @Test

@@ -16,19 +16,22 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.ArrayList;
+
+import org.codehaus.jettison.json.JSONObject;
+import org.junit.Test;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 import me.glindholm.jira.rest.client.api.domain.input.PropertyInput;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.ArrayList;
 
 /**
  * @since v1.0
@@ -47,14 +50,14 @@ public class IssueInputJsonGeneratorTest {
                         "integer", 1,
                         "long", 1L,
                         "complex", ComplexIssueInputFieldValue.with("test", "id")
-                )))
-        );
+                        )))
+                );
 
         issueInput.getProperties().add(new PropertyInput("testKey", "{\"testValue\" : \"foo\"}"));
 
         final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/valid.json");
         final JSONObject actual = generator.generate(issueInput);
-        Assert.assertThat(expected, JSONObjectMatcher.isEqual(actual));
+        assertThat(expected, JSONObjectMatcher.isEqual(actual));
     }
 
     @Test
@@ -64,7 +67,7 @@ public class IssueInputJsonGeneratorTest {
 
         final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/empty.json");
         final JSONObject actual = generator.generate(issueInput);
-        Assert.assertThat(expected, JSONObjectMatcher.isEqual(actual));
+        assertThat(expected, JSONObjectMatcher.isEqual(actual));
     }
 
     @Test
@@ -74,6 +77,6 @@ public class IssueInputJsonGeneratorTest {
 
         final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/empty.json");
         final JSONObject actual = generator.generate(issueInput);
-        Assert.assertThat(expected, JSONObjectMatcher.isEqual(actual));
+        assertThat(expected, JSONObjectMatcher.isEqual(actual));
     }
 }

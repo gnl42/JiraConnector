@@ -16,13 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.net.URI;
+
+import org.junit.Test;
+
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.net.URI;
 
 public class BasicUserJsonGeneratorTest {
 
@@ -31,8 +33,8 @@ public class BasicUserJsonGeneratorTest {
     @Test
     public void testGenerate() throws Exception {
         final BasicUser user = new BasicUser(new URI("http://localhost:2990/jira/rest/api/2/user?username=wseliga"), "wseliga", "Wojciech Seliga");
-        Assert.assertThat(generator.generate(user), JSONObjectMatcher.isEqual(
+        assertThat(generator.generate(user), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/user/valid-generated.json")
-        ));
+                ));
     }
 }

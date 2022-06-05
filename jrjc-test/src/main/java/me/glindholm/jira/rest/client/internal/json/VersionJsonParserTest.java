@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -44,7 +45,7 @@ public class VersionJsonParserTest {
         assertEquals("Some version", version.getDescription());
         Assert.assertFalse(version.isReleased());
         Assert.assertTrue(version.isArchived());
-        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
+        assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
                 OffsetDateTime.of(2010, 8, 25, 0, 0, 0, 0, ZoneOffset.ofHours(2))));
     }
 
@@ -73,7 +74,7 @@ public class VersionJsonParserTest {
         assertEquals("Some version", version.getDescription());
         Assert.assertFalse(version.isReleased());
         Assert.assertTrue(version.isArchived());
-        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
+        assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
                 OffsetDateTime.of(2010, 8, 25, 0, 0, 0, 0, ZoneOffset.ofHours(2))));
     }
 
@@ -88,7 +89,7 @@ public class VersionJsonParserTest {
         assertNull(version.getDescription());
         Assert.assertFalse(version.isReleased());
         Assert.assertTrue(version.isArchived());
-        Assert.assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
+        assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
                 OffsetDateTime.of(2010, 8, 25, 0, 0, 0, 0, ZoneOffset.ofHours(2))));
     }
 

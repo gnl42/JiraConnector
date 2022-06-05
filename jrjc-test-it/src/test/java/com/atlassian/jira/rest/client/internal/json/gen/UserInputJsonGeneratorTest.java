@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import java.util.Lists;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @since v5.1.0

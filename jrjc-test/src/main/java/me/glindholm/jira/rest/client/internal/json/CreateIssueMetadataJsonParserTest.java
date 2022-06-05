@@ -17,6 +17,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URISyntaxException;
@@ -69,7 +70,7 @@ public class CreateIssueMetadataJsonParserTest {
 
 
         // check some issue types
-        Assert.assertThat(project.getIssueTypes(), IsIterableContainingInAnyOrder.containsInAnyOrder(
+        assertThat(project.getIssueTypes(), IsIterableContainingInAnyOrder.containsInAnyOrder(
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false,
                         "A problem which impairs or prevents the functions of the product.", toUri("http://localhost:2990/jira/images/icons/bug.gif"),
                         Collections.emptyMap()),
@@ -123,7 +124,7 @@ public class CreateIssueMetadataJsonParserTest {
         assertEquals(new FieldSchema("string", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons", 10001L), cf1001
                 .getSchema());
         Assert.assertEquals(3, cf1001.getAllowedValues().size());
-        Assert.assertThat(cf1001.getOperations(), IsIterableContainingInAnyOrder.containsInAnyOrder(StandardOperation.SET));
+        assertThat(cf1001.getOperations(), IsIterableContainingInAnyOrder.containsInAnyOrder(StandardOperation.SET));
 
         // check allowed values types
         assertAllowedValuesOfType(issueTypeFields.get("issuetype").getAllowedValues(), IssueType.class);
@@ -134,6 +135,6 @@ public class CreateIssueMetadataJsonParserTest {
     }
 
     private void assertAllowedValuesOfType(final List<Object> allowedValues, Class type) {
-        Assert.assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.instanceOf(type)));
+        assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.instanceOf(type)));
     }
 }

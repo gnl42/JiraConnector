@@ -16,6 +16,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -61,7 +62,7 @@ public class ProjectRoleJsonParserTest {
         Assert.assertEquals("Users", role.getName());
         Assert.assertEquals("A project role that represents users in a project", role.getDescription());
         Assert.assertNotNull(role.getActors());
-        Assert.assertThat(role.getActors(),
+        assertThat(role.getActors(),
                 IsIterableContainingInAnyOrder
                 .containsInAnyOrder(new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
                         toUri("http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10083")
@@ -98,7 +99,7 @@ public class ProjectRoleJsonParserTest {
         Assert.assertEquals(TestUtil.toUri("http://localhost:2990/jira/rest/api/2/project/TST/role/10000"), role.getSelf());
         Assert.assertEquals(10000, role.getId().longValue());
         Assert.assertEquals("A project role that represents users in a project", role.getDescription());
-        Assert.assertThat(
+        assertThat(
                 role.getActors(),
                 IsIterableContainingInAnyOrder.containsInAnyOrder(
                         new RoleActor(null, "Administrator", "atlassian-user-role-actor", "admin",

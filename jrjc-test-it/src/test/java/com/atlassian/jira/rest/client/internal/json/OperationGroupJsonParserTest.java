@@ -27,7 +27,7 @@ import java.util.Set;
 import static com.atlassian.jira.rest.client.TestUtil.EMPTY_GROUPS;
 import static com.atlassian.jira.rest.client.TestUtil.EMPTY_LINKS;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class OperationGroupJsonParserTest {
 

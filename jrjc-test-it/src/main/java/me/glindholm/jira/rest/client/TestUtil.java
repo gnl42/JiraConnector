@@ -191,6 +191,6 @@ public class TestUtil {
     }
 
     public static <K> void assertEmptyList(List<K> iterable) {
-        org.junit.Assert.assertThat(iterable, Matchers.<K>emptyList());
+        org.hamcrest.MatcherAssert.assertThat(iterable, Matchers.<K>emptyList());
     }
 }

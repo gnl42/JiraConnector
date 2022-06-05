@@ -17,13 +17,13 @@
 package me.glindholm.jira.rest.client.internal.json.gen;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZoneId;
 
 import org.codehaus.jettison.json.JSONException;
-import org.junit.Assert;
 import org.junit.Test;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
@@ -53,7 +53,7 @@ public class WorklogInputJsonGeneratorTest {
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, ADMIN, "my first work",
                 JsonParseUtil.parseOffsetDateTime("2010-08-15T16:35:00.000+0200"), 60, Visibility.group("some-group"));
 
-        Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
+        assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid.json")));
     }
 
@@ -64,7 +64,7 @@ public class WorklogInputJsonGeneratorTest {
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), ADMIN, USER, "my first work",
                 JsonParseUtil.parseOffsetDateTime("2010-08-15T16:35:00.000+0200"), 43, null);
 
-        Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
+        assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-visibility.json")));
     }
 
@@ -75,7 +75,7 @@ public class WorklogInputJsonGeneratorTest {
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), null, null, "my first work",
                 JsonParseUtil.parseOffsetDateTime("2010-08-15T16:35:00.000+0200"), 247, Visibility.group("some-group"));
 
-        Assert.assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
+        assertThat(generator.generate(worklogInput), JSONObjectMatcher.isEqual(
                 ResourceUtil.getJsonObjectFromResource("/json/worklogInput/valid-without-users.json")));
     }
 }

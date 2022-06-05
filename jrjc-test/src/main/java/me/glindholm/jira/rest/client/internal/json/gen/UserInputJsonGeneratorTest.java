@@ -16,7 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 

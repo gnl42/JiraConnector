@@ -19,11 +19,8 @@ package me.glindholm.jira.rest.client.api.domain.input;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-
-import me.glindholm.jira.rest.client.api.domain.EntityHelper;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Represents new JIRA issue
@@ -36,7 +33,8 @@ public class IssueInput {
     private final List<PropertyInput> properties;
 
     public static IssueInput createWithFields(FieldInput... fields) {
-        return new IssueInput(Maps.uniqueIndex(ImmutableList.copyOf(fields), EntityHelper.GET_ENTITY_STRING_ID_FUNCTION), new ArrayList<PropertyInput>());
+        return new IssueInput(Map.copyOf(List.of(fields).stream().collect(Collectors.toMap(FieldInput::getId, Function.identity()))),
+                new ArrayList<PropertyInput>());
     }
 
     public IssueInput(Map<String, FieldInput> fields, List<PropertyInput> properties) {

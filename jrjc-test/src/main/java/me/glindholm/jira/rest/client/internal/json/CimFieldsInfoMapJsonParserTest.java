@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import static me.glindholm.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.URI;
 import java.net.URISyntaxException;

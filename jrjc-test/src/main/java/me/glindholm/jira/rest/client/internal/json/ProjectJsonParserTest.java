@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URISyntaxException;
@@ -48,9 +49,9 @@ public class ProjectJsonParserTest {
         Assert.assertEquals("http://example.com", project.getUri().toString());
         Assert.assertEquals("TST", project.getKey());
         Assert.assertEquals(Long.valueOf(10000), project.getId());
-        Assert.assertThat(project.getVersions(), IsIterableContainingInAnyOrder
+        assertThat(project.getVersions(), IsIterableContainingInAnyOrder
                 .containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
-        Assert.assertThat(project.getComponents(), IsIterableContainingInAnyOrder
+        assertThat(project.getComponents(), IsIterableContainingInAnyOrder
                 .containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
         Assert.assertNull(project.getName());
         final List<IssueType> issueTypes = project.getIssueTypes();
@@ -83,7 +84,7 @@ public class ProjectJsonParserTest {
         Assert.assertEquals("Test Project", project.getName());
         final List<IssueType> issueTypes = project.getIssueTypes();
         Assert.assertTrue(!issueTypes.isEmpty());
-        Assert.assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
+        assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
                 new IssueType(TestUtil
                         .toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", TestUtil
                         .toUri("http://localhost:2990/jira/images/icons/bug.gif")),
@@ -106,7 +107,7 @@ public class ProjectJsonParserTest {
     public void testParseProjectWithBasicRoles() throws JSONException, URISyntaxException {
         final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
         final List<BasicProjectRole> projectRoles = project.getProjectRoles();
-        Assert.assertThat(projectRoles, IsIterableContainingInAnyOrder.containsInAnyOrder(
+        assertThat(projectRoles, IsIterableContainingInAnyOrder.containsInAnyOrder(
                 new BasicProjectRole(TestUtil
                         .toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10000"), "Users"),
                 new BasicProjectRole(TestUtil

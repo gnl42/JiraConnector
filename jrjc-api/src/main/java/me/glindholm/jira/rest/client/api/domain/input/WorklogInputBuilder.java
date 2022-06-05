@@ -16,15 +16,15 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
-import com.google.common.base.Preconditions;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.Worklog;
-
-import java.time.OffsetDateTime;
-
-import java.net.URI;
 
 /**
  * Builder class for WorklogInput. Allows to create new worklogInput instance by using convenient setters.
@@ -48,8 +48,8 @@ public class WorklogInputBuilder {
     private WorklogInput.AdjustEstimate adjustEstimate = WorklogInput.AdjustEstimate.AUTO;
     private String adjustEstimateValue;
 
-    public WorklogInputBuilder(URI issueUri) {
-        Preconditions.checkNotNull(issueUri, "The issueUri cannot be null");
+    public WorklogInputBuilder(@Nonnull URI issueUri) {
+        Objects.requireNonNull(issueUri, "The issueUri cannot be null");
         this.issueUri = issueUri;
     }
 

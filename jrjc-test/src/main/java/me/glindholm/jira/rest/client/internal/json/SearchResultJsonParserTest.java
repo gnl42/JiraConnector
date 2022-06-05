@@ -26,7 +26,7 @@ import static me.glindholm.jira.rest.client.test.matchers.IssueMatchers.issuesWi
 import static me.glindholm.jira.rest.client.test.matchers.SearchResultMatchers.searchResultWithParamsAndIssueCount;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Ignore;

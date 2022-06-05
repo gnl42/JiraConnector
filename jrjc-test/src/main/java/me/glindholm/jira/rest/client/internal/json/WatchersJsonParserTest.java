@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URISyntaxException;
@@ -44,7 +45,7 @@ public class WatchersJsonParserTest {
         final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));
         assertEquals(false, watcher.isWatching());
         assertEquals(1, watcher.getNumWatchers());
-        Assert.assertThat(watcher.getUsers(), IsIterableContainingInAnyOrder
+        assertThat(watcher.getUsers(), IsIterableContainingInAnyOrder
                 .containsInAnyOrder(TestConstants.USER1_BASIC_DEPRECATED, TestConstants.USER_ADMIN_BASIC_DEPRECATED));
 
     }

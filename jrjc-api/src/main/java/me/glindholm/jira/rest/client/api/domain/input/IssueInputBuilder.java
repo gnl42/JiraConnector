@@ -22,9 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
@@ -225,13 +224,9 @@ public class IssueInputBuilder {
     }
 
     private <T> List<ComplexIssueInputFieldValue> toListOfComplexIssueInputFieldValueWithSingleKey(final List<T> items, final String key) {
-        return Lists.transform(items, new Function<T, ComplexIssueInputFieldValue>() {
-
-            @Override
-            public ComplexIssueInputFieldValue apply(T value) {
-                return ComplexIssueInputFieldValue.with(key, value);
-            }
-        });
+        return items.stream() //
+                .map(item -> ComplexIssueInputFieldValue.with(key, item)) //
+                .collect(Collectors.toList());
     }
 
 }

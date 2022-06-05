@@ -16,14 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import org.junit.Test;
+
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.input.LinkIssuesInput;
 import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class LinkIssuesInputGeneratorTest {
 
@@ -33,14 +35,14 @@ public class LinkIssuesInputGeneratorTest {
     @Test
     public void testGenerateWithoutComment() throws Exception {
         LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType");
-        Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
+        assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
                 .getJsonObjectFromResource("/json/issueLinkInput/no-comment.json")));
     }
 
     @Test
     public void testGenerate() throws Exception {
         LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment.valueOf("simple comment"));
-        Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
+        assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
                 .getJsonObjectFromResource("/json/issueLinkInput/simple.json")));
     }
 
@@ -48,7 +50,7 @@ public class LinkIssuesInputGeneratorTest {
     public void testGenerateWithRoleLevel() throws Exception {
         LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment
                 .createWithRoleLevel("simple comment", "Users"));
-        Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
+        assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
                 .getJsonObjectFromResource("/json/issueLinkInput/with-project-role.json")));
     }
 
@@ -56,7 +58,7 @@ public class LinkIssuesInputGeneratorTest {
     public void testGenerateWithGroupLevel() throws Exception {
         LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment
                 .createWithGroupLevel("simple comment", "jira-users"));
-        Assert.assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
+        assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil
                 .getJsonObjectFromResource("/json/issueLinkInput/with-user-group.json")));
     }
 

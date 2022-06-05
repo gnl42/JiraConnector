@@ -24,7 +24,7 @@ import java.net.URI;
 
 import static com.atlassian.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SecurityLevelJsonParserTest {
 

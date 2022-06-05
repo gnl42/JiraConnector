@@ -5,8 +5,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
 import me.glindholm.jira.rest.client.api.domain.AuditAssociatedItem;
 import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;
 import me.glindholm.jira.rest.client.api.domain.AuditRecordInput;
@@ -39,12 +37,12 @@ public class AuditRecordBuilder {
     }
 
     public AuditRecordBuilder setChangedValues(final List<AuditChangedValue> values) {
-        this.values = ImmutableList.copyOf(values);
+        this.values = List.copyOf(values);
         return this;
     }
 
     public AuditRecordBuilder setAssociatedItems(final List<AuditAssociatedItem> associatedItems) {
-        this.associatedItems = ImmutableList.copyOf(associatedItems);
+        this.associatedItems = List.copyOf(associatedItems);
         return this;
     }
 
