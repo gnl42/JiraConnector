@@ -19,6 +19,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
@@ -55,8 +56,8 @@ public class FieldJsonParserTest {
 
     @Test
     public void testParseMultipleCustomFields() throws JSONException, URISyntaxException {
-        JsonArrayParser<Iterable<Field>> fieldsParser = FieldJsonParser.createFieldsArrayParser();
-        final Iterable<Field> fields = fieldsParser.parse(ResourceUtil.getJsonArrayFromResource("/json/field/valid-multiple-fields.json"));
+        JsonArrayParser<List<Field>> fieldsParser = FieldJsonParser.createFieldsArrayParser();
+        final List<Field> fields = fieldsParser.parse(ResourceUtil.getJsonArrayFromResource("/json/field/valid-multiple-fields.json"));
 
         assertThat(fields, Matchers.hasItems(
                 new Field("progress", "Progress", FieldType.JIRA, false, true, false,

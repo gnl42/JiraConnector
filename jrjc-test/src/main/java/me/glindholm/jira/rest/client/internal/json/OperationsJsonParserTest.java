@@ -16,28 +16,30 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Test;
+
 import me.glindholm.jira.rest.client.api.domain.OperationGroup;
 import me.glindholm.jira.rest.client.api.domain.OperationHeader;
 import me.glindholm.jira.rest.client.api.domain.OperationLink;
 import me.glindholm.jira.rest.client.api.domain.Operations;
-import org.junit.Test;
-
-import java.util.Collections;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class OperationsJsonParserTest {
     @Test
     public void testParse() throws Exception {
         OperationsJsonParser parser = new OperationsJsonParser();
         Operations actual = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/operations/valid.json"));
-        assertThat(actual, is(new Operations(Collections.singleton(new OperationGroup(
+        assertThat(actual, is(new Operations(List.of(new OperationGroup(
                 "opsbar-transitions",
-                Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
+                List.of(new OperationLink("action_id_4", "issueaction-workflow-transition",
                         "Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
                         10, null)),
-                Collections.singleton(new OperationGroup(
+                List.of(new OperationGroup(
                         null,
                         Collections.emptyList(),
                         Collections.emptyList(),
@@ -45,6 +47,6 @@ public class OperationsJsonParserTest {
                         null)),
                 null,
                 20
-        )))));
+                )))));
     }
 }

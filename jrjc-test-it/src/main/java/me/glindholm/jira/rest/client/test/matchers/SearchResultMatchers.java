@@ -16,18 +16,20 @@
 
 package me.glindholm.jira.rest.client.test.matchers;
 
-import com.google.common.collect.Iterables;
-
-import me.glindholm.jira.rest.client.api.domain.Issue;
-import me.glindholm.jira.rest.client.api.domain.SearchResult;
+import java.util.List;
 
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+import com.google.common.collect.Lists;
+
+import me.glindholm.jira.rest.client.api.domain.Issue;
+import me.glindholm.jira.rest.client.api.domain.SearchResult;
+
 public class SearchResultMatchers {
     public static Matcher<? super SearchResult> withStartIndex(final int startIndex) {
-        return new FeatureMatcher<SearchResult, Integer>(Matchers.is(startIndex),
+        return new FeatureMatcher<>(Matchers.is(startIndex),
                 "search result with start index that", "startIndex") {
 
             @Override
@@ -38,7 +40,7 @@ public class SearchResultMatchers {
     }
 
     public static Matcher<? super SearchResult> withMaxResults(final int maxResults) {
-        return new FeatureMatcher<SearchResult, Integer>(Matchers.is(maxResults),
+        return new FeatureMatcher<>(Matchers.is(maxResults),
                 "search result with max results that", "maxResults") {
 
             @Override
@@ -49,7 +51,7 @@ public class SearchResultMatchers {
     }
 
     public static Matcher<? super SearchResult> withTotal(final int total) {
-        return new FeatureMatcher<SearchResult, Integer>(Matchers.is(total),
+        return new FeatureMatcher<>(Matchers.is(total),
                 "search result with total that", "total") {
 
             @Override
@@ -60,19 +62,19 @@ public class SearchResultMatchers {
     }
 
     public static Matcher<? super SearchResult> withIssueCount(final int issueCount) {
-        return new FeatureMatcher<SearchResult, Integer>(Matchers.is(issueCount),
+        return new FeatureMatcher<>(Matchers.is(issueCount),
                 "search result with issue count that", "issue count") {
 
             @Override
             protected Integer featureValueOf(SearchResult searchResult) {
-                final Iterable<Issue> issues = searchResult.getIssues();
-                return (issues == null) ? 0 : Iterables.size(issues);
+                final List<Issue> issues = searchResult.getIssues();
+                return issues == null ? 0 : Lists.size(issues);
             }
         };
     }
 
     public static Matcher<? super SearchResult> searchResultWithParamsAndIssueCount(final int startIndex, final int maxResults,
-                                                                                    final int total, final int issueCount) {
+            final int total, final int issueCount) {
         return Matchers.allOf(withStartIndex(startIndex), withMaxResults(maxResults), withTotal(total),
                 withIssueCount(issueCount));
     }

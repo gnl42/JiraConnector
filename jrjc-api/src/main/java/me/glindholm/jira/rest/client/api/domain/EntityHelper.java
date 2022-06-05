@@ -16,14 +16,12 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-import java.io.Serializable;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
-import me.glindholm.jira.rest.client.api.AddressableEntity;
 import me.glindholm.jira.rest.client.api.IdentifiableEntity;
 import me.glindholm.jira.rest.client.api.NamedEntity;
 
@@ -48,12 +46,12 @@ public class EntityHelper {
         }
     };
 
-    public static Iterable<String> toNamesList(Iterable<? extends NamedEntity> items) {
-        return Iterables.transform(items, GET_ENTITY_NAME_FUNCTION);
+    public static List<String> toNamesList(List<? extends NamedEntity> items) {
+        return Lists.transform(items, GET_ENTITY_NAME_FUNCTION);
     }
 
-    public static Iterable<String> toFileNamesList(Iterable<? extends Attachment> attachments) {
-        return Iterables.transform(attachments, new Function<Attachment, String>() {
+    public static List<String> toFileNamesList(List<? extends Attachment> attachments) {
+        return Lists.transform(attachments, new Function<Attachment, String>() {
             @Override
             public String apply(Attachment a) {
                 return a.getFilename();
@@ -61,9 +59,17 @@ public class EntityHelper {
         });
     }
 
+    public static <T extends IdentifiableEntity<K>, K> T findEntityById(List<T> entities, final K id) {
+        T namedEntity = entities.stream().filter(entity -> entity.getId().equals(id)).findAny().orElse(null);
+        if (namedEntity == null) {
+            throw new NoSuchElementException(String.format("Entity with id \"%s\" not found. Entities: %s", id, entities.toString()));
+        }
+        return namedEntity;
+    }
+
     @SuppressWarnings("unused")
-    public static <T> Iterable<String> toStringIdList(Iterable<IdentifiableEntity<T>> items) {
-        return Iterables.transform(items, new Function<IdentifiableEntity<T>, String>() {
+    public static <T> List<String> toStringIdList(List<IdentifiableEntity<T>> items) {
+        return Lists.transform(items, new Function<IdentifiableEntity<T>, String>() {
             @Override
             public String apply(IdentifiableEntity<T> from) {
                 return from.getId() == null ? null : from.getId().toString();
@@ -71,98 +77,54 @@ public class EntityHelper {
         });
     }
 
-    public static <T extends NamedEntity> T findEntityByName(Iterable<T> entities, final String name) {
-        try {
-            return Iterables.find(entities, HasNamePredicate.forName(name));
-        } catch (NoSuchElementException ex) {
+    public static <T extends NamedEntity> T findEntityByName(List<T> entities, final String name) {
+        //            return Lists.find(entities, HasNamePredicate.forName(name));
+        T namedEntity = entities.stream().filter(entity -> entity.getName().equals(name)).findAny().orElse(null);
+        if (namedEntity == null) {
             throw new NoSuchElementException(String.format("Entity with name \"%s\" not found. Entities: %s", name, entities
                     .toString()));
         }
+        return namedEntity;
     }
 
-    @SuppressWarnings("unused")
-    public static <T extends IdentifiableEntity<K>, K> T findEntityById(Iterable<T> entities, final K id) {
-        try {
-            return Iterables.find(entities, HasIdPredicate.forId(id));
-        } catch (NoSuchElementException ex) {
-            throw new NoSuchElementException(String.format("Entity with id \"%s\" not found. Entities: %s", id, entities
-                    .toString()));
-        }
-    }
-
-    public static <T extends Attachment> T findAttachmentByFileName(Iterable<T> attachments, final String fileName) {
-        return Iterables.find(attachments, HasFileNamePredicate.forFileName(fileName));
-    }
-
-    public static class HasFileNamePredicate<T extends Attachment> implements Predicate<T> {
-
-        private final String fileName;
-
-        public static <K extends Attachment> HasFileNamePredicate<K> forFileName(String fileName) {
-            return new HasFileNamePredicate<>(fileName);
-        }
-
-        private HasFileNamePredicate(String fileName) {
-            this.fileName = fileName;
-        }
-
-        @Override
-        public boolean apply(T attachment) {
-            return fileName.equals(attachment.getFilename());
-        }
+    public static Attachment findAttachmentByFileName(List<Attachment> attachments, final String fileName) {
+        return attachments.stream().filter(attachment -> attachment.getFilename().equals(fileName)).findAny().orElse(null);
+        //        return Lists.find(attachments, HasFileNamePredicate.forFileName(fileName));
     }
 
 
-    public static class HasNamePredicate<T extends NamedEntity> implements Serializable, Predicate<T> {
-        private static final long serialVersionUID = 1L;
 
-        private final String name;
-
-        public static <K extends NamedEntity> HasNamePredicate<K> forName(String name) {
-            return new HasNamePredicate<>(name);
-        }
-
-        private HasNamePredicate(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public boolean apply(T input) {
-            return name.equals(input.getName());
-        }
-    }
-
-    public static class HasIdPredicate<T extends IdentifiableEntity<K>, K> implements Serializable, Predicate<T> {
-        private static final long serialVersionUID = 1L;
-
-        private final K id;
-
-        public static <X extends IdentifiableEntity<Y>, Y> HasIdPredicate<X, Y> forId(Y id) {
-            return new HasIdPredicate<>(id);
-        }
-
-        private HasIdPredicate(K id) {
-            this.id = id;
-        }
-
-        @Override
-        public boolean apply(T input) {
-            return id.equals(input.getId());
-        }
-    }
-
-    public static class AddressEndsWithPredicate implements Serializable, Predicate<AddressableEntity> {
-        private static final long serialVersionUID = 1L;
-
-        private final String stringEnding;
-
-        public AddressEndsWithPredicate(String stringEnding) {
-            this.stringEnding = stringEnding;
-        }
-
-        @Override
-        public boolean apply(final AddressableEntity input) {
-            return input.getSelf().getPath().endsWith(stringEnding);
-        }
-    }
+    //    public static class HasIdPredicate<T extends IdentifiableEntity<K>, K> implements Serializable, Predicate<T> {
+    //        private static final long serialVersionUID = 1L;
+    //
+    //        private final K id;
+    //
+    //        public static <X extends IdentifiableEntity<Y>, Y> HasIdPredicate<X, Y> forId(Y id) {
+    //            return new HasIdPredicate<>(id);
+    //        }
+    //
+    //        private HasIdPredicate(K id) {
+    //            this.id = id;
+    //        }
+    //
+    //        @Override
+    //        public boolean apply(T input) {
+    //            return id.equals(input.getId());
+    //        }
+    //    }
+    //
+    //    public static class AddressEndsWithPredicate implements Serializable, Predicate<AddressableEntity> {
+    //        private static final long serialVersionUID = 1L;
+    //
+    //        private final String stringEnding;
+    //
+    //        public AddressEndsWithPredicate(String stringEnding) {
+    //            this.stringEnding = stringEnding;
+    //        }
+    //
+    //        @Override
+    //        public boolean apply(final AddressableEntity input) {
+    //            return input.getSelf().getPath().endsWith(stringEnding);
+    //        }
+    //    }
 }

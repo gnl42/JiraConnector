@@ -37,16 +37,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.collection.IsEmptyCollection;
-import org.hamcrest.collection.IsEmptyIterable;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
-import io.atlassian.fugue.Iterables;
 import me.glindholm.jira.rest.client.api.domain.Attachment;
-import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
@@ -119,45 +117,45 @@ public class IssueJsonParserTest {
         assertEquals(new TimeTracking(0, 0, 145), issue.getTimeTracking());
 
         // attachments
-        final Iterable<Attachment> attachments = issue.getAttachments();
-        assertEquals(7, Iterables.size(attachments));
+        final List<Attachment> attachments = issue.getAttachments();
+        assertEquals(7, attachments.size());
         final Attachment attachment = findAttachmentByFileName(attachments, "avatar1.png");
         assertEquals(TestConstants.USER_ADMIN_BASIC, attachment.getAuthor());
         assertEquals(359345, attachment.getSize());
         assertEquals(toUri("http://localhost:8090/jira/secure/thumbnail/10070/_thumb_10070.png"), attachment.getThumbnailUri());
         assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10070/avatar1.png"), attachment.getContentUri());
-        final Iterable<String> attachmentsNames = EntityHelper.toFileNamesList(attachments);
+        final List<String> attachmentsNames = EntityHelper.toFileNamesList(attachments);
         assertThat(attachmentsNames, containsInAnyOrder("10000_thumb_snipe.jpg", "Admal pompa ciepła.pdf",
                 "apache-tomcat-5.5.30.zip", "avatar1.png", "jira_logo.gif", "snipe.png", "transparent-png.png"));
 
         // worklogs
-        final Iterable<Worklog> worklogs = issue.getWorklogs();
-        assertEquals(5, Iterables.size(worklogs));
+        final List<Worklog> worklogs = issue.getWorklogs();
+        assertEquals(5, worklogs.size());
         final Worklog expectedWorklog1 = new Worklog(
                 toUri("http://localhost:8090/jira/rest/api/2/issue/10010/worklog/10011"),
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/10010"), TestConstants.USER1_BASIC,
                 TestConstants.USER1_BASIC, "another piece of work",
                 toOffsetDateTime("2010-08-17T16:38:00.013+02:00"), toOffsetDateTime("2010-08-17T16:38:24.948+02:00"),
                 toOffsetDateTime("2010-08-17T16:37:00.000+02:00"), 15, Visibility.role("Developers"));
-        final Worklog worklog1 = ((List<Worklog>) worklogs).get(1);
-        Worklog a = ((List<Worklog>) worklogs).get(1);
+        final Worklog worklog1 = worklogs.get(1);
+        Worklog a = worklogs.get(1);
         assertEquals(expectedWorklog1, worklog1);
 
-        final Worklog worklog2 = ((List<Worklog>) worklogs).get(2);
+        final Worklog worklog2 = worklogs.get(2);
         assertEquals(Visibility.group("jira-users"), worklog2.getVisibility());
 
-        final Worklog worklog3 = ((List<Worklog>) worklogs).get(3);
+        final Worklog worklog3 = worklogs.get(3);
         assertEquals(StringUtils.EMPTY, worklog3.getComment());
 
         // comments
-        assertEquals(4, Iterables.size(issue.getComments()));
+        assertEquals(4, issue.getComments().size());
         final Comment comment = issue.getComments().iterator().next();
         assertEquals(Visibility.Type.ROLE, comment.getVisibility().getType());
         assertEquals(TestConstants.USER_ADMIN_BASIC, comment.getAuthor());
         assertEquals(TestConstants.USER_ADMIN_BASIC, comment.getUpdateAuthor());
 
         // components
-        final Iterable<String> componentsNames = EntityHelper.toNamesList(issue.getComponents());
+        final List<String> componentsNames = EntityHelper.toNamesList(issue.getComponents());
         assertThat(componentsNames, containsInAnyOrder("Component A", "Component B"));
     }
 
@@ -206,7 +204,7 @@ public class IssueJsonParserTest {
     @Test
     public void testParseIssueWithAnonymousComment() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-anonymous-comment.json");
-        assertEquals(1, Iterables.size(issue.getComments()));
+        assertEquals(1, issue.getComments().size());
         final Comment comment = issue.getComments().iterator().next();
         assertEquals("Comment from anonymous user", comment.getBody());
         assertNull(comment.getAuthor());
@@ -217,8 +215,8 @@ public class IssueJsonParserTest {
     public void testParseIssueWithVisibility() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-visibility.json");
         assertEquals(Visibility.role("Administrators"), issue.getComments().iterator().next().getVisibility());
-        assertEquals(Visibility.role("Developers"), ((List<Worklog>) issue.getWorklogs()).get(1).getVisibility());
-        assertEquals(Visibility.group("jira-users"), ((List<Worklog>) issue.getWorklogs()).get(2).getVisibility());
+        assertEquals(Visibility.role("Developers"), issue.getWorklogs().get(1).getVisibility());
+        assertEquals(Visibility.group("jira-users"), issue.getWorklogs().get(2).getVisibility());
     }
 
     // TODO: temporary disabled as we want to run integration tests. Fix JRJC-122 and re-enable this test
@@ -244,7 +242,7 @@ public class IssueJsonParserTest {
     @Ignore("Can't find watchers")
     public void testParseIssueJira5x0Representation() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0.json");
-        assertEquals(3, Iterables.size(issue.getComments()));
+        assertEquals(3, issue.getComments().size());
         final BasicPriority priority = issue.getPriority();
         assertNotNull(priority);
         assertEquals("Major", priority.getName());
@@ -253,18 +251,18 @@ public class IssueJsonParserTest {
         assertEquals(Long.valueOf(10000), issue.getId());
         assertNotNull(issue.getDueDate());
         assertEquals(toOffsetDateTimeFromIsoDate("2010-07-05"), issue.getDueDate());
-        assertEquals(4, ((List<Attachment>) issue.getAttachments()).size());
-        assertEquals(1, ((List<IssueLink>) issue.getIssueLinks()).size());
+        assertEquals(4, issue.getAttachments().size());
+        assertEquals(1, issue.getIssueLinks().size());
         assertEquals(1.457, issue.getField("customfield_10000").getValue());
-        assertThat(Iterables.transform(issue
+        assertThat(Lists.transform(issue
                 .getComponents(), EntityHelper.GET_ENTITY_NAME_FUNCTION), containsInAnyOrder("Component A", "Component B"));
-        assertEquals(2, Iterables.size(issue.getWorklogs()));
+        assertEquals(2, issue.getWorklogs().size());
         assertEquals(1, issue.getWatchers().getNumWatchers());
         assertFalse(issue.getWatchers().isWatching());
         assertEquals(new TimeTracking(2700, 2220, 180), issue.getTimeTracking());
 
         assertEquals(Visibility.role("Developers"), issue.getWorklogs().iterator().next().getVisibility());
-        assertEquals(Visibility.group("jira-users"), ((List<Worklog>) issue.getWorklogs()).get(1).getVisibility());
+        assertEquals(Visibility.group("jira-users"), issue.getWorklogs().get(1).getVisibility());
 
     }
 
@@ -273,7 +271,7 @@ public class IssueJsonParserTest {
     public void testParseIssueJira50Representation() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-1.json");
         assertEquals(Long.valueOf(10001), issue.getId());
-        assertEquals(0, Iterables.size(issue.getComments()));
+        assertEquals(0, issue.getComments().size());
         final BasicPriority priority = issue.getPriority();
         assertNull(priority);
         assertEquals("Pivotal Tracker provides time tracking information on the project level.\n"
@@ -281,18 +279,18 @@ public class IssueJsonParserTest {
                 .getDescription());
         assertEquals("TIMETRACKING", issue.getProject().getKey());
         assertNull(issue.getDueDate());
-        assertEquals(0, Iterables.size(issue.getAttachments()));
+        assertEquals(0, issue.getAttachments().size());
         assertNull(issue.getIssueLinks());
         assertNull(issue.getField("customfield_10000").getValue());
-        assertThat(issue.getComponents(), IsEmptyIterable.<BasicComponent>emptyIterable());
-        assertEquals(2, ((List<Worklog>) issue.getWorklogs()).size());
+        assertEquals(issue.getComponents(), Collections.emptyList());
+        assertEquals(2, issue.getWorklogs().size());
         assertNotNull(issue.getWatchers());
         assertEquals(0, issue.getWatchers().getNumWatchers());
         assertFalse(issue.getWatchers().isWatching());
         assertEquals(new TimeTracking(null, null, 840), issue.getTimeTracking());
 
         assertNull(issue.getWorklogs().iterator().next().getVisibility());
-        assertNull(((List<Worklog>) issue.getWorklogs()).get(1).getVisibility());
+        assertNull(issue.getWorklogs().get(1).getVisibility());
     }
 
     @Test
@@ -304,9 +302,9 @@ public class IssueJsonParserTest {
     @Test
     public void testParseIssueJiraRepresentationJrjc49() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/jrjc49.json");
-        final Iterable<Worklog> worklogs = issue.getWorklogs();
-        assertEquals(1, Iterables.size(worklogs));
-        final Worklog worklog = ((List<Worklog>) worklogs).get(0);
+        final List<Worklog> worklogs = issue.getWorklogs();
+        assertEquals(1, worklogs.size());
+        final Worklog worklog = worklogs.get(0);
         assertEquals("Worklog comment should be returned as empty string, when JIRA doesn't include it in reply",
                 StringUtils.EMPTY, worklog.getComment());
         assertEquals(180, worklog.getMinutesSpent());
@@ -323,8 +321,8 @@ public class IssueJsonParserTest {
     @Test
     public void issueWithSubtasks() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/subtasks-5.json");
-        Iterable<Subtask> subtasks = issue.getSubtasks();
-        assertEquals(1, Iterables.size(subtasks));
+        List<Subtask> subtasks = issue.getSubtasks();
+        assertEquals(1, subtasks.size());
         Subtask subtask = subtasks.iterator().next();
         assertNotNull(subtask);
         assertEquals("SAM-2", subtask.getIssueKey());
@@ -337,10 +335,10 @@ public class IssueJsonParserTest {
         final Issue issue = parseIssue("/json/issue/valid-5.0-with-changelog.json");
         assertEquals("HST-1", issue.getKey());
 
-        final Iterable<ChangelogGroup> changelog = issue.getChangelog();
+        final List<ChangelogGroup> changelog = issue.getChangelog();
         assertNotNull(changelog);
 
-        assertEquals(4, Iterables.size(changelog));
+        assertEquals(4, changelog.size());
         final Iterator<ChangelogGroup> iterator = changelog.iterator();
 
         final BasicUser user1 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user1"), "user1", "User One");
@@ -383,7 +381,7 @@ public class IssueJsonParserTest {
                         ));
     }
 
-    private static void verifyChangelog(ChangelogGroup changelogGroup, String createdDate, BasicUser author, Iterable<ChangelogItem> expectedItems) {
+    private static void verifyChangelog(ChangelogGroup changelogGroup, String createdDate, BasicUser author, List<ChangelogItem> expectedItems) {
         assertEquals(toOffsetDateTime(createdDate), changelogGroup.getCreated());
         assertEquals(author, changelogGroup.getAuthor());
         assertEquals(expectedItems, changelogGroup.getItems());
@@ -410,12 +408,12 @@ public class IssueJsonParserTest {
     @Test
     public void testParseIssueWithOperations() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-with-operations.json");
-        assertThat(issue.getOperations(), is(new Operations(Collections.singleton(new OperationGroup(
+        assertThat(issue.getOperations(), is(new Operations(List.of(new OperationGroup(
                 "opsbar-transitions",
-                Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
+                List.of(new OperationLink("action_id_4", "issueaction-workflow-transition",
                         "Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
                         10, null)),
-                Collections.singleton(new OperationGroup(
+                List.of(new OperationGroup(
                         null,
                         Collections.emptyList(),
                         Collections.emptyList(),

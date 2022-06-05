@@ -28,8 +28,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.google.common.collect.Iterables;
-
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
 import me.glindholm.jira.rest.client.api.domain.RoleActor;
@@ -49,7 +47,7 @@ public class ProjectRoleJsonParserTest {
         Assert.assertEquals("Developers", role.getName());
         Assert.assertEquals("A project role that represents developers in a project", role.getDescription());
         Assert.assertNotNull(role.getActors());
-        final RoleActor actor = Iterables.getOnlyElement(role.getActors());
+        final RoleActor actor = role.getActors().get(0);
         Assert.assertEquals("jira-developers", actor.getDisplayName());
         Assert.assertEquals("atlassian-group-role-actor", actor.getType());
         Assert.assertEquals("jira-developers", actor.getName());

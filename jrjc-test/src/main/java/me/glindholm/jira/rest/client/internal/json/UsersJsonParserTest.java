@@ -16,14 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.TestUtil;
-import me.glindholm.jira.rest.client.api.domain.User;
-import com.google.common.collect.Iterables;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import me.glindholm.jira.rest.client.TestUtil;
+import me.glindholm.jira.rest.client.api.domain.User;
 
 /**
  * @since v5.1.0
@@ -33,9 +35,9 @@ public class UsersJsonParserTest {
     @Test
     public void testParse() throws Exception {
         final UsersJsonParser parser = new UsersJsonParser();
-        final Iterable<User> users = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/users/valid.json"));
+        final List<User> users = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/users/valid.json"));
 
-        assertEquals(2, Iterables.size(users));
+        assertEquals(2, users.size());
 
         for (User user : users) {
             if (user.getName().equals("admin")) {

@@ -53,7 +53,7 @@ public class ExpandableProperty<T> {
     final private List<T> items;
 
     @Nullable
-    public Iterable<T> getItems() {
+    public List<T> getItems() {
         return items;
     }
 

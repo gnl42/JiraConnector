@@ -11,14 +11,14 @@ import com.atlassian.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import com.atlassian.jira.rest.client.api.domain.input.UserInput;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsIterableWithSize;
+import org.hamcrest.collection.IsListWithSize;
 import org.joda.time.DateMidnight;
 import java.time.OffsetDateTime;
 import org.joda.time.OffsetDateTimeZone;
@@ -148,7 +148,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
                 .stream(auditRecordsData.getRecords().spliterator(), false)
                 .filter(val -> findPersonThroughChangedValueFullName(val, FULL_NAME_WILL))
                 .collect(Collectors.toList());
-        assertThat(Iterables.size(records), is(1));
+        assertThat(Lists.size(records), is(1));
 
         final AuditRecord record = auditRecordsData.getRecords().iterator().next();
         assertThat(record.getCategory(), is(USER_MANAGEMENT));
@@ -178,43 +178,43 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         final int numberOfAddedRecords = 3;
 
         // when
-        final Iterable<AuditRecord> auditRecords = auditRestClient.
+        final List<AuditRecord> auditRecords = auditRestClient.
                 getAuditRecords(new AuditRecordSearchInput(null, numberOfAddedRecords, null, null, null))
                 .claim()
                 .getRecords();
 
         // then
-        assertThat(auditRecords, IsIterableWithSize.iterableWithSize(numberOfAddedRecords));
-        AuditRecord record = Iterables.get(auditRecords, 0);
+        assertThat(auditRecords, IsListWithSize.iterableWithSize(numberOfAddedRecords));
+        AuditRecord record = Lists.get(auditRecords, 0);
         assertThat(record.getSummary(), is("Adding new event"));
         assertThat(record.getCategory(), is(USER_MANAGEMENT));
         assertThat(record.getAssociatedItems().isSupported(), is(false));
-        assertThat(record.getChangedValues(), IsIterableWithSize.iterableWithSize(0));
+        assertThat(record.getChangedValues(), IsListWithSize.iterableWithSize(0));
         assertThat(record.getRemoteAddress(), notNullValue());
         assertThat(record.getCreated(), notNullValue());
 
-        record = Iterables.get(auditRecords, 1);
+        record = Lists.get(auditRecords, 1);
         assertThat(record.getSummary(), is("Event with changed values"));
         assertThat(record.getAssociatedItems().isSupported(), is(false));
-        assertThat(record.getChangedValues(), IsIterableWithSize.iterableWithSize(1));
-        AuditChangedValue value = Iterables.get(record.getChangedValues(), 0);
+        assertThat(record.getChangedValues(), IsListWithSize.iterableWithSize(1));
+        AuditChangedValue value = Lists.get(record.getChangedValues(), 0);
         assertThat(value.getChangedFrom(), is("from"));
         assertThat(value.getChangedTo(), is("to"));
         assertThat(value.getFieldName(), is("Test"));
 
-        record = Iterables.get(auditRecords, 2);
+        record = Lists.get(auditRecords, 2);
         assertThat(record.getSummary(), is("Event with associated items"));
-        assertThat(record.getAssociatedItems(), IsIterableWithSize.iterableWithSize(2));
-        assertThat(record.getChangedValues(), IsIterableWithSize.iterableWithSize(0));
+        assertThat(record.getAssociatedItems(), IsListWithSize.iterableWithSize(2));
+        assertThat(record.getChangedValues(), IsListWithSize.iterableWithSize(0));
 
-        AuditAssociatedItem item = Iterables.get(record.getAssociatedItems(), 0);
+        AuditAssociatedItem item = Lists.get(record.getAssociatedItems(), 0);
         assertThat(item.getId(), nullValue());
         assertThat(item.getName(), is("admin"));
         assertThat(item.getParentId(), nullValue());
         assertThat(item.getParentName(), nullValue());
         assertThat(item.getTypeName(), is("USER"));
 
-        item = Iterables.get(record.getAssociatedItems(), 1);
+        item = Lists.get(record.getAssociatedItems(), 1);
         assertThat(item.getId(), is("123"));
         assertThat(item.getName(), is("Internal item"));
         assertThat(item.getParentId(), nullValue());
@@ -228,7 +228,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
 
         final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, tomorrow, tomorrow)).claim();
 
-        assertThat(auditRecordsData.getRecords(), Matchers.emptyIterable());
+        assertThat(auditRecordsData.getRecords(), Matchers.emptyList());
     }
 
     @Test
@@ -275,8 +275,8 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         };
     }
 
-    private Matcher<Iterable<? extends AuditRecord>> hasSameIdsAs(final Iterable<AuditRecord> auditLogRecords) {
-        final List<Matcher<? super AuditRecord>> existingIdsMatchers = Lists.newArrayList(Iterables.transform(auditLogRecords, new Function<AuditRecord, Matcher<? super AuditRecord>>() {
+    private Matcher<List<? extends AuditRecord>> hasSameIdsAs(final List<AuditRecord> auditLogRecords) {
+        final List<Matcher<? super AuditRecord>> existingIdsMatchers = Lists.newArrayList(Lists.transform(auditLogRecords, new Function<AuditRecord, Matcher<? super AuditRecord>>() {
             @Override
             public Matcher<AuditRecord> apply(final AuditRecord auditRecord) {
                 return auditRecordWithId(auditRecord.getId());

@@ -1,5 +1,6 @@
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -25,15 +26,15 @@ public class AuditRecordInput {
     private final AuditAssociatedItem objectItem;
 
     @Nullable
-    private final Iterable<AuditAssociatedItem> associatedItem;
+    private final List<AuditAssociatedItem> associatedItem;
 
     @Nullable
-    private final Iterable<AuditChangedValue> changedValues;
+    private final List<AuditChangedValue> changedValues;
 
     public AuditRecordInput(final String category, final String summary,
             @Nullable final AuditAssociatedItem objectItem,
-            @Nullable final Iterable<AuditAssociatedItem> associatedItem,
-            @Nullable final Iterable<AuditChangedValue> changedValues) {
+            @Nullable final List<AuditAssociatedItem> associatedItem,
+            @Nullable final List<AuditChangedValue> changedValues) {
         this.summary = summary;
         this.category = category;
         this.objectItem = objectItem;
@@ -53,11 +54,11 @@ public class AuditRecordInput {
         return objectItem;
     }
 
-    public Iterable<AuditAssociatedItem> getAssociatedItems() {
+    public List<AuditAssociatedItem> getAssociatedItems() {
         return associatedItem;
     }
 
-    public Iterable<AuditChangedValue> getChangedValues() {
+    public List<AuditChangedValue> getChangedValues() {
         return changedValues;
     }
 

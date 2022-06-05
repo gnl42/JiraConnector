@@ -17,6 +17,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -28,12 +29,12 @@ import me.glindholm.jira.rest.client.api.domain.CimProject;
  *
  * @since v1.0
  */
-public class CreateIssueMetadataJsonParser implements JsonObjectParser<Iterable<CimProject>> {
+public class CreateIssueMetadataJsonParser implements JsonObjectParser<List<CimProject>> {
 
     private final GenericJsonArrayParser<CimProject> projectsParser = new GenericJsonArrayParser<>(new CimProjectJsonParser());
 
     @Override
-    public Iterable<CimProject> parse(final JSONObject json) throws JSONException, URISyntaxException {
+    public List<CimProject> parse(final JSONObject json) throws JSONException, URISyntaxException {
         return projectsParser.parse(json.getJSONArray("projects"));
     }
 }

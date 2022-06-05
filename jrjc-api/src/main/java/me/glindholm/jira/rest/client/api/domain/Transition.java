@@ -49,7 +49,7 @@ public class Transition implements Serializable, NamedEntity {
         return id;
     }
 
-    public Iterable<Field> getFields() {
+    public List<Field> getFields() {
         return fields;
     }
 

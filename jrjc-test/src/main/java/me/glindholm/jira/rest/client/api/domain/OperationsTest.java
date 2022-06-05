@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -32,13 +32,14 @@ public class OperationsTest {
 
     @Test
     public void testGetLinkById() throws Exception {
-        Operations operations = new Operations(Collections.singleton(new OperationGroup(
-                null,
-                Collections.singleton(new OperationLink("action_id_4", null, "Start", null, "/start", null, null)),
-                EMPTY_GROUPS,
-                null,
-                null
-                )));
+        Operations operations = new Operations(List
+                .of(new OperationGroup(
+                        null,
+                        List.of(new OperationLink("action_id_4", null, "Start", null, "/start", null, null)),
+                        EMPTY_GROUPS,
+                        null,
+                        null
+                        )));
 
         Operation operation = operations.getOperationById("action_id_4");
 
@@ -51,7 +52,7 @@ public class OperationsTest {
 
     @Test
     public void testGetSelfGroupById() throws Exception {
-        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+        Operations operations = new Operations(List.of(new OperationGroup(
                 "group_self",
                 EMPTY_LINKS,
                 EMPTY_GROUPS,
@@ -70,10 +71,10 @@ public class OperationsTest {
 
     @Test
     public void testGetGroupById() throws Exception {
-        Operations operations = new Operations(Collections.singleton(new OperationGroup(
+        Operations operations = new Operations(List.of(new OperationGroup(
                 null,
                 EMPTY_LINKS,
-                Collections.singleton(new OperationGroup("group_5", EMPTY_LINKS, EMPTY_GROUPS, null, null)),
+                List.of(new OperationGroup("group_5", EMPTY_LINKS, EMPTY_GROUPS, null, null)),
                 null,
                 null
                 )));
@@ -90,7 +91,7 @@ public class OperationsTest {
     @Test
     public void testGetHeaderById() throws Exception {
         Operations operations = new Operations(
-                Collections.singleton(new OperationGroup(
+                List.of(new OperationGroup(
                         null,
                         EMPTY_LINKS,
                         EMPTY_GROUPS,

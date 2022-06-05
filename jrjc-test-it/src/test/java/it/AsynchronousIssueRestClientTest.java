@@ -48,7 +48,7 @@ import com.atlassian.jira.testkit.client.util.TestKitLocalEnvironmentData;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 import java.time.OffsetDateTime;
 import org.junit.Assert;
@@ -92,7 +92,7 @@ import static com.atlassian.jira.rest.client.test.matchers.RestClientExceptionMa
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.collection.IsListContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -153,11 +153,11 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     private void assertTransitionWithNumericCustomField(FieldInput fieldInput, Double expectedValue) {
         final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
         assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
 
         final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
         assertNotNull(transitionFound);
-        assertTrue(Iterables.contains(transitionFound.getFields(),
+        assertTrue(Lists.contains(transitionFound.getFields(),
                 new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false,
                         IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
         client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
@@ -306,11 +306,11 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     public void testTransitionWithNumericCustomFieldAndInteger() throws Exception {
         final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
         assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
         final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 
         assertNotNull(transitionFound);
-        assertTrue(Iterables.contains(transitionFound.getFields(),
+        assertTrue(Lists.contains(transitionFound.getFields(),
                 new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false,
                         IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
         final double newValue = 123;
@@ -326,11 +326,11 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     public void testTransitionWithInvalidNumericField() throws Exception {
         final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
         assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
         final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 
         assertNotNull(transitionFound);
-        assertTrue(Iterables.contains(transitionFound.getFields(),
+        assertTrue(Lists.contains(transitionFound.getFields(),
                 new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false,
                         TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
         final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, "]432jl");
@@ -383,7 +383,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
     private void assertInvalidCommentInput(final Comment comment, String expectedErrorMsg) {
         final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
         final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
         final String errorMsg = doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue()
                 ? expectedErrorMsg : null;
@@ -397,13 +397,13 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
     private void testTransitionImpl(Comment comment) {
         final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
         Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
         OffsetDateTime now = new OffsetDateTime();
         client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment)).claim();
 
         final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
-        final Comment lastComment = Iterables.getLast(changedIssue.getComments());
+        final Comment lastComment = Lists.getLast(changedIssue.getComments());
         assertEquals(comment.getBody(), lastComment.getBody());
         assertEquals(IntegrationTestUtil.USER_ADMIN, lastComment.getAuthor());
         assertEquals(IntegrationTestUtil.USER_ADMIN, lastComment.getUpdateAuthor());
@@ -687,20 +687,20 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     private void testLinkIssuesImpl(@Nullable Comment commentInput) {
         final IssueRestClient issueClient = client.getIssueClient();
         final Issue originalIssue = issueClient.getIssue("TST-7").claim();
-        int origNumComments = Iterables.size(originalIssue.getComments());
+        int origNumComments = Lists.size(originalIssue.getComments());
         assertFalse(originalIssue.getIssueLinks().iterator().hasNext());
 
         issueClient.linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", commentInput)).claim();
 
         final Issue linkedIssue = issueClient.getIssue("TST-7").claim();
-        assertEquals(1, Iterables.size(linkedIssue.getIssueLinks()));
+        assertEquals(1, Lists.size(linkedIssue.getIssueLinks()));
         final IssueLink addedLink = linkedIssue.getIssueLinks().iterator().next();
         assertEquals("Duplicate", addedLink.getIssueLinkType().getName());
         assertEquals("TST-6", addedLink.getTargetIssueKey());
         assertEquals(IssueLinkType.Direction.OUTBOUND, addedLink.getIssueLinkType().getDirection());
 
         final int expectedNumComments = commentInput != null ? origNumComments + 1 : origNumComments;
-        assertEquals(expectedNumComments, Iterables.size(linkedIssue.getComments()));
+        assertEquals(expectedNumComments, Lists.size(linkedIssue.getComments()));
         if (commentInput != null) {
             final Comment comment = linkedIssue.getComments().iterator().next();
             assertEquals(commentInput.getBody(), comment.getBody());
@@ -744,16 +744,16 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                 .getResourceAsStream("/attachment-test/transparent-png.png"), filename2).claim();
 
         final Issue issueWithAttachments = issueClient.getIssue("TST-3").claim();
-        final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
-        assertEquals(2, Iterables.size(attachments));
-        final Iterable<String> attachmentsNames = Iterables.transform(attachments, new Function<Attachment, String>() {
+        final List<Attachment> attachments = issueWithAttachments.getAttachments();
+        assertEquals(2, Lists.size(attachments));
+        final List<String> attachmentsNames = Lists.transform(attachments, new Function<Attachment, String>() {
             @Override
             public String apply(@Nullable Attachment from) {
                 return from.getFilename();
             }
         });
         assertThat(attachmentsNames, containsInAnyOrder(filename1, filename2));
-        final Attachment pictureAttachment = Iterables.find(attachments, new Predicate<Attachment>() {
+        final Attachment pictureAttachment = Lists.find(attachments, new Predicate<Attachment>() {
             @Override
             public boolean apply(@Nullable Attachment input) {
                 return filename2.equals(input.getFilename());
@@ -778,8 +778,8 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         issueClient.addAttachment(issue.getAttachmentsUri(), byteArrayInputStream, UTF8_FILE_NAME).claim();
 
         final Issue issueWithAttachments = issueClient.getIssue("TST-3").claim();
-        final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
-        assertEquals(1, Iterables.size(attachments));
+        final List<Attachment> attachments = issueWithAttachments.getAttachments();
+        assertEquals(1, Lists.size(attachments));
         final Attachment attachment = attachments.iterator().next();
         assertThat(attachment.getFilename(), equalTo(UTF8_FILE_NAME));
 
@@ -805,8 +805,8 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         issueClient.addAttachments(issue.getAttachmentsUri(), attachmentInputs).claim();
 
         final Issue issueWithAttachments = issueClient.getIssue("TST-4").claim();
-        final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
-        assertEquals(3, Iterables.size(attachments));
+        final List<Attachment> attachments = issueWithAttachments.getAttachments();
+        assertEquals(3, Lists.size(attachments));
         Pattern pattern = Pattern.compile("my-test-file-(\\d)\\.txt");
         for (Attachment attachment : attachments) {
             assertTrue(pattern.matcher(attachment.getFilename()).matches());
@@ -836,8 +836,8 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         issueClient.addAttachments(issue.getAttachmentsUri(), attachmentInputs).claim();
 
         final Issue issueWithAttachments = issueClient.getIssue("TST-4").claim();
-        final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
-        assertEquals(3, Iterables.size(attachments));
+        final List<Attachment> attachments = issueWithAttachments.getAttachments();
+        assertEquals(3, Lists.size(attachments));
         Pattern pattern = Pattern.compile(".*-(\\d)\\.txt");
         for (Attachment attachment : attachments) {
             assertTrue(pattern.matcher(attachment.getFilename()).matches());
@@ -869,8 +869,8 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         issueClient.addAttachments(issue.getAttachmentsUri(), tempFile).claim();
 
         final Issue issueWithAttachments = issueClient.getIssue("TST-5").claim();
-        final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
-        assertEquals(1, Iterables.size(attachments));
+        final List<Attachment> attachments = issueWithAttachments.getAttachments();
+        assertEquals(1, Lists.size(attachments));
         assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
                 issueClient.getAttachment(attachments.iterator().next().getContentUri()).claim()));
     }
@@ -889,8 +889,8 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         issueClient.addAttachments(issue.getAttachmentsUri(), tempFile).claim();
 
         final Issue issueWithAttachments = issueClient.getIssue("TST-5").claim();
-        final Iterable<Attachment> attachments = issueWithAttachments.getAttachments();
-        assertEquals(1, Iterables.size(attachments));
+        final List<Attachment> attachments = issueWithAttachments.getAttachments();
+        assertEquals(1, Lists.size(attachments));
         final Attachment firstAttachment = attachments.iterator().next();
         assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
                 issueClient.getAttachment(firstAttachment.getContentUri()).claim()));
@@ -952,7 +952,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         navigation.issue().addComment(issueKey, commentText);
 
         final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
-        assertEquals(1, Iterables.size(issue.getComments()));
+        assertEquals(1, Lists.size(issue.getComments()));
         final Comment comment = issue.getComments().iterator().next();
         assertEquals(commentText, comment.getBody());
         if (isJira5xOrNewer()) {
@@ -986,21 +986,21 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     @Test
     public void testTransition() throws Exception {
         final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
-        assertEquals(4, Iterables.size(transitions));
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        assertEquals(4, Lists.size(transitions));
         final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Lists
                 .<Transition.Field>emptyList());
-        assertTrue(Iterables.contains(transitions, startProgressTransition));
+        assertTrue(Lists.contains(transitions, startProgressTransition));
 
         client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
                 Lists.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).claim();
         final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1").claim();
         assertEquals("In Progress", transitionedIssue.getStatus().getName());
-        final Iterable<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue).claim();
-        assertFalse(Iterables.contains(transitionsAfterTransition, startProgressTransition));
+        final List<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue).claim();
+        assertFalse(Lists.contains(transitionsAfterTransition, startProgressTransition));
         final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Lists
                 .<Transition.Field>emptyList());
-        assertTrue(Iterables.contains(transitionsAfterTransition, stopProgressTransition));
+        assertTrue(Lists.contains(transitionsAfterTransition, stopProgressTransition));
     }
 
     private void assertThatIssueNotExists(String issueKey) {
@@ -1015,12 +1015,12 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     private BasicIssue addSubtaskToIssue(final Issue issue) {
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
-        final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withProjectKeys(issue.getProject().getKey())
                         .withExpandedIssueTypesFields().build()).claim();
 
         // select project and issue
-        assertEquals(1, Iterables.size(metadataProjects));
+        assertEquals(1, Lists.size(metadataProjects));
         final CimProject project = metadataProjects.iterator().next();
         final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 

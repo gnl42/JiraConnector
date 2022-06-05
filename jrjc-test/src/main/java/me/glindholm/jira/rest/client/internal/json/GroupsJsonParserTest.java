@@ -16,13 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.api.domain.Group;
-import com.google.common.collect.Iterables;
-import org.junit.Test;
-
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
+import org.junit.Test;
+
+import me.glindholm.jira.rest.client.api.domain.Group;
 
 /**
  * @since v5.1.0
@@ -35,9 +37,9 @@ public class GroupsJsonParserTest {
     @Test
     public void testParse() throws Exception {
         final GroupsJsonParser parser = new GroupsJsonParser();
-        final Iterable<Group> groups = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/groups/valid.json"));
+        final List<Group> groups = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/groups/valid.json"));
 
-        assertEquals(2, Iterables.size(groups));
+        assertEquals(2, groups.size());
         assertThat(groups, contains(ADMINISTRATORS, USERS));
     }
 }

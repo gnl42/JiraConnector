@@ -28,12 +28,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 
 import com.google.common.collect.Iterators;
@@ -48,8 +48,8 @@ public class TestUtil {
     //    private static DateTimeFormatter universalOffsetDateTimeParser = ISOOffsetDateTimeFormat.dateTimeParser();
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     private static DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
-    public static Iterable<OperationGroup> EMPTY_GROUPS = Collections.emptyList();
-    public static Iterable<OperationLink> EMPTY_LINKS = Collections.emptyList();
+    public static List<OperationGroup> EMPTY_GROUPS = Collections.emptyList();
+    public static List<OperationLink> EMPTY_LINKS = Collections.emptyList();
 
     public static URI toUri(String str) {
         try {
@@ -177,7 +177,7 @@ public class TestUtil {
     }
 
     @Nullable
-    public static Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
+    public static Transition getTransitionByName(List<Transition> transitions, String transitionName) {
         Transition transitionFound = null;
         for (Transition transition : transitions) {
             if (transition.getName().equals(transitionName)) {
@@ -197,7 +197,11 @@ public class TestUtil {
         }
     }
 
-    public static <K> void assertEmptyIterable(Iterable<K> iterable) {
-        Assert.assertThat(iterable, Matchers.<K>emptyIterable());
+    public static <K> void assertEmptyList(List<K> iterable) {
+        Assert.assertEquals(iterable, Collections.emptyList());
+    }
+
+    public static <K> void assertEmptySet(Set<K> iterable) {
+        Assert.assertEquals(iterable, Collections.emptySet());
     }
 }

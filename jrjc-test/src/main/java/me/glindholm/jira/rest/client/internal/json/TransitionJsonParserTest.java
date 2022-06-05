@@ -16,10 +16,10 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.api.domain.Transition;
-import com.google.common.collect.Iterables;
 import org.junit.Assert;
 import org.junit.Test;
+
+import me.glindholm.jira.rest.client.api.domain.Transition;
 
 public class TransitionJsonParserTest {
     @Test
@@ -27,9 +27,9 @@ public class TransitionJsonParserTest {
         final TransitionJsonParser parser = new TransitionJsonParser();
 
         final Transition transition = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/transition/valid.json"), 5);
-        Assert.assertEquals(4, Iterables.size(transition.getFields()));
-        Assert.assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"), Iterables.getLast(transition
-                .getFields()));
+        Assert.assertEquals(4, transition.getFields().size());
+        Assert.assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"),
+                transition.getFields().get(transition.getFields().size() - 1));
         Assert.assertEquals(5, transition.getId());
     }
 }

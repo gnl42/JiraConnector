@@ -20,6 +20,7 @@ import static me.glindholm.jira.rest.client.api.IssueRestClient.Expandos.SCHEMA;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -33,7 +34,7 @@ import com.atlassian.httpclient.api.HttpClient;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
@@ -92,7 +93,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     @Override
     public Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable Set<String> fields)
             throws URISyntaxException {
-        final Iterable<String> expandosValues = Iterables.transform(ImmutableList.of(SCHEMA, NAMES), EXPANDO_TO_PARAM);
+        final List<String> expandosValues = Lists.transform(ImmutableList.of(SCHEMA, NAMES), EXPANDO_TO_PARAM);
         final String notNullJql = StringUtils.defaultString(jql);
         if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
             return searchJqlImplPost(maxResults, startAt, expandosValues, notNullJql, fields);
@@ -101,7 +102,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
         }
     }
 
-    private Promise<SearchResult> searchJqlImplGet(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql,
+    private Promise<SearchResult> searchJqlImplGet(@Nullable Integer maxResults, @Nullable Integer startAt, List<String> expandosValues, String jql,
             @Nullable Set<String> fields) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(searchUri)
                 .addParameter(JQL_ATTRIBUTE, jql)
@@ -122,7 +123,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
         }
     }
 
-    private Promise<SearchResult> searchJqlImplPost(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql, @Nullable Set<String> fields) {
+    private Promise<SearchResult> searchJqlImplPost(@Nullable Integer maxResults, @Nullable Integer startAt, List<String> expandosValues, String jql, @Nullable Set<String> fields) {
         final JSONObject postEntity = new JSONObject();
 
         try {
@@ -141,7 +142,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     }
 
     @Override
-    public Promise<Iterable<Filter>> getFavouriteFilters() {
+    public Promise<List<Filter>> getFavouriteFilters() {
         return getAndParse(favouriteUri, filtersParser);
     }
 

@@ -26,7 +26,7 @@ import com.atlassian.jira.rest.client.api.domain.EntityHelper;
 import com.atlassian.jira.rest.client.api.domain.input.ComponentInput;
 import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityByName;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_4_4;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.collection.IsListContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -73,7 +73,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
     @Test
     public void testGetInvalidComponent() throws Exception {
-        final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST").claim()
+        final BasicComponent basicComponent = Lists.get(client.getProjectClient().getProject("TST").claim()
                 .getComponents(), 0);
         final String uriForUnexistingComponent = basicComponent.getSelf().toString() + "1234";
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The component with id "
@@ -87,7 +87,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
     @Test
     public void testGetComponentFromRestrictedProject() throws Exception {
-        final BasicComponent basicComponent = Iterables.getOnlyElement(client.getProjectClient().getProject("RST").claim()
+        final BasicComponent basicComponent = Lists.getOnlyElement(client.getProjectClient().getProject("RST").claim()
                 .getComponents());
         assertEquals("One Great Component", client.getComponentClient().getComponent(basicComponent.getSelf()).claim().getName());
 
@@ -116,10 +116,10 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @Test
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testCreateAndRemoveComponent() {
-        final Iterable<BasicComponent> components = client.getProjectClient().getProject("TST").claim().getComponents();
-        assertEquals(2, Iterables.size(components));
-        final BasicComponent basicComponent = Iterables.get(components, 0);
-        final BasicComponent basicComponent2 = Iterables.get(components, 1);
+        final List<BasicComponent> components = client.getProjectClient().getProject("TST").claim().getComponents();
+        assertEquals(2, Lists.size(components));
+        final BasicComponent basicComponent = Lists.get(components, 0);
+        final BasicComponent basicComponent2 = Lists.get(components, 1);
         final String componentName = "my component";
         final ComponentInput componentInput = new ComponentInput(componentName, "a description", null, null);
         final Component component = client.getComponentClient().createComponent("TST", componentInput).claim();
@@ -140,9 +140,9 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @Test
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testCreateAndRemoveComponentAsUnauthorizedUsers() {
-        final Iterable<BasicComponent> components = client.getProjectClient().getProject("TST").claim().getComponents();
-        assertEquals(2, Iterables.size(components));
-        final BasicComponent basicComponent = Iterables.get(components, 0);
+        final List<BasicComponent> components = client.getProjectClient().getProject("TST").claim().getComponents();
+        assertEquals(2, Lists.size(components));
+        final BasicComponent basicComponent = Lists.get(components, 0);
 
         final ComponentInput componentInput = new ComponentInput("my component", "a description", null, null);
         setUser1();
@@ -240,7 +240,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @Test
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testUpdateComponent() {
-        final BasicComponent basicComponent = Iterables.get(client.getProjectClient().getProject("TST").claim()
+        final BasicComponent basicComponent = Lists.get(client.getProjectClient().getProject("TST").claim()
                 .getComponents(), 0);
         final Component component = client.getComponentClient().getComponent(basicComponent.getSelf()).claim();
         final String newName = basicComponent.getName() + "updated";
@@ -307,7 +307,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
         });
 
         setAdmin();
-        final BasicComponent restrictedComponent = Iterables.getOnlyElement(client.getProjectClient().getProject("RST").claim()
+        final BasicComponent restrictedComponent = Lists.getOnlyElement(client.getProjectClient().getProject("RST").claim()
                 .getComponents());
         setUser1();
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ?
@@ -339,7 +339,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
 
     private void assertProjectHasComponents(String... names) {
-        assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim().getComponents(),
+        assertThat(Lists.transform(client.getProjectClient().getProject("TST").claim().getComponents(),
                 EntityHelper.GET_ENTITY_NAME_FUNCTION), containsInAnyOrder(names));
     }
 

@@ -23,7 +23,7 @@ import me.glindholm.jira.rest.client.api.AddressableEntity;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.hamcrest.collection.IsListContainingInAnyOrder;
 
 import java.net.URI;
 import java.util.List;
@@ -40,11 +40,11 @@ public class AddressableEntityMatchers {
         };
     }
 
-    public static Matcher<Iterable<? extends AddressableEntity>> entitiesWithSelf(URI... uris) {
+    public static Matcher<List<? extends AddressableEntity>> entitiesWithSelf(URI... uris) {
         final List<Matcher<? super AddressableEntity>> matchers = Lists.newArrayListWithCapacity(uris.length);
         for (URI uri : uris) {
             matchers.add(withSelf(uri));
         }
-        return IsIterableContainingInAnyOrder.containsInAnyOrder(matchers);
+        return IsListContainingInAnyOrder.containsInAnyOrder(matchers);
     }
 }

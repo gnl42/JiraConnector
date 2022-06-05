@@ -17,6 +17,7 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.apache.hc.core5.net.URIBuilder;
 
@@ -59,7 +60,7 @@ public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClien
     }
 
     @Override
-    public Promise<Iterable<BasicProject>> getAllProjects() throws URISyntaxException {
+    public Promise<List<BasicProject>> getAllProjects() throws URISyntaxException {
         final URI uri = new URIBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).build();
         return getAndParse(uri, basicProjectsJsonParser);
     }

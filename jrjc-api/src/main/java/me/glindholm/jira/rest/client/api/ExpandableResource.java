@@ -16,11 +16,13 @@
 
 package me.glindholm.jira.rest.client.api;
 
+import java.util.List;
+
 /**
  * TODO: Document this class / interface here
  *
  * @since v0.1
  */
 public interface ExpandableResource {
-    Iterable<String> getExpandos();
+    List<String> getExpandos();
 }

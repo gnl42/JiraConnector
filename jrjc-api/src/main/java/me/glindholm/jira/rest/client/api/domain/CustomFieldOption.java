@@ -19,6 +19,7 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -34,11 +35,11 @@ public class CustomFieldOption implements Serializable {
     private final URI self;
     private final Long id;
     private final String value;
-    private final Iterable<CustomFieldOption> children;
+    private final List<CustomFieldOption> children;
     @Nullable
     private final CustomFieldOption child;
 
-    public CustomFieldOption(Long id, URI self, String value, Iterable<CustomFieldOption> children, @Nullable CustomFieldOption child) {
+    public CustomFieldOption(Long id, URI self, String value, List<CustomFieldOption> children, @Nullable CustomFieldOption child) {
         this.value = value;
         this.id = id;
         this.self = self;
@@ -58,7 +59,7 @@ public class CustomFieldOption implements Serializable {
         return value;
     }
 
-    public Iterable<CustomFieldOption> getChildren() {
+    public List<CustomFieldOption> getChildren() {
         return children;
     }
 

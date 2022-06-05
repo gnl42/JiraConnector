@@ -30,7 +30,7 @@ import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ import java.net.URISyntaxException;
 import java.util.Iterator;
 
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.collection.IsListContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -83,8 +83,8 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
         assertEquals("TST", project.getKey());
         assertEquals(Long.valueOf(10000), project.getId());
         assertEquals(IntegrationTestUtil.USER_ADMIN_60, project.getLead());
-        assertEquals(2, Iterables.size(project.getVersions()));
-        assertEquals(2, Iterables.size(project.getComponents()));
+        assertEquals(2, Lists.size(project.getVersions()));
+        assertEquals(2, Lists.size(project.getComponents()));
         final List<IssueType> issueTypes = project.getIssueTypes();
         if (isJira4x4OrNewer()) {
             assertTrue(issueTypes.isSupported());
@@ -154,9 +154,9 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
             return;
         }
 
-        final Iterable<BasicProject> projects = client.getProjectClient().getAllProjects().claim();
-        assertEquals(4, Iterables.size(projects));
-        final BasicProject tst = Iterables.find(projects, new Predicate<BasicProject>() {
+        final List<BasicProject> projects = client.getProjectClient().getAllProjects().claim();
+        assertEquals(4, Lists.size(projects));
+        final BasicProject tst = Lists.find(projects, new Predicate<BasicProject>() {
             @Override
             public boolean apply(@Nullable BasicProject input) {
                 return input.getKey().equals("TST");
@@ -165,10 +165,10 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
         assertTrue(tst.getSelf().toString().contains(jiraRestRootUri.toString()));
 
         setAnonymousMode();
-        final Iterable<BasicProject> anonymouslyAccessibleProjects = client.getProjectClient().getAllProjects().claim();
-        assertEquals(2, Iterables.size(anonymouslyAccessibleProjects));
+        final List<BasicProject> anonymouslyAccessibleProjects = client.getProjectClient().getAllProjects().claim();
+        assertEquals(2, Lists.size(anonymouslyAccessibleProjects));
 
-        final Iterable<String> projectsKeys = Iterables
+        final List<String> projectsKeys = Lists
                 .transform(anonymouslyAccessibleProjects, new Function<BasicProject, String>() {
                     @Override
                     public String apply(BasicProject project) {
@@ -178,7 +178,7 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
         Assert.assertThat(projectsKeys, containsInAnyOrder("ANNON", "ANONEDIT"));
 
         setUser1();
-        assertEquals(3, Iterables.size(client.getProjectClient().getAllProjects().claim()));
+        assertEquals(3, Lists.size(client.getProjectClient().getAllProjects().claim()));
     }
 
     private boolean isGetAllProjectsSupported() {
@@ -188,8 +188,8 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
     @Test
     @JiraBuildNumberDependent(BN_JIRA_5)
     public void testGetPriorities() {
-        final Iterable<Priority> priorities = client.getMetadataClient().getPriorities().claim();
-        assertEquals(5, Iterables.size(priorities));
+        final List<Priority> priorities = client.getMetadataClient().getPriorities().claim();
+        assertEquals(5, Lists.size(priorities));
 
         final Priority priority = findEntityBySelfAddressSuffix(priorities, "/1");
         assertEquals(Long.valueOf(1), priority.getId());
@@ -201,8 +201,8 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
     @Test
     @JiraBuildNumberDependent(BN_JIRA_5)
     public void testGetIssueTypes() {
-        final Iterable<IssueType> issueTypes = client.getMetadataClient().getIssueTypes().claim();
-        assertEquals(5, Iterables.size(issueTypes));
+        final List<IssueType> issueTypes = client.getMetadataClient().getIssueTypes().claim();
+        assertEquals(5, Lists.size(issueTypes));
 
         final IssueType issueType = findEntityBySelfAddressSuffix(issueTypes, "/5");
         assertEquals("Sub-task", issueType.getName());
@@ -215,16 +215,16 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
     @Test
     @JiraBuildNumberDependent(BN_JIRA_5)
     public void testGetResolutions() {
-        final Iterable<Resolution> resolutions = client.getMetadataClient().getResolutions().claim();
-        assertEquals(5, Iterables.size(resolutions));
+        final List<Resolution> resolutions = client.getMetadataClient().getResolutions().claim();
+        assertEquals(5, Lists.size(resolutions));
         final Resolution resolution = findEntityBySelfAddressSuffix(resolutions, "/1");
         assertEquals("Fixed", resolution.getName());
         assertEquals("A fix for this issue is checked into the tree and tested.", resolution.getDescription());
         assertNotNull(resolution.getSelf());
     }
 
-    private <T extends AddressableEntity> T findEntityBySelfAddressSuffix(final Iterable<T> entities, final String suffix) {
-        return Iterables.find(entities, new Predicate<T>() {
+    private <T extends AddressableEntity> T findEntityBySelfAddressSuffix(final List<T> entities, final String suffix) {
+        return Lists.find(entities, new Predicate<T>() {
             @Override
             public boolean apply(T input) {
                 return input.getSelf().toString().endsWith(suffix);

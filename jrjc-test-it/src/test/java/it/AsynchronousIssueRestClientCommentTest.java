@@ -24,7 +24,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,8 +99,8 @@ public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronous
         assertFalse(hasComment(issue.getComments(), addedComment.getId()));
     }
 
-    private boolean hasComment(final Iterable<Comment> comments, final Long id) {
-        return Iterables.filter(comments, new Predicate<Comment>() {
+    private boolean hasComment(final List<Comment> comments, final Long id) {
+        return Lists.filter(comments, new Predicate<Comment>() {
             @Override
             public boolean apply(Comment input) {
                 return Objects.equals(input.getId(), id);
@@ -118,7 +118,7 @@ public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronous
         final Issue issueWithComments = issueClient.getIssue(issueKey).claim();
         final List<Comment> newComments = Lists.newArrayList(issueWithComments.getComments());
         newComments.removeAll(initialComments);
-        assertEquals(1, Iterables.size(newComments));
+        assertEquals(1, Lists.size(newComments));
         Comment addedComment = newComments.get(0);
         assertEquals(comment.getBody(), addedComment.getBody());
         assertEquals(comment.getVisibility(), addedComment.getVisibility());

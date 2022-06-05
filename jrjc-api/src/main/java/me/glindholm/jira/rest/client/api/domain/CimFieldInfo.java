@@ -18,6 +18,7 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,13 +46,13 @@ public class CimFieldInfo implements Serializable, NamedEntity, IdentifiableEnti
     private final FieldSchema schema;
     private final Set<StandardOperation> operations;
     @Nullable
-    private final Iterable<Object> allowedValues;
+    private final List<Object> allowedValues;
     @Nullable
     private final URI autoCompleteUri;
 
 
     public CimFieldInfo(String id, boolean required, @Nullable String name, FieldSchema schema,
-            Set<StandardOperation> operations, @Nullable Iterable<Object> allowedValues, @Nullable URI autoCompleteUri) {
+            Set<StandardOperation> operations, @Nullable List<Object> allowedValues, @Nullable URI autoCompleteUri) {
         this.id = id;
         this.required = required;
         this.name = name;
@@ -100,7 +101,7 @@ public class CimFieldInfo implements Serializable, NamedEntity, IdentifiableEnti
      * @return list of allowed values.
      */
     @Nullable
-    public Iterable<Object> getAllowedValues() {
+    public List<Object> getAllowedValues() {
         return allowedValues;
     }
 

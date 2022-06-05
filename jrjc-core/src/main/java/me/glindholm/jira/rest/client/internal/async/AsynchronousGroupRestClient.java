@@ -17,6 +17,7 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -54,12 +55,12 @@ public class AsynchronousGroupRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Iterable<Group>> findGroups() throws URISyntaxException {
+    public Promise<List<Group>> findGroups() throws URISyntaxException {
         return findGroups(null, null, null, null);
     }
 
     @Override
-    public Promise<Iterable<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
+    public Promise<List<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
             throws URISyntaxException {
         URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(GROUPS_URI_PREFIX).appendPath(PICKER_URI_PREFIX);
 

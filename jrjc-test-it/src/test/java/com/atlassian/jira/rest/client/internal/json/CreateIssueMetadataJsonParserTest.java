@@ -27,11 +27,11 @@ import com.atlassian.jira.rest.client.api.domain.FieldSchema;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.StandardOperation;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.hamcrest.collection.IsListContainingInAnyOrder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
@@ -50,11 +50,11 @@ public class CreateIssueMetadataJsonParserTest {
     @Test
     public void testParse() throws JSONException {
         final CreateIssueMetadataJsonParser parser = new CreateIssueMetadataJsonParser();
-        final Iterable<CimProject> createMetaProjects = parser.parse(
+        final List<CimProject> createMetaProjects = parser.parse(
                 ResourceUtil.getJsonObjectFromResource("/json/createmeta/valid.json")
         );
 
-        Assert.assertEquals(4, Iterables.size(createMetaProjects));
+        Assert.assertEquals(4, Lists.size(createMetaProjects));
 
         // test first project
         final CimProject project = createMetaProjects.iterator().next();
@@ -68,7 +68,7 @@ public class CreateIssueMetadataJsonParserTest {
 
 
         // check some issue types
-        Assert.assertThat(project.getIssueTypes(), IsIterableContainingInAnyOrder.containsInAnyOrder(
+        Assert.assertThat(project.getIssueTypes(), IsListContainingInAnyOrder.containsInAnyOrder(
                 new CimIssueType(toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false,
                         "A problem which impairs or prevents the functions of the product.", toUri("http://localhost:2990/jira/images/icons/bug.gif"),
                         Lists.<String, CimFieldInfo>emptyMap()),
@@ -90,18 +90,18 @@ public class CreateIssueMetadataJsonParserTest {
     @Test
     public void testParseWithFieldsExpanded() throws JSONException {
         final CreateIssueMetadataJsonParser parser = new CreateIssueMetadataJsonParser();
-        final Iterable<CimProject> createMetaProjects = parser.parse(
+        final List<CimProject> createMetaProjects = parser.parse(
                 ResourceUtil.getJsonObjectFromResource("/json/createmeta/valid-with-fields-expanded.json")
         );
 
-        Assert.assertEquals(4, Iterables.size(createMetaProjects));
+        Assert.assertEquals(4, Lists.size(createMetaProjects));
 
         // get project with issue types expanded
         final CimProject project = EntityHelper.findEntityByName(
                 createMetaProjects, "Anonymous Editable Project"
         );
         Assert.assertNotNull(project);
-        Assert.assertEquals(5, Iterables.size(project.getIssueTypes()));
+        Assert.assertEquals(5, Lists.size(project.getIssueTypes()));
 
         // get issue type and check if fields was parsed successfully
         final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
@@ -121,8 +121,8 @@ public class CreateIssueMetadataJsonParserTest {
         final CimFieldInfo cf1001 = issueTypeFields.get("customfield_10001");
         assertEquals(new FieldSchema("string", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons", 10001L), cf1001
                 .getSchema());
-        Assert.assertEquals(3, Iterables.size(cf1001.getAllowedValues()));
-        Assert.assertThat(cf1001.getOperations(), IsIterableContainingInAnyOrder.containsInAnyOrder(StandardOperation.SET));
+        Assert.assertEquals(3, Lists.size(cf1001.getAllowedValues()));
+        Assert.assertThat(cf1001.getOperations(), IsListContainingInAnyOrder.containsInAnyOrder(StandardOperation.SET));
 
         // check allowed values types
         assertAllowedValuesOfType(issueTypeFields.get("issuetype").getAllowedValues(), IssueType.class);
@@ -132,7 +132,7 @@ public class CreateIssueMetadataJsonParserTest {
         assertAllowedValuesOfType(issueTypeFields.get("customfield_10010").getAllowedValues(), BasicProject.class);
     }
 
-    private void assertAllowedValuesOfType(final Iterable<Object> allowedValues, Class type) {
+    private void assertAllowedValuesOfType(final List<Object> allowedValues, Class type) {
         Assert.assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.instanceOf(type)));
     }
 }

@@ -21,15 +21,13 @@ import static org.junit.Assert.assertEquals;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
-import org.hamcrest.collection.IsEmptyIterable;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.google.common.collect.Iterables;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
@@ -57,7 +55,7 @@ public class ProjectJsonParserTest {
         Assert.assertNull(project.getName());
         final List<IssueType> issueTypes = project.getIssueTypes();
         Assert.assertFalse(!issueTypes.isEmpty());
-        Assert.assertThat(issueTypes, IsEmptyIterable.<IssueType>emptyIterable());
+        Assert.assertEquals(issueTypes, Collections.emptyList());
     }
 
     @Test
@@ -80,7 +78,7 @@ public class ProjectJsonParserTest {
         final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
         Assert.assertEquals("TST", project.getKey());
         Assert.assertEquals(LocalDate.of(2010, 8, 25).atStartOfDay().toInstant(ZoneOffset.UTC),
-                Iterables.getLast(project.getVersions()).getReleaseDate()
+                project.getVersions().get(project.getVersions().size() - 1).getReleaseDate()
                 .toInstant());
         Assert.assertEquals("Test Project", project.getName());
         final List<IssueType> issueTypes = project.getIssueTypes();
@@ -107,7 +105,7 @@ public class ProjectJsonParserTest {
     @Test
     public void testParseProjectWithBasicRoles() throws JSONException, URISyntaxException {
         final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
-        final Iterable<BasicProjectRole> projectRoles = project.getProjectRoles();
+        final List<BasicProjectRole> projectRoles = project.getProjectRoles();
         Assert.assertThat(projectRoles, IsIterableContainingInAnyOrder.containsInAnyOrder(
                 new BasicProjectRole(TestUtil
                         .toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10000"), "Users"),

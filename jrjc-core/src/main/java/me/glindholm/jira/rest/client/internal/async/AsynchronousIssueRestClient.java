@@ -27,8 +27,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
@@ -46,7 +48,6 @@ import com.atlassian.httpclient.api.Message;
 import com.atlassian.httpclient.api.ResponsePromise;
 import com.google.common.base.Joiner;
 
-import io.atlassian.fugue.Iterables;
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
@@ -149,7 +150,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Iterable<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options) throws URISyntaxException {
+    public Promise<List<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/createmeta");
 
         if (options != null) {
@@ -165,14 +166,14 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
                 uriBuilder.addParameter("issuetypeIds", Joiner.on(",").join(options.issueTypeIds));
             }
 
-            final Iterable<String> issueTypeNames = options.issueTypeNames;
+            final List<String> issueTypeNames = options.issueTypeNames;
             if (issueTypeNames != null) {
                 for (final String name : issueTypeNames) {
                     uriBuilder.addParameter("issuetypeNames", name);
                 }
             }
 
-            final Iterable<String> expandos = options.expandos;
+            final Set<String> expandos = options.expandos;
             if (expandos != null && expandos.iterator().hasNext()) {
                 uriBuilder.addParameter("expand", Joiner.on(",").join(expandos));
             }
@@ -205,9 +206,10 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Issue> getIssue(final String issueKey, final Iterable<Expandos> expand) throws URISyntaxException {
+    public Promise<Issue> getIssue(final String issueKey, final List<Expandos> expand) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri);
-        final Iterable<Expandos> expands = Iterables.concat(DEFAULT_EXPANDS, expand);
+        final List<Expandos> expands = Stream.of(DEFAULT_EXPANDS, expand).collect(ArrayList::new, List::addAll, List::addAll);
+        //        Lists.concat(DEFAULT_EXPANDS, expand);
         uriBuilder.appendPath("issue").appendPath(issueKey).addParameter("expand",
                 StreamSupport.stream(expands.spliterator(), false).map(EXPANDO_TO_PARAM).collect(Collectors.joining(",")));
         return getAndParse(uriBuilder.build(), issueParser);
@@ -229,8 +231,8 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Iterable<Transition>> getTransitions(final URI transitionsUri) {
-        return callAndParse(client().newRequest(transitionsUri).get(), (ResponseHandler<Iterable<Transition>>) response -> {
+    public Promise<List<Transition>> getTransitions(final URI transitionsUri) {
+        return callAndParse(client().newRequest(transitionsUri).get(), (ResponseHandler<List<Transition>>) response -> {
             final JSONObject jsonObject = new JSONObject(response.getEntity());
             if (jsonObject.has("transitions")) {
                 return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
@@ -256,7 +258,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Iterable<Transition>> getTransitions(final Issue issue) throws URISyntaxException {
+    public Promise<List<Transition>> getTransitions(final Issue issue) throws URISyntaxException {
         if (issue.getTransitionsUri() != null) {
             return getTransitions(issue.getTransitionsUri());
         } else {
@@ -283,7 +285,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
                     jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo()).generate(transitionInput.getComment()));
                 }
             }
-            final Iterable<FieldInput> fields = transitionInput.getFields();
+            final List<FieldInput> fields = transitionInput.getFields();
             final JSONObject fieldsJs = new IssueUpdateJsonGenerator().generate(fields);
             if (fieldsJs.keys().hasNext()) {
                 jsonObject.put("fields", fieldsJs);

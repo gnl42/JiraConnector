@@ -21,10 +21,10 @@ import com.atlassian.jira.rest.client.api.List;
 import com.atlassian.jira.rest.client.api.domain.BasicProjectRole;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.Project;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
-import org.hamcrest.collection.IsEmptyIterable;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.hamcrest.collection.IsEmptyList;
+import org.hamcrest.collection.IsListContainingInAnyOrder;
 import org.joda.time.DateMidnight;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,14 +47,14 @@ public class ProjectJsonParserTest {
         Assert.assertEquals("http://example.com", project.getUri().toString());
         Assert.assertEquals("TST", project.getKey());
         Assert.assertEquals(Long.valueOf(10000), project.getId());
-        Assert.assertThat(project.getVersions(), IsIterableContainingInAnyOrder
+        Assert.assertThat(project.getVersions(), IsListContainingInAnyOrder
                 .containsInAnyOrder(TestConstants.VERSION_1, TestConstants.VERSION_1_1));
-        Assert.assertThat(project.getComponents(), IsIterableContainingInAnyOrder
+        Assert.assertThat(project.getComponents(), IsListContainingInAnyOrder
                 .containsInAnyOrder(TestConstants.BCOMPONENT_A, TestConstants.BCOMPONENT_B));
         Assert.assertNull(project.getName());
         final List<IssueType> issueTypes = project.getIssueTypes();
         Assert.assertFalse(issueTypes.isSupported());
-        Assert.assertThat(issueTypes, IsEmptyIterable.<IssueType>emptyIterable());
+        Assert.assertThat(issueTypes, IsEmptyList.<IssueType>emptyList());
     }
 
     @Test
@@ -76,12 +76,12 @@ public class ProjectJsonParserTest {
     public void testParseProjectInJira5x0() throws JSONException, URISyntaxException {
         final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
         Assert.assertEquals("TST", project.getKey());
-        Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Iterables.getLast(project.getVersions()).getReleaseDate()
+        Assert.assertEquals(new DateMidnight(2010, 8, 25).toInstant(), Lists.getLast(project.getVersions()).getReleaseDate()
                 .toInstant());
         Assert.assertEquals("Test Project", project.getName());
         final List<IssueType> issueTypes = project.getIssueTypes();
         Assert.assertTrue(issueTypes.isSupported());
-        Assert.assertThat(issueTypes, IsIterableContainingInAnyOrder.containsInAnyOrder(
+        Assert.assertThat(issueTypes, IsListContainingInAnyOrder.containsInAnyOrder(
                 new IssueType(TestUtil
                         .toUri("http://localhost:2990/jira/rest/api/latest/issuetype/1"), 1L, "Bug", false, "A problem which impairs or prevents the functions of the product.", TestUtil
                         .toUri("http://localhost:2990/jira/images/icons/bug.gif")),
@@ -103,8 +103,8 @@ public class ProjectJsonParserTest {
     @Test
     public void testParseProjectWithBasicRoles() throws JSONException, URISyntaxException {
         final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/project-jira-5-0.json"));
-        final Iterable<BasicProjectRole> projectRoles = project.getProjectRoles();
-        Assert.assertThat(projectRoles, IsIterableContainingInAnyOrder.containsInAnyOrder(
+        final List<BasicProjectRole> projectRoles = project.getProjectRoles();
+        Assert.assertThat(projectRoles, IsListContainingInAnyOrder.containsInAnyOrder(
                 new BasicProjectRole(TestUtil
                         .toUri("http://localhost:2990/jira/rest/api/latest/project/TST/role/10000"), "Users"),
                 new BasicProjectRole(TestUtil

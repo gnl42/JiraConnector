@@ -39,7 +39,7 @@ public class Watchers extends BasicWatchers {
         this.users = users;
     }
 
-    public Iterable<BasicUser> getUsers() {
+    public List<BasicUser> getUsers() {
         return users;
     }
 

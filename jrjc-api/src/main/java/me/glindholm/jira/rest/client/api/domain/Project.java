@@ -35,7 +35,7 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     private static final long serialVersionUID = 1L;
 
     @Nullable
-    private final Iterable<String> expandos;
+    private final List<String> expandos;
     @Nullable
     private final String description;
     private final BasicUser lead;
@@ -53,7 +53,7 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     private final List<IssueType> issueTypes;
     private final List<BasicProjectRole> projectRoles;
 
-    public Project(final Iterable<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
+    public Project(final List<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
             List<Version> versions, List<BasicComponent> components,
             List<IssueType> issueTypes, List<BasicProjectRole> projectRoles) {
         super(self, key, id, name);
@@ -93,14 +93,14 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     /**
      * @return versions defined for this project
      */
-    public Iterable<Version> getVersions() {
+    public List<Version> getVersions() {
         return versions;
     }
 
     /**
      * @return components defined for this project
      */
-    public Iterable<BasicComponent> getComponents() {
+    public List<BasicComponent> getComponents() {
         return components;
     }
 
@@ -116,12 +116,12 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     /**
      * @return basic definition of this project's roles.
      */
-    public Iterable<BasicProjectRole> getProjectRoles() {
+    public List<BasicProjectRole> getProjectRoles() {
         return projectRoles;
     }
 
     @Override
-    public Iterable<String> getExpandos() {
+    public List<String> getExpandos() {
         return expandos;
     }
 

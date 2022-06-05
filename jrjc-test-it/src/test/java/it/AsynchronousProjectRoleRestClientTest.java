@@ -27,7 +27,7 @@ import com.atlassian.jira.rest.client.internal.ServerVersionConstants;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -43,7 +43,7 @@ import java.net.URI;
 
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.buildUserAvatarUri;
 import static com.atlassian.jira.rest.client.test.matchers.RestClientExceptionMatchers.rceWithSingleError;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.collection.IsListContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -74,7 +74,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
         assertNotNull(role);
         assertEquals("Users", role.getName());
         assertEquals("A project role that represents users in a project", role.getDescription());
-        final RoleActor actor = Iterables.getOnlyElement(role.getActors());
+        final RoleActor actor = Lists.getOnlyElement(role.getActors());
         assertEquals("jira-users", actor.getDisplayName());
         assertEquals("atlassian-group-role-actor", actor.getType());
         assertEquals("jira-users", actor.getName());
@@ -89,7 +89,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
         assertNotNull(role);
         assertEquals("Users", role.getName());
         assertEquals("A project role that represents users in a project", role.getDescription());
-        final RoleActor actor = Iterables.getOnlyElement(role.getActors());
+        final RoleActor actor = Lists.getOnlyElement(role.getActors());
         assertEquals("Administrator", actor.getDisplayName());
         assertEquals("atlassian-user-role-actor", actor.getType());
         assertEquals("admin", actor.getName());
@@ -120,7 +120,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
         assertNotNull(role);
         assertEquals("Users", role.getName());
         assertEquals("A project role that represents users in a project", role.getDescription());
-        final RoleActor actor = Iterables.getOnlyElement(role.getActors());
+        final RoleActor actor = Lists.getOnlyElement(role.getActors());
         assertEquals("jira-users", actor.getDisplayName());
         assertEquals("atlassian-group-role-actor", actor.getType());
         assertEquals("jira-users", actor.getName());
@@ -141,9 +141,9 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
 
     private void testGetAllRolesForProject(String projectIdOrKey) {
         final Project anonymousProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).claim();
-        final Iterable<ProjectRole> projectRoles = client.getProjectRolesRestClient().getRoles(anonymousProject.getSelf())
+        final List<ProjectRole> projectRoles = client.getProjectRolesRestClient().getRoles(anonymousProject.getSelf())
                 .claim();
-        final Iterable<ProjectRole> projectRolesWithoutSelf = Iterables.transform(
+        final List<ProjectRole> projectRolesWithoutSelf = Lists.transform(
                 projectRoles,
                 new Function<ProjectRole, ProjectRole>() {
                     @Override

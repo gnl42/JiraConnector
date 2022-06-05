@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.Votes;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,8 +30,8 @@ public class VotesJsonParserTest {
     public void testParse() throws Exception {
         final VotesJsonParser parser = new VotesJsonParser();
         final Votes votes = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/votes/complete.json"));
-        Assert.assertEquals(2, Iterables.size(votes.getUsers()));
-        Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, Iterables.get(votes.getUsers(), 0));
+        Assert.assertEquals(2, Lists.size(votes.getUsers()));
+        Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, Lists.get(votes.getUsers(), 0));
         Assert.assertFalse(votes.hasVoted());
         Assert.assertEquals(2, votes.getVotes());
         Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes"), votes.getSelf());

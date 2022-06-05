@@ -21,7 +21,7 @@ import com.atlassian.jira.rest.client.api.domain.Resolution;
 import com.atlassian.jira.rest.client.api.domain.SecurityLevel;
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.hamcrest.collection.IsListContainingInAnyOrder;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 
@@ -44,9 +44,9 @@ public class CimFieldsInfoMapJsonParserTest {
                 getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-array-of-array-bug.json")
         );
 
-        assertElementsNotIterable(fieldsInfo.get("customfield_10010").getAllowedValues());
-        assertElementsNotIterable(fieldsInfo.get("customfield_10020").getAllowedValues());
-        assertElementsNotIterable(fieldsInfo.get("customfield_10021").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10010").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10020").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10021").getAllowedValues());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class CimFieldsInfoMapJsonParserTest {
                 getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-all-issue-types.json")
         );
 
-        assertThat(fieldsInfo.get("security").getAllowedValues(), IsIterableContainingInAnyOrder.<Object>containsInAnyOrder(
+        assertThat(fieldsInfo.get("security").getAllowedValues(), IsListContainingInAnyOrder.<Object>containsInAnyOrder(
                 new SecurityLevel(URI.create("http://localhost:2990/jira/rest/api/2/securitylevel/10000"), 10000L,
                         "internal", "For internals only"),
                 new SecurityLevel(URI.create("http://localhost:2990/jira/rest/api/2/securitylevel/10001"), 10001L,
@@ -71,7 +71,7 @@ public class CimFieldsInfoMapJsonParserTest {
                 getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-all-issue-types.json")
         );
 
-        assertThat(fieldsInfo.get("resolution").getAllowedValues(), IsIterableContainingInAnyOrder.<Object>containsInAnyOrder(
+        assertThat(fieldsInfo.get("resolution").getAllowedValues(), IsListContainingInAnyOrder.<Object>containsInAnyOrder(
                 new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/1"), 1L, "Fixed", null),
                 new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/2"), 2L, "Won't Fix", null),
                 new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/3"), 3L, "Duplicate", null),
@@ -87,9 +87,9 @@ public class CimFieldsInfoMapJsonParserTest {
                 getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-array-of-array-bug-fixed.json")
         );
 
-        assertElementsNotIterable(fieldsInfo.get("customfield_10010").getAllowedValues());
-        assertElementsNotIterable(fieldsInfo.get("customfield_10020").getAllowedValues());
-        assertElementsNotIterable(fieldsInfo.get("customfield_10021").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10010").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10020").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10021").getAllowedValues());
     }
 
     @Test
@@ -146,7 +146,7 @@ public class CimFieldsInfoMapJsonParserTest {
         assertThat(fieldsInfo.get("customfield_10011").getName(), equalTo("project2"));
     }
 
-    private void assertElementsNotIterable(final Iterable<Object> allowedValues) {
-        assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.not(Matchers.instanceOf(Iterable.class))));
+    private void assertElementsNotList(final List<Object> allowedValues) {
+        assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.not(Matchers.instanceOf(List.class))));
     }
 }

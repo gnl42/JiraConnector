@@ -51,14 +51,14 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsIterableWithSize;
+import org.hamcrest.collection.IsListWithSize;
 import java.time.OffsetDateTime;
 import org.junit.Before;
 import org.junit.Rule;
@@ -77,9 +77,9 @@ import java.util.Set;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityByName;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6;
-import static com.google.common.collect.Iterables.toArray;
+import static com.google.common.collect.Lists.toArray;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.collection.IsListContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.IsListContaining.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -111,22 +111,22 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
     public void testCreateIssue() throws JSONException {
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
-        final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
 
         // select project and issue
-        assertEquals(1, Iterables.size(metadataProjects));
+        assertEquals(1, Lists.size(metadataProjects));
         final CimProject project = metadataProjects.iterator().next();
         final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Bug");
 
         // grab the first component
-        final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForComponents);
         assertTrue(allowedValuesForComponents.iterator().hasNext());
         final BasicComponent component = (BasicComponent) allowedValuesForComponents.iterator().next();
 
         // grab the first priority
-        final Iterable<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForPriority);
         assertTrue(allowedValuesForPriority.iterator().hasNext());
         final BasicPriority priority = (BasicPriority) allowedValuesForPriority.iterator().next();
@@ -172,10 +172,10 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // TODO we need some users for integration tests!
         assertEquals(actualAssignee.getEmailAddress(), "wojciech.seliga@spartez.com");
 
-        final Iterable<String> actualAffectedVersionsNames = EntityHelper.toNamesList(createdIssue.getAffectedVersions());
+        final List<String> actualAffectedVersionsNames = EntityHelper.toNamesList(createdIssue.getAffectedVersions());
         assertThat(affectedVersionsNames, containsInAnyOrder(toArray(actualAffectedVersionsNames, String.class)));
 
-        final Iterable<String> actualFixVersionsNames = EntityHelper.toNamesList(createdIssue.getFixVersions());
+        final List<String> actualFixVersionsNames = EntityHelper.toNamesList(createdIssue.getFixVersions());
         assertThat(fixVersionsNames, containsInAnyOrder(toArray(actualFixVersionsNames, String.class)));
 
         assertTrue(createdIssue.getComponents().iterator().hasNext());
@@ -191,7 +191,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 
         // check value of MultiUserSelect field
         final Object multiUserValue = createdIssue.getField(multiUserCustomFieldId).getValue();
-        // ideally this should be Iterable<User>, but for now it's just an JSONArray...
+        // ideally this should be List<User>, but for now it's just an JSONArray...
         assertThat(multiUserValue, Matchers.instanceOf(JSONArray.class));
         final JSONArray multiUserArray = (JSONArray) multiUserValue;
         final List<String> actualMultiUserNames = Lists.newArrayListWithCapacity(multiUserArray.length());
@@ -208,22 +208,22 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
     public void testCreateSubtask() {
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
-        final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
 
         // select project and issue
-        assertEquals(1, Iterables.size(metadataProjects));
+        assertEquals(1, Lists.size(metadataProjects));
         final CimProject project = metadataProjects.iterator().next();
         final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 
         // grab the first component
-        final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForComponents);
         assertTrue(allowedValuesForComponents.iterator().hasNext());
         final BasicComponent component = (BasicComponent) allowedValuesForComponents.iterator().next();
 
         // grab the first priority
-        final Iterable<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForPriority);
         assertTrue(allowedValuesForPriority.iterator().hasNext());
         final BasicPriority priority = (BasicPriority) allowedValuesForPriority.iterator().next();
@@ -265,10 +265,10 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         assertNotNull(actualAssignee);
         assertEquals(assignee.getSelf(), actualAssignee.getSelf());
 
-        final Iterable<String> actualAffectedVersionsNames = EntityHelper.toNamesList(createdIssue.getAffectedVersions());
+        final List<String> actualAffectedVersionsNames = EntityHelper.toNamesList(createdIssue.getAffectedVersions());
         assertThat(affectedVersionsNames, containsInAnyOrder(toArray(actualAffectedVersionsNames, String.class)));
 
-        final Iterable<String> actualFixVersionsNames = EntityHelper.toNamesList(createdIssue.getFixVersions());
+        final List<String> actualFixVersionsNames = EntityHelper.toNamesList(createdIssue.getFixVersions());
         assertThat(fixVersionsNames, containsInAnyOrder(toArray(actualFixVersionsNames, String.class)));
 
         assertTrue(createdIssue.getComponents().iterator().hasNext());
@@ -288,22 +288,22 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
     public void testCreateManySubtasksInGivenOrder() throws NoSuchFieldException, IllegalAccessException {
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
-        final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
 
         // select project and issue
-        assertEquals(1, Iterables.size(metadataProjects));
+        assertEquals(1, Lists.size(metadataProjects));
         final CimProject project = metadataProjects.iterator().next();
         final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 
         // grab the first component
-        final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForComponents);
         assertTrue(allowedValuesForComponents.iterator().hasNext());
         final BasicComponent component = (BasicComponent) allowedValuesForComponents.iterator().next();
 
         // grab the first priority
-        final Iterable<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForPriority);
         assertTrue(allowedValuesForPriority.iterator().hasNext());
         final BasicPriority priority = (BasicPriority) allowedValuesForPriority.iterator().next();
@@ -338,11 +338,11 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 
         // create
         final BulkOperationResult<BasicIssue> createdIssues = issueClient.createIssues(issuesToCreate).claim();
-        assertEquals(summaries.size(), Iterables.size(createdIssues.getIssues()));
-        assertEquals(0, Iterables.size(createdIssues.getErrors()));
+        assertEquals(summaries.size(), Lists.size(createdIssues.getIssues()));
+        assertEquals(0, Lists.size(createdIssues.getErrors()));
 
         //check order
-        final Set<String> createdSummariesOrder = ImmutableSet.copyOf(Iterables.transform(createdIssues
+        final Set<String> createdSummariesOrder = ImmutableSet.copyOf(Lists.transform(createdIssues
                 .getIssues(), new Function<BasicIssue, String>() {
             @Override
             public String apply(final BasicIssue basicIssue) {
@@ -353,7 +353,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         assertEquals(summaries, createdSummariesOrder);
 
         final Issue parentIssue = issueClient.getIssue("TST-1").claim();
-        final Set<String> subtaskKeys = ImmutableSet.copyOf(Iterables.transform(parentIssue
+        final Set<String> subtaskKeys = ImmutableSet.copyOf(Lists.transform(parentIssue
                 .getSubtasks(), new Function<Subtask, String>() {
             @Override
             public String apply(final Subtask subtask) {
@@ -387,22 +387,22 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
     public void testCreateManySubtasksInGivenOrderWithSomeFailing() throws NoSuchFieldException, IllegalAccessException {
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
-        final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
 
         // select project and issue
-        assertEquals(1, Iterables.size(metadataProjects));
+        assertEquals(1, Lists.size(metadataProjects));
         final CimProject project = metadataProjects.iterator().next();
         final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 
         // grab the first component
-        final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForComponents);
         assertTrue(allowedValuesForComponents.iterator().hasNext());
         final BasicComponent component = (BasicComponent) allowedValuesForComponents.iterator().next();
 
         // grab the first priority
-        final Iterable<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForPriority);
         assertTrue(allowedValuesForPriority.iterator().hasNext());
         final BasicPriority priority = (BasicPriority) allowedValuesForPriority.iterator().next();
@@ -448,11 +448,11 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 
         // create
         final BulkOperationResult<BasicIssue> createdIssues = issueClient.createIssues(issuesToCreate).claim();
-        assertEquals(issuecToCreateCount, Iterables.size(createdIssues.getIssues()));
-        assertEquals(issuesInErrorCount, Iterables.size(createdIssues.getErrors()));
+        assertEquals(issuecToCreateCount, Lists.size(createdIssues.getIssues()));
+        assertEquals(issuesInErrorCount, Lists.size(createdIssues.getErrors()));
 
         //check order
-        final Set<String> createdSummariesOrder = ImmutableSet.copyOf(Iterables.transform(createdIssues
+        final Set<String> createdSummariesOrder = ImmutableSet.copyOf(Lists.transform(createdIssues
                 .getIssues(), new Function<BasicIssue, String>() {
             @Override
             public String apply(final BasicIssue basicIssue) {
@@ -463,7 +463,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         assertEquals(expectedSummariesOrder, createdSummariesOrder);
 
         final Issue parentIssue = issueClient.getIssue("TST-1").claim();
-        final Set<String> subtaskKeys = ImmutableSet.copyOf(Iterables.transform(parentIssue
+        final Set<String> subtaskKeys = ImmutableSet.copyOf(Lists.transform(parentIssue
                 .getSubtasks(), new Function<Subtask, String>() {
             @Override
             public String apply(Subtask subtask) {
@@ -498,22 +498,22 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
     public void testCreateManySubtasksInGivenOrderWithAllFailing() throws NoSuchFieldException, IllegalAccessException {
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
-        final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
 
         // select project and issue
-        assertEquals(1, Iterables.size(metadataProjects));
+        assertEquals(1, Lists.size(metadataProjects));
         final CimProject project = metadataProjects.iterator().next();
         final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Sub-task");
 
         // grab the first component
-        final Iterable<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForComponents = issueType.getField(IssueFieldId.COMPONENTS_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForComponents);
         assertTrue(allowedValuesForComponents.iterator().hasNext());
         final BasicComponent component = (BasicComponent) allowedValuesForComponents.iterator().next();
 
         // grab the first priority
-        final Iterable<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
+        final List<Object> allowedValuesForPriority = issueType.getField(IssueFieldId.PRIORITY_FIELD).getAllowedValues();
         assertNotNull(allowedValuesForPriority);
         assertTrue(allowedValuesForPriority.iterator().hasNext());
         final BasicPriority priority = (BasicPriority) allowedValuesForPriority.iterator().next();
@@ -572,11 +572,11 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
     public void testCreateIssueWithOnlyRequiredFields() {
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
-        final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
 
         // select project and issue
-        assertEquals(1, Iterables.size(metadataProjects));
+        assertEquals(1, Lists.size(metadataProjects));
         final CimProject project = metadataProjects.iterator().next();
         final CimIssueType issueType = findEntityByName(project.getIssueTypes(), "Bug");
 
@@ -782,11 +782,11 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
     @Test
     public void testCreateMetaShouldReturnIssueTypeInFieldsListEvenIfIssueTypeIsNotOnCreateIssueScreen() {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Iterable<CimProject> cimProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> cimProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).claim();
 
         final CimProject testProject = findEntityByName(cimProjects, "Project With Create Issue Screen Without Issue Type");
-        assertThat(testProject.getIssueTypes(), IsIterableWithSize.<CimIssueType>iterableWithSize(greaterThanOrEqualTo(5)));
+        assertThat(testProject.getIssueTypes(), IsListWithSize.<CimIssueType>iterableWithSize(greaterThanOrEqualTo(5)));
         for (CimIssueType cimIssueType : testProject.getIssueTypes()) {
             final CimFieldInfo issueType = cimIssueType.getField(IssueFieldId.ISSUE_TYPE_FIELD);
             final String assertMessageIssueTypeNotPresent = String.format(
@@ -795,14 +795,14 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
             assertNotNull(assertMessageIssueTypeNotPresent, issueType);
 
             // check the allowed values
-            final Iterable<Object> allowedValues = issueType.getAllowedValues();
+            final List<Object> allowedValues = issueType.getAllowedValues();
             final String assertMessageAllowedValuesSizeNotMatch = String.format(
                     "We expected exactly one allowed value - the issue type %s (%s) for project  %s (%s)",
                     testProject.getName(), testProject.getKey(), cimIssueType.getName(), cimIssueType.getId());
-            assertEquals(assertMessageAllowedValuesSizeNotMatch, 1, Iterables.size(allowedValues));
+            assertEquals(assertMessageAllowedValuesSizeNotMatch, 1, Lists.size(allowedValues));
 
             //noinspection unchecked
-            final IssueType firstAllowedValue = (IssueType) Iterables.getOnlyElement(allowedValues);
+            final IssueType firstAllowedValue = (IssueType) Lists.getOnlyElement(allowedValues);
             assertEquals(firstAllowedValue.getId(), cimIssueType.getId());
         }
     }
@@ -813,7 +813,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         final IssueRestClient issueClient = client.getIssueClient();
 
         // get project list with fields expanded
-        final Iterable<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
+        final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).claim();
         log.log("Available projects: ");
         for (CimProject p : metadataProjects) {
@@ -856,7 +856,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 
             // choose value for this field
             Object value = null;
-            final Iterable<Object> allowedValues = fieldInfo.getAllowedValues();
+            final List<Object> allowedValues = fieldInfo.getAllowedValues();
             if (allowedValues != null) {
                 log.log("\t\t| field only accepts those values:");
                 for (Object val : allowedValues) {
@@ -868,7 +868,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 
                     if ("com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect".equals(fieldCustomType)) {
                         // select option with children - if any
-                        final Iterable<Object> optionsWithChildren = Iterables.filter(allowedValues, new Predicate<Object>() {
+                        final List<Object> optionsWithChildren = Lists.filter(allowedValues, new Predicate<Object>() {
                             @Override
                             public boolean apply(Object input) {
                                 return ((CustomFieldOption) input).getChildren().iterator().hasNext();

@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 
 /**
@@ -72,9 +72,9 @@ public class ValueTransformerManager implements Serializable, Function<Object, O
      */
     @Override
     public Object apply(@Nullable Object rawInput) {
-        if (rawInput instanceof Iterable) {
-            @SuppressWarnings("unchecked") final Iterable<Object> rawInputObjects = (Iterable<Object>) rawInput;
-            return ImmutableList.copyOf(Iterables.transform(rawInputObjects, this));
+        if (rawInput instanceof List) {
+            @SuppressWarnings("unchecked") final List<Object> rawInputObjects = (List<Object>) rawInput;
+            return ImmutableList.copyOf(Lists.transform(rawInputObjects, this));
         }
 
         for (ValueTransformer valueTransformer : valueTransformers) {

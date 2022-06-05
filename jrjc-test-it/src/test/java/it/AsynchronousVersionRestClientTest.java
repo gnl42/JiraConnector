@@ -29,9 +29,9 @@ import com.atlassian.jira.rest.client.api.domain.input.VersionInputBuilder;
 import com.atlassian.jira.rest.client.api.domain.input.VersionPosition;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import org.hamcrest.collection.IsEmptyIterable;
+import com.google.common.collect.Lists;
+import org.hamcrest.collection.IsEmptyList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,8 +41,8 @@ import java.net.URI;
 
 import static com.atlassian.jira.rest.client.TestUtil.getLastPathSegment;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6;
-import static com.google.common.collect.Iterables.toArray;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static com.google.common.collect.Lists.toArray;
+import static org.hamcrest.collection.IsListContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -60,14 +60,14 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
             return;
         }
 
-        assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim().getVersions(),
+        assertThat(Lists.transform(client.getProjectClient().getProject("TST").claim().getVersions(),
                 new VersionToNameMapper()), containsInAnyOrder("1.1", "1"));
 
         final VersionInput versionInput = VersionInput.create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
         final Version version = client.getVersionRestClient().createVersion(versionInput).claim();
         assertVersionInputAndVersionEquals(versionInput, version);
         assertNotNull(version.getId());
-        assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim()
+        assertThat(Lists.transform(client.getProjectClient().getProject("TST").claim()
                         .getVersions(), new VersionToNameMapper()),
                 containsInAnyOrder("1.1", "1", versionInput.getName()));
 
@@ -157,7 +157,7 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
         if (!isJira4x4OrNewer()) {
             return;
         }
-        final Iterable<Version> versionsInTheBeggining = client.getProjectClient().getProject("TST").claim().getVersions();
+        final List<Version> versionsInTheBeggining = client.getProjectClient().getProject("TST").claim().getVersions();
         final VersionInput versionInput = VersionInput
                 .create("TST", "My newly created version", "A description\nwith\new line", null, false, false);
         final Version version = client.getVersionRestClient().createVersion(versionInput).claim();
@@ -204,7 +204,7 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
         for (Version ver : versionsInTheBeggining) {
             client.getVersionRestClient().removeVersion(ver.getSelf(), null, null).claim();
         }
-        assertThat(client.getProjectClient().getProject("TST").claim().getVersions(), IsEmptyIterable.<Version>emptyIterable());
+        assertThat(client.getProjectClient().getProject("TST").claim().getVersions(), IsEmptyList.<Version>emptyList());
     }
 
     @JiraBuildNumberDependent(value = BN_JIRA_6, condition = LongCondition.LESS_THAN)
@@ -214,13 +214,13 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
             return;
         }
         final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
-        assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1.1"));
-        assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1", "1.1"));
+        assertThat(Lists.transform(issue.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1.1"));
+        assertThat(Lists.transform(issue.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1", "1.1"));
 
         final Version version1 = EntityHelper.findEntityByName(client.getProjectClient().getProject("TST").claim()
                 .getVersions(), "1");
 
-        final Version version = Iterables.getOnlyElement(issue.getFixVersions());
+        final Version version = Lists.getOnlyElement(issue.getFixVersions());
         final URI fakeVersionUri = TestUtil.toUri("http://localhost/version/3432");
         final URI fakeVersionUri2 = TestUtil.toUri("http://localhost/version/34323");
         // @todo expected error code should be rather NOT FOUND in all cases below - see JRA-25045
@@ -243,11 +243,11 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
         // now removing the first version
         client.getVersionRestClient().removeVersion(version.getSelf(), version1.getSelf(), version1.getSelf()).claim();
         final Issue issueAfterVerRemoval = client.getIssueClient().getIssue("TST-2").claim();
-        assertThat(Iterables.transform(issueAfterVerRemoval
+        assertThat(Lists.transform(issueAfterVerRemoval
                 .getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
-        assertThat(Iterables.transform(issueAfterVerRemoval
+        assertThat(Lists.transform(issueAfterVerRemoval
                 .getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
-        assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim()
+        assertThat(Lists.transform(client.getProjectClient().getProject("TST").claim()
                         .getVersions(), new VersionToNameMapper()),
                 containsInAnyOrder("1"));
 
@@ -261,23 +261,23 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
         // now removing the other version
         client.getVersionRestClient().removeVersion(version1.getSelf(), null, null).claim();
         final Issue issueAfter2VerRemoval = client.getIssueClient().getIssue("TST-2").claim();
-        assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IsEmptyIterable
-                .<String>emptyIterable());
-        assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IsEmptyIterable
-                .<String>emptyIterable());
+        assertThat(Lists.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IsEmptyList
+                .<String>emptyList());
+        assertThat(Lists.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IsEmptyList
+                .<String>emptyList());
     }
 
     @JiraBuildNumberDependent(BN_JIRA_6)
     @Test
     public void testDeleteAndMoveVersion() {
         final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
-        assertThat(Iterables.transform(issue.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1.1"));
-        assertThat(Iterables.transform(issue.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1", "1.1"));
+        assertThat(Lists.transform(issue.getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1.1"));
+        assertThat(Lists.transform(issue.getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1", "1.1"));
 
         final Version version1 = EntityHelper.findEntityByName(client.getProjectClient().getProject("TST").claim()
                 .getVersions(), "1");
 
-        final Version version = Iterables.getOnlyElement(issue.getFixVersions());
+        final Version version = Lists.getOnlyElement(issue.getFixVersions());
         final URI fakeVersionUri = TestUtil.toUri("http://localhost/version/3432");
         final URI fakeVersionUri2 = TestUtil.toUri("http://localhost/version/34323");
         // @todo expected error code should be rather NOT FOUND in all cases below - see JRA-25045
@@ -300,11 +300,11 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
         // now removing the first version
         client.getVersionRestClient().removeVersion(version.getSelf(), version1.getSelf(), version1.getSelf()).claim();
         final Issue issueAfterVerRemoval = client.getIssueClient().getIssue("TST-2").claim();
-        assertThat(Iterables.transform(issueAfterVerRemoval
+        assertThat(Lists.transform(issueAfterVerRemoval
                 .getFixVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
-        assertThat(Iterables.transform(issueAfterVerRemoval
+        assertThat(Lists.transform(issueAfterVerRemoval
                 .getAffectedVersions(), new VersionToNameMapper()), containsInAnyOrder("1"));
-        assertThat(Iterables.transform(client.getProjectClient().getProject("TST").claim()
+        assertThat(Lists.transform(client.getProjectClient().getProject("TST").claim()
                         .getVersions(), new VersionToNameMapper()),
                 containsInAnyOrder("1"));
 
@@ -318,10 +318,10 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
         // now removing the other version
         client.getVersionRestClient().removeVersion(version1.getSelf(), null, null).claim();
         final Issue issueAfter2VerRemoval = client.getIssueClient().getIssue("TST-2").claim();
-        assertThat(Iterables.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IsEmptyIterable
-                .<String>emptyIterable());
-        assertThat(Iterables.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IsEmptyIterable
-                .<String>emptyIterable());
+        assertThat(Lists.transform(issueAfter2VerRemoval.getFixVersions(), new VersionToNameMapper()), IsEmptyList
+                .<String>emptyList());
+        assertThat(Lists.transform(issueAfter2VerRemoval.getAffectedVersions(), new VersionToNameMapper()), IsEmptyList
+                .<String>emptyList());
     }
 
     private void assertInvalidMoveToVersion(final URI versionUri, @Nullable final URI moveFixIssuesToVersionUri,
@@ -378,7 +378,7 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
                 .create("TST", "my added version", "a description", null, false, false)).claim();
         final Version v4 = client.getVersionRestClient().createVersion(VersionInput
                 .create("TST", "my added version2", "a description2", null, true, false)).claim();
-        final Version v1 = Iterables.get(client.getProjectClient().getProject("TST").claim().getVersions(), 0);
+        final Version v1 = Lists.get(client.getProjectClient().getProject("TST").claim().getVersions(), 0);
         final String v1n = v1.getName();
         final String v3n = v3.getName();
         final String v4n = v4.getName();
@@ -409,7 +409,7 @@ public class AsynchronousVersionRestClientTest extends AbstractAsynchronousRestC
 
 
     private void assertProjectHasOrderedVersions(String projectKey, String... expectedVersions) {
-        assertEquals(Lists.newArrayList(expectedVersions), Lists.newArrayList(Iterables.transform(client.getProjectClient()
+        assertEquals(Lists.newArrayList(expectedVersions), Lists.newArrayList(Lists.transform(client.getProjectClient()
                 .getProject(projectKey).claim().getVersions(), new VersionToNameMapper())));
     }
 }

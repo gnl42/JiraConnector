@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.Transition;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,8 +27,8 @@ public class TransitionJsonParserTest {
         final TransitionJsonParser parser = new TransitionJsonParser();
 
         final Transition transition = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/transition/valid.json"), 5);
-        Assert.assertEquals(4, Iterables.size(transition.getFields()));
-        Assert.assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"), Iterables.getLast(transition
+        Assert.assertEquals(4, Lists.size(transition.getFields()));
+        Assert.assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"), Lists.getLast(transition
                 .getFields()));
         Assert.assertEquals(5, transition.getId());
     }

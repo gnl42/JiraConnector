@@ -16,10 +16,9 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import com.google.common.collect.Iterables;
 
 import me.glindholm.jira.rest.client.api.IssueRestClient;
 
@@ -29,13 +28,13 @@ import me.glindholm.jira.rest.client.api.IssueRestClient;
  * @since 2.0
  */
 public class Operations {
-    private final Iterable<OperationGroup> linkGroups;
+    private final List<OperationGroup> linkGroups;
 
-    public Operations(final Iterable<OperationGroup> linkGroups) {
+    public Operations(final List<OperationGroup> linkGroups) {
         this.linkGroups = linkGroups;
     }
 
-    public Iterable<OperationGroup> getLinkGroups() {
+    public List<OperationGroup> getLinkGroups() {
         return linkGroups;
     }
 
@@ -66,7 +65,7 @@ public class Operations {
             return false;
         }
         final Operations other = (Operations) obj;
-        return Iterables.elementsEqual(this.linkGroups, other.linkGroups);
+        return linkGroups.equals(other.linkGroups);
     }
 
     @Override

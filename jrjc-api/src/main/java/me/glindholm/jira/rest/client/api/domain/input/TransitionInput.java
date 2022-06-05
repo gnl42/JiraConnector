@@ -79,7 +79,7 @@ public class TransitionInput {
         return comment;
     }
 
-    public Iterable<FieldInput> getFields() {
+    public List<FieldInput> getFields() {
         return fields;
     }
 }

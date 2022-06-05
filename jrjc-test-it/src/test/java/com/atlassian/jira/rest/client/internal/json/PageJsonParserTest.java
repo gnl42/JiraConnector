@@ -2,7 +2,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.Page;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
@@ -21,6 +21,6 @@ public class PageJsonParserTest {
         assertEquals(50, page.getMaxResults());
         assertEquals(0, page.getStartAt());
         assertEquals(true, page.isLast());
-        assertEquals(5, Iterables.size(page.getValues()));
+        assertEquals(5, Lists.size(page.getValues()));
     }
 }

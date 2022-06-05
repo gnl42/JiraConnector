@@ -16,20 +16,20 @@
 
 package me.glindholm.jira.rest.client.test.matchers;
 
-import com.google.common.collect.Lists;
-
-import me.glindholm.jira.rest.client.api.NamedEntity;
+import java.util.List;
 
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.hamcrest.collection.IsListContainingInAnyOrder;
 
-import java.util.List;
+import com.google.common.collect.Lists;
+
+import me.glindholm.jira.rest.client.api.NamedEntity;
 
 public class NamedEntityMatchers {
     public static Matcher<? super NamedEntity> withName(String name) {
-        return new FeatureMatcher<NamedEntity, String>(Matchers.is(name), "entity with name that", "name") {
+        return new FeatureMatcher<>(Matchers.is(name), "entity with name that", "name") {
 
             @Override
             protected String featureValueOf(NamedEntity namedEntity) {
@@ -38,11 +38,11 @@ public class NamedEntityMatchers {
         };
     }
 
-    public static Matcher<Iterable<? extends NamedEntity>> entitiesWithNames(String... names) {
+    public static Matcher<List<? extends NamedEntity>> entitiesWithNames(String... names) {
         final List<Matcher<? super NamedEntity>> matchers = Lists.newArrayListWithCapacity(names.length);
         for (String key : names) {
             matchers.add(withName(key));
         }
-        return IsIterableContainingInAnyOrder.containsInAnyOrder(matchers);
+        return IsListContainingInAnyOrder.containsInAnyOrder(matchers);
     }
 }

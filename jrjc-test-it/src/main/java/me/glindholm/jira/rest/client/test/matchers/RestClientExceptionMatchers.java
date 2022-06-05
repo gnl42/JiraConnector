@@ -24,7 +24,7 @@ public class RestClientExceptionMatchers {
             public boolean matches(final Object item) {
                 if (item instanceof RestClientException) {
                     final RestClientException ex = (RestClientException) item;
-                    final Matcher<Iterable<? extends String>> errorMessageMatcher = Matchers
+                    final Matcher<List<? extends String>> errorMessageMatcher = Matchers
                             .contains(expectedErrorMessage);
                     return ex.getStatusCode().get().equals(statusCode)
                             && ex.getErrorLists().size() == 1

@@ -32,8 +32,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 
-import com.google.common.collect.Iterables;
-
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
@@ -53,11 +51,11 @@ public class CreateIssueMetadataJsonParserTest {
     @Test
     public void testParse() throws JSONException, URISyntaxException {
         final CreateIssueMetadataJsonParser parser = new CreateIssueMetadataJsonParser();
-        final Iterable<CimProject> createMetaProjects = parser.parse(
+        final List<CimProject> createMetaProjects = parser.parse(
                 ResourceUtil.getJsonObjectFromResource("/json/createmeta/valid.json")
                 );
 
-        Assert.assertEquals(4, Iterables.size(createMetaProjects));
+        Assert.assertEquals(4, createMetaProjects.size());
 
         // test first project
         final CimProject project = createMetaProjects.iterator().next();
@@ -93,18 +91,18 @@ public class CreateIssueMetadataJsonParserTest {
     @Test
     public void testParseWithFieldsExpanded() throws JSONException, URISyntaxException {
         final CreateIssueMetadataJsonParser parser = new CreateIssueMetadataJsonParser();
-        final Iterable<CimProject> createMetaProjects = parser.parse(
+        final List<CimProject> createMetaProjects = parser.parse(
                 ResourceUtil.getJsonObjectFromResource("/json/createmeta/valid-with-fields-expanded.json")
                 );
 
-        Assert.assertEquals(4, Iterables.size(createMetaProjects));
+        Assert.assertEquals(4, createMetaProjects.size());
 
         // get project with issue types expanded
         final CimProject project = EntityHelper.findEntityByName(
                 createMetaProjects, "Anonymous Editable Project"
                 );
         Assert.assertNotNull(project);
-        Assert.assertEquals(5, Iterables.size(project.getIssueTypes()));
+        Assert.assertEquals(5, project.getIssueTypes().size());
 
         // get issue type and check if fields was parsed successfully
         final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
@@ -115,7 +113,7 @@ public class CreateIssueMetadataJsonParserTest {
         final CimFieldInfo componentsFieldInfo = issueTypeFields.get("components");
         final CimFieldInfo expectedComponentsFieldInfo = new CimFieldInfo(
                 "components", false, "Component/s", new FieldSchema("array", "component", "components", null, null),
-                new HashSet<StandardOperation>(List.of(StandardOperation.ADD, StandardOperation.REMOVE, StandardOperation.SET)),
+                new HashSet<>(List.of(StandardOperation.ADD, StandardOperation.REMOVE, StandardOperation.SET)),
                 Collections.emptyList(), null
                 );
         Assert.assertEquals(expectedComponentsFieldInfo, componentsFieldInfo);
@@ -124,7 +122,7 @@ public class CreateIssueMetadataJsonParserTest {
         final CimFieldInfo cf1001 = issueTypeFields.get("customfield_10001");
         assertEquals(new FieldSchema("string", null, null, "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons", 10001L), cf1001
                 .getSchema());
-        Assert.assertEquals(3, Iterables.size(cf1001.getAllowedValues()));
+        Assert.assertEquals(3, cf1001.getAllowedValues().size());
         Assert.assertThat(cf1001.getOperations(), IsIterableContainingInAnyOrder.containsInAnyOrder(StandardOperation.SET));
 
         // check allowed values types
@@ -135,7 +133,7 @@ public class CreateIssueMetadataJsonParserTest {
         assertAllowedValuesOfType(issueTypeFields.get("customfield_10010").getAllowedValues(), BasicProject.class);
     }
 
-    private void assertAllowedValuesOfType(final Iterable<Object> allowedValues, Class type) {
+    private void assertAllowedValuesOfType(final List<Object> allowedValues, Class type) {
         Assert.assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.instanceOf(type)));
     }
 }

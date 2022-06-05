@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 
-import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Lists.transform;
 
 /**
  * This example shows how to create many issues using asynchronous API.
@@ -59,7 +59,7 @@ public class ExampleCreateIssuesAsynchronous {
             }
 
             System.out.println("Collecting responses...");
-            final Iterable<BasicIssue> createdIssues = transform(promises, new Function<Promise<BasicIssue>, BasicIssue>() {
+            final List<BasicIssue> createdIssues = transform(promises, new Function<Promise<BasicIssue>, BasicIssue>() {
                 @Override
                 public BasicIssue apply(Promise<BasicIssue> promise) {
                     return promise.claim();

@@ -16,20 +16,19 @@
 
 package me.glindholm.jira.rest.client.test.matchers;
 
-import com.google.common.collect.Lists;
-
-import me.glindholm.jira.rest.client.api.domain.BasicIssue;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 
-import java.util.List;
+import me.glindholm.jira.rest.client.api.domain.BasicIssue;
 
 public class IssueMatchers {
     public static Matcher<? super BasicIssue> withIssueKey(String issueKey) {
-        return new FeatureMatcher<BasicIssue, String>(Matchers.is(issueKey), "issue with key that", "key") {
+        return new FeatureMatcher<>(Matchers.is(issueKey), "issue with key that", "key") {
 
             @Override
             protected String featureValueOf(BasicIssue basicIssue) {
@@ -39,7 +38,7 @@ public class IssueMatchers {
     }
 
     public static Matcher<Iterable<? extends BasicIssue>> issuesWithKeys(String... keys) {
-        final List<Matcher<? super BasicIssue>> matchers = Lists.newArrayListWithCapacity(keys.length);
+        final List<Matcher<? super BasicIssue>> matchers = new ArrayList<>(keys.length);
         for (String key : keys) {
             matchers.add(withIssueKey(key));
         }

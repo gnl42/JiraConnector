@@ -62,7 +62,6 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
@@ -130,9 +129,10 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         this.providedSchema = providedSchema;
     }
 
-    static Iterable<String> parseExpandos(final JSONObject json) throws JSONException {
+    static List<String> parseExpandos(final JSONObject json) throws JSONException {
         final String expando = json.getString("expand");
-        return Splitter.on(',').split(expando);
+        return List.of(expando.split(","));
+        //        return Splitter.on(',').split(expando);
     }
 
 
@@ -213,7 +213,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     @Override
     public Issue parse(final JSONObject issueJson) throws JSONException, URISyntaxException {
         final BasicIssue basicIssue = basicIssueJsonParser.parse(issueJson);
-        final Iterable<String> expandos = parseExpandos(issueJson);
+        final List<String> expandos = parseExpandos(issueJson);
         final JSONObject jsonFields = issueJson.getJSONObject(FIELDS);
         final JSONObject commentsJson = jsonFields.optJSONObject(COMMENT_FIELD.id);
         final List<Comment> comments = commentsJson == null ? Collections.emptyList()

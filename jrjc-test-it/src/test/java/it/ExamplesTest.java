@@ -10,7 +10,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Resolution;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Before;
@@ -64,14 +64,14 @@ public class ExamplesTest extends AbstractAsynchronousRestClientTest {
 
         if (isJira5xOrNewer()) {
             // changelog
-            final Iterable<ChangelogGroup> changelog = issue.getChangelog();
-            assertEquals(2, Iterables.size(changelog));
+            final List<ChangelogGroup> changelog = issue.getChangelog();
+            assertEquals(2, Lists.size(changelog));
         }
 
         // comments
-        final Iterable<Comment> comments = issue.getComments();
+        final List<Comment> comments = issue.getComments();
         assertNotNull(comments);
-        assertEquals(1, Iterables.size(comments));
+        assertEquals(1, Lists.size(comments));
         final Comment comment = comments.iterator().next();
         assertEquals("My comment", comment.getBody());
         assertEquals("Administrator", comment.getAuthor().getDisplayName());

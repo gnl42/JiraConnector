@@ -18,9 +18,9 @@ package com.atlassian.jira.rest.client.internal.json;
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.ProjectRole;
 import com.atlassian.jira.rest.client.api.domain.RoleActor;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
+import org.hamcrest.collection.IsListContainingInAnyOrder;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class ProjectRoleJsonParserTest {
         Assert.assertEquals("Developers", role.getName());
         Assert.assertEquals("A project role that represents developers in a project", role.getDescription());
         Assert.assertNotNull(role.getActors());
-        final RoleActor actor = Iterables.getOnlyElement(role.getActors());
+        final RoleActor actor = Lists.getOnlyElement(role.getActors());
         Assert.assertEquals("jira-developers", actor.getDisplayName());
         Assert.assertEquals("atlassian-group-role-actor", actor.getType());
         Assert.assertEquals("jira-developers", actor.getName());
@@ -61,7 +61,7 @@ public class ProjectRoleJsonParserTest {
         Assert.assertEquals("A project role that represents users in a project", role.getDescription());
         Assert.assertNotNull(role.getActors());
         Assert.assertThat(role.getActors(),
-                IsIterableContainingInAnyOrder
+                IsListContainingInAnyOrder
                         .containsInAnyOrder(new RoleActor(10020l, "jira-users", "atlassian-group-role-actor", "jira-users",
                                         toUri("http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10083")
                                 ),
@@ -99,7 +99,7 @@ public class ProjectRoleJsonParserTest {
         Assert.assertEquals("A project role that represents users in a project", role.getDescription());
         Assert.assertThat(
                 role.getActors(),
-                IsIterableContainingInAnyOrder.containsInAnyOrder(
+                IsListContainingInAnyOrder.containsInAnyOrder(
                         new RoleActor(null, "Administrator", "atlassian-user-role-actor", "admin",
                                 baseJiraURI.resolve("/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054")
                         ),

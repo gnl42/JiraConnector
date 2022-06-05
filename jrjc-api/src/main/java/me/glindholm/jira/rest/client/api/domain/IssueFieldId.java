@@ -16,8 +16,9 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.util.List;
+
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
@@ -71,7 +72,7 @@ public enum IssueFieldId {
      *
      * @return List of string id of each field.
      */
-    public static Iterable<String> ids() {
-        return Iterables.transform(Lists.newArrayList(IssueFieldId.values()), IssueFieldId.TRANSFORM_TO_ID_FUNCTION);
+    public static List<String> ids() {
+        return Lists.transform(Lists.newArrayList(IssueFieldId.values()), IssueFieldId.TRANSFORM_TO_ID_FUNCTION);
     }
 }

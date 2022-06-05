@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,9 +29,9 @@ public class SearchResult {
     private final int startIndex;
     private final int maxResults;
     private final int total;
-    private final Iterable<Issue> issues;
+    private final List<Issue> issues;
 
-    public SearchResult(int startIndex, int maxResults, int total, Iterable<Issue> issues) {
+    public SearchResult(int startIndex, int maxResults, int total, List<Issue> issues) {
         this.startIndex = startIndex;
         this.maxResults = maxResults;
         this.total = total;
@@ -60,7 +61,7 @@ public class SearchResult {
         return total;
     }
 
-    public Iterable<Issue> getIssues() {
+    public List<Issue> getIssues() {
         return issues;
     }
 

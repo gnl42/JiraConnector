@@ -60,7 +60,7 @@ public class ProjectRole extends BasicProjectRole implements Serializable, Ident
     /**
      * @return actors associated with this role.
      */
-    public Iterable<RoleActor> getActors() {
+    public List<RoleActor> getActors() {
         return actors;
     }
 

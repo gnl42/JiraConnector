@@ -38,12 +38,12 @@ public class AuditRecordBuilder {
         return this;
     }
 
-    public AuditRecordBuilder setChangedValues(final Iterable<AuditChangedValue> values) {
+    public AuditRecordBuilder setChangedValues(final List<AuditChangedValue> values) {
         this.values = ImmutableList.copyOf(values);
         return this;
     }
 
-    public AuditRecordBuilder setAssociatedItems(final Iterable<AuditAssociatedItem> associatedItems) {
+    public AuditRecordBuilder setAssociatedItems(final List<AuditAssociatedItem> associatedItems) {
         this.associatedItems = ImmutableList.copyOf(associatedItems);
         return this;
     }

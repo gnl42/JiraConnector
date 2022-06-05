@@ -38,9 +38,9 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.atlassian.jira.rest.client.test.matchers.AddressableEntityMatchers;
 import com.atlassian.jira.rest.client.test.matchers.NamedEntityMatchers;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.hamcrest.collection.IsIterableContainingInOrder;
+import org.hamcrest.collection.IsListContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ import java.util.Set;
 
 import static com.atlassian.jira.nimblefunctests.annotation.LongCondition.LESS_THAN;
 import static com.atlassian.jira.rest.client.IntegrationTestUtil.resolveURI;
-import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
+import static com.atlassian.jira.rest.client.TestUtil.assertEmptyList;
 import static com.atlassian.jira.rest.client.TestUtil.toOffsetDateTime;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_6_1;
 import static org.hamcrest.Matchers.allOf;
@@ -58,7 +58,7 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.collection.IsListContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -93,11 +93,11 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
         // returns: 0,1,2
         final SearchResult searchResultFrom0 = client.getSearchClient().searchJql(null, maxResults, 0, null).claim();
-        final Issue secondIssueFromFirstSearch = Iterables.get(searchResultFrom0.getIssues(), 1);
+        final Issue secondIssueFromFirstSearch = Lists.get(searchResultFrom0.getIssues(), 1);
 
         // returns: 1,2,3
         final SearchResult searchResultFrom1 = client.getSearchClient().searchJql(null, maxResults, 1, null).claim();
-        final Issue firstIssueFromSecondSearch = Iterables.get(searchResultFrom1.getIssues(), 0);
+        final Issue firstIssueFromSecondSearch = Lists.get(searchResultFrom1.getIssues(), 0);
 
         assertEquals(secondIssueFromFirstSearch, firstIssueFromSecondSearch);
     }
@@ -139,22 +139,22 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     public void testJqlSearchWithPaging() {
         final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, 3, 3, null).claim();
         assertEquals(11, searchResultForNull.getTotal());
-        assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
+        assertEquals(3, Lists.size(searchResultForNull.getIssues()));
         assertEquals(3, searchResultForNull.getStartIndex());
         assertEquals(3, searchResultForNull.getMaxResults());
 
         final SearchResult search2 = client.getSearchClient().searchJql("assignee is not EMPTY", 2, 1, null).claim();
         assertEquals(11, search2.getTotal());
-        assertEquals(2, Iterables.size(search2.getIssues()));
-        assertEquals("TST-6", Iterables.get(search2.getIssues(), 0).getKey());
-        assertEquals("TST-5", Iterables.get(search2.getIssues(), 1).getKey());
+        assertEquals(2, Lists.size(search2.getIssues()));
+        assertEquals("TST-6", Lists.get(search2.getIssues(), 0).getKey());
+        assertEquals("TST-5", Lists.get(search2.getIssues(), 1).getKey());
         assertEquals(1, search2.getStartIndex());
         assertEquals(2, search2.getMaxResults());
 
         setUser1();
         final SearchResult search3 = client.getSearchClient().searchJql("assignee is not EMPTY", 10, 5, null).claim();
         assertEquals(10, search3.getTotal());
-        assertEquals(5, Iterables.size(search3.getIssues()));
+        assertEquals(5, Lists.size(search3.getIssues()));
         assertEquals(5, search3.getStartIndex());
         assertEquals(10, search3.getMaxResults());
     }
@@ -164,7 +164,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         final String longJql = generateVeryLongJql() + " or summary is not empty"; // so that effectively all issues are returned;
         final SearchResult searchResultForNull = client.getSearchClient().searchJql(longJql, 3, 6, null).claim();
         assertEquals(11, searchResultForNull.getTotal());
-        assertEquals(3, Iterables.size(searchResultForNull.getIssues()));
+        assertEquals(3, Lists.size(searchResultForNull.getIssues()));
         assertEquals(6, searchResultForNull.getStartIndex());
         assertEquals(3, searchResultForNull.getMaxResults());
     }
@@ -202,7 +202,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
     private void jqlSearchShouldReturnIssueWithDetails(String projectSelf) {
         final SearchResult searchResult = client.getSearchClient().searchJql("reporter=wseliga").claim();
-        final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
+        final Issue issue = Lists.getOnlyElement(searchResult.getIssues());
 
         assertEquals("TST-7", issue.getKey());
         assertEquals(Long.valueOf(10040), issue.getId());
@@ -219,14 +219,14 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
                         hasProperty("iconUrl", is(resolveURI("images/icons/statuses/open.png"))), // Jira >= 5.2
                         hasProperty("iconUrl", is(resolveURI("images/icons/status_open.gif"))) // Jira < 5.2
                 )));
-        assertEmptyIterable(issue.getComments());  // not expanded by default
-        assertEmptyIterable(issue.getComponents());
-        assertEmptyIterable(issue.getWorklogs());
-        assertEmptyIterable(issue.getSubtasks());
-        assertEmptyIterable(issue.getIssueLinks());
-        assertEmptyIterable(issue.getFixVersions());
-        assertEmptyIterable(issue.getAffectedVersions());
-        assertEmptyIterable(issue.getLabels());
+        assertEmptyList(issue.getComments());  // not expanded by default
+        assertEmptyList(issue.getComponents());
+        assertEmptyList(issue.getWorklogs());
+        assertEmptyList(issue.getSubtasks());
+        assertEmptyList(issue.getIssueLinks());
+        assertEmptyList(issue.getFixVersions());
+        assertEmptyList(issue.getAffectedVersions());
+        assertEmptyList(issue.getLabels());
         assertNull(issue.getDueDate());
         assertNull(issue.getTimeTracking());
         assertNull(issue.getResolution());
@@ -266,7 +266,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     private void jqlSearchWithAllFieldsImpl(String jql) {
         final ImmutableSet<String> fields = ImmutableSet.of("*all");
         final SearchResult searchResult = client.getSearchClient().searchJql(jql, null, null, fields).claim();
-        final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
+        final Issue issue = Lists.getOnlyElement(searchResult.getIssues());
 
         assertEquals("TST-2", issue.getKey());
         assertEquals("Testing attachem2", issue.getSummary());
@@ -274,12 +274,12 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         assertThat(issue.getComponents(), NamedEntityMatchers.entitiesWithNames("Component A", "Component B"));
 
         // comments
-        final Iterable<Comment> comments = issue.getComments();
-        assertEquals(3, Iterables.size(comments));
-        assertEquals("a comment viewable only by jira-users", Iterables.getLast(comments).getBody());
+        final List<Comment> comments = issue.getComments();
+        assertEquals(3, Lists.size(comments));
+        assertEquals("a comment viewable only by jira-users", Lists.getLast(comments).getBody());
 
         // worklogs
-        final Iterable<Worklog> worklogs = issue.getWorklogs();
+        final List<Worklog> worklogs = issue.getWorklogs();
         assertThat(worklogs, AddressableEntityMatchers.entitiesWithSelf(
                 resolveURI("rest/api/2/issue/10010/worklog/10010"),
                 resolveURI("rest/api/2/issue/10010/worklog/10011"),
@@ -288,7 +288,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
                 resolveURI("rest/api/2/issue/10010/worklog/10021")
         ));
 
-        final Worklog actualWorklog = Iterables.getLast(worklogs);
+        final Worklog actualWorklog = Lists.getLast(worklogs);
         final Worklog expectedWorklog = new Worklog(resolveURI("rest/api/2/issue/10010/worklog/10021"),
                 resolveURI("rest/api/latest/issue/10010"), IntegrationTestUtil.USER_ADMIN, IntegrationTestUtil.USER_ADMIN,
                 "Another work for 7 min", toOffsetDateTime("2010-08-27T15:00:02.104"), toOffsetDateTime("2010-08-27T15:00:02.104"),
@@ -296,18 +296,18 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         assertEquals(expectedWorklog, actualWorklog);
 
         // issue links
-        assertThat(issue.getIssueLinks(), IsIterableContainingInOrder.contains(
+        assertThat(issue.getIssueLinks(), IsListContainingInOrder.contains(
                 new IssueLink("TST-1", resolveURI("rest/api/2/issue/10000"), new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
                 new IssueLink("TST-1", resolveURI("rest/api/2/issue/10000"), new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))
         ));
 
         // fix versions
-        final Version actualFixVersion = Iterables.getOnlyElement(issue.getFixVersions());
+        final Version actualFixVersion = Lists.getOnlyElement(issue.getFixVersions());
         final Version expectedFixVersion = new Version(resolveURI("rest/api/2/version/10000"), 10000L, "1.1", "Some version", false, false, toOffsetDateTime("2010-08-25T00:00:00.000"));
         assertEquals(expectedFixVersion, actualFixVersion);
 
         // affected versions
-        assertThat(issue.getAffectedVersions(), IsIterableContainingInOrder.contains(
+        assertThat(issue.getAffectedVersions(), IsListContainingInOrder.contains(
                 new Version(resolveURI("rest/api/2/version/10001"), 10001L, "1", "initial version", false, false, null),
                 new Version(resolveURI("rest/api/2/version/10000"), 10000L, "1.1", "Some version", false, false, toOffsetDateTime("2010-08-25T00:00:00.000"))
         ));
@@ -318,7 +318,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         assertEquals(toOffsetDateTime("2010-07-26T13:29:18.000"), issue.getCreationDate());
 
         // attachments
-        final Iterable<String> attachmentsNames = EntityHelper.toFileNamesList(issue.getAttachments());
+        final List<String> attachmentsNames = EntityHelper.toFileNamesList(issue.getAttachments());
         assertThat(attachmentsNames, containsInAnyOrder("10000_thumb_snipe.jpg", "Admal pompa ciepła.pdf",
                 "apache-tomcat-5.5.30.zip", "jira_logo.gif", "snipe.png", "transparent-png.png"));
     }
@@ -326,7 +326,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     @Test
     public void jqlSearchShouldReturnIssueWithLabelsAndDueDate() throws Exception {
         final SearchResult searchResult = client.getSearchClient().searchJql("key=TST-1").claim();
-        final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
+        final Issue issue = Lists.getOnlyElement(searchResult.getIssues());
         assertEquals("TST-1", issue.getKey());
         assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
         assertEquals(toOffsetDateTime("2010-07-05T00:00:00.000"), issue.getDueDate());
@@ -336,7 +336,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     public void jqlSearchWithMinimalFieldSetShouldReturnParseableIssues() throws Exception {
         final SearchRestClient searchClient = client.getSearchClient();
         final SearchResult searchResult = searchClient.searchJql("key=TST-1", null, null, REQUIRED_ISSUE_FIELDS).claim();
-        final Issue issue = Iterables.getOnlyElement(searchResult.getIssues());
+        final Issue issue = Lists.getOnlyElement(searchResult.getIssues());
         assertEquals("TST-1", issue.getKey());
         assertEquals("My sample test", issue.getSummary());
         assertEquals("Bug", issue.getIssueType().getName());
@@ -347,7 +347,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         assertEquals("Open", issue.getStatus().getName());
 
         // this issue has labels, but they were not returned by JIRA REST API
-        assertEmptyIterable(issue.getLabels());
+        assertEmptyList(issue.getLabels());
         final Issue fullIssue = client.getIssueClient().getIssue(issue.getKey()).claim();
         assertThat(fullIssue.getLabels(), containsInAnyOrder("a", "bcds"));
     }

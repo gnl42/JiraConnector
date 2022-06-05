@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.User;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -33,9 +33,9 @@ public class UsersJsonParserTest {
     @Test
     public void testParse() throws Exception {
         final UsersJsonParser parser = new UsersJsonParser();
-        final Iterable<User> users = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/users/valid.json"));
+        final List<User> users = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/users/valid.json"));
 
-        assertEquals(2, Iterables.size(users));
+        assertEquals(2, Lists.size(users));
 
         for (User user : users) {
             if (user.getName().equals("admin")) {

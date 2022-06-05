@@ -35,7 +35,7 @@ import com.atlassian.jira.rest.client.api.domain.Transition;
 import com.atlassian.jira.rest.client.api.domain.input.TransitionInput;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.atlassian.jira.rest.client.test.matchers.RegularExpressionMatcher;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.hamcrest.Matchers;
 import java.time.OffsetDateTime;
@@ -112,9 +112,9 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
     @JiraBuildNumberDependent(BN_JIRA_4_3)
     @Test
     public void testGetIssueTypes() {
-        final Iterable<IssuelinksType> issueTypes = client.getMetadataClient().getIssueLinkTypes().claim();
-        assertEquals(1, Iterables.size(issueTypes));
-        final IssuelinksType issueType = Iterables.getOnlyElement(issueTypes);
+        final List<IssuelinksType> issueTypes = client.getMetadataClient().getIssueLinkTypes().claim();
+        assertEquals(1, Lists.size(issueTypes));
+        final IssuelinksType issueType = Lists.getOnlyElement(issueTypes);
         assertEquals("Duplicate", issueType.getName());
         assertEquals("is duplicated by", issueType.getInward());
         assertEquals("duplicates", issueType.getOutward());
@@ -122,7 +122,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
     @Test
     public void testGetStatuses() {
-        final Iterable<Status> statuses = client.getMetadataClient().getStatuses().claim();
+        final List<Status> statuses = client.getMetadataClient().getStatuses().claim();
         final Map<String, Status> statusMap = Maps.uniqueIndex(statuses, EntityHelper.GET_ENTITY_NAME_FUNCTION);
         assertThat(statusMap.keySet(), containsInAnyOrder("Open", "In Progress", "Reopened", "Resolved", "Closed"));
 
@@ -179,7 +179,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
     public void testGetResolution() {
         final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
         assertNull(issue.getResolution());
-        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
         final Transition resolveTransition = TestUtil.getTransitionByName(transitions, "Resolve Issue");
 
         client.getIssueClient().transition(issue, new TransitionInput(resolveTransition.getId())).claim();
@@ -202,7 +202,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
                 new Field("votes", "Votes", FieldType.JIRA, false, true, false, new FieldSchema("votes", null, "votes", null, null)) :
                 new Field("votes", "Votes", FieldType.JIRA, false, true, false, new FieldSchema("array", "votes", "votes", null, null));
 
-        final Iterable<Field> fields = client.getMetadataClient().getFields().claim();
+        final List<Field> fields = client.getMetadataClient().getFields().claim();
         assertThat(fields, hasItems(
                 new Field("progress", "Progress", FieldType.JIRA, false, true, false,
                         new FieldSchema("progress", null, "progress", null, null)),

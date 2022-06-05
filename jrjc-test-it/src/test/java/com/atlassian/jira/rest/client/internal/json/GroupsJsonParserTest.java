@@ -17,7 +17,7 @@
 package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.api.domain.Group;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.contains;
@@ -35,9 +35,9 @@ public class GroupsJsonParserTest {
     @Test
     public void testParse() throws Exception {
         final GroupsJsonParser parser = new GroupsJsonParser();
-        final Iterable<Group> groups = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/groups/valid.json"));
+        final List<Group> groups = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/groups/valid.json"));
 
-        assertEquals(2, Iterables.size(groups));
+        assertEquals(2, Lists.size(groups));
         assertThat(groups, contains(ADMINISTRATORS, USERS));
     }
 }

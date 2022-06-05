@@ -16,7 +16,7 @@
 
 package samples;
 
-import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Lists.transform;
 
 import java.io.IOException;
 import java.net.URI;
@@ -62,7 +62,7 @@ public class ExampleCreateIssuesAsynchronous {
             }
 
             System.out.println("Collecting responses...");
-            final Iterable<BasicIssue> createdIssues = transform(promises, new Function<Promise<BasicIssue>, BasicIssue>() {
+            final List<BasicIssue> createdIssues = transform(promises, new Function<Promise<BasicIssue>, BasicIssue>() {
                 @Override
                 public BasicIssue apply(Promise<BasicIssue> promise) {
                     return promise.claim();

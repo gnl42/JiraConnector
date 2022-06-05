@@ -18,7 +18,7 @@ package com.atlassian.jira.rest.client.internal.json;
 
 import com.atlassian.jira.rest.client.TestUtil;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,18 +34,18 @@ public class BasicProjectsJsonParserTest {
     public void testParseWithoutProjectId() throws Exception {
         BasicProjectsJsonParser parser = new BasicProjectsJsonParser();
 
-        final Iterable<BasicProject> project = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/project/projects-without-id.json"));
-        Assert.assertEquals(3, Iterables.size(project));
-        Assert.assertEquals(TST_PROJECT_WITHOUT_ID, Iterables.get(project, 0));
+        final List<BasicProject> project = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/project/projects-without-id.json"));
+        Assert.assertEquals(3, Lists.size(project));
+        Assert.assertEquals(TST_PROJECT_WITHOUT_ID, Lists.get(project, 0));
     }
 
     @Test
     public void testParse() throws Exception {
         BasicProjectsJsonParser parser = new BasicProjectsJsonParser();
 
-        final Iterable<BasicProject> project = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/project/projects.json"));
-        Assert.assertEquals(3, Iterables.size(project));
-        Assert.assertEquals(TST_PROJECT, Iterables.get(project, 0));
+        final List<BasicProject> project = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/project/projects.json"));
+        Assert.assertEquals(3, Lists.size(project));
+        Assert.assertEquals(TST_PROJECT, Lists.get(project, 0));
     }
 
 }

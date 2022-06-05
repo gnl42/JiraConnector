@@ -16,20 +16,21 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 
-import java.util.ArrayList;
-
-public class BasicProjectsJsonParser implements JsonArrayParser<Iterable<BasicProject>> {
+public class BasicProjectsJsonParser implements JsonArrayParser<List<BasicProject>> {
 
     private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
 
     @Override
-    public Iterable<BasicProject> parse(JSONArray json) throws JSONException {
-        ArrayList<BasicProject> res = new ArrayList<BasicProject>(json.length());
+    public List<BasicProject> parse(JSONArray json) throws JSONException {
+        ArrayList<BasicProject> res = new ArrayList<>(json.length());
         for (int i = 0; i < json.length(); i++) {
             res.add(basicProjectJsonParser.parse(json.getJSONObject(i)));
 

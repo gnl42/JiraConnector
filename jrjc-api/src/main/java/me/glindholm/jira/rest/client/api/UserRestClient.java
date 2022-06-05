@@ -18,6 +18,7 @@ package me.glindholm.jira.rest.client.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -105,7 +106,7 @@ public interface UserRestClient {
      *
      * @since v5.1.0
      */
-    Promise<Iterable<User>> findUsers(String username) throws URISyntaxException;
+    Promise<List<User>> findUsers(String username) throws URISyntaxException;
 
     /**
      * Returns a list of users that match the search string. This resource cannot be
@@ -129,7 +130,7 @@ public interface UserRestClient {
      *
      * @since v5.1.0
      */
-    Promise<Iterable<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults,
+    Promise<List<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults,
             @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException;
 
 }

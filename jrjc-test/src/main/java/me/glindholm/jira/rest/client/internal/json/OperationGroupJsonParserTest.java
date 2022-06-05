@@ -21,8 +21,7 @@ import static me.glindholm.jira.rest.client.TestUtil.EMPTY_LINKS;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -42,12 +41,12 @@ public class OperationGroupJsonParserTest {
 
         // then
         String id = "opsbar-transitions";
-        Set<OperationLink> links = Collections.singleton(new OperationLink("action_id_4", "issueaction-workflow-transition",
+        List<OperationLink> links = List.of(new OperationLink("action_id_4", "issueaction-workflow-transition",
                 "Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
                 10, null));
-        Set<OperationGroup> groups = Collections
-                .singleton(new OperationGroup(null, EMPTY_LINKS, EMPTY_GROUPS,
-                new OperationHeader("opsbar-transitions_more", "Workflow", null, null), null));
+        List<OperationGroup> groups = List
+                .of(new OperationGroup(null, EMPTY_LINKS, EMPTY_GROUPS,
+                        new OperationHeader("opsbar-transitions_more", "Workflow", null, null), null));
         int weight = 20;
         assertThat(actual, is(new OperationGroup(id, links, groups, null, weight)));
     }

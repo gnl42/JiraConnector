@@ -19,20 +19,20 @@ package me.glindholm.jira.rest.client;
 import static com.google.common.collect.Iterators.getOnlyElement;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Lists;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.core.Response;
-import org.apache.http.client.utils.URIBuilder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
-import java.time.OffsetDateTime;
 import org.joda.time.OffsetDateTimeZone;
-import org.joda.time.format.OffsetDateTimeFormatter;
 import org.joda.time.format.ISOOffsetDateTimeFormat;
+import org.joda.time.format.OffsetDateTimeFormatter;
 
+import com.atlassian.httpclient.api.Response;
 import com.google.common.collect.Iterators;
 
 import junit.framework.Assert;
@@ -46,8 +46,8 @@ public class TestUtil {
     private static OffsetDateTimeFormatter universalOffsetDateTimeParser = ISOOffsetDateTimeFormat.dateTimeParser();
     private static OffsetDateTimeFormatter formatter = ISOOffsetDateTimeFormat.dateTime();
     private static OffsetDateTimeFormatter dateFormatter = ISOOffsetDateTimeFormat.date();
-    public static Iterable<OperationGroup> EMPTY_GROUPS = Lists.emptyList();
-    public static Iterable<OperationLink> EMPTY_LINKS = Lists.emptyList();
+    public static List<OperationGroup> EMPTY_GROUPS = Lists.emptyList();
+    public static List<OperationLink> EMPTY_LINKS = Lists.emptyList();
 
     public static URI toUri(String str) {
         return new URIBuilder(str).build();
@@ -170,7 +170,7 @@ public class TestUtil {
     }
 
     @Nullable
-    public static Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
+    public static Transition getTransitionByName(List<Transition> transitions, String transitionName) {
         Transition transitionFound = null;
         for (Transition transition : transitions) {
             if (transition.getName().equals(transitionName)) {
@@ -190,7 +190,7 @@ public class TestUtil {
         }
     }
 
-    public static <K> void assertEmptyIterable(Iterable<K> iterable) {
-        org.junit.Assert.assertThat(iterable, Matchers.<K>emptyIterable());
+    public static <K> void assertEmptyList(List<K> iterable) {
+        org.junit.Assert.assertThat(iterable, Matchers.<K>emptyList());
     }
 }

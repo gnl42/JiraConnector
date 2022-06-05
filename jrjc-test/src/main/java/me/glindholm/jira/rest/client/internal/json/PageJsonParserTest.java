@@ -1,12 +1,12 @@
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.api.domain.IssueType;
-import me.glindholm.jira.rest.client.api.domain.Page;
-import com.google.common.collect.Iterables;
+import static junit.framework.Assert.assertEquals;
+
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
+import me.glindholm.jira.rest.client.api.domain.IssueType;
+import me.glindholm.jira.rest.client.api.domain.Page;
 
 public class PageJsonParserTest {
 
@@ -21,6 +21,6 @@ public class PageJsonParserTest {
         assertEquals(50, page.getMaxResults());
         assertEquals(0, page.getStartAt());
         assertEquals(true, page.isLast());
-        assertEquals(5, Iterables.size(page.getValues()));
+        assertEquals(5, page.getValues().size());
     }
 }

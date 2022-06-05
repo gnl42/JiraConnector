@@ -24,13 +24,13 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.api.domain.Status;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static com.atlassian.jira.rest.client.TestUtil.assertEmptyIterable;
+import static com.atlassian.jira.rest.client.TestUtil.assertEmptyList;
 import static com.atlassian.jira.rest.client.TestUtil.toOffsetDateTime;
 import static com.atlassian.jira.rest.client.TestUtil.toUri;
 import static com.atlassian.jira.rest.client.api.domain.EntityHelper.findEntityById;
@@ -54,7 +54,7 @@ public class SearchResultJsonParserTest {
 
         assertThat(searchResult, searchResultWithParamsAndIssueCount(0, 50, 1, 1));
 
-        final Issue foundIssue = Iterables.getLast(searchResult.getIssues());
+        final Issue foundIssue = Lists.getLast(searchResult.getIssues());
         assertIssueIsTST7(foundIssue);
     }
 
@@ -92,15 +92,15 @@ public class SearchResultJsonParserTest {
         final Status expectedStatus = new Status(toUri("http://localhost:8090/jira/rest/api/2/status/1"), 1L, "Open", "The issue is open and ready for the assignee to start work on it.", toUri("http://localhost:8090/jira/images/icons/status_open.gif"), null);
         assertEquals(expectedStatus, issue.getStatus());
 
-        assertEmptyIterable(issue.getComments());
-        assertEmptyIterable(issue.getComments());
-        assertEmptyIterable(issue.getComponents());
-        assertEmptyIterable(issue.getWorklogs());
-        assertEmptyIterable(issue.getSubtasks());
-        assertEmptyIterable(issue.getIssueLinks());
-        assertEmptyIterable(issue.getFixVersions());
-        assertEmptyIterable(issue.getAffectedVersions());
-        assertEmptyIterable(issue.getLabels());
+        assertEmptyList(issue.getComments());
+        assertEmptyList(issue.getComments());
+        assertEmptyList(issue.getComponents());
+        assertEmptyList(issue.getWorklogs());
+        assertEmptyList(issue.getSubtasks());
+        assertEmptyList(issue.getIssueLinks());
+        assertEmptyList(issue.getFixVersions());
+        assertEmptyList(issue.getAffectedVersions());
+        assertEmptyList(issue.getLabels());
         assertNull(issue.getDueDate());
         assertNull(issue.getTimeTracking());
         assertNull(issue.getResolution());

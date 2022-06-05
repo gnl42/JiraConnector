@@ -54,7 +54,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
             @Nullable TimeTracking timeTracking, List<IssueField> issueFields, List<Comment> comments,
             @Nullable URI transitionsUri,
             @Nullable List<IssueLink> issueLinks,
-            BasicVotes votes, List<Worklog> worklogs, BasicWatchers watched, Iterable<String> expandos,
+            BasicVotes votes, List<Worklog> worklogs, BasicWatchers watched, List<String> expandos,
             @Nullable List<Subtask> subtasks, @Nullable List<ChangelogGroup> changelog, @Nullable Operations operations,
             Set<String> labels) {
         super(self, key, id);
@@ -93,7 +93,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     private final IssueType issueType;
     private final BasicProject project;
     private final URI transitionsUri;
-    private final Iterable<String> expandos;
+    private final List<String> expandos;
     private final List<BasicComponent> components;
     private final String summary;
     @Nullable
@@ -173,19 +173,19 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
      * @return issue links for this issue (possibly nothing) or <code>null</code> when issue links are deactivated for this JIRA instance
      */
     @Nullable
-    public Iterable<IssueLink> getIssueLinks() {
+    public List<IssueLink> getIssueLinks() {
         return issueLinks;
     }
 
     @Nullable
-    public Iterable<Subtask> getSubtasks() {
+    public List<Subtask> getSubtasks() {
         return subtasks;
     }
 
     /**
      * @return fields inaccessible by concrete getter methods (e.g. all custom issueFields)
      */
-    public Iterable<IssueField> getFields() {
+    public List<IssueField> getFields() {
         return issueFields;
     }
 
@@ -222,7 +222,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     @Override
-    public Iterable<String> getExpandos() {
+    public List<String> getExpandos() {
         return expandos;
     }
 
@@ -236,7 +236,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     /**
      * @return attachments of this issue
      */
-    public Iterable<Attachment> getAttachments() {
+    public List<Attachment> getAttachments() {
         return attachments;
     }
 
@@ -251,7 +251,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     /**
      * @return comments for this issue
      */
-    public Iterable<Comment> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
@@ -274,7 +274,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
         return votes;
     }
 
-    public Iterable<Worklog> getWorklogs() {
+    public List<Worklog> getWorklogs() {
         return worklogs;
     }
 
@@ -287,7 +287,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     @Nullable
-    public Iterable<Version> getFixVersions() {
+    public List<Version> getFixVersions() {
         return fixVersions;
     }
 
@@ -297,11 +297,11 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     @Nullable
-    public Iterable<Version> getAffectedVersions() {
+    public List<Version> getAffectedVersions() {
         return affectedVersions;
     }
 
-    public Iterable<BasicComponent> getComponents() {
+    public List<BasicComponent> getComponents() {
         return components;
     }
 
@@ -314,11 +314,11 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
      *
      * @return issue changelog or <code>null</code> if CHANGELOG has not been expanded or REST API on the server side does not serve
      * this information (pre-5.0)
-     * @see me.glindholm.jira.rest.client.api.IssueRestClient#getIssue(String, Iterable)
+     * @see me.glindholm.jira.rest.client.api.IssueRestClient#getIssue(String, List)
      * @since me.glindholm.jira.rest.client.api 0.6, server 5.0
      */
     @Nullable
-    public Iterable<ChangelogGroup> getChangelog() {
+    public List<ChangelogGroup> getChangelog() {
         return changelog;
     }
 
@@ -327,7 +327,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
      *
      * @return issue operations or <code>null</code> if {@link Expandos#OPERATIONS} has not been expanded or
      * REST API on the server side does not serve this information (pre-5.0)
-     * @see me.glindholm.jira.rest.client.api.IssueRestClient#getIssue(String, Iterable)
+     * @see me.glindholm.jira.rest.client.api.IssueRestClient#getIssue(String, List)
      * @since me.glindholm.jira.rest.client.api 2.0, server 5.0
      */
     @Nullable

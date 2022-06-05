@@ -24,7 +24,7 @@ import com.atlassian.jira.rest.client.api.domain.util.ErrorCollection;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.atlassian.jira.util.lang.Pair;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -118,13 +118,13 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
 
     @Test
     public void testGetFavouriteFilters() throws Exception {
-        final Iterable<Filter> filters = client.getSearchClient().getFavouriteFilters().claim();
+        final List<Filter> filters = client.getSearchClient().getFavouriteFilters().claim();
         final List<Pair<Filter, Filter>> expectedFilters = ImmutableList.of(
                 Pair.of(FILTER_10000_OLD, FILTER_10000_NEW),
                 Pair.of(FILTER_10002_OLD, FILTER_10002_NEW),
                 Pair.of(FILTER_10003_OLD, FILTER_10003_NEW),
                 Pair.of(FILTER_10004_OLD, FILTER_10004_NEW));
-        assertEquals(expectedFilters.size(), Iterables.size(filters));
+        assertEquals(expectedFilters.size(), Lists.size(filters));
         for (Pair<Filter, Filter> pair : expectedFilters) {
             final Filter actualFilter = EntityHelper.findEntityById(filters, pair.first().getId());
             assertThat(actualFilter, anyOf(is(pair.first()), is(pair.second())));

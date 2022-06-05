@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jettison.json.JSONException;
@@ -46,9 +47,9 @@ public class CimFieldsInfoMapJsonParserTest {
                 getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-array-of-array-bug.json")
                 );
 
-        assertElementsNotIterable(fieldsInfo.get("customfield_10010").getAllowedValues());
-        assertElementsNotIterable(fieldsInfo.get("customfield_10020").getAllowedValues());
-        assertElementsNotIterable(fieldsInfo.get("customfield_10021").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10010").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10020").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10021").getAllowedValues());
     }
 
     @Test
@@ -89,9 +90,9 @@ public class CimFieldsInfoMapJsonParserTest {
                 getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-array-of-array-bug-fixed.json")
                 );
 
-        assertElementsNotIterable(fieldsInfo.get("customfield_10010").getAllowedValues());
-        assertElementsNotIterable(fieldsInfo.get("customfield_10020").getAllowedValues());
-        assertElementsNotIterable(fieldsInfo.get("customfield_10021").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10010").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10020").getAllowedValues());
+        assertElementsNotList(fieldsInfo.get("customfield_10021").getAllowedValues());
     }
 
     @Test
@@ -148,7 +149,7 @@ public class CimFieldsInfoMapJsonParserTest {
         assertThat(fieldsInfo.get("customfield_10011").getName(), equalTo("project2"));
     }
 
-    private void assertElementsNotIterable(final Iterable<Object> allowedValues) {
-        assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.not(Matchers.instanceOf(Iterable.class))));
+    private void assertElementsNotList(final List<Object> allowedValues) {
+        assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.not(Matchers.instanceOf(List.class))));
     }
 }

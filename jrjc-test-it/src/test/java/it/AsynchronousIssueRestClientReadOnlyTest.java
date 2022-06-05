@@ -40,7 +40,7 @@ import com.atlassian.jira.rest.client.api.domain.Watchers;
 import com.atlassian.jira.rest.client.api.domain.Worklog;
 import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Streams;
 import org.hamcrest.Matcher;
@@ -64,8 +64,8 @@ import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.CHANGE
 import static com.atlassian.jira.rest.client.api.IssueRestClient.Expandos.OPERATIONS;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_5;
 import static com.atlassian.jira.rest.client.internal.ServerVersionConstants.BN_JIRA_8_4;
-import static com.google.common.collect.Iterables.size;
-import static com.google.common.collect.Iterables.toArray;
+import static com.google.common.collect.Lists.size;
+import static com.google.common.collect.Lists.toArray;
 import static java.util.Lists.singletonList;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
@@ -77,7 +77,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.hamcrest.collection.IsListContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -123,7 +123,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim();
         assertEquals(1, watchers.getNumWatchers());
         assertFalse(watchers.isWatching());
-        assertTrue("JRADEV-3594 bug!!!", Iterables.isEmpty(watchers.getUsers()));
+        assertTrue("JRADEV-3594 bug!!!", Lists.isEmpty(watchers.getUsers()));
         // to save time
         assertEquals(new TimeTracking(2700, 2400, null), issue.getTimeTracking());
     }
@@ -176,7 +176,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         assertTrue(size(issue.getFields()) > 0);
 
         assertEquals(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, size(issue.getAttachments()));
-        final Iterable<Attachment> items = issue.getAttachments();
+        final List<Attachment> items = issue.getAttachments();
         assertNotNull(items);
         Attachment attachment1 = new Attachment(IntegrationTestUtil.concat(
                 IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? new URIBuilder(jiraUri).path("/rest/api/2/").build()
@@ -191,10 +191,10 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
         final Issue issueWithChangelogAndOperations = client.getIssueClient().getIssue("TST-2", EnumSet.of(CHANGELOG, OPERATIONS))
                 .claim();
-        final Iterable<ChangelogGroup> changelog = issueWithChangelogAndOperations.getChangelog();
+        final List<ChangelogGroup> changelog = issueWithChangelogAndOperations.getChangelog();
         if (isJira5xOrNewer()) {
             assertNotNull(changelog);
-            final ChangelogGroup chg1 = Iterables.get(changelog, 18);
+            final ChangelogGroup chg1 = Lists.get(changelog, 18);
             assertEquals("admin", chg1.getAuthor().getName());
             assertEquals("Administrator", chg1.getAuthor().getDisplayName());
             assertEquals(new OffsetDateTime(2010, 8, 17, 16, 40, 34, 924).toInstant(), chg1.getCreated().toInstant());
@@ -202,13 +202,13 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
             assertEquals(singletonList(new ChangelogItem(FieldType.JIRA, "status", "1", "Open", "3", "In Progress")), chg1
                     .getItems());
 
-            final ChangelogGroup chg2 = Iterables.get(changelog, 20);
+            final ChangelogGroup chg2 = Lists.get(changelog, 20);
             assertEquals("admin", chg2.getAuthor().getName());
             assertEquals("Administrator", chg2.getAuthor().getDisplayName());
             assertEquals(new OffsetDateTime(2010, 8, 24, 16, 10, 23, 468).toInstant(), chg2.getCreated().toInstant());
 
             // there is not guarantee for the order of the items
-            Matcher<Iterable<? extends ChangelogItem>> historyItemsMatcher = containsInAnyOrder(
+            Matcher<List<? extends ChangelogItem>> historyItemsMatcher = containsInAnyOrder(
                     new ChangelogItem(FieldType.JIRA, "timeoriginalestimate", null, null, "0", "0"),
                     new ChangelogItem(FieldType.CUSTOM, "My Radio buttons", null, null, null, "Another"),
                     new ChangelogItem(FieldType.CUSTOM, "project3", null, null, "10000", "Test Project"),
@@ -230,12 +230,12 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @Test
     public void testGetIssueWithNonTrivialComments() {
         final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
-        final Iterable<Comment> comments = issue.getComments();
+        final List<Comment> comments = issue.getComments();
         assertEquals(3, size(comments));
-        final Comment c1 = Iterables.get(comments, 0);
+        final Comment c1 = Lists.get(comments, 0);
         assertEquals(Visibility.role("Administrators"), c1.getVisibility());
 
-        final Comment c3 = Iterables.get(comments, 2);
+        final Comment c3 = Lists.get(comments, 2);
         assertEquals(Visibility.group("jira-users"), c3.getVisibility());
 
     }
@@ -282,16 +282,16 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
         assertFalse(votes.hasVoted());
         assertEquals(numVotes, votes.getVotes());
-        assertTrue(Iterables.isEmpty(votes.getUsers()));
+        assertTrue(Lists.isEmpty(votes.getUsers()));
     }
 
 
     @Test
     public void testGetTransitions() throws Exception {
         final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final Iterable<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
         assertEquals(4, size(transitions));
-        assertTrue(Iterables
+        assertTrue(Lists
                 .contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Lists
                         .<Transition.Field>emptyList())));
     }
@@ -299,14 +299,14 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @JiraBuildNumberDependent(BN_JIRA_5)
     @Test
     public void testGetCreateIssueMetadata() throws URISyntaxException {
-        final Iterable<CimProject> metadataProjects = client
+        final List<CimProject> metadataProjects = client
                 .getIssueClient()
                 .getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build())
                 .claim();
 
         assertEquals(4, size(metadataProjects));
 
-        final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
+        final CimProject project = Lists.find(metadataProjects, new Predicate<CimProject>() {
             @Override
             public boolean apply(CimProject input) {
                 return "ANONEDIT".equals(input.getKey());
@@ -324,13 +324,13 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @JiraBuildNumberDependent(BN_JIRA_5)
     @Test
     public void testGetCreateIssueMetadataWithFieldsNotExpanded() throws URISyntaxException {
-        final Iterable<CimProject> metadataProjects = client
+        final List<CimProject> metadataProjects = client
                 .getIssueClient()
                 .getCreateIssueMetadata(null).claim();
 
         assertEquals(4, size(metadataProjects));
 
-        final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
+        final CimProject project = Lists.find(metadataProjects, new Predicate<CimProject>() {
             @Override
             public boolean apply(CimProject input) {
                 return "ANONEDIT".equals(input.getKey());
@@ -348,7 +348,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @JiraBuildNumberDependent(BN_JIRA_5)
     @Test
     public void testGetCreateIssueMetadataWithProjectKeyFilter() throws URISyntaxException {
-        final Iterable<CimProject> metadataProjects = client.getIssueClient()
+        final List<CimProject> metadataProjects = client.getIssueClient()
                 .getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder()
                         .withProjectKeys("ANONEDIT", "TST")
                         .withExpandedIssueTypesFields()
@@ -357,7 +357,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
         assertEquals(2, size(metadataProjects));
 
-        final CimProject project = Iterables.find(metadataProjects, new Predicate<CimProject>() {
+        final CimProject project = Lists.find(metadataProjects, new Predicate<CimProject>() {
             @Override
             public boolean apply(CimProject input) {
                 return "TST".equals(input.getKey());

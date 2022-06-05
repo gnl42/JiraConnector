@@ -50,13 +50,13 @@ public class CimFieldsInfoJsonParser implements JsonObjectParser<CimFieldInfo> {
             final String name = JsonParseUtil.getOptionalString(json, "name");
             final FieldSchema schema = fieldSchemaJsonParser.parse(json.getJSONObject("schema"));
             final Set<StandardOperation> operations = parseOperations(json.getJSONArray("operations"));
-            final Iterable<Object> allowedValues = parseAllowedValues(json.optJSONArray("allowedValues"), schema);
+            final List<Object> allowedValues = parseAllowedValues(json.optJSONArray("allowedValues"), schema);
             final URI autoCompleteUri = JsonParseUtil.parseOptionalURI(json, "autoCompleteUrl");
 
             return new CimFieldInfo(id, required, name, schema, operations, allowedValues, autoCompleteUri);
         }
 
-        private Iterable<Object> parseAllowedValues(@Nullable JSONArray allowedValues, FieldSchema fieldSchema) throws JSONException, URISyntaxException {
+        private List<Object> parseAllowedValues(@Nullable JSONArray allowedValues, FieldSchema fieldSchema) throws JSONException, URISyntaxException {
             if (allowedValues == null || allowedValues.equals(JSONObject.NULL)) {
                 return null;
             }

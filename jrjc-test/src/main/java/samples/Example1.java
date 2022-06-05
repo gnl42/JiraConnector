@@ -59,7 +59,7 @@ public class Example1 {
 
             // first let's get and print all visible projects (only jira4.3+)
             if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-                final Iterable<BasicProject> allProjects = restClient.getProjectClient().getAllProjects().claim();
+                final List<BasicProject> allProjects = restClient.getProjectClient().getAllProjects().claim();
                 for (BasicProject project : allProjects) {
                     println(project);
                 }
@@ -87,7 +87,7 @@ public class Example1 {
             }
 
             // now let's start progress on this issue
-            final Iterable<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
+            final List<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
             final Transition startProgressTransition = getTransitionByName(transitions, "Start Progress");
             restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId()))
                     .claim();
@@ -128,7 +128,7 @@ public class Example1 {
         }
     }
 
-    private static Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
+    private static Transition getTransitionByName(List<Transition> transitions, String transitionName) {
         for (Transition transition : transitions) {
             if (transition.getName().equals(transitionName)) {
                 return transition;

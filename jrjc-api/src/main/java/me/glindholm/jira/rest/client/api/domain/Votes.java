@@ -35,7 +35,7 @@ public class Votes extends BasicVotes {
         this.users = users;
     }
 
-    public Iterable<BasicUser> getUsers() {
+    public List<BasicUser> getUsers() {
         return users;
     }
 
