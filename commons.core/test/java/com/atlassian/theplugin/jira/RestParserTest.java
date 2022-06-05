@@ -55,7 +55,7 @@ public class RestParserTest extends TestCase {
         GenericJsonArrayParser<FavouriteFilter> favouriteFiltersJsonParser = GenericJsonArrayParser.create(new FavouriteFilterJsonParser());
         try {
             JSONArray array = getJsonArrayFromResource("/mock/jira/pl-2818.json");
-            Iterable<FavouriteFilter> filters = favouriteFiltersJsonParser.parse(array);
+            List<FavouriteFilter> filters = favouriteFiltersJsonParser.parse(array);
         } catch (JSONException e) {
             fail(e.getMessage());
         }

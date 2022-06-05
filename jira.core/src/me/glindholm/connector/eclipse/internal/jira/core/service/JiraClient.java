@@ -197,7 +197,7 @@ public class JiraClient {
     public void advanceIssueWorkflow(JiraIssue issue, String actionKey, String comment, IProgressMonitor monitor)
             throws JiraException {
         try {
-            Iterable<JiraIssueField> fields = getActionFields(issue.getKey(), actionKey, monitor);
+            List<JiraIssueField> fields = getActionFields(issue.getKey(), actionKey, monitor);
 
             getRestClient().transitionIssue(issue, actionKey, comment, fields);
 
@@ -380,9 +380,9 @@ public class JiraClient {
      *            Unique id for action to get fields for
      * @return array of field ids for given actionId
      */
-    public Iterable<JiraIssueField> getActionFields(final String issueKey, final String actionId, IProgressMonitor monitor)
+    public List<JiraIssueField> getActionFields(final String issueKey, final String actionId, IProgressMonitor monitor)
             throws JiraException {
-        Iterable<JiraAction> actions = getAvailableActions(issueKey, monitor);
+        List<JiraAction> actions = getAvailableActions(issueKey, monitor);
 
         for (JiraAction action : actions) {
             if (action.getId().equals(actionId)) {
@@ -402,7 +402,7 @@ public class JiraClient {
      *            Unique key of the issue to find
      * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
      */
-    public Iterable<JiraAction> getAvailableActions(final String issueKey, IProgressMonitor monitor)
+    public List<JiraAction> getAvailableActions(final String issueKey, IProgressMonitor monitor)
             throws JiraException {
         try {
             return getRestClient().getTransitions(issueKey);
@@ -536,7 +536,7 @@ public class JiraClient {
      * @return
      * @throws JiraException
      */
-    public Iterable<Field> getMetadata(IProgressMonitor monitor) throws JiraException {
+    public List<Field> getMetadata(IProgressMonitor monitor) throws JiraException {
         try {
             return getRestClient().getMetadata();
         } catch (RestClientException e) {

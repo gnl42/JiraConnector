@@ -13,8 +13,7 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.mylyn.tasks.core;bundle-version="[3.0.0,4.0.0)",
  me.glindholm.connector.eclipse.commons.core,
  jira-rest-java-client-api;bundle-version="6.0.0",
- jira-rest-java-client-core;bundle-version="6.0.0",
- com.google.guava
+ jira-rest-java-client-core;bundle-version="6.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core;x-friends:="me.glindholm.connector.eclipse.jira.ui",
@@ -23,15 +22,7 @@ Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core.model.filter;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service.rest;x-friends:="me.glindholm.connector.eclipse.jira.tests",
- me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui",
- org.apache.commons.logging,
- org.apache.commons.logging.impl,
- org.apache.logging.log4j.jcl,
- org.apache.logging.slf4j,
- org.slf4j.impl
-Bundle-ClassPath: .,
- target/lib/commons-logging.jar,
- target/lib/log4j-jcl.jar,
- target/lib/log4j-slf4j-impl.jar
+ me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui"
+Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Localization: plugin

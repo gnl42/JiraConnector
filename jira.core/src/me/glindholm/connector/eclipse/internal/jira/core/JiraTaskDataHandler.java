@@ -971,7 +971,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         //			attribute.putMetaDataValue(TaskAttribute.META_ASSOCIATED_ATTRIBUTE_ID, attributeId);
         //		}
 
-        Iterable<JiraAction> availableActions = client.getAvailableActions(issue.getKey(), monitor);
+        List<JiraAction> availableActions = client.getAvailableActions(issue.getKey(), monitor);
         if (availableActions != null) {
             for (JiraAction action : availableActions) {
                 attribute = data.getRoot().createAttribute(TaskAttribute.PREFIX_OPERATION + action.getId());

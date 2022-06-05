@@ -116,8 +116,8 @@ public class MockJiraRestClientAdapter extends JiraRestClientAdapter {
 	}
 
 	@Override
-	public Iterable<JiraAction> getTransitions(String issueKey) throws JiraException {
-		return new Iterable<JiraAction>() {
+	public List<JiraAction> getTransitions(String issueKey) throws JiraException {
+		return new List<JiraAction>() {
 			public Iterator<JiraAction> iterator() {
 				return null;
 			}
@@ -126,7 +126,7 @@ public class MockJiraRestClientAdapter extends JiraRestClientAdapter {
 
 	@Override
 	public void transitionIssue(JiraIssue issue, String transitionKey, String comment,
-			Iterable<IssueField> transitionFields) throws JiraException {
+			List<IssueField> transitionFields) throws JiraException {
 		// ignore
 	}
 

@@ -292,7 +292,7 @@ public class JiraRestClientAdapter {
     }
 
     public JiraProject[] getProjects() throws JiraException {
-        Iterable<BasicProject> allProjects;
+        List<BasicProject> allProjects;
         try {
             allProjects = restClient.getProjectClient().getAllProjects().get();
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
@@ -329,9 +329,9 @@ public class JiraRestClientAdapter {
         }
     }
 
-    public Iterable<Field> getMetadata() throws JiraException {
+    public List<Field> getMetadata() throws JiraException {
         try {
-            Iterable<Field> metadata = restClient.getMetadataClient().getFields().get();
+            List<Field> metadata = restClient.getMetadataClient().getFields().get();
             return metadata;
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
@@ -460,7 +460,7 @@ public class JiraRestClientAdapter {
         });
     }
 
-    public Iterable<JiraAction> getTransitions(String issueKey) throws JiraException {
+    public List<JiraAction> getTransitions(String issueKey) throws JiraException {
 
 
         try {
@@ -477,7 +477,7 @@ public class JiraRestClientAdapter {
         }
     }
 
-    public void transitionIssue(JiraIssue issue, String transitionKey, String comment, Iterable<JiraIssueField> transitionFields) throws JiraException {
+    public void transitionIssue(JiraIssue issue, String transitionKey, String comment, List<JiraIssueField> transitionFields) throws JiraException {
 
         Comment outComment = StringUtils.isEmpty(comment) ? null : Comment.valueOf(comment);
 
@@ -589,7 +589,7 @@ public class JiraRestClientAdapter {
         // GetCreateIssueMetadataOptionsBuilder();
         // builder.withExpandedIssueTypesFields().withProjectKeys("TEST");
         //
-        // Iterable<CimProject> createIssueMetadata =
+        // List<CimProject> createIssueMetadata =
         // restClient.getIssueClient().getCreateIssueMetadata(builder.build(),
         // new NullProgressMonitor());
         if (issue.getProject() == null || issue.getProject().getKey() == null || StringUtils.isEmpty(issue.getProject().getKey())) {
@@ -887,7 +887,7 @@ public class JiraRestClientAdapter {
 
         GetCreateIssueMetadataOptionsBuilder builder = new GetCreateIssueMetadataOptionsBuilder();
 
-        Iterable<CimProject> createIssueMetadata;
+        List<CimProject> createIssueMetadata;
         try {
             createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(builder.withExpandedIssueTypesFields().withProjectKeys(projectKey).build())
                     .get();
@@ -906,7 +906,7 @@ public class JiraRestClientAdapter {
                 CimFieldInfo cimFieldSecurity = cimIssueType.getFields().get(JiraRestFields.SECURITY);
 
                 if (cimFieldSecurity != null) {
-                    Iterable<Object> allowedValues = cimFieldSecurity.getAllowedValues();
+                    List<Object> allowedValues = cimFieldSecurity.getAllowedValues();
 
                     List<JiraSecurityLevel> securityLevels = new ArrayList<>();
 
