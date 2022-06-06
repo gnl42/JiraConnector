@@ -87,7 +87,6 @@
 		<amps.version>6.3.22-fc341f3d2</amps.version>
 		<testkit.version>8.1.5</testkit.version>
 		<atlassian.util.concurrent>4.0.1</atlassian.util.concurrent>
-		<guava.version>30.1.1-jre</guava.version>
 		<jackson.version>1.9.13-atlassian-4</jackson.version>
 		<commons.codec.version>1.15</commons.codec.version>
 	</properties>
@@ -323,7 +322,6 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<plugin id="com.google.guava" />
 								<plugin id="com.google.inject" />
 								<plugin id="org.apache.batik.pdf" />
 								<plugin id="org.apache.log4j" />

@@ -18,4 +18,3 @@ Export-Package: com.atlassian.httpclient.api,
  me.glindholm.jira.rest.client.api.domain,
  me.glindholm.jira.rest.client.api.domain.input,
  me.glindholm.jira.rest.client.api.domain.util
-Require-Bundle: com.google.guava
