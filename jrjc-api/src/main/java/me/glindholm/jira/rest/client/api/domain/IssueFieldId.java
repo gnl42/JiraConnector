@@ -16,10 +16,9 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.util.EnumSet;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
 
 /**
  * Keeps field id that may be used to refer to field in fields maps.
@@ -56,16 +55,13 @@ public enum IssueFieldId {
 
     public final String id;
 
+    private String getId() {
+        return id;
+    }
+
     IssueFieldId(String id) {
         this.id = id;
     }
-
-    public static final Function<IssueFieldId, String> TRANSFORM_TO_ID_FUNCTION = new Function<>() {
-        @Override
-        public String apply(IssueFieldId from) {
-            return from.id;
-        }
-    };
 
     /**
      * Returns all fields ids.
@@ -73,6 +69,6 @@ public enum IssueFieldId {
      * @return List of string id of each field.
      */
     public static List<String> ids() {
-        return Lists.transform(Lists.newArrayList(IssueFieldId.values()), IssueFieldId.TRANSFORM_TO_ID_FUNCTION);
+        return EnumSet.allOf(IssueFieldId.class).stream().map(field -> field.getId()).collect(Collectors.toUnmodifiableList());
     }
 }

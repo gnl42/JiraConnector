@@ -19,30 +19,26 @@ package me.glindholm.jira.rest.client.internal.json;
 import static me.glindholm.jira.rest.client.TestUtil.toOffsetDateTime;
 import static me.glindholm.jira.rest.client.TestUtil.toOffsetDateTimeFromIsoDate;
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
-import static me.glindholm.jira.rest.client.api.domain.EntityHelper.findAttachmentByFileName;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.collection.IsEmptyCollection;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
@@ -52,7 +48,6 @@ import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
 import me.glindholm.jira.rest.client.api.domain.ChangelogGroup;
 import me.glindholm.jira.rest.client.api.domain.ChangelogItem;
 import me.glindholm.jira.rest.client.api.domain.Comment;
-import me.glindholm.jira.rest.client.api.domain.EntityHelper;
 import me.glindholm.jira.rest.client.api.domain.FieldType;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.IssueField;
@@ -90,21 +85,20 @@ public class IssueJsonParserTest {
         assertEquals(toOffsetDateTime("2012-12-07T14:52:52.570+0100"), issue.getUpdateDate());
         assertEquals(null, issue.getDueDate());
 
-        final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L,
-                "Bug", false, "A problem which impairs or prevents the functions of the product.",
-                toUri("http://localhost:8090/jira/images/icons/bug.gif"));
+        final IssueType expectedIssueType = new IssueType(toUri("http://localhost:8090/jira/rest/api/2/issuetype/1"), 1L, "Bug", false,
+                "A problem which impairs or prevents the functions of the product.", toUri("http://localhost:8090/jira/images/icons/bug.gif"));
         assertEquals(expectedIssueType, issue.getIssueType());
 
         assertEquals(TestConstants.USER_ADMIN, issue.getReporter());
         assertEquals(TestConstants.USER1, issue.getAssignee());
 
         // issue links
-        assertThat(issue.getIssueLinks(), containsInAnyOrder(
-                new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
-                        new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
-                new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
-                        new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))
-                ));
+        assertThat(issue.getIssueLinks(),
+                containsInAnyOrder(
+                        new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
+                                new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND)),
+                        new IssueLink("TST-1", toUri("http://localhost:8090/jira/rest/api/2/issue/10000"),
+                                new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))));
 
         // watchers
         final BasicWatchers watchers = issue.getWatchers();
@@ -119,22 +113,20 @@ public class IssueJsonParserTest {
         // attachments
         final List<Attachment> attachments = issue.getAttachments();
         assertEquals(7, attachments.size());
-        final Attachment attachment = findAttachmentByFileName(attachments, "avatar1.png");
+        final Attachment attachment = attachments.stream().filter(file -> file.getFilename().equals("avatar1.png")).findAny().orElse(null);
         assertEquals(TestConstants.USER_ADMIN_BASIC, attachment.getAuthor());
         assertEquals(359345, attachment.getSize());
         assertEquals(toUri("http://localhost:8090/jira/secure/thumbnail/10070/_thumb_10070.png"), attachment.getThumbnailUri());
         assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10070/avatar1.png"), attachment.getContentUri());
-        final List<String> attachmentsNames = EntityHelper.toFileNamesList(attachments);
-        assertThat(attachmentsNames, containsInAnyOrder("10000_thumb_snipe.jpg", "Admal pompa ciepła.pdf",
-                "apache-tomcat-5.5.30.zip", "avatar1.png", "jira_logo.gif", "snipe.png", "transparent-png.png"));
+        final List<String> attachmentsNames = attachments.stream().map(file -> file.getFilename()).collect(Collectors.toList());
+        assertThat(attachmentsNames, containsInAnyOrder("10000_thumb_snipe.jpg", "Admal pompa ciepła.pdf", "apache-tomcat-5.5.30.zip", "avatar1.png",
+                "jira_logo.gif", "snipe.png", "transparent-png.png"));
 
         // worklogs
         final List<Worklog> worklogs = issue.getWorklogs();
         assertEquals(5, worklogs.size());
-        final Worklog expectedWorklog1 = new Worklog(
-                toUri("http://localhost:8090/jira/rest/api/2/issue/10010/worklog/10011"),
-                toUri("http://localhost:8090/jira/rest/api/latest/issue/10010"), TestConstants.USER1_BASIC,
-                TestConstants.USER1_BASIC, "another piece of work",
+        final Worklog expectedWorklog1 = new Worklog(toUri("http://localhost:8090/jira/rest/api/2/issue/10010/worklog/10011"),
+                toUri("http://localhost:8090/jira/rest/api/latest/issue/10010"), TestConstants.USER1_BASIC, TestConstants.USER1_BASIC, "another piece of work",
                 toOffsetDateTime("2010-08-17T16:38:00.013+02:00"), toOffsetDateTime("2010-08-17T16:38:24.948+02:00"),
                 toOffsetDateTime("2010-08-17T16:37:00.000+02:00"), 15, Visibility.role("Developers"));
         final Worklog worklog1 = worklogs.get(1);
@@ -155,7 +147,7 @@ public class IssueJsonParserTest {
         assertEquals(TestConstants.USER_ADMIN_BASIC, comment.getUpdateAuthor());
 
         // components
-        final List<String> componentsNames = EntityHelper.toNamesList(issue.getComponents());
+        final List<String> componentsNames = issue.getComponents().stream().map(name -> name.getName()).collect(Collectors.toList());
         assertThat(componentsNames, containsInAnyOrder("Component A", "Component B"));
     }
 
@@ -163,7 +155,8 @@ public class IssueJsonParserTest {
     public void testParseIssueWithCustomFieldsValues() throws Exception {
         final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
 
-        // test float value: number, com.atlassian.jira.plugin.system.customfieldtypes:float
+        // test float value: number,
+        // com.atlassian.jira.plugin.system.customfieldtypes:float
         assertEquals(1.457, issue.getField("customfield_10000").getValue());
 
         // TODO: add assertions for more custom field types after fixing JRJC-122
@@ -219,16 +212,18 @@ public class IssueJsonParserTest {
         assertEquals(Visibility.group("jira-users"), issue.getWorklogs().get(2).getVisibility());
     }
 
-    // TODO: temporary disabled as we want to run integration tests. Fix JRJC-122 and re-enable this test
-    //	@Test
+    // TODO: temporary disabled as we want to run integration tests. Fix JRJC-122
+    // and re-enable this test
+    // @Test
     // public void testParseIssueWithUserPickerCustomFieldFilledOut() throws
     // JSONException, URISyntaxException {
-    //		final Issue issue = parseIssue("/json/issue/valid-user-picker-custom-field-filled-out.json");
-    //		final IssueField extraUserField = issue.getFieldByName("Extra User");
-    //		assertNotNull(extraUserField);
-    //		assertEquals(BasicUser.class, extraUserField.getValue().getClass());
-    //		assertEquals(TestConstants.USER1, extraUserField.getValue());
-    //	}
+    // final Issue issue =
+    // parseIssue("/json/issue/valid-user-picker-custom-field-filled-out.json");
+    // final IssueField extraUserField = issue.getFieldByName("Extra User");
+    // assertNotNull(extraUserField);
+    // assertEquals(BasicUser.class, extraUserField.getValue().getClass());
+    // assertEquals(TestConstants.USER1, extraUserField.getValue());
+    // }
 
     @Test
     public void testParseIssueWithUserPickerCustomFieldEmpty() throws JSONException, URISyntaxException {
@@ -254,8 +249,7 @@ public class IssueJsonParserTest {
         assertEquals(4, issue.getAttachments().size());
         assertEquals(1, issue.getIssueLinks().size());
         assertEquals(1.457, issue.getField("customfield_10000").getValue());
-        assertThat(Lists.transform(issue
-                .getComponents(), EntityHelper.GET_ENTITY_NAME_FUNCTION), containsInAnyOrder("Component A", "Component B"));
+        assertThat(issue.getComponents().stream().map(entity -> entity.getId()).collect(Collectors.toList()), containsInAnyOrder("Component A", "Component B"));
         assertEquals(2, issue.getWorklogs().size());
         assertEquals(1, issue.getWatchers().getNumWatchers());
         assertFalse(issue.getWatchers().isWatching());
@@ -274,9 +268,10 @@ public class IssueJsonParserTest {
         assertEquals(0, issue.getComments().size());
         final BasicPriority priority = issue.getPriority();
         assertNull(priority);
-        assertEquals("Pivotal Tracker provides time tracking information on the project level.\n"
-                + "JIRA stores time tracking information on issue level, so this issue has been created to store imported time tracking information.", issue
-                .getDescription());
+        assertEquals(
+                "Pivotal Tracker provides time tracking information on the project level.\n"
+                        + "JIRA stores time tracking information on issue level, so this issue has been created to store imported time tracking information.",
+                        issue.getDescription());
         assertEquals("TIMETRACKING", issue.getProject().getKey());
         assertNull(issue.getDueDate());
         assertEquals(0, issue.getAttachments().size());
@@ -305,8 +300,7 @@ public class IssueJsonParserTest {
         final List<Worklog> worklogs = issue.getWorklogs();
         assertEquals(1, worklogs.size());
         final Worklog worklog = worklogs.get(0);
-        assertEquals("Worklog comment should be returned as empty string, when JIRA doesn't include it in reply",
-                StringUtils.EMPTY, worklog.getComment());
+        assertEquals("Worklog comment should be returned as empty string, when JIRA doesn't include it in reply", StringUtils.EMPTY, worklog.getComment());
         assertEquals(180, worklog.getMinutesSpent());
         assertEquals("deleteduser", worklog.getAuthor().getName());
     }
@@ -344,41 +338,26 @@ public class IssueJsonParserTest {
         final BasicUser user1 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user1"), "user1", "User One");
         final BasicUser user2 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user2"), "user2", "User Two");
 
-        verifyChangelog(iterator.next(),
-                "2012-04-12T14:28:28.255+0200",
-                user1,
-                ImmutableList.of(
-                        new ChangelogItem(FieldType.JIRA, "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),
-                        new ChangelogItem(FieldType.CUSTOM, "Radio Field", null, null, "10000", "One")
-                        ));
+        verifyChangelog(iterator.next(), "2012-04-12T14:28:28.255+0200", user1,
+                List.of(new ChangelogItem(FieldType.JIRA, "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),
+                        new ChangelogItem(FieldType.CUSTOM, "Radio Field", null, null, "10000", "One")));
 
-        verifyChangelog(iterator.next(),
-                "2012-04-12T14:28:44.079+0200",
-                user1,
-                ImmutableList.of(
-                        new ChangelogItem(FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")
-                        ));
+        verifyChangelog(iterator.next(), "2012-04-12T14:28:44.079+0200", user1,
+                List.of(new ChangelogItem(FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")));
 
-        verifyChangelog(iterator.next(),
-                "2012-04-12T14:30:09.690+0200",
-                user2,
-                ImmutableList.of(
-                        new ChangelogItem(FieldType.JIRA, "summary", null, "Simple history test", null, "Simple history test - modified"),
+        verifyChangelog(iterator.next(), "2012-04-12T14:30:09.690+0200", user2,
+                List.of(new ChangelogItem(FieldType.JIRA, "summary", null, "Simple history test", null, "Simple history test - modified"),
                         new ChangelogItem(FieldType.JIRA, "issuetype", "1", "Bug", "2", "New Feature"),
                         new ChangelogItem(FieldType.JIRA, "priority", "3", "Major", "4", "Minor"),
                         new ChangelogItem(FieldType.JIRA, "description", null, "Initial Description", null, "Modified Description"),
-                        new ChangelogItem(FieldType.CUSTOM, "Date Field", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200", "12/Apr/12 2:26 PM"),
+                        new ChangelogItem(FieldType.CUSTOM, "Date Field", "2012-04-11T14:26+0200", "11/Apr/12 2:26 PM", "2012-04-12T14:26+0200",
+                                "12/Apr/12 2:26 PM"),
                         new ChangelogItem(FieldType.JIRA, "duedate", "2012-04-12", "2012-04-12 00:00:00.0", "2012-04-13", "2012-04-13 00:00:00.0"),
                         new ChangelogItem(FieldType.CUSTOM, "Radio Field", "10000", "One", "10001", "Two"),
-                        new ChangelogItem(FieldType.CUSTOM, "Text Field", null, "Initial text field value", null, "Modified text field value")
-                        ));
+                        new ChangelogItem(FieldType.CUSTOM, "Text Field", null, "Initial text field value", null, "Modified text field value")));
 
-        verifyChangelog(iterator.next(),
-                "2012-04-12T14:28:44.079+0200",
-                null,
-                ImmutableList.of(
-                        new ChangelogItem(FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")
-                        ));
+        verifyChangelog(iterator.next(), "2012-04-12T14:28:44.079+0200", null,
+                List.of(new ChangelogItem(FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")));
     }
 
     private static void verifyChangelog(ChangelogGroup changelogGroup, String createdDate, BasicUser author, List<ChangelogItem> expectedItems) {
@@ -408,20 +387,13 @@ public class IssueJsonParserTest {
     @Test
     public void testParseIssueWithOperations() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-with-operations.json");
-        assertThat(issue.getOperations(), is(new Operations(List.of(new OperationGroup(
-                "opsbar-transitions",
-                List.of(new OperationLink("action_id_4", "issueaction-workflow-transition",
-                        "Start Progress", "Start work on the issue", "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
-                        10, null)),
-                List.of(new OperationGroup(
-                        null,
-                        Collections.emptyList(),
-                        Collections.emptyList(),
-                        new OperationHeader("opsbar-transitions_more", "Workflow", null, null),
-                        null)),
-                null,
-                20
-                )))));
+        assertThat(issue.getOperations(),
+                is(new Operations(List.of(new OperationGroup("opsbar-transitions",
+                        List.of(new OperationLink("action_id_4", "issueaction-workflow-transition", "Start Progress", "Start work on the issue",
+                                "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=", 10, null)),
+                        List.of(new OperationGroup(null, Collections.emptyList(), Collections.emptyList(),
+                                new OperationHeader("opsbar-transitions_more", "Workflow", null, null), null)),
+                        null, 20)))));
     }
 
 }

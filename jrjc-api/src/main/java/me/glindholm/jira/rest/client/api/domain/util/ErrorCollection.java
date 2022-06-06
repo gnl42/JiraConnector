@@ -23,9 +23,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Error container returned in bulk operations
  *
@@ -39,8 +36,8 @@ public class ErrorCollection {
 
     public ErrorCollection(@Nullable final Integer status, final List<String> errorMessages, final Map<String, String> errors) {
         this.status = status;
-        this.errors = ImmutableMap.copyOf(errors);
-        this.errorMessages = ImmutableList.copyOf(errorMessages);
+        this.errors = Map.copyOf(errors);
+        this.errorMessages = List.copyOf(errorMessages);
     }
 
     public ErrorCollection(final String errorMessage) {
@@ -61,10 +58,10 @@ public class ErrorCollection {
         return errors;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
+    //    public static Builder builder() {
+    //        return new Builder();
+    //    }
+    //
     @Override
     public String toString() {
         return "ErrorList [status=" + status + ", errorMessages=" + errorMessages + ", errors=" + errors + "]";
@@ -86,35 +83,35 @@ public class ErrorCollection {
         return Objects.hash(status, errors, errorMessages);
     }
 
-    public static class Builder {
-
-        private int status;
-        private final ImmutableMap.Builder<String, String> errors;
-        private final ImmutableList.Builder<String> errorMessages;
-
-        public Builder() {
-            errors = ImmutableMap.builder();
-            errorMessages = ImmutableList.builder();
-        }
-
-        public Builder status(final int status) {
-            this.status = status;
-            return this;
-        }
-
-        public Builder error(final String key, final String message) {
-            errors.put(key, message);
-            return this;
-
-        }
-
-        public Builder errorMessage(final String message) {
-            errorMessages.add(message);
-            return this;
-        }
-
-        public ErrorCollection build() {
-            return new ErrorCollection(status, errorMessages.build(), errors.build());
-        }
-    }
+    //    public static class Builder {
+    //
+    //        private int status;
+    //        private final ImmutableMap.Builder<String, String> errors;
+    //        private final ImmutableList.Builder<String> errorMessages;
+    //
+    //        public Builder() {
+    //            errors = ImmutableMap.builder();
+    //            errorMessages = ImmutableList.builder();
+    //        }
+    //
+    //        public Builder status(final int status) {
+    //            this.status = status;
+    //            return this;
+    //        }
+    //
+    //        public Builder error(final String key, final String message) {
+    //            errors.put(key, message);
+    //            return this;
+    //
+    //        }
+    //
+    //        public Builder errorMessage(final String message) {
+    //            errorMessages.add(message);
+    //            return this;
+    //        }
+    //
+    //        public ErrorCollection build() {
+    //            return new ErrorCollection(status, errorMessages.build(), errors.build());
+    //        }
+    //    }
 }

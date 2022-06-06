@@ -46,7 +46,6 @@ import com.atlassian.httpclient.apache.httpcomponents.MultiPartEntityBuilder;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Message;
 import com.atlassian.httpclient.api.ResponsePromise;
-import com.google.common.base.Joiner;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
@@ -155,15 +154,15 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
         if (options != null) {
             if (options.projectIds != null) {
-                uriBuilder.addParameter("projectIds", Joiner.on(",").join(options.projectIds));
+                uriBuilder.addParameter("projectIds", options.projectIds.stream().map(String::valueOf).collect(Collectors.joining(",")));
             }
 
             if (options.projectKeys != null) {
-                uriBuilder.addParameter("projectKeys", Joiner.on(",").join(options.projectKeys));
+                uriBuilder.addParameter("projectKeys", options.projectKeys.stream().map(String::valueOf).collect(Collectors.joining(",")));
             }
 
             if (options.issueTypeIds != null) {
-                uriBuilder.addParameter("issuetypeIds", Joiner.on(",").join(options.issueTypeIds));
+                uriBuilder.addParameter("issuetypeIds", options.issueTypeIds.stream().map(String::valueOf).collect(Collectors.joining(",")));
             }
 
             final List<String> issueTypeNames = options.issueTypeNames;
@@ -175,7 +174,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
             final Set<String> expandos = options.expandos;
             if (expandos != null && expandos.iterator().hasNext()) {
-                uriBuilder.addParameter("expand", Joiner.on(",").join(expandos));
+                uriBuilder.addParameter("expand", String.join(",", expandos));
             }
         }
 

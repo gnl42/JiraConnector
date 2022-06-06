@@ -16,16 +16,13 @@
 
 package samples;
 
-import static com.google.common.collect.Lists.transform;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
@@ -50,7 +47,7 @@ public class ExampleCreateIssuesAsynchronous {
         final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
 
         try (restClient) {
-            final List<Promise<BasicIssue>> promises = Lists.newArrayList();
+            final List<Promise<BasicIssue>> promises = new ArrayList<>();
             final IssueRestClient issueClient = restClient.getIssueClient();
 
             System.out.println("Sending issue creation requests...");
@@ -62,14 +59,8 @@ public class ExampleCreateIssuesAsynchronous {
             }
 
             System.out.println("Collecting responses...");
-            final List<BasicIssue> createdIssues = transform(promises, new Function<Promise<BasicIssue>, BasicIssue>() {
-                @Override
-                public BasicIssue apply(Promise<BasicIssue> promise) {
-                    return promise.claim();
-                }
-            });
-
-            System.out.println("Created issues:\n" + Joiner.on("\n").join(createdIssues));
+            final List<BasicIssue> createdIssues = promises.stream().map(promise -> promise.claim()).collect(Collectors.toList());
+            System.out.println("Created issues:\n" + createdIssues.stream().map(issue -> String.valueOf(issue.getId())).collect(Collectors.joining("\n")));
         }
     }
 }

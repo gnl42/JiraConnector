@@ -50,6 +50,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -61,8 +62,6 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import com.google.common.collect.Sets;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
@@ -89,7 +88,7 @@ import me.glindholm.jira.rest.client.api.domain.Worklog;
 
 public class IssueJsonParser implements JsonObjectParser<Issue> {
 
-    private static Set<String> SPECIAL_FIELDS = Sets.newHashSet(IssueFieldId.ids());
+    private static Set<String> SPECIAL_FIELDS = new HashSet<>(IssueFieldId.ids());
 
     public static final String SCHEMA_SECTION = "schema";
     public static final String NAMES_SECTION = "names";
@@ -275,8 +274,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
         final TimeTracking timeTracking = getOptionalNestedField(issueJson, TIMETRACKING_FIELD.id, new TimeTrackingJsonParserV5());
 
-        final Set<String> labels = Sets
-                .newHashSet(parseOptionalArrayNotNullable(issueJson, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
+        final Set<String> labels = new HashSet<>(parseOptionalArrayNotNullable(issueJson, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
 
         final List<ChangelogGroup> changelog = parseOptionalArray(
                 issueJson, new JsonWeakParserForJsonObject<>(changelogJsonParser), "changelog", "histories");

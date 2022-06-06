@@ -16,6 +16,14 @@
 
 package samples;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
+
+import org.codehaus.jettison.json.JSONException;
+
 import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
@@ -29,15 +37,6 @@ import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.TransitionInput;
 import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.google.common.collect.Lists;
-import org.codehaus.jettison.json.JSONException;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.List;
 
 /**
  * A sample code how to use JRJC library
@@ -54,7 +53,7 @@ public class Example1 {
 
         final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
         final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
-        try {
+        try (restClient) {
             final int buildNumber = restClient.getMetadataClient().getServerInfo().claim().getBuildNumber();
 
             // first let's get and print all visible projects (only jira4.3+)
@@ -90,7 +89,7 @@ public class Example1 {
             final List<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
             final Transition startProgressTransition = getTransitionByName(transitions, "Start Progress");
             restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId()))
-                    .claim();
+            .claim();
 
             // and now let's resolve it as Incomplete
             final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
@@ -105,8 +104,6 @@ public class Example1 {
             final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment
                     .valueOf("My comment"));
             restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput).claim();
-        } finally {
-            restClient.close();
         }
     }
 
@@ -117,7 +114,7 @@ public class Example1 {
     }
 
     private static void parseArgs(String[] argsArray) throws URISyntaxException {
-        final List<String> args = Lists.newArrayList(argsArray);
+        final List<String> args = Arrays.asList(argsArray);
         if (args.contains("-q")) {
             quiet = true;
             args.remove(args.indexOf("-q"));

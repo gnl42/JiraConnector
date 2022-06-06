@@ -17,10 +17,9 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
 
 import junit.framework.Assert;
 import me.glindholm.jira.rest.client.TestUtil;
@@ -51,7 +50,7 @@ public class CustomFieldOptionJsonParserTest {
 
         final CustomFieldOption expected = new CustomFieldOption(10017L,
                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10017"), "colors",
-                ImmutableList.of(
+                List.of(
                         new CustomFieldOption(10019L,
                                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10019"), "red",
                                 Collections.emptyList(), null),

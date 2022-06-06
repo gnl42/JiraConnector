@@ -19,18 +19,16 @@ package me.glindholm.jira.rest.client.api.domain.input;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
-
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
-import me.glindholm.jira.rest.client.api.domain.EntityHelper;
 import me.glindholm.jira.rest.client.api.domain.IssueFieldId;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Version;
@@ -159,7 +157,7 @@ public class IssueInputBuilder {
 
     @SuppressWarnings("unused")
     public IssueInputBuilder setAffectedVersions(List<Version> versions) {
-        return setAffectedVersionsNames(EntityHelper.toNamesList(versions));
+        return setAffectedVersionsNames(versions.stream().map(version -> version.getName()).collect(Collectors.toList()));
     }
 
     public IssueInputBuilder setAffectedVersionsNames(List<String> names) {
@@ -171,11 +169,11 @@ public class IssueInputBuilder {
     }
 
     public IssueInputBuilder setComponents(List<BasicComponent> basicComponents) {
-        return setComponentsNames(EntityHelper.toNamesList(basicComponents));
+        return setComponentsNames(basicComponents.stream().map(component -> component.getName()).collect(Collectors.toList()));
     }
 
     public IssueInputBuilder setComponents(BasicComponent... basicComponents) {
-        return setComponents(Lists.newArrayList(basicComponents));
+        return setComponents(Arrays.asList(basicComponents));
     }
 
     public IssueInputBuilder setDueDate(OffsetDateTime date) {
@@ -188,7 +186,7 @@ public class IssueInputBuilder {
 
     @SuppressWarnings("unused")
     public IssueInputBuilder setFixVersions(List<Version> versions) {
-        return setFixVersionsNames(EntityHelper.toNamesList(versions));
+        return setFixVersionsNames(versions.stream().map(version -> version.getName()).collect(Collectors.toList()));
     }
 
     public IssueInputBuilder setPriority(BasicPriority priority) {

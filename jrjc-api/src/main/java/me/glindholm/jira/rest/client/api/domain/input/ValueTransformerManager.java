@@ -17,14 +17,11 @@
 package me.glindholm.jira.rest.client.api.domain.input;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
-
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Lists;
 
 /**
  * This class allows to register {@link ValueTransformer} objects and then perform value transformation using
@@ -32,10 +29,10 @@ import com.google.common.collect.Lists;
  *
  * @since v1.0
  */
-public class ValueTransformerManager implements Serializable, Function<Object, Object> {
+public class ValueTransformerManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public final List<ValueTransformer> valueTransformers = Lists.newArrayList();
+    public final List<ValueTransformer> valueTransformers = new ArrayList<>();
 
     public ValueTransformerManager() {
     }
@@ -70,11 +67,12 @@ public class ValueTransformerManager implements Serializable, Function<Object, O
      * @return transformed value
      * @throws CannotTransformValueException when any of available transformers was able to transform given value
      */
-    @Override
     public Object apply(@Nullable Object rawInput) {
         if (rawInput instanceof List) {
-            @SuppressWarnings("unchecked") final List<Object> rawInputObjects = (List<Object>) rawInput;
-            return ImmutableList.copyOf(Lists.transform(rawInputObjects, this));
+            @SuppressWarnings("unchecked")
+            final List<Object> rawInputObjects = (List<Object>) rawInput;
+            return rawInputObjects.stream().map(input -> apply(input)).collect(Collectors.toUnmodifiableList());
+            //            return ImmutableList.copyOf(Lists.transform(rawInputObjects, this));
         }
 
         for (ValueTransformer valueTransformer : valueTransformers) {

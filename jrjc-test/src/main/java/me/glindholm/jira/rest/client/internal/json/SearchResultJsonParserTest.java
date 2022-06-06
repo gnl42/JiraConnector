@@ -20,13 +20,12 @@ import static me.glindholm.jira.rest.client.TestUtil.assertEmptyList;
 import static me.glindholm.jira.rest.client.TestUtil.assertEmptySet;
 import static me.glindholm.jira.rest.client.TestUtil.toOffsetDateTime;
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
-import static me.glindholm.jira.rest.client.api.domain.EntityHelper.findEntityById;
 import static me.glindholm.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
 import static me.glindholm.jira.rest.client.test.matchers.IssueMatchers.issuesWithKeys;
 import static me.glindholm.jira.rest.client.test.matchers.SearchResultMatchers.searchResultWithParamsAndIssueCount;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.codehaus.jettison.json.JSONException;
 import org.junit.Ignore;
@@ -68,7 +67,7 @@ public class SearchResultJsonParserTest {
 
         assertThat(searchResult, searchResultWithParamsAndIssueCount(0, 8, 15, 8));
 
-        final Issue issue = findEntityById(searchResult.getIssues(), 10040L);
+        final Issue issue = searchResult.getIssues().stream().filter(issue2 -> issue2.getId().equals(10040L)).findFirst().orElse(null);
         assertIssueIsTST7(issue);
 
         final String[] expectedIssuesKeys = {"TST-13", "TST-12", "TST-11", "TST-10", "TST-9", "TST-8", "TST-7", "TST-6"};

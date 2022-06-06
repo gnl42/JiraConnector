@@ -16,14 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.TestUtil;
-import me.glindholm.jira.rest.client.api.ExpandableProperty;
-import me.glindholm.jira.rest.client.api.domain.User;
-import com.google.common.collect.ImmutableList;
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import me.glindholm.jira.rest.client.TestUtil;
+import me.glindholm.jira.rest.client.api.ExpandableProperty;
+import me.glindholm.jira.rest.client.api.domain.User;
 
 
 public class UserJsonParserTest {
@@ -38,7 +40,7 @@ public class UserJsonParserTest {
         assertEquals("admin", user.getName());
         assertEquals("Administrator", user.getDisplayName());
         Assert.assertEquals("user@atlassian.com", user.getEmailAddress());
-        Assert.assertEquals(new ExpandableProperty<String>(3, ImmutableList
+        Assert.assertEquals(new ExpandableProperty<>(3, List
                 .of("jira-administrators", "jira-developers", "jira-users")), user.getGroups());
         Assert.assertNull(user.getTimezone());
     }

@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.common.collect.ImmutableList;
-
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 
 /**
@@ -68,7 +66,7 @@ public class RestClientException extends RuntimeException {
 
     public RestClientException(final List<ErrorCollection> ErrorCollections, final Throwable cause, final int statusCode) {
         super(ErrorCollections.toString(), cause);
-        this.ErrorCollections = ImmutableList.copyOf(ErrorCollections);
+        this.ErrorCollections = List.copyOf(ErrorCollections);
         this.statusCode = Optional.of(statusCode);
     }
 

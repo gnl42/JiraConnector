@@ -2,8 +2,10 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,9 +15,6 @@ import javax.annotation.Nullable;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.FieldSchema;
@@ -86,7 +85,7 @@ public class CimFieldsInfoJsonParser implements JsonObjectParser<CimFieldInfo> {
             } else {
                 // fallback - just return collection of JSONObjects
                 final int itemsLength = allowedValues.length();
-                final List<Object> res = Lists.newArrayListWithExpectedSize(itemsLength);
+                final List<Object> res = new ArrayList<>(itemsLength);
                 for (int i = 0; i < itemsLength; i++) {
                     res.add(allowedValues.get(i));
                 }
@@ -96,7 +95,7 @@ public class CimFieldsInfoJsonParser implements JsonObjectParser<CimFieldInfo> {
 
         private Set<StandardOperation> parseOperations(JSONArray operations) throws JSONException {
             final int operationsCount = operations.length();
-            final Set<StandardOperation> res = Sets.newHashSetWithExpectedSize(operationsCount);
+            final Set<StandardOperation> res = new HashSet<>(operationsCount);
             for (int i = 0; i < operationsCount; i++) {
                 String opName = operations.getString(i);
                 StandardOperation op = StandardOperation.valueOf(opName.toUpperCase());

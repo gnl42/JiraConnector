@@ -39,7 +39,6 @@ import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.CimIssueType;
 import me.glindholm.jira.rest.client.api.domain.CimProject;
 import me.glindholm.jira.rest.client.api.domain.CustomFieldOption;
-import me.glindholm.jira.rest.client.api.domain.EntityHelper;
 import me.glindholm.jira.rest.client.api.domain.FieldSchema;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.StandardOperation;
@@ -99,14 +98,13 @@ public class CreateIssueMetadataJsonParserTest {
         Assert.assertEquals(4, createMetaProjects.size());
 
         // get project with issue types expanded
-        final CimProject project = EntityHelper.findEntityByName(
-                createMetaProjects, "Anonymous Editable Project"
-                );
+        final CimProject project = createMetaProjects.stream().filter(entity -> entity.getName().equals("Anonymous Editable Project")).findAny()
+                .orElse(null);
         Assert.assertNotNull(project);
         Assert.assertEquals(5, project.getIssueTypes().size());
 
         // get issue type and check if fields was parsed successfully
-        final CimIssueType issueType = EntityHelper.findEntityByName(project.getIssueTypes(), "Bug");
+        final CimIssueType issueType = project.getIssueTypes().stream().filter(issue -> issue.getName().equals("Bug")).findAny().orElse(null);
         final Map<String, CimFieldInfo> issueTypeFields = issueType.getFields();
         Assert.assertEquals(19, issueTypeFields.size());
 

@@ -25,8 +25,6 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.google.common.collect.Iterators;
-
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
 
@@ -38,7 +36,7 @@ public class AbstractAsynchronousRestClientTest {
     public void testExtractErrors() throws JSONException {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
-        final ErrorCollection errorList = Iterators.getOnlyElement(errors.iterator());
+        final ErrorCollection errorList = errors.get(0);
         assertThat(errorList.getErrors().values(), IsIterableContainingInAnyOrder.containsInAnyOrder("abcfsd"));
     }
 
@@ -46,7 +44,7 @@ public class AbstractAsynchronousRestClientTest {
     public void testExtractErrors2() throws JSONException {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid2.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
-        final ErrorCollection errorList = Iterators.getOnlyElement(errors.iterator());
+        final ErrorCollection errorList = errors.get(0);
         assertThat(errorList.getErrorMessages(), IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b", "xxx"));
     }
 
@@ -54,7 +52,7 @@ public class AbstractAsynchronousRestClientTest {
     public void testExtractErrors3() throws JSONException {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid3.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
-        final ErrorCollection errorList = Iterators.getOnlyElement(errors.iterator());
+        final ErrorCollection errorList = errors.get(0);
         assertThat(errorList.getErrors().values(), IsIterableContainingInAnyOrder.containsInAnyOrder("aa", "bb"));
     }
 
@@ -62,7 +60,7 @@ public class AbstractAsynchronousRestClientTest {
     public void testExtractErrors4() throws JSONException {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid4.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
-        final ErrorCollection errorList = Iterators.getOnlyElement(errors.iterator());
+        final ErrorCollection errorList = errors.get(0);
 
         assertThat(errorList.getErrorMessages(), IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b"));
         Assert.assertEquals(errorList.getErrors().get("a"), "y");

@@ -18,12 +18,11 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.hc.core5.net.URIBuilder;
 
 import com.atlassian.httpclient.api.HttpClient;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 import io.atlassian.util.concurrent.Promise;
 import io.atlassian.util.concurrent.Promises;
@@ -67,11 +66,7 @@ public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRest
                 .build();
         final Promise<List<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
 
-        return Promises.promise(Lists.transform(basicProjectRoles.claim(), new Function<BasicProjectRole, ProjectRole>() {
-            @Override
-            public ProjectRole apply(final BasicProjectRole basicProjectRole) {
-                return getRole(basicProjectRole.getSelf()).claim();
-            }
-        }));
+        ;
+        return Promises.promise(basicProjectRoles.claim().stream().map(basic -> getRole(basic.getSelf()).claim()).collect(Collectors.toList()));
     }
 }
