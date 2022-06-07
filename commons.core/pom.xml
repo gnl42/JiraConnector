@@ -29,7 +29,7 @@
 						</goals>
 						<configuration>
 							<includeArtifactIds>javax.servlet-api,
-								javax.ws.rs-api,jersey-client,annotations,guava,
+								javax.ws.rs-api,jersey-client,annotations,
 								jdom,jaxen,jsr305,
 								jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
 								jetty-server,xstream,velocity,cssparser,javax.xml.rpc-api,commons-discovery</includeArtifactIds>
@@ -105,11 +105,6 @@
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
 			<version>1.4.5</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>13.0</version>
 		</dependency>
 		<!--<dependency> <groupId>org.mortbay.jetty</groupId> <artifactId>jetty</artifactId>
 			<version>6.1.5</version> <version>6.1.5</version> </dependency> -->
