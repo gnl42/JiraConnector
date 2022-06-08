@@ -32,7 +32,7 @@
 								javax.ws.rs-api,jersey-client,annotations,
 								jdom,jaxen,jsr305,
 								jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
-								jetty-server,velocity,cssparser,javax.xml.rpc-api,commons-discovery</includeArtifactIds>
+								jetty-server,velocity,javax.xml.rpc-api,commons-discovery</includeArtifactIds>
 							<outputDirectory>target/lib</outputDirectory>
 							<stripVersion>true</stripVersion>
 							<overWriteReleases>true</overWriteReleases>
@@ -90,11 +90,6 @@
 			<groupId>commons-discovery</groupId>
 			<artifactId>commons-discovery</artifactId>
 			<version>0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.cssparser</groupId>
-			<artifactId>cssparser</artifactId>
-			<version>0.9.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>

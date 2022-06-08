@@ -41,7 +41,6 @@ Export-Package: icons,
  org.jdom2.xpath
 Bundle-ClassPath: .,
  target/lib/jdom.jar,
- target/lib/cssparser.jar,
  target/lib/velocity.jar,
  target/lib/javax.servlet-api.jar,
  target/lib/jaxen.jar,
