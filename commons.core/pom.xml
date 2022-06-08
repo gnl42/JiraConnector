@@ -31,8 +31,7 @@
 							<includeArtifactIds>javax.servlet-api,
 								javax.ws.rs-api,jersey-client,annotations,
 								jdom,jaxen,jsr305,
-								jetty-continuation,jetty-security,jetty-io,jetty-servlet,jetty-http,jetty-util,
-								jetty-server,velocity,javax.xml.rpc-api,commons-discovery</includeArtifactIds>
+                                velocity,javax.xml.rpc-api,commons-discovery</includeArtifactIds>
 							<outputDirectory>target/lib</outputDirectory>
 							<stripVersion>true</stripVersion>
 							<overWriteReleases>true</overWriteReleases>
@@ -61,21 +60,11 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.2</version>
-		</dependency>
 		<!-- <dependency> <groupId>org.ddsteps</groupId> <artifactId>ddsteps-httpserver-mock</artifactId>
 			<version>1.0-m1</version> <scope>test</scope> </dependency> <dependency>
 			<groupId>me.glindholm.jira</groupId> <artifactId>jira-rest-java-client</artifactId>
 			<version>1.1-ide-m09</version> </dependency> -->
 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
 		<dependency>
 			<groupId>javax.xml.rpc</groupId>
 			<artifactId>javax.xml.rpc-api</artifactId>
