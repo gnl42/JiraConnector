@@ -25,7 +25,7 @@ import com.atlassian.jira.rest.client.internal.json.TestConstants;
 import com.atlassian.jira.util.lang.Pair;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
