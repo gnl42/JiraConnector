@@ -449,6 +449,12 @@ public class JiraRestConverter {
                         } else if (allowedValue instanceof BasicProject) {
                             BasicProject basicProject = (BasicProject) allowedValue;
                             allowedValues.add(new JiraAllowedValue(basicProject.getId() + "", basicProject.getName()));
+                        } else if (allowedValue instanceof Resolution) {
+                            Resolution resolution = (Resolution) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(resolution.getId() + "", resolution.getName()));
+                        } else if (allowedValue instanceof Version) {
+                            Version version = (Version) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(version.getId() + "", version.getName()));
                         } else {
                             StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, NLS.bind(
                                     "Unable extract value for field [{0}:{1}:{2}].", new Object[] { issueField.getId(), issueField.getName(), allowedValue }))); //$NON-NLS-1$
