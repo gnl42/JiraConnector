@@ -433,12 +433,19 @@ public class JiraRestConverter {
                             if (optionalValue != null && optionalId != null) {
                                 allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
                             }
-                        } else if (allowedValue instanceof BasicPriority) {
-                            BasicPriority priority2 = (BasicPriority) allowedValue;
-                            allowedValues.add(new JiraAllowedValue(priority2.getId() + "", priority2.getName()));
                         } else if (allowedValue instanceof IssueType) {
                             IssueType issueType = (IssueType) allowedValue;
                             allowedValues.add(new JiraAllowedValue(issueType.getId() + "", issueType.getName()));
+                            /* */
+                        } else if (allowedValue instanceof BasicComponent) {
+                            BasicComponent basicComponent = (BasicComponent) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(basicComponent.getId() + "", basicComponent.getName()));
+                        } else if (allowedValue instanceof BasicIssue) {
+                            BasicIssue basicIssue = (BasicIssue) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(basicIssue.getId() + "", basicIssue.getKey()));
+                        } else if (allowedValue instanceof BasicPriority) {
+                            BasicPriority priority2 = (BasicPriority) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(priority2.getId() + "", priority2.getName()));
                         } else if (allowedValue instanceof BasicProject) {
                             BasicProject basicProject = (BasicProject) allowedValue;
                             allowedValues.add(new JiraAllowedValue(basicProject.getId() + "", basicProject.getName()));
@@ -525,7 +532,7 @@ public class JiraRestConverter {
             default:
                 if (fieldType.getTaskType() != null) { // Ignore fields we don't care about, or don't support yet
                     StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                            NLS.bind("Unable extract value for field [{0}:{1}:{2}].", new Object[] { field.getId(), field.getName(), longType }))); //$NON-NLS-1$
+                            NLS.bind("Unable extract value for custom field [{0}:{1}:{2}].", new Object[] { field.getId(), field.getName(), longType }))); //$NON-NLS-1$
 
                     // not supported custom field
                 }

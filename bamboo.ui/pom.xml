@@ -5,7 +5,7 @@
   <parent>
     <groupId>me.glindholm.connector.eclipse</groupId>
     <artifactId>JiraConnector</artifactId>
-    <version>4.1.1-SNAPSHOT</version>
+    <version>4.1.2-SNAPSHOT</version>
   </parent>
   <artifactId>me.glindholm.connector.eclipse.bamboo.ui</artifactId>
   <packaging>eclipse-plugin</packaging>

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>me.glindholm.connector.eclipse</groupId>
 		<artifactId>JiraConnector</artifactId>
-		<version>4.1.1-SNAPSHOT</version>
+		<version>4.1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>me.glindholm.connector.eclipse.releng</artifactId>
 	<packaging>eclipse-repository</packaging>
@@ -140,7 +140,7 @@
 								<repository>
 									<id>2020-12</id>
 									<layout>p2</layout>
-									<url>https://download.eclipse.org/releases/2020-12</url>
+									<url>https://download.eclipse.org/releases/latest</url>
 								</repository>
 							</repositories>
 							<dependencies>
