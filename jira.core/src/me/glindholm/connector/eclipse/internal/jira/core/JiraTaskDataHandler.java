@@ -341,6 +341,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
         createAttribute(data, JiraAttribute.WATCHERS);
 
+        createAttribute(data, JiraAttribute.COMPONENTS);
+
     }
 
     public TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
@@ -429,6 +431,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         setAttributeValue(data, JiraAttribute.USER_REPORTER,
                 getPerson(data, client, jiraIssue.getReporter(), jiraIssue.getReporterName()));
         setAttributeWatchers(data, JiraAttribute.WATCHERS, jiraIssue.getWatchers());
+        setAttributeComponents(data, JiraAttribute.COMPONENTS, jiraIssue.getComponents());
 
         setAttributeValue(data, JiraAttribute.PROJECT, jiraIssue.getProject().getId());
 
@@ -808,6 +811,17 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         }
 
         data.getAttributeMapper().setValue(attribute, String.join("\n", watchersList));
+        return attribute;
+    }
+
+    private TaskAttribute setAttributeComponents(TaskData data, JiraAttribute key, JiraComponent[] components) {
+        TaskAttribute attribute = data.getRoot().getAttribute(key.id());
+        List<String> componentsList = new ArrayList<>(components.length);
+        for (JiraComponent component : components) {
+            componentsList.add(component.getName());
+        }
+
+        data.getAttributeMapper().setValue(attribute, String.join("\n", componentsList));
         return attribute;
     }
 
