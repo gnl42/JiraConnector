@@ -146,13 +146,13 @@ public class MockJiraClient extends JiraClient {
 	}
 
 	@Override
-	public Iterable<IssueField> getActionFields(String issueKey, String actionId, IProgressMonitor monitor)
+	public List<IssueField> getActionFields(String issueKey, String actionId, IProgressMonitor monitor)
 			throws JiraException {
 		return null;
 	}
 
 	@Override
-	public Iterable<JiraAction> getAvailableActions(String issueKey, IProgressMonitor monitor) throws JiraException {
+	public List<JiraAction> getAvailableActions(String issueKey, IProgressMonitor monitor) throws JiraException {
 		return null;
 	}
 

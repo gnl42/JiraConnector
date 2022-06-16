@@ -13,6 +13,9 @@
 package me.glindholm.connector.eclipse.internal.jira.core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
@@ -27,6 +30,8 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraCaptchaRequ
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraRemoteMessageException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
+import me.glindholm.jira.rest.client.api.RestClientException;
+import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 
 /**
  * @author Brock Janiczak
@@ -104,23 +109,47 @@ public class JiraCorePlugin extends Plugin {
     public static IStatus toStatus(TaskRepository repository, Throwable e) {
         String url = repository.getRepositoryUrl();
         if (e instanceof JiraCaptchaRequiredException) {
-            return new RepositoryStatus(repository.getRepositoryUrl(), IStatus.ERROR, ID_PLUGIN,
-                    RepositoryStatus.ERROR_REPOSITORY_LOGIN, CoreMessages.Captcha_authentication_required);
+            return new RepositoryStatus(repository.getRepositoryUrl(), IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY_LOGIN,
+                    CoreMessages.Captcha_authentication_required);
         } else if (e instanceof JiraAuthenticationException) {
             return RepositoryStatus.createLoginError(url, ID_PLUGIN);
         } else if (e instanceof JiraServiceUnavailableException) {
             return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_IO, e.getMessage(), e);
         } else if (e instanceof JiraRemoteMessageException) {
-            return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY,
-                    e.getMessage(), ((JiraRemoteMessageException) e).getHtmlMessage());
+            return RepositoryStatus.createHtmlStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY, e.getMessage(),
+                    ((JiraRemoteMessageException) e).getHtmlMessage());
         } else if (e instanceof JiraException) {
-            return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY,
-                    e.getMessage(), e);
+            return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY, rootCause(e), e);
         } else if (e instanceof InvalidJiraQueryException) {
-            return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY, NLS.bind(
-                    CoreMessages.Invalid_query, e.getMessage()), e);
+            return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY, NLS.bind(CoreMessages.Invalid_query, e.getMessage()),
+                    e);
         } else {
             return RepositoryStatus.createInternalError(ID_PLUGIN, "Unexpected error", e); //$NON-NLS-1$
         }
     }
+
+    private static String rootCause(final Throwable t) {
+        if (t.getCause() == null) {
+            final List<String> errorMsg = new ArrayList<>();
+            if (t instanceof RestClientException) {
+                RestClientException restException = (RestClientException) t;
+                for (ErrorCollection errors : restException.getErrorCollections()) {
+                    if (errors.getErrorMessages() != null) {
+                        for (String msg : errors.getErrorMessages()) {
+                            errorMsg.add(errors.getStatus() + ": " + msg);
+                        }
+                    } else {
+                        for (Entry<String, String> msgs : errors.getErrors().entrySet()) {
+                            errorMsg.add(errors.getStatus() + ": " + msgs.getValue());
+                        }
+                    }
+                }
+            } else {
+                return t.getMessage();
+            }
+            return String.join("\n", errorMsg);
+        }
+        return rootCause(t.getCause());
+    }
+
 }

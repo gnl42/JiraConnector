@@ -99,7 +99,7 @@ public class JiraRestConverter {
         throw new Exception("Utility class"); //$NON-NLS-1$
     }
 
-    public static JiraProject[] convertProjects(Iterable<BasicProject> allProjects) {
+    public static JiraProject[] convertProjects(List<BasicProject> allProjects) {
         List<JiraProject> projects = new ArrayList<>();
         for (BasicProject basicProject : allProjects) {
             projects.add(convert(basicProject));
@@ -117,7 +117,7 @@ public class JiraRestConverter {
         return project;
     }
 
-    public static JiraResolution[] convertResolutions(Iterable<Resolution> allResolutions) {
+    public static JiraResolution[] convertResolutions(List<Resolution> allResolutions) {
         List<JiraResolution> resolutions = new ArrayList<>();
 
         for (Resolution resolution : allResolutions) {
@@ -131,7 +131,7 @@ public class JiraRestConverter {
         return new JiraResolution(resolution.getId().toString(), resolution.getName(), resolution.getDescription(), null);
     }
 
-    public static JiraPriority[] convertPriorities(Iterable<Priority> allPriorities) {
+    public static JiraPriority[] convertPriorities(List<Priority> allPriorities) {
         List<JiraPriority> priorities = new ArrayList<>();
 
         for (Priority priority : allPriorities) {
@@ -340,7 +340,7 @@ public class JiraRestConverter {
     // }
     // }
 
-    private static boolean isVersionMissingInProjectCache(Iterable<Version> affectedVersions, Iterable<Version> fixVersions, JiraProject project,
+    private static boolean isVersionMissingInProjectCache(List<Version> affectedVersions, List<Version> fixVersions, JiraProject project,
             IProgressMonitor monitor) {
 
         if (affectedVersions != null) {
@@ -433,12 +433,19 @@ public class JiraRestConverter {
                             if (optionalValue != null && optionalId != null) {
                                 allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
                             }
-                        } else if (allowedValue instanceof BasicPriority) {
-                            BasicPriority priority2 = (BasicPriority) allowedValue;
-                            allowedValues.add(new JiraAllowedValue(priority2.getId() + "", priority2.getName()));
                         } else if (allowedValue instanceof IssueType) {
                             IssueType issueType = (IssueType) allowedValue;
                             allowedValues.add(new JiraAllowedValue(issueType.getId() + "", issueType.getName()));
+                            /* */
+                        } else if (allowedValue instanceof BasicComponent) {
+                            BasicComponent basicComponent = (BasicComponent) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(basicComponent.getId() + "", basicComponent.getName()));
+                        } else if (allowedValue instanceof BasicIssue) {
+                            BasicIssue basicIssue = (BasicIssue) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(basicIssue.getId() + "", basicIssue.getKey()));
+                        } else if (allowedValue instanceof BasicPriority) {
+                            BasicPriority priority2 = (BasicPriority) allowedValue;
+                            allowedValues.add(new JiraAllowedValue(priority2.getId() + "", priority2.getName()));
                         } else if (allowedValue instanceof BasicProject) {
                             BasicProject basicProject = (BasicProject) allowedValue;
                             allowedValues.add(new JiraAllowedValue(basicProject.getId() + "", basicProject.getName()));
@@ -525,7 +532,7 @@ public class JiraRestConverter {
             default:
                 if (fieldType.getTaskType() != null) { // Ignore fields we don't care about, or don't support yet
                     StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                            NLS.bind("Unable extract value for field [{0}:{1}:{2}].", new Object[] { field.getId(), field.getName(), longType }))); //$NON-NLS-1$
+                            NLS.bind("Unable extract value for custom field [{0}:{1}:{2}].", new Object[] { field.getId(), field.getName(), longType }))); //$NON-NLS-1$
 
                     // not supported custom field
                 }
@@ -603,7 +610,7 @@ public class JiraRestConverter {
         return null;
     }
 
-    private static JiraWorkLog[] convertWorklogs(Iterable<Worklog> worklogs) {
+    private static JiraWorkLog[] convertWorklogs(List<Worklog> worklogs) {
         List<JiraWorkLog> outWorkLogs = new ArrayList<>();
 
         for (Worklog worklog : worklogs) {
@@ -636,7 +643,7 @@ public class JiraRestConverter {
         return outWorklog;
     }
 
-    private static JiraAttachment[] convertAttachments(Iterable<Attachment> attachments) {
+    private static JiraAttachment[] convertAttachments(List<Attachment> attachments) {
 
         List<JiraAttachment> outAttachments = new ArrayList<>();
 
@@ -674,7 +681,7 @@ public class JiraRestConverter {
         return outAttachment;
     }
 
-    private static JiraComment[] convertComments(Iterable<Comment> comments) {
+    private static JiraComment[] convertComments(List<Comment> comments) {
         List<JiraComment> outComments = new ArrayList<>();
 
         for (Comment comment : comments) {
@@ -713,7 +720,7 @@ public class JiraRestConverter {
         return outComment;
     }
 
-    private static JiraIssueLink[] convertIssueLinks(Iterable<IssueLink> issueLinks) {
+    private static JiraIssueLink[] convertIssueLinks(List<IssueLink> issueLinks) {
 
         List<JiraIssueLink> outIssueLinks = new ArrayList<>();
 
@@ -733,7 +740,7 @@ public class JiraRestConverter {
 
     }
 
-    static JiraVersion[] convertVersions(Iterable<Version> versions) {
+    static JiraVersion[] convertVersions(List<Version> versions) {
         List<JiraVersion> outVersions = new ArrayList<>();
 
         for (Version version : versions) {
@@ -761,7 +768,7 @@ public class JiraRestConverter {
         return outVersion;
     }
 
-    static JiraComponent[] convertComponents(Iterable<BasicComponent> components) {
+    static JiraComponent[] convertComponents(List<BasicComponent> components) {
 
         List<JiraComponent> outComponents = new ArrayList<>();
 
@@ -780,7 +787,7 @@ public class JiraRestConverter {
         return outComponent;
     }
 
-    private static JiraSubtask[] convert(Iterable<Subtask> allSubtasks) {
+    private static JiraSubtask[] convert(List<Subtask> allSubtasks) {
         List<JiraSubtask> subtasks = new ArrayList<>();
 
         for (Subtask subtask : allSubtasks) {
@@ -798,7 +805,7 @@ public class JiraRestConverter {
     // return uri + "_" + issueKey.replace('-', '*');
     // }
 
-    public static JiraIssueType[] convertIssueTypes(Iterable<IssueType> allIssueTypes) {
+    public static JiraIssueType[] convertIssueTypes(List<IssueType> allIssueTypes) {
         List<JiraIssueType> issueTypes = new ArrayList<>();
 
         for (IssueType issueType : allIssueTypes) {
@@ -817,7 +824,7 @@ public class JiraRestConverter {
         return outIssueType;
     }
 
-    public static List<JiraIssue> convertIssues(Iterable<? extends BasicIssue> issues) {
+    public static List<JiraIssue> convertIssues(List<? extends BasicIssue> issues) {
         List<JiraIssue> outIssues = new ArrayList<>();
 
         for (BasicIssue issue : issues) {
@@ -877,7 +884,7 @@ public class JiraRestConverter {
         return serverInfoOut;
     }
 
-    public static Iterable<JiraAction> convertTransitions(Iterable<Transition> transitions) {
+    public static List<JiraAction> convertTransitions(List<Transition> transitions) {
         List<JiraAction> actions = new ArrayList<>();
 
         for (Transition transition : transitions) {
@@ -904,7 +911,7 @@ public class JiraRestConverter {
         return action;
     }
 
-    public static Iterable<Version> convert(JiraVersion[] reportedVersions) {
+    public static List<Version> convert(JiraVersion[] reportedVersions) {
         List<Version> outReportedVersions = new ArrayList<>();
 
         if (reportedVersions != null) {
@@ -921,7 +928,7 @@ public class JiraRestConverter {
         return outVersion;
     }
 
-    public static Iterable<BasicComponent> convert(JiraComponent[] components) {
+    public static List<BasicComponent> convert(JiraComponent[] components) {
         List<BasicComponent> outComponents = new ArrayList<>();
 
         if (components != null) {
@@ -937,7 +944,7 @@ public class JiraRestConverter {
         return new BasicComponent(null, Long.valueOf(component.getId()), component.getName(), null);
     }
 
-    public static JiraNamedFilter[] convertNamedFilters(Iterable<Filter> favouriteFilters) {
+    public static JiraNamedFilter[] convertNamedFilters(List<Filter> favouriteFilters) {
         List<JiraNamedFilter> outFilters = new ArrayList<>();
 
         for (Filter filter : favouriteFilters) {
@@ -958,7 +965,7 @@ public class JiraRestConverter {
         return outFilter;
     }
 
-    public static JiraStatus[] convertStatuses(Iterable<Status> statuses) {
+    public static JiraStatus[] convertStatuses(List<Status> statuses) {
         List<JiraStatus> outStatuses = new ArrayList<>();
 
         for (Status status : statuses) {

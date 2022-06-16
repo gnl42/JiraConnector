@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.glindholm.connector.eclipse</groupId>
 	<artifactId>JiraConnector</artifactId>
-	<version>4.1.0-SNAPSHOT</version>
+	<version>4.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<developers>
@@ -75,18 +75,18 @@
 		<url>https://github.com/gnl42/JiraConnector/issues</url>
 	</issueManagement>
 
-<!-- 	<distributionManagement> -->
-<!-- 		<repository> -->
-<!-- 			<id>JiraConnector-update</id> -->
-<!-- 			<name>github.io</name> -->
-<!-- 			<url>file:///home/thara/testesb/in</url> -->
-<!-- 		</repository> -->
-<!-- 	</distributionManagement> -->
+	<!-- <distributionManagement> -->
+	<!-- <repository> -->
+	<!-- <id>JiraConnector-update</id> -->
+	<!-- <name>github.io</name> -->
+	<!-- <url>file:///home/thara/testesb/in</url> -->
+	<!-- </repository> -->
+	<!-- </distributionManagement> -->
 
 	<repositories>
 		<repository>
 			<id>eclipse</id>
-			<url>https://download.eclipse.org/releases/2021-12</url>
+			<url>https://download.eclipse.org/releases/latest</url>
 			<layout>p2</layout>
 		</repository>
 
@@ -133,7 +133,7 @@
 	</properties>
 
 	<modules>
-		<module>jira-rest-java-client</module>
+		<module>jrjc</module>
 		<module>commons-feature</module>
 		<module>commons.core</module>
 		<module>commons.ui</module>
@@ -335,6 +335,13 @@
 					<artifactId>tycho-eclipserun-plugin</artifactId>
 					<version>${tycho.version}</version>
 				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.3.0</version>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 		<plugins>

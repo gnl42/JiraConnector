@@ -13,6 +13,7 @@
 package me.glindholm.connector.eclipse.internal.jira.core.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -169,7 +170,7 @@ public class JiraClientCache {
     private void initializeMetadata(JiraClientData data, IProgressMonitor monitor) throws JiraException {
         SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_issue_types, 2);
 
-        Iterable<Field> metadata = jiraClient.getMetadata(submonitor);
+        List<Field> metadata = jiraClient.getMetadata(submonitor);
         Map<String, Field> fieldMetadata = new HashMap<>();
         for (Field field : metadata) {
             fieldMetadata.put(field.getId(), field);
