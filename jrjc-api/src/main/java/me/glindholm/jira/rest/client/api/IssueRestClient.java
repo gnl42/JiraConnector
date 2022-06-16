@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -89,7 +89,7 @@ public interface IssueRestClient {
      *                             messages, invalid argument, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Iterable<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options) throws URISyntaxException;
+    Promise<List<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options) throws URISyntaxException;
 
     /**
      * Creates new issues in batch.
@@ -103,7 +103,7 @@ public interface IssueRestClient {
      * @since me.glindholm.jira.rest.client.api 2.0, server 6.0
      */
 
-    Promise<BulkOperationResult<BasicIssue>> createIssues(Collection<IssueInput> issues) throws URISyntaxException;
+    Promise<BulkOperationResult<BasicIssue>> createIssues(List<IssueInput> issues) throws URISyntaxException;
 
     Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults)
             throws URISyntaxException;
@@ -134,7 +134,7 @@ public interface IssueRestClient {
      *                             messages, invalid argument, etc.)
      * @since 0.6
      */
-    Promise<Issue> getIssue(String issueKey, Iterable<Expandos> expand) throws URISyntaxException;
+    Promise<Issue> getIssue(String issueKey, List<Expandos> expand) throws URISyntaxException;
 
     /**
      * Deletes issue with given issueKey. You can set {@code deleteSubtasks} to
@@ -178,7 +178,7 @@ public interface IssueRestClient {
      * @return transitions about transitions available for the selected issue in its current state.
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid argument, etc.)
      */
-    Promise<Iterable<Transition>> getTransitions(URI transitionsUri);
+    Promise<List<Transition>> getTransitions(URI transitionsUri);
 
     /**
      * Retrieves complete information (if the caller has permission) about
@@ -192,7 +192,7 @@ public interface IssueRestClient {
      *                             messages, invalid argument, etc.)
      * @since v0.5
      */
-    Promise<Iterable<Transition>> getTransitions(Issue issue) throws URISyntaxException;
+    Promise<List<Transition>> getTransitions(Issue issue) throws URISyntaxException;
 
     /**
      * Performs selected transition on selected issue.
@@ -350,7 +350,7 @@ public interface IssueRestClient {
     Promise<Void> addWorklog(URI worklogUri, WorklogInput worklogInput) throws URISyntaxException;
 
     /**
-     * Expandos supported by {@link IssueRestClient#getIssue(String, Iterable)}
+     * Expandos supported by {@link IssueRestClient#getIssue(String, List)}
      */
     public enum Expandos {
         CHANGELOG("changelog"), OPERATIONS("operations"), SCHEMA("schema"), NAMES("names"), TRANSITIONS("transitions");

@@ -16,6 +16,9 @@
 
 package me.glindholm.jira.rest.client.api;
 
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Nullable;
 
 /**
@@ -29,15 +32,15 @@ public class GetCreateIssueMetadataOptions {
     public static final String EXPAND_PROJECTS_ISSUETYPES_FIELDS = "projects.issuetypes.fields";
 
     @Nullable
-    public final Iterable<Long> projectIds;
+    public final List<Long> projectIds;
     @Nullable
-    public final Iterable<String> projectKeys;
+    public final List<String> projectKeys;
     @Nullable
-    public final Iterable<Long> issueTypeIds;
+    public final List<Long> issueTypeIds;
     @Nullable
-    public final Iterable<String> issueTypeNames;
+    public final List<String> issueTypeNames;
     @Nullable
-    public final Iterable<String> expandos;
+    public final Set<String> expandos;
 
     /**
      * @param expandos       List of fields that should be expanded. See constants with prefix EXPAND_ in this class. Pass <code>null</code> to ignore.
@@ -46,9 +49,9 @@ public class GetCreateIssueMetadataOptions {
      * @param projectKeys    List of projects keys used to filter results. Pass <code>null</code> to ignore.
      * @param projectIds     List of projects Ids used to filter results. Pass <code>null</code> to ignore.
      */
-    public GetCreateIssueMetadataOptions(@Nullable Iterable<String> expandos, @Nullable Iterable<String> issueTypeNames,
-                                         @Nullable Iterable<Long> issueTypeIds, @Nullable Iterable<String> projectKeys,
-                                         @Nullable Iterable<Long> projectIds) {
+    public GetCreateIssueMetadataOptions(@Nullable Set<String> expandos, @Nullable List<String> issueTypeNames,
+            @Nullable List<Long> issueTypeIds, @Nullable List<String> projectKeys,
+            @Nullable List<Long> projectIds) {
         this.expandos = expandos;
         this.issueTypeNames = issueTypeNames;
         this.issueTypeIds = issueTypeIds;

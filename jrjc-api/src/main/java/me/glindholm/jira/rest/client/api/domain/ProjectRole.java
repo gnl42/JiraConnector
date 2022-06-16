@@ -17,7 +17,7 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import me.glindholm.jira.rest.client.api.IdentifiableEntity;
@@ -40,10 +40,10 @@ public class ProjectRole extends BasicProjectRole implements Serializable, Ident
     }
 
     private final String description;
-    private final Collection<RoleActor> actors;
+    private final List<RoleActor> actors;
     private final long id;
 
-    public ProjectRole(long id, URI self, String name, String description, Collection<RoleActor> actors) {
+    public ProjectRole(long id, URI self, String name, String description, List<RoleActor> actors) {
         super(self, name);
         this.id = id;
         this.description = description;
@@ -60,7 +60,7 @@ public class ProjectRole extends BasicProjectRole implements Serializable, Ident
     /**
      * @return actors associated with this role.
      */
-    public Iterable<RoleActor> getActors() {
+    public List<RoleActor> getActors() {
         return actors;
     }
 

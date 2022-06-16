@@ -1,5 +1,6 @@
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -15,9 +16,9 @@ public class AuditRecordsData {
     private final Integer offset;
     private final Integer limit;
     private final Integer total;
-    private final Iterable<AuditRecord> records;
+    private final List<AuditRecord> records;
 
-    public AuditRecordsData(final Integer offset, final Integer limit, final Integer total, final Iterable<AuditRecord> records) {
+    public AuditRecordsData(final Integer offset, final Integer limit, final Integer total, final List<AuditRecord> records) {
         this.offset = offset;
         this.limit = limit;
         this.total = total;
@@ -36,7 +37,7 @@ public class AuditRecordsData {
         return total;
     }
 
-    public Iterable<AuditRecord> getRecords() {
+    public List<AuditRecord> getRecords() {
         return records;
     }
 

@@ -18,6 +18,7 @@ package me.glindholm.jira.rest.client.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.Field;
@@ -55,7 +56,7 @@ public interface MetadataRestClient {
      *                             messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Iterable<IssueType>> getIssueTypes() throws URISyntaxException;
+    Promise<List<IssueType>> getIssueTypes() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete list of available issue types
@@ -67,7 +68,7 @@ public interface MetadataRestClient {
      *                             etc.)
      * @since server 4.3, me.glindholm.jira.rest.client.api 0.5
      */
-    Promise<Iterable<IssuelinksType>> getIssueLinkTypes() throws URISyntaxException;
+    Promise<List<IssuelinksType>> getIssueLinkTypes() throws URISyntaxException;
 
     /**
      * Retrieves complete information about selected status
@@ -87,7 +88,7 @@ public interface MetadataRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed
      *                             messages, etc.)
      */
-    Promise<Iterable<Status>> getStatuses() throws URISyntaxException;
+    Promise<List<Status>> getStatuses() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete information about selected priority
@@ -107,7 +108,7 @@ public interface MetadataRestClient {
      *                             messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Iterable<Priority>> getPriorities() throws URISyntaxException;
+    Promise<List<Priority>> getPriorities() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete information about selected resolution
@@ -127,7 +128,7 @@ public interface MetadataRestClient {
      *                             messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Iterable<Resolution>> getResolutions() throws URISyntaxException;
+    Promise<List<Resolution>> getResolutions() throws URISyntaxException;
 
     /**
      * Retrieves information about this JIRA instance
@@ -147,5 +148,5 @@ public interface MetadataRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed
      *                             messages, etc.)
      */
-    Promise<Iterable<Field>> getFields() throws URISyntaxException;
+    Promise<List<Field>> getFields() throws URISyntaxException;
 }

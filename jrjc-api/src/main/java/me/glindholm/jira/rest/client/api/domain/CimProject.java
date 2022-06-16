@@ -17,6 +17,7 @@
 package me.glindholm.jira.rest.client.api.domain;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,15 +40,15 @@ public class CimProject extends BasicProject {
     }
 
     private final Map<String, URI> avatarUris;
-    private final Iterable<CimIssueType> issueTypes;
+    private final List<CimIssueType> issueTypes;
 
-    public CimProject(URI self, String key, Long id, String name, Map<String, URI> avatarUris, Iterable<CimIssueType> issueTypes) {
+    public CimProject(URI self, String key, Long id, String name, Map<String, URI> avatarUris, List<CimIssueType> issueTypes) {
         super(self, key, id, name);
         this.avatarUris = avatarUris;
         this.issueTypes = issueTypes;
     }
 
-    public Iterable<CimIssueType> getIssueTypes() {
+    public List<CimIssueType> getIssueTypes() {
         return issueTypes;
     }
 

@@ -20,7 +20,9 @@ import static me.glindholm.jira.rest.client.api.IssueRestClient.Expandos.SCHEMA;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -30,13 +32,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.atlassian.httpclient.api.HttpClient;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import io.atlassian.util.concurrent.Promise;
-import me.glindholm.jira.rest.client.api.IssueRestClient;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.SearchRestClient;
 import me.glindholm.jira.rest.client.api.domain.Filter;
@@ -52,12 +49,8 @@ import me.glindholm.jira.rest.client.internal.json.SearchResultJsonParser;
  */
 public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient implements SearchRestClient {
 
-    private static final Function<IssueRestClient.Expandos, String> EXPANDO_TO_PARAM = new Function<>() {
-        @Override
-        public String apply(IssueRestClient.Expandos from) {
-            return from.name().toLowerCase();
-        }
-    };
+    private static final List<String> SEARCH_EXPANDOS = List.of(SCHEMA, NAMES).stream().map(expando -> expando.name().toLowerCase())
+            .collect(Collectors.toUnmodifiableList());
 
     private static final String START_AT_ATTRIBUTE = "startAt";
     private static final String MAX_RESULTS_ATTRIBUTE = "maxResults";
@@ -92,23 +85,22 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     @Override
     public Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable Set<String> fields)
             throws URISyntaxException {
-        final Iterable<String> expandosValues = Iterables.transform(ImmutableList.of(SCHEMA, NAMES), EXPANDO_TO_PARAM);
         final String notNullJql = StringUtils.defaultString(jql);
         if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
-            return searchJqlImplPost(maxResults, startAt, expandosValues, notNullJql, fields);
+            return searchJqlImplPost(maxResults, startAt, SEARCH_EXPANDOS, notNullJql, fields);
         } else {
-            return searchJqlImplGet(maxResults, startAt, expandosValues, notNullJql, fields);
+            return searchJqlImplGet(maxResults, startAt, SEARCH_EXPANDOS, notNullJql, fields);
         }
     }
 
-    private Promise<SearchResult> searchJqlImplGet(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql,
+    private Promise<SearchResult> searchJqlImplGet(@Nullable Integer maxResults, @Nullable Integer startAt, List<String> expandosValues, String jql,
             @Nullable Set<String> fields) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(searchUri)
                 .addParameter(JQL_ATTRIBUTE, jql)
-                .addParameter(EXPAND_ATTRIBUTE, Joiner.on(",").join(expandosValues));
+                .addParameter(EXPAND_ATTRIBUTE, String.join(",", expandosValues));
 
         if (fields != null) {
-            uriBuilder.addParameter(FIELDS_ATTRIBUTE, Joiner.on(",").join(fields));
+            uriBuilder.addParameter(FIELDS_ATTRIBUTE, String.join(",", fields));
         }
         addOptionalQueryParam(uriBuilder, MAX_RESULTS_ATTRIBUTE, maxResults);
         addOptionalQueryParam(uriBuilder, START_AT_ATTRIBUTE, startAt);
@@ -122,12 +114,12 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
         }
     }
 
-    private Promise<SearchResult> searchJqlImplPost(@Nullable Integer maxResults, @Nullable Integer startAt, Iterable<String> expandosValues, String jql, @Nullable Set<String> fields) {
+    private Promise<SearchResult> searchJqlImplPost(@Nullable Integer maxResults, @Nullable Integer startAt, List<String> expandosValues, String jql, @Nullable Set<String> fields) {
         final JSONObject postEntity = new JSONObject();
 
         try {
             postEntity.put(JQL_ATTRIBUTE, jql)
-            .put(EXPAND_ATTRIBUTE, ImmutableList.copyOf(expandosValues))
+            .put(EXPAND_ATTRIBUTE, List.copyOf(expandosValues))
             .putOpt(START_AT_ATTRIBUTE, startAt)
             .putOpt(MAX_RESULTS_ATTRIBUTE, maxResults);
 
@@ -141,7 +133,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     }
 
     @Override
-    public Promise<Iterable<Filter>> getFavouriteFilters() {
+    public Promise<List<Filter>> getFavouriteFilters() {
         return getAndParse(favouriteUri, filtersParser);
     }
 

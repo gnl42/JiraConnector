@@ -23,8 +23,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Preconditions;
-
 import me.glindholm.jira.rest.client.api.ExpandableProperty;
 
 /**
@@ -60,7 +58,7 @@ public class User extends BasicUser {
     public User(URI self, String name, String displayName, String accountId, String emailAddress, boolean active,
             @Nullable ExpandableProperty<String> groups, Map<String, URI> avatarUris, @Nullable String timezone) {
         super(self, name, displayName, accountId);
-        Preconditions.checkNotNull(avatarUris.get(S48_48), "At least one avatar URL is expected - for 48x48");
+        Objects.requireNonNull(avatarUris.get(S48_48), "At least one avatar URL is expected - for 48x48");
         this.timezone = timezone;
         this.emailAddress = emailAddress;
         this.active = active;

@@ -17,13 +17,12 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import com.google.common.collect.Maps;
 
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 
@@ -38,10 +37,10 @@ public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, 
 
     @Override
     public Map<String, CimFieldInfo> parse(JSONObject json) throws JSONException, URISyntaxException {
-        final Map<String, CimFieldInfo> res = Maps.newHashMapWithExpectedSize(json.length());
-        final Iterator keysIterator = json.keys();
+        final Map<String, CimFieldInfo> res = new HashMap<>(json.length());
+        final Iterator<String> keysIterator = json.keys();
         while (keysIterator.hasNext()) {
-            final String id = (String) keysIterator.next();
+            final String id = keysIterator.next();
             res.put(id, cimFieldsInfoJsonParser.parse(json.getJSONObject(id), id));
         }
         return res;

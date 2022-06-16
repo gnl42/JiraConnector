@@ -16,7 +16,7 @@
 
 package me.glindholm.jira.rest.client.api;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -35,12 +35,12 @@ public class ExpandableProperty<T> {
         items = null;
     }
 
-    public ExpandableProperty(int size, @Nullable Collection<T> items) {
+    public ExpandableProperty(int size, @Nullable List<T> items) {
         this.size = size;
         this.items = items;
     }
 
-    public ExpandableProperty(Collection<T> items) {
+    public ExpandableProperty(List<T> items) {
         this.size = items.size();
         this.items = items;
     }
@@ -50,10 +50,10 @@ public class ExpandableProperty<T> {
     }
 
     @Nullable
-    final private Collection<T> items;
+    final private List<T> items;
 
     @Nullable
-    public Iterable<T> getItems() {
+    public List<T> getItems() {
         return items;
     }
 

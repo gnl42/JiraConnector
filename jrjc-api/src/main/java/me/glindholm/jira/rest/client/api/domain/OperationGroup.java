@@ -17,13 +17,13 @@
 package me.glindholm.jira.rest.client.api.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nullable;
-
-import com.google.common.collect.Iterables;
 
 /**
  * Represents operations group
@@ -37,13 +37,13 @@ public class OperationGroup implements Serializable, Operation {
     private final String id;
     @Nullable
     private final OperationHeader header;
-    private final Iterable<OperationLink> links;
-    private final Iterable<OperationGroup> groups;
+    private final List<OperationLink> links;
+    private final List<OperationGroup> groups;
     @Nullable
     private final Integer weight;
 
-    public OperationGroup(@Nullable final String id, final Iterable<OperationLink> links,
-            final Iterable<OperationGroup> groups, @Nullable final OperationHeader header,
+    public OperationGroup(@Nullable final String id, final List<OperationLink> links,
+            final List<OperationGroup> groups, @Nullable final OperationHeader header,
             @Nullable final Integer weight) {
         this.id = id;
         this.header = header;
@@ -64,14 +64,15 @@ public class OperationGroup implements Serializable, Operation {
         if (result.isPresent()) {
             return result;
         } else {
-            final Iterable<Operation> operations = Iterables.concat(
-                    header != null ? Collections.singleton(header) : Collections.<Operation>emptyList(),
-                            links, groups);
+            final List<Operation> operations = new ArrayList<>(1 + links.size() + groups.size());
+            operations.addAll(header != null ? Collections.singleton(header) : Collections.emptyList());
+            operations.addAll(links);
+            operations.addAll(groups);
             return accept(operations, visitor);
         }
     }
 
-    static <T> Optional<T> accept(final Iterable<? extends Operation> operations, final OperationVisitor<T> visitor) {
+    static <T> Optional<T> accept(final List<? extends Operation> operations, final OperationVisitor<T> visitor) {
         for (Operation operation : operations) {
             Optional<T> result = operation.accept(visitor);
             if (result.isPresent()) {
@@ -86,11 +87,11 @@ public class OperationGroup implements Serializable, Operation {
         return header;
     }
 
-    public Iterable<OperationLink> getLinks() {
+    public List<OperationLink> getLinks() {
         return links;
     }
 
-    public Iterable<OperationGroup> getGroups() {
+    public List<OperationGroup> getGroups() {
         return groups;
     }
 
@@ -115,8 +116,8 @@ public class OperationGroup implements Serializable, Operation {
         final OperationGroup other = (OperationGroup) obj;
         return Objects.equals(this.id, other.id)
                 && Objects.equals(this.header, other.header)
-                && Iterables.elementsEqual(this.links, other.links)
-                && Iterables.elementsEqual(this.groups, other.groups)
+                && this.links.equals(other.links)
+                && this.groups.equals(other.groups)
                 && Objects.equals(this.weight, other.weight);
     }
 

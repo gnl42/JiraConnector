@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -34,7 +34,7 @@ public class ChangelogJsonParser implements JsonObjectParser<ChangelogGroup> {
     public ChangelogGroup parse(JSONObject json) throws JSONException, URISyntaxException {
         final OffsetDateTime created = JsonParseUtil.parseOffsetDateTime(json, "created");
         final BasicUser author = json.has("author") ? JsonParseUtil.parseBasicUser(json.getJSONObject("author")) : null;
-        final Collection<ChangelogItem> items = JsonParseUtil.parseJsonArray(json.getJSONArray("items"), changelogItemJsonParser);
+        final List<ChangelogItem> items = JsonParseUtil.parseJsonArray(json.getJSONArray("items"), changelogItemJsonParser);
         return new ChangelogGroup(author, created, items);
     }
 }

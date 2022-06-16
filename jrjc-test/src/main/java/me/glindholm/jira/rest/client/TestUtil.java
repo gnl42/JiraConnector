@@ -16,26 +16,24 @@
 
 package me.glindholm.jira.rest.client;
 
-import static com.google.common.collect.Iterators.getOnlyElement;
-
 import java.net.URI;
-import java.util.Collection;
+import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.core.Response;
-import org.apache.http.client.utils.URIBuilder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.Matchers;
-import java.time.OffsetDateTime;
-import org.joda.time.OffsetDateTimeZone;
-import org.joda.time.format.OffsetDateTimeFormatter;
-import org.joda.time.format.ISOOffsetDateTimeFormat;
+import org.apache.http.client.utils.URIBuilder;
+import org.junit.Assert;
 
-import com.google.common.collect.Iterators;
-
-import junit.framework.Assert;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.OperationGroup;
 import me.glindholm.jira.rest.client.api.domain.OperationLink;
@@ -43,27 +41,32 @@ import me.glindholm.jira.rest.client.api.domain.Transition;
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 
 public class TestUtil {
-    private static OffsetDateTimeFormatter universalOffsetDateTimeParser = ISOOffsetDateTimeFormat.dateTimeParser();
-    private static OffsetDateTimeFormatter formatter = ISOOffsetDateTimeFormat.dateTime();
-    private static OffsetDateTimeFormatter dateFormatter = ISOOffsetDateTimeFormat.date();
-    public static Iterable<OperationGroup> EMPTY_GROUPS = Collections.emptyList();
-    public static Iterable<OperationLink> EMPTY_LINKS = Collections.emptyList();
+    //    private static DateTimeFormatter universalOffsetDateTimeParser = ISOOffsetDateTimeFormat.dateTimeParser();
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+    public static List<OperationGroup> EMPTY_GROUPS = Collections.emptyList();
+    public static List<OperationLink> EMPTY_LINKS = Collections.emptyList();
 
     public static URI toUri(String str) {
-        return new URIBuilder(str).build();
+        try {
+            return new URIBuilder(str).build();
+        } catch (URISyntaxException e) {
+            return null;
+        }
     }
+
+    //    public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt) {
+    //        return universalOffsetDateTimeParser.parseOffsetDateTime(isoOffsetDateTimeSt);
+    //    }
 
     public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt) {
-        return universalOffsetDateTimeParser.parseOffsetDateTime(isoOffsetDateTimeSt);
-    }
-
-    @SuppressWarnings("unused")
-    public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt, OffsetDateTimeZone zone) {
-        return formatter.withZone(zone).parseOffsetDateTime(isoOffsetDateTimeSt);
+        return OffsetDateTime.parse(isoOffsetDateTimeSt, formatter);
+        //         formatter.withZone(zone).parseOffsetDateTime(isoOffsetDateTimeSt);
     }
 
     public static OffsetDateTime toOffsetDateTimeFromIsoDate(String isoDate) {
-        return dateFormatter.parseOffsetDateTime(isoDate);
+        final LocalDate date = LocalDate.parse(isoDate, dateFormatter);
+        return OffsetDateTime.of(date, LocalTime.MIDNIGHT, ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS);
     }
 
     public static void assertErrorCode(int errorCode, Runnable runnable) {
@@ -89,21 +92,21 @@ public class TestUtil {
 
     }
 
-    public static void assertErrorCode(Response.Status status, String message, Runnable runnable) {
-        assertErrorCode(status.getStatusCode(), message, runnable);
-    }
-
-    public static void assertExpectedErrorCollection(final Collection<ErrorCollection> errors, final Runnable runnable) {
+    public static void assertExpectedErrorCollection(final List<ErrorCollection> errors, final Runnable runnable) {
         assertExpectedErrors(errors, runnable);
     }
 
-    public static void assertErrorCodeWithRegexp(Response.Status status, String regexp, Runnable runnable) {
-        assertErrorCodeWithRegexp(status.getStatusCode(), regexp, runnable);
-    }
-
-    public static void assertErrorCode(Response.Status status, Runnable runnable) {
-        assertErrorCode(status.getStatusCode(), null, runnable);
-    }
+    //    public static void assertErrorCode(Response.Status status, String message, Runnable runnable) {
+    //        assertErrorCode(status.getStatusCode(), message, runnable);
+    //    }
+    //
+    //   public static void assertErrorCodeWithRegexp(Response.Status status, String regexp, Runnable runnable) {
+    //        assertErrorCodeWithRegexp(status.getStatusCode(), regexp, runnable);
+    //    }
+    //
+    //    public static void assertErrorCode(Response.Status status, Runnable runnable) {
+    //        assertErrorCode(status.getStatusCode(), null, runnable);
+    //    }
 
     public static void assertErrorCode(int errorCode, String message, Runnable runnable) {
         try {
@@ -115,12 +118,10 @@ public class TestUtil {
             if (!StringUtils.isEmpty(message)) {
                 // We expect a single error message. Either error or error message.
                 Assert.assertEquals(1, e.getErrorCollections().size());
-                if (Iterators.getOnlyElement(e.getErrorCollections().iterator()).getErrorMessages().size() > 0) {
-                    Assert.assertEquals(getOnlyElement(getOnlyElement(e.getErrorCollections().iterator()).getErrorMessages()
-                            .iterator()), message);
-                } else if (Iterators.getOnlyElement(e.getErrorCollections().iterator()).getErrors().size() > 0) {
-                    Assert.assertEquals(getOnlyElement(getOnlyElement(e.getErrorCollections().iterator()).getErrors().values()
-                            .iterator()), message);
+                if (e.getErrorCollections().get(0).getErrorMessages().size() > 0) {
+                    Assert.assertEquals(e.getErrorCollections().get(0).getErrors().values(), message);
+                } else if (e.getErrorCollections().get(0).getErrors().size() > 0) {
+                    Assert.assertEquals(e.getErrorCollections().get(0).getErrors().values(), message);
                 } else {
                     Assert.fail("Expected an error message.");
                 }
@@ -133,8 +134,8 @@ public class TestUtil {
             runnable.run();
             Assert.fail(RestClientException.class + " exception expected");
         } catch (me.glindholm.jira.rest.client.api.RestClientException ex) {
-            final ErrorCollection errorElement = getOnlyElement(ex.getErrorCollections().iterator());
-            final String errorMessage = getOnlyElement(errorElement.getErrorMessages().iterator());
+            final ErrorCollection errorElement = ex.getErrorCollections().get(0);
+            final String errorMessage = errorElement.getErrorMessages().get(0);
             Assert.assertTrue("'" + ex.getMessage() + "' does not match regexp '" + regExp + "'", errorMessage.matches(regExp));
             Assert.assertTrue(ex.getStatusCode().isPresent());
             Assert.assertEquals(errorCode, ex.getStatusCode().get().intValue());
@@ -170,7 +171,7 @@ public class TestUtil {
     }
 
     @Nullable
-    public static Transition getTransitionByName(Iterable<Transition> transitions, String transitionName) {
+    public static Transition getTransitionByName(List<Transition> transitions, String transitionName) {
         Transition transitionFound = null;
         for (Transition transition : transitions) {
             if (transition.getName().equals(transitionName)) {
@@ -181,7 +182,7 @@ public class TestUtil {
         return transitionFound;
     }
 
-    private static void assertExpectedErrors(final Collection<ErrorCollection> expectedErrors, final Runnable runnable) {
+    private static void assertExpectedErrors(final List<ErrorCollection> expectedErrors, final Runnable runnable) {
         try {
             runnable.run();
             Assert.fail(RestClientException.class + " exception expected");
@@ -190,7 +191,11 @@ public class TestUtil {
         }
     }
 
-    public static <K> void assertEmptyIterable(Iterable<K> iterable) {
-        org.junit.Assert.assertThat(iterable, Matchers.<K>emptyIterable());
+    public static <K> void assertEmptyList(List<K> iterable) {
+        Assert.assertEquals(iterable, Collections.emptyList());
+    }
+
+    public static <K> void assertEmptySet(Set<K> iterable) {
+        Assert.assertEquals(iterable, Collections.emptySet());
     }
 }

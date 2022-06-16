@@ -16,15 +16,12 @@
 
 package me.glindholm.jira.rest.client.api.domain.util;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 /**
  * Error container returned in bulk operations
@@ -34,17 +31,17 @@ import com.google.common.collect.ImmutableMap;
 public class ErrorCollection {
 
     private final Integer status;
-    private final Collection<String> errorMessages;
+    private final List<String> errorMessages;
     private final Map<String, String> errors;
 
-    public ErrorCollection(@Nullable final Integer status, final Collection<String> errorMessages, final Map<String, String> errors) {
+    public ErrorCollection(@Nullable final Integer status, final List<String> errorMessages, final Map<String, String> errors) {
         this.status = status;
-        this.errors = ImmutableMap.copyOf(errors);
-        this.errorMessages = ImmutableList.copyOf(errorMessages);
+        this.errors = Map.copyOf(errors);
+        this.errorMessages = List.copyOf(errorMessages);
     }
 
     public ErrorCollection(final String errorMessage) {
-        this(null, ImmutableList.of(errorMessage), Collections.<String, String>emptyMap());
+        this(null, List.of(errorMessage), Collections.emptyMap());
     }
 
     @SuppressWarnings("unused")
@@ -53,7 +50,7 @@ public class ErrorCollection {
         return status;
     }
 
-    public Collection<String> getErrorMessages() {
+    public List<String> getErrorMessages() {
         return errorMessages;
     }
 
@@ -61,13 +58,13 @@ public class ErrorCollection {
         return errors;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
+    //    public static Builder builder() {
+    //        return new Builder();
+    //    }
+    //
     @Override
     public String toString() {
-        return "ErrorCollection [status=" + status + ", errorMessages=" + errorMessages + ", errors=" + errors + "]";
+        return "ErrorList [status=" + status + ", errorMessages=" + errorMessages + ", errors=" + errors + "]";
     }
 
     @Override
@@ -86,35 +83,35 @@ public class ErrorCollection {
         return Objects.hash(status, errors, errorMessages);
     }
 
-    public static class Builder {
-
-        private int status;
-        private final ImmutableMap.Builder<String, String> errors;
-        private final ImmutableList.Builder<String> errorMessages;
-
-        public Builder() {
-            errors = ImmutableMap.builder();
-            errorMessages = ImmutableList.builder();
-        }
-
-        public Builder status(final int status) {
-            this.status = status;
-            return this;
-        }
-
-        public Builder error(final String key, final String message) {
-            errors.put(key, message);
-            return this;
-
-        }
-
-        public Builder errorMessage(final String message) {
-            errorMessages.add(message);
-            return this;
-        }
-
-        public ErrorCollection build() {
-            return new ErrorCollection(status, errorMessages.build(), errors.build());
-        }
-    }
+    //    public static class Builder {
+    //
+    //        private int status;
+    //        private final ImmutableMap.Builder<String, String> errors;
+    //        private final ImmutableList.Builder<String> errorMessages;
+    //
+    //        public Builder() {
+    //            errors = ImmutableMap.builder();
+    //            errorMessages = ImmutableList.builder();
+    //        }
+    //
+    //        public Builder status(final int status) {
+    //            this.status = status;
+    //            return this;
+    //        }
+    //
+    //        public Builder error(final String key, final String message) {
+    //            errors.put(key, message);
+    //            return this;
+    //
+    //        }
+    //
+    //        public Builder errorMessage(final String message) {
+    //            errorMessages.add(message);
+    //            return this;
+    //        }
+    //
+    //        public ErrorCollection build() {
+    //            return new ErrorCollection(status, errorMessages.build(), errors.build());
+    //        }
+    //    }
 }

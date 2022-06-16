@@ -43,7 +43,7 @@ public class CimIssueTypeJsonParser implements JsonObjectParser<CimIssueType> {
         final JSONObject jsonFieldsMap = json.optJSONObject("fields");
 
         final Map<String, CimFieldInfo> fields = jsonFieldsMap == null ?
-                Collections.<String, CimFieldInfo>emptyMap() : fieldsParser.parse(jsonFieldsMap);
+                Collections.emptyMap() : fieldsParser.parse(jsonFieldsMap);
 
         return new CimIssueType(issueType.getSelf(), issueType.getId(), issueType.getName(),
                 issueType.isSubtask(), issueType.getDescription(), issueType.getIconUri(), fields);

@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>me.glindholm.jira</groupId>
 		<artifactId>jira-rest-java-client-parent</artifactId>
-		<version>6.0.0</version>
+		<version>6.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>jira-rest-java-client-app</artifactId>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>eclipse-test-plugin</packaging>
 
 	<name>JIRA REST Java Client - Application Stub</name>
 	<description>The application stub for JIRA REST Java Client</description>

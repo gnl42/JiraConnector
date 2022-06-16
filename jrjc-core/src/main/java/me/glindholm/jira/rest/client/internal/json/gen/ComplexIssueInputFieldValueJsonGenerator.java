@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -44,10 +45,10 @@ public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<C
             return JSONObject.NULL;
         } else if (rawValue instanceof ComplexIssueInputFieldValue) {
             return generate((ComplexIssueInputFieldValue) rawValue);
-        } else if (rawValue instanceof Iterable) {
+        } else if (rawValue instanceof List) {
             // array with values
             final JSONArray array = new JSONArray();
-            for (Object value : (Iterable) rawValue) {
+            for (Object value : (List) rawValue) {
                 array.put(generateFieldValueForJson(value));
             }
             return array;

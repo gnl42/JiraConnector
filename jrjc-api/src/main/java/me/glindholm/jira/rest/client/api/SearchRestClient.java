@@ -18,6 +18,7 @@ package me.glindholm.jira.rest.client.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -84,7 +85,7 @@ public interface SearchRestClient {
      * @return list of your favourite filters
      * @since 2.0 client, 5.0 server
      */
-    Promise<Iterable<Filter>> getFavouriteFilters();
+    Promise<List<Filter>> getFavouriteFilters();
 
     /**
      * Retrieves filter for given URI.

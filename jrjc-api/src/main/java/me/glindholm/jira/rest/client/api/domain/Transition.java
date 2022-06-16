@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.api.domain;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import me.glindholm.jira.rest.client.api.NamedEntity;
@@ -32,9 +32,9 @@ public class Transition implements Serializable, NamedEntity {
 
     private final String name;
     private final int id;
-    private final Collection<Field> fields;
+    private final List<Field> fields;
 
-    public Transition(String name, int id, Collection<Field> fields) {
+    public Transition(String name, int id, List<Field> fields) {
         this.name = name;
         this.id = id;
         this.fields = fields;
@@ -49,7 +49,7 @@ public class Transition implements Serializable, NamedEntity {
         return id;
     }
 
-    public Iterable<Field> getFields() {
+    public List<Field> getFields() {
         return fields;
     }
 

@@ -18,16 +18,13 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.google.common.base.Splitter;
-
-import me.glindholm.jira.rest.client.api.OptionalIterable;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
@@ -42,10 +39,10 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
     private final IssueTypeJsonParser issueTypeJsonParser = new IssueTypeJsonParser();
     private final BasicProjectRoleJsonParser basicProjectRoleJsonParser = new BasicProjectRoleJsonParser();
 
-    static Iterable<String> parseExpandos(final JSONObject json) throws JSONException {
+    static List<String> parseExpandos(final JSONObject json) throws JSONException {
         if (json.has("expand")) {
             final String expando = json.getString("expand");
-            return Splitter.on(',').split(expando);
+            return List.of(expando.split(","));
         } else {
             return Collections.emptyList();
         }
@@ -54,7 +51,7 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
     @Override
     public Project parse(JSONObject json) throws JSONException, URISyntaxException {
         URI self = JsonParseUtil.getSelfUri(json);
-        final Iterable<String> expandos = parseExpandos(json);
+        final List<String> expandos = parseExpandos(json);
         final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
         final String key = json.getString("key");
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
@@ -70,12 +67,12 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
         if ("".equals(description)) {
             description = null;
         }
-        final Collection<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
-        final Collection<BasicComponent> components = JsonParseUtil.parseJsonArray(json
+        final List<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
+        final List<BasicComponent> components = JsonParseUtil.parseJsonArray(json
                 .getJSONArray("components"), componentJsonParser);
         final JSONArray issueTypesArray = json.optJSONArray("issueTypes");
-        final OptionalIterable<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
-        final Collection<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
+        final List<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
+        final List<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
                 .getOptionalJsonObject(json, "roles"));
         return new Project(expandos, self, key, id, name, description, lead, uri, versions, components, issueTypes, projectRoles);
     }

@@ -18,13 +18,12 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.ExpandableResource;
-import me.glindholm.jira.rest.client.api.OptionalIterable;
 
 /**
  * Complete information about single JIRA project.
@@ -36,13 +35,13 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     private static final long serialVersionUID = 1L;
 
     @Nullable
-    private final Iterable<String> expandos;
+    private final List<String> expandos;
     @Nullable
     private final String description;
     private final BasicUser lead;
     @Nullable
     private final URI uri;
-    private final Collection<Version> versions;
+    private final List<Version> versions;
 
     @Override
     public String toString() {
@@ -50,13 +49,13 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
                 + components + ", issueTypes=" + issueTypes + ", projectRoles=" + projectRoles + ", " + super.toString() + "]";
     }
 
-    private final Collection<BasicComponent> components;
-    private final OptionalIterable<IssueType> issueTypes;
-    private final Collection<BasicProjectRole> projectRoles;
+    private final List<BasicComponent> components;
+    private final List<IssueType> issueTypes;
+    private final List<BasicProjectRole> projectRoles;
 
-    public Project(final Iterable<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
-            Collection<Version> versions, Collection<BasicComponent> components,
-            OptionalIterable<IssueType> issueTypes, Collection<BasicProjectRole> projectRoles) {
+    public Project(final List<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
+            List<Version> versions, List<BasicComponent> components,
+            List<IssueType> issueTypes, List<BasicProjectRole> projectRoles) {
         super(self, key, id, name);
         this.expandos = expandos;
         this.description = description;
@@ -94,14 +93,14 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     /**
      * @return versions defined for this project
      */
-    public Iterable<Version> getVersions() {
+    public List<Version> getVersions() {
         return versions;
     }
 
     /**
      * @return components defined for this project
      */
-    public Iterable<BasicComponent> getComponents() {
+    public List<BasicComponent> getComponents() {
         return components;
     }
 
@@ -110,19 +109,19 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
      *
      * @return the issueTypes defined for this project
      */
-    public OptionalIterable<IssueType> getIssueTypes() {
+    public List<IssueType> getIssueTypes() {
         return issueTypes;
     }
 
     /**
      * @return basic definition of this project's roles.
      */
-    public Iterable<BasicProjectRole> getProjectRoles() {
+    public List<BasicProjectRole> getProjectRoles() {
         return projectRoles;
     }
 
     @Override
-    public Iterable<String> getExpandos() {
+    public List<String> getExpandos() {
         return expandos;
     }
 

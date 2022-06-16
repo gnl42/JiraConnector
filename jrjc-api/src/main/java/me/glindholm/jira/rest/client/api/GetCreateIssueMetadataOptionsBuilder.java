@@ -17,9 +17,9 @@
 package me.glindholm.jira.rest.client.api;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Builder class for {@link GetCreateIssueMetadataOptions}. All fields are optional so set only those that
@@ -34,47 +34,47 @@ import java.util.List;
  * @since v1.0
  */
 public class GetCreateIssueMetadataOptionsBuilder {
-    private Iterable<String> expandos = new HashSet<>();
-    private Iterable<String> issueTypeNames;
-    private Iterable<Long> issueTypeIds;
-    private Iterable<String> projectKeys;
-    private Iterable<Long> projectIds;
+    private Set<String> expandos = new HashSet<>();
+    private List<String> issueTypeNames;
+    private List<Long> issueTypeIds;
+    private List<String> projectKeys;
+    private List<Long> projectIds;
 
-    public GetCreateIssueMetadataOptionsBuilder withExpandos(Iterable<String> expandos) {
+    public GetCreateIssueMetadataOptionsBuilder withExpandos(Set<String> expandos) {
         this.expandos = expandos;
         return this;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public GetCreateIssueMetadataOptionsBuilder withExpandos(String... expandos) {
-        return withExpandos(List.of(expandos));
+        return withExpandos(Set.of(expandos));
     }
 
     public GetCreateIssueMetadataOptionsBuilder withExpandedIssueTypesFields() {
-        return withExpandos(List.of(GetCreateIssueMetadataOptions.EXPAND_PROJECTS_ISSUETYPES_FIELDS));
+        return withExpandos(GetCreateIssueMetadataOptions.EXPAND_PROJECTS_ISSUETYPES_FIELDS);
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(Iterable<String> issueTypeNames) {
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(List<String> issueTypeNames) {
         this.issueTypeNames = issueTypeNames;
         return this;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(String... issueTypeNames) {
-        return withIssueTypeNames(Collections.unmodifiableList(Arrays.asList(issueTypeNames)));
+        return withIssueTypeNames(List.copyOf(Arrays.asList(issueTypeNames)));
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Iterable<Long> issueTypeIds) {
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(List<Long> issueTypeIds) {
         this.issueTypeIds = issueTypeIds;
         return this;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Long... issueTypeIds) {
-        return withIssueTypeIds(Collections.unmodifiableList(Arrays.asList(issueTypeIds)));
+        return withIssueTypeIds(List.copyOf(Arrays.asList(issueTypeIds)));
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withProjectKeys(Iterable<String> projectKeys) {
+    public GetCreateIssueMetadataOptionsBuilder withProjectKeys(List<String> projectKeys) {
         this.projectKeys = projectKeys;
         return this;
     }
@@ -83,7 +83,7 @@ public class GetCreateIssueMetadataOptionsBuilder {
         return withProjectKeys(List.of(projectKeys));
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withProjectIds(Iterable<Long> projectIds) {
+    public GetCreateIssueMetadataOptionsBuilder withProjectIds(List<Long> projectIds) {
         this.projectIds = projectIds;
         return this;
     }

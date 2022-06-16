@@ -16,6 +16,8 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.util.List;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -42,7 +44,7 @@ public class FieldJsonParser implements JsonObjectParser<Field> {
         return new Field(id, name, custom, orderable, navigable, searchable, schema);
     }
 
-    public static JsonArrayParser<Iterable<Field>> createFieldsArrayParser() {
+    public static JsonArrayParser<List<Field>> createFieldsArrayParser() {
         return GenericJsonArrayParser.create(new FieldJsonParser());
     }
 }

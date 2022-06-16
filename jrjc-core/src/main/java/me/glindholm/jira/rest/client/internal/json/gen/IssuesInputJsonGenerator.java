@@ -16,28 +16,27 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import com.google.common.collect.Lists;
-
-import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.util.List;
+import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 
 /**
  * Json Generator for IssuesInput
  *
  * @since 1.0
  */
-public class IssuesInputJsonGenerator implements JsonGenerator<Iterable<IssueInput>> {
+public class IssuesInputJsonGenerator implements JsonGenerator<List<IssueInput>> {
 
     private final IssueInputJsonGenerator issueInputJsonGenerator = new IssueInputJsonGenerator();
 
     @Override
-    public JSONObject generate(final Iterable<IssueInput> issues) throws JSONException {
+    public JSONObject generate(final List<IssueInput> issues) throws JSONException {
         final JSONObject issueUpdates = new JSONObject();
-        final List<JSONObject> obj = Lists.newArrayList();
+        final List<JSONObject> obj = new ArrayList<>();
 
         for (final IssueInput issue : issues) {
             obj.add(issueInputJsonGenerator.generate(issue));

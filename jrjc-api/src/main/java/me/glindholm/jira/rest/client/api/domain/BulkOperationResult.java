@@ -16,6 +16,7 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -25,19 +26,19 @@ import java.util.Objects;
  */
 public class BulkOperationResult<T> {
 
-    private final Iterable<T> issues;
-    private final Iterable<BulkOperationErrorResult> errors;
+    private final List<T> issues;
+    private final List<BulkOperationErrorResult> errors;
 
-    public BulkOperationResult(final Iterable<T> issues, final Iterable<BulkOperationErrorResult> errors) {
+    public BulkOperationResult(final List<T> issues, final List<BulkOperationErrorResult> errors) {
         this.issues = issues;
         this.errors = errors;
     }
 
-    public Iterable<T> getIssues() {
+    public List<T> getIssues() {
         return issues;
     }
 
-    public Iterable<BulkOperationErrorResult> getErrors() {
+    public List<BulkOperationErrorResult> getErrors() {
         return errors;
     }
 

@@ -17,6 +17,7 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -87,12 +88,12 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     }
 
     @Override
-    public Promise<Iterable<User>> findUsers(String username) throws URISyntaxException {
+    public Promise<List<User>> findUsers(String username) throws URISyntaxException {
         return findUsers(username, null, null, null, null);
     }
 
     @Override
-    public Promise<Iterable<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults,
+    public Promise<List<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults,
             @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException {
 
         URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX).appendPath(SEARCH_URI_PREFIX).addParameter(USERNAME_ATTRIBUTE, username);

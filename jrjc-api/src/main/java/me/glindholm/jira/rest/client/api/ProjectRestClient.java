@@ -18,6 +18,7 @@ package me.glindholm.jira.rest.client.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
@@ -61,6 +62,6 @@ public interface ProjectRestClient {
      * @throws URISyntaxException
      * @since me.glindholm.jira.rest.client.api: 0.2, server 4.3
      */
-    Promise<Iterable<BasicProject>> getAllProjects() throws URISyntaxException;
+    Promise<List<BasicProject>> getAllProjects() throws URISyntaxException;
 
 }

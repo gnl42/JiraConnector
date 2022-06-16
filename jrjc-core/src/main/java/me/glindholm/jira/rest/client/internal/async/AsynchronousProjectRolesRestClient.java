@@ -17,13 +17,12 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.hc.core5.net.URIBuilder;
 
 import com.atlassian.httpclient.api.HttpClient;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 
 import io.atlassian.util.concurrent.Promise;
 import io.atlassian.util.concurrent.Promises;
@@ -62,16 +61,12 @@ public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRest
     }
 
     @Override
-    public Promise<Iterable<ProjectRole>> getRoles(final URI projectUri) throws URISyntaxException {
+    public Promise<List<ProjectRole>> getRoles(final URI projectUri) throws URISyntaxException {
         final URI rolesUris = new URIBuilder(projectUri).appendPath("role")
                 .build();
-        final Promise<Collection<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
+        final Promise<List<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
 
-        return Promises.promise(Iterables.transform(basicProjectRoles.claim(), new Function<BasicProjectRole, ProjectRole>() {
-            @Override
-            public ProjectRole apply(final BasicProjectRole basicProjectRole) {
-                return getRole(basicProjectRole.getSelf()).claim();
-            }
-        }));
+        ;
+        return Promises.promise(basicProjectRoles.claim().stream().map(basic -> getRole(basic.getSelf()).claim()).collect(Collectors.toList()));
     }
 }

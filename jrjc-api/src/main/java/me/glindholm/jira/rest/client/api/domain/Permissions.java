@@ -16,6 +16,7 @@
 package me.glindholm.jira.rest.client.api.domain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,7 +30,7 @@ public class Permissions {
     public static final String WORK_ISSUE = "WORK_ISSUE";
     private final Map<String, Permission> permissionMap;
 
-    public Permissions(final Iterable<Permission> permissions) {
+    public Permissions(final List<Permission> permissions) {
         Map<String, Permission> convert = new HashMap<>();
         for (Permission permission : permissions) {
             convert.put(permission.getId() + "", permission);

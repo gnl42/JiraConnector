@@ -1,5 +1,6 @@
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,10 +12,10 @@ public class Page<T> {
     private final long startAt;
     private final int maxResults;
     private final long total;
-    private final Iterable<T> values;
+    private final List<T> values;
     private final boolean isLast;
 
-    public Page(long startAt, int maxResults, long total, Iterable<T> values, boolean isLast) {
+    public Page(long startAt, int maxResults, long total, List<T> values, boolean isLast) {
         this.startAt = startAt;
         this.maxResults = maxResults;
         this.total = total;
@@ -34,7 +35,7 @@ public class Page<T> {
         return total;
     }
 
-    public Iterable<T> getValues() {
+    public List<T> getValues() {
         return values;
     }
 
@@ -44,8 +45,12 @@ public class Page<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Page<?> page = (Page<?>) o;
         return startAt == page.startAt &&
                 maxResults == page.maxResults &&

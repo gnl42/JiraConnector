@@ -1,0 +1,6 @@
+{
+	"id":10020,
+	"displayName":"jira-users",
+	"type":"atlassian-group-role-actor",
+	"name":"jira-users"
+}

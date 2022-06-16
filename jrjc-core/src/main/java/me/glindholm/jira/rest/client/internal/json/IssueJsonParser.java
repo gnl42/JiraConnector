@@ -48,9 +48,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -62,9 +62,6 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import com.google.common.base.Splitter;
-import com.google.common.collect.Sets;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
@@ -91,7 +88,7 @@ import me.glindholm.jira.rest.client.api.domain.Worklog;
 
 public class IssueJsonParser implements JsonObjectParser<Issue> {
 
-    private static Set<String> SPECIAL_FIELDS = Sets.newHashSet(IssueFieldId.ids());
+    private static Set<String> SPECIAL_FIELDS = new HashSet<>(IssueFieldId.ids());
 
     public static final String SCHEMA_SECTION = "schema";
     public static final String NAMES_SECTION = "names";
@@ -131,13 +128,14 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         this.providedSchema = providedSchema;
     }
 
-    static Iterable<String> parseExpandos(final JSONObject json) throws JSONException {
+    static List<String> parseExpandos(final JSONObject json) throws JSONException {
         final String expando = json.getString("expand");
-        return Splitter.on(',').split(expando);
+        return List.of(expando.split(","));
+        //        return Splitter.on(',').split(expando);
     }
 
 
-    private <T> Collection<T> parseArray(final JSONObject jsonObject, final JsonWeakParser<T> jsonParser, final String arrayAttribute)
+    private <T> List<T> parseArray(final JSONObject jsonObject, final JsonWeakParser<T> jsonParser, final String arrayAttribute)
             throws JSONException, URISyntaxException {
         //        String type = jsonObject.getString("type");
         //        final String name = jsonObject.getString("name");
@@ -145,27 +143,27 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         if (valueObject == null) {
             return new ArrayList<>();
         }
-        Collection<T> res = new ArrayList<>(valueObject.length());
+        List<T> res = new ArrayList<>(valueObject.length());
         for (int i = 0; i < valueObject.length(); i++) {
             res.add(jsonParser.parse(valueObject.get(i)));
         }
         return res;
     }
 
-    private <T> Collection<T> parseOptionalArrayNotNullable(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
+    private <T> List<T> parseOptionalArrayNotNullable(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
             throws JSONException, URISyntaxException {
-        Collection<T> res = parseOptionalArray(json, jsonParser, path);
+        List<T> res = parseOptionalArray(json, jsonParser, path);
         return res == null ? Collections.<T>emptyList() : res;
     }
 
     @Nullable
-    private <T> Collection<T> parseOptionalArray(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
+    private <T> List<T> parseOptionalArray(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
             throws JSONException, URISyntaxException {
         final JSONArray jsonArray = JsonParseUtil.getNestedOptionalArray(json, path);
         if (jsonArray == null) {
             return null;
         }
-        final Collection<T> res = new ArrayList<>(jsonArray.length());
+        final List<T> res = new ArrayList<>(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); i++) {
             res.add(jsonParser.parse(jsonArray.get(i)));
         }
@@ -214,17 +212,17 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     @Override
     public Issue parse(final JSONObject issueJson) throws JSONException, URISyntaxException {
         final BasicIssue basicIssue = basicIssueJsonParser.parse(issueJson);
-        final Iterable<String> expandos = parseExpandos(issueJson);
+        final List<String> expandos = parseExpandos(issueJson);
         final JSONObject jsonFields = issueJson.getJSONObject(FIELDS);
         final JSONObject commentsJson = jsonFields.optJSONObject(COMMENT_FIELD.id);
-        final Collection<Comment> comments = commentsJson == null ? Collections.<Comment>emptyList()
+        final List<Comment> comments = commentsJson == null ? Collections.emptyList()
                 : parseArray(commentsJson, new JsonWeakParserForJsonObject<>(commentJsonParser), "comments");
 
         final String summary = getFieldStringValue(issueJson, SUMMARY_FIELD.id);
         final String description = getOptionalFieldStringUnisex(issueJson, DESCRIPTION_FIELD.id);
 
-        final Collection<Attachment> attachments = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
-        final Collection<IssueField> fields = parseFields(issueJson);
+        final List<Attachment> attachments = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(attachmentJsonParser), FIELDS, ATTACHMENT_FIELD.id);
+        final List<IssueField> fields = parseFields(issueJson);
 
         final IssueType issueType = issueTypeJsonParser.parse(getFieldUnisex(issueJson, ISSUE_TYPE_FIELD.id));
         final OffsetDateTime creationDate = JsonParseUtil.parseOffsetDateTime(getFieldStringUnisex(issueJson, CREATED_FIELD.id));
@@ -239,19 +237,19 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         final User reporter = getOptionalNestedField(issueJson, REPORTER_FIELD.id, userJsonParser);
 
         final BasicProject project = projectJsonParser.parse(getFieldUnisex(issueJson, PROJECT_FIELD.id));
-        final Collection<IssueLink> issueLinks;
+        final List<IssueLink> issueLinks;
         issueLinks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(issueLinkJsonParserV5), FIELDS, LINKS_FIELD.id);
 
-        Collection<Subtask> subtasks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
+        List<Subtask> subtasks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
 
         final BasicVotes votes = getOptionalNestedField(issueJson, VOTES_FIELD.id, votesJsonParser);
         final Status status = statusJsonParser.parse(getFieldUnisex(issueJson, STATUS_FIELD.id));
 
-        final Collection<Version> fixVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
-        final Collection<Version> affectedVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
-        final Collection<BasicComponent> components = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
+        final List<Version> fixVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(versionJsonParser), FIELDS, FIX_VERSIONS_FIELD.id);
+        final List<Version> affectedVersions = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(versionJsonParser), FIELDS, AFFECTS_VERSIONS_FIELD.id);
+        final List<BasicComponent> components = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(basicComponentJsonParser), FIELDS, COMPONENTS_FIELD.id);
 
-        final Collection<Worklog> worklogs;
+        final List<Worklog> worklogs;
         final URI selfUri = basicIssue.getSelf();
 
         final String transitionsUriString;
@@ -276,10 +274,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
         final TimeTracking timeTracking = getOptionalNestedField(issueJson, TIMETRACKING_FIELD.id, new TimeTrackingJsonParserV5());
 
-        final Set<String> labels = Sets
-                .newHashSet(parseOptionalArrayNotNullable(issueJson, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
+        final Set<String> labels = new HashSet<>(parseOptionalArrayNotNullable(issueJson, jsonWeakParserForString, FIELDS, LABELS_FIELD.id));
 
-        final Collection<ChangelogGroup> changelog = parseOptionalArray(
+        final List<ChangelogGroup> changelog = parseOptionalArray(
                 issueJson, new JsonWeakParserForJsonObject<>(changelogJsonParser), "changelog", "histories");
         final Operations operations = parseOptionalJsonObject(issueJson, "operations", operationsJsonParser);
 
@@ -307,7 +304,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         return null;
     }
 
-    private Collection<IssueField> parseFields(final JSONObject issueJson) throws JSONException {
+    private List<IssueField> parseFields(final JSONObject issueJson) throws JSONException {
         final JSONObject names = providedNames != null ? providedNames : issueJson.optJSONObject(NAMES_SECTION);
         final Map<String, String> namesMap = parseNames(names);
         final JSONObject schema = providedSchema != null ? providedSchema : issueJson.optJSONObject(SCHEMA_SECTION);

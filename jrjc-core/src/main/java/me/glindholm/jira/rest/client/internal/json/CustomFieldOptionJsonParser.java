@@ -19,6 +19,7 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -33,7 +34,7 @@ import me.glindholm.jira.rest.client.api.domain.CustomFieldOption;
  */
 public class CustomFieldOptionJsonParser implements JsonObjectParser<CustomFieldOption> {
 
-    private final JsonArrayParser<Iterable<CustomFieldOption>> childrenParser = GenericJsonArrayParser.create(this);
+    private final JsonArrayParser<List<CustomFieldOption>> childrenParser = GenericJsonArrayParser.create(this);
 
     @Override
     public CustomFieldOption parse(JSONObject json) throws JSONException, URISyntaxException {
@@ -42,9 +43,9 @@ public class CustomFieldOptionJsonParser implements JsonObjectParser<CustomField
         final String value = json.getString("value");
 
         final JSONArray childrenArray = json.optJSONArray("children");
-        final Iterable<CustomFieldOption> children = childrenArray != null
+        final List<CustomFieldOption> children = childrenArray != null
                 ? childrenParser.parse(childrenArray)
-                        : Collections.<CustomFieldOption>emptyList();
+                        : Collections.emptyList();
 
         final JSONObject childObject = json.optJSONObject("child");
         final CustomFieldOption child = childObject != null ? parse(childObject) : null;

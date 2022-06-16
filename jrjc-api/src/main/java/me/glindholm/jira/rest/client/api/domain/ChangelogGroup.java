@@ -16,9 +16,9 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-import java.util.Objects;
-
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents Issue change history group
@@ -28,9 +28,9 @@ import java.time.OffsetDateTime;
 public class ChangelogGroup {
     private final BasicUser author;
     private final OffsetDateTime created;
-    private final Iterable<ChangelogItem> items;
+    private final List<ChangelogItem> items;
 
-    public ChangelogGroup(BasicUser author, OffsetDateTime created, Iterable<ChangelogItem> items) {
+    public ChangelogGroup(BasicUser author, OffsetDateTime created, List<ChangelogItem> items) {
         this.author = author;
         this.created = created;
         this.items = items;
@@ -44,7 +44,7 @@ public class ChangelogGroup {
         return created;
     }
 
-    public Iterable<ChangelogItem> getItems() {
+    public List<ChangelogItem> getItems() {
         return items;
     }
 

@@ -15,16 +15,15 @@
  */
 package me.glindholm.jira.rest.client.internal.json;
 
-import com.google.common.collect.Lists;
-
-import me.glindholm.jira.rest.client.api.domain.Permission;
-import me.glindholm.jira.rest.client.api.domain.Permissions;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import java.util.Iterator;
-import java.util.List;
+import me.glindholm.jira.rest.client.api.domain.Permission;
+import me.glindholm.jira.rest.client.api.domain.Permissions;
 
 public class PermissionsJsonParser implements JsonObjectParser<Permissions> {
     private final PermissionJsonParser permissionJsonParser = new PermissionJsonParser();
@@ -33,7 +32,7 @@ public class PermissionsJsonParser implements JsonObjectParser<Permissions> {
     public Permissions parse(final JSONObject json) throws JSONException {
         final JSONObject permissionsObject = json.getJSONObject("permissions");
 
-        final List<Permission> permissions = Lists.newArrayList();
+        final List<Permission> permissions = new ArrayList<>();
         final Iterator it = permissionsObject.keys();
         while (it.hasNext()) {
             final String key = it.next().toString();

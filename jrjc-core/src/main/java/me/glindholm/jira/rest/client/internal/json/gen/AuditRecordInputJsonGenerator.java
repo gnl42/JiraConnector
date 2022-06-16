@@ -1,5 +1,9 @@
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -7,8 +11,6 @@ import org.codehaus.jettison.json.JSONObject;
 import me.glindholm.jira.rest.client.api.domain.AuditAssociatedItem;
 import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;
 import me.glindholm.jira.rest.client.api.domain.AuditRecordInput;
-
-import javax.annotation.Nullable;
 
 /**
  * @since v2.0
@@ -26,7 +28,7 @@ public class AuditRecordInputJsonGenerator implements JsonGenerator<AuditRecordI
                 .put("changedValues", generateChangedValues(bean.getChangedValues()));
     }
 
-    private JSONArray generateChangedValues(@Nullable Iterable<AuditChangedValue> changedValues) throws JSONException {
+    private JSONArray generateChangedValues(@Nullable List<AuditChangedValue> changedValues) throws JSONException {
         final AuditChangedValueJsonGenerator generator = new AuditChangedValueJsonGenerator();
         final JSONArray array = new JSONArray();
         if (changedValues != null) {
@@ -37,7 +39,7 @@ public class AuditRecordInputJsonGenerator implements JsonGenerator<AuditRecordI
         return array;
     }
 
-    protected JSONArray generateAssociatedItems(@Nullable Iterable<AuditAssociatedItem> associatedItems) throws JSONException {
+    protected JSONArray generateAssociatedItems(@Nullable List<AuditAssociatedItem> associatedItems) throws JSONException {
         final JSONArray array = new JSONArray();
         if (associatedItems != null) {
             for (AuditAssociatedItem item : associatedItems) {

@@ -17,6 +17,7 @@
 package me.glindholm.jira.rest.client.api;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -37,7 +38,7 @@ public interface GroupRestClient {
      * @return list of groups
      * @throws URISyntaxException
      */
-    Promise<Iterable<Group>> findGroups() throws URISyntaxException;
+    Promise<List<Group>> findGroups() throws URISyntaxException;
 
     /**
      * Returns groups with substrings matching a given query. This is mainly for use
@@ -58,7 +59,7 @@ public interface GroupRestClient {
      * @return list of groups that match the search string
      * @throws URISyntaxException
      */
-    Promise<Iterable<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
+    Promise<List<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
             throws URISyntaxException;
 
 }

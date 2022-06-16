@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jira Rest Java Client
 Bundle-SymbolicName: jira-rest-java-client-core
 Automatic-Module-Name: jira-rest-java-client-core
-Bundle-Version: 6.0.0
+Bundle-Version: 6.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: .,
  target/lib/atlassian-event.jar,
@@ -19,12 +19,6 @@ Bundle-ClassPath: .,
  target/lib/httpclient-cache.jar,
  target/lib/fugue.jar,
  target/lib/httpasyncclient-cache.jar,
- target/lib/commons-logging.jar,
- target/lib/log4j-api.jar,
- target/lib/log4j-core.jar,
- target/lib/log4j-jcl.jar,
- target/lib/log4j-slf4j-impl.jar,
- target/lib/slf4j-api.jar,
  target/lib/httpclient.jar,
  target/lib/httpcore5.jar
 Bundle-Vendor: George Lindholm
@@ -32,7 +26,9 @@ Eclipse-BuddyPolicy: registered
 Require-Bundle: jira-rest-java-client-api;bundle-version="6.0.0",
  org.apache.commons.lang3,
  org.apache.commons.codec,
- com.google.guava;bundle-version="30.1.0"
+ com.google.guava;bundle-version="30.1.0",
+ org.slf4j.api,
+ org.apache.commons.logging;bundle-version="1.2.0"
 Export-Package: com.atlassian.httpclient.api.factory,
  com.atlassian.sal.api.executor,
  io.atlassian.fugue,
@@ -40,7 +36,7 @@ Export-Package: com.atlassian.httpclient.api.factory,
  me.glindholm.jira.rest.client.internal,
  me.glindholm.jira.rest.client.internal.async,
  me.glindholm.jira.rest.client.internal.json,
- org.apache.commons.logging,
+ me.glindholm.jira.rest.client.internal.json.gen,
  org.apache.hc.core5.net,
  org.apache.http,
  org.apache.http.client,
@@ -53,5 +49,4 @@ Export-Package: com.atlassian.httpclient.api.factory,
  org.apache.http.nio.reactor,
  org.apache.http.ssl,
  org.apache.http.util,
- org.codehaus.jettison.json,
- org.slf4j
+ org.codehaus.jettison.json

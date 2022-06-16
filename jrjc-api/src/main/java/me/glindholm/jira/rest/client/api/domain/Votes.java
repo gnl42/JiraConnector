@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.api.domain;
 
 import java.net.URI;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,14 +28,14 @@ import java.util.Objects;
 public class Votes extends BasicVotes {
     private static final long serialVersionUID = 1L;
 
-    private final Collection<BasicUser> users;
+    private final List<BasicUser> users;
 
-    public Votes(URI self, int votes, boolean hasVoted, Collection<BasicUser> users) {
+    public Votes(URI self, int votes, boolean hasVoted, List<BasicUser> users) {
         super(self, votes, hasVoted);
         this.users = users;
     }
 
-    public Iterable<BasicUser> getUsers() {
+    public List<BasicUser> getUsers() {
         return users;
     }
 

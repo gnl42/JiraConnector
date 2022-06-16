@@ -1,0 +1,21 @@
+{
+	"fields":{
+		"string":"String value",
+		"integer":1,
+		"long":1,
+		"complex":{
+			"string":"string",
+			"integer":1,
+			"long":1,
+			"complex":{
+				"test":"id"
+			}
+		}
+	},
+	"properties": [
+		{
+			"key" : "testKey",
+			"value" : {"testValue":"foo"}
+		}
+	]
+}

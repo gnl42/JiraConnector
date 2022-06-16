@@ -19,19 +19,16 @@ package me.glindholm.jira.rest.client.api.domain.input;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
 
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
-import me.glindholm.jira.rest.client.api.domain.EntityHelper;
 import me.glindholm.jira.rest.client.api.domain.IssueFieldId;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Version;
@@ -159,37 +156,37 @@ public class IssueInputBuilder {
     }
 
     @SuppressWarnings("unused")
-    public IssueInputBuilder setAffectedVersions(Iterable<Version> versions) {
-        return setAffectedVersionsNames(EntityHelper.toNamesList(versions));
+    public IssueInputBuilder setAffectedVersions(List<Version> versions) {
+        return setAffectedVersionsNames(versions.stream().map(version -> version.getName()).collect(Collectors.toList()));
     }
 
-    public IssueInputBuilder setAffectedVersionsNames(Iterable<String> names) {
+    public IssueInputBuilder setAffectedVersionsNames(List<String> names) {
         return setFieldInput(new FieldInput(IssueFieldId.AFFECTS_VERSIONS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
     }
 
-    public IssueInputBuilder setComponentsNames(Iterable<String> names) {
+    public IssueInputBuilder setComponentsNames(List<String> names) {
         return setFieldInput(new FieldInput(IssueFieldId.COMPONENTS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
     }
 
-    public IssueInputBuilder setComponents(Iterable<BasicComponent> basicComponents) {
-        return setComponentsNames(EntityHelper.toNamesList(basicComponents));
+    public IssueInputBuilder setComponents(List<BasicComponent> basicComponents) {
+        return setComponentsNames(basicComponents.stream().map(component -> component.getName()).collect(Collectors.toList()));
     }
 
     public IssueInputBuilder setComponents(BasicComponent... basicComponents) {
-        return setComponents(Lists.newArrayList(basicComponents));
+        return setComponents(Arrays.asList(basicComponents));
     }
 
     public IssueInputBuilder setDueDate(OffsetDateTime date) {
         return setFieldInput(new FieldInput(IssueFieldId.DUE_DATE_FIELD, date.format(JIRA_DATE_FORMATTER)));
     }
 
-    public IssueInputBuilder setFixVersionsNames(Iterable<String> names) {
+    public IssueInputBuilder setFixVersionsNames(List<String> names) {
         return setFieldInput(new FieldInput(IssueFieldId.FIX_VERSIONS_FIELD, toListOfComplexIssueInputFieldValueWithSingleKey(names, "name")));
     }
 
     @SuppressWarnings("unused")
-    public IssueInputBuilder setFixVersions(Iterable<Version> versions) {
-        return setFixVersionsNames(EntityHelper.toNamesList(versions));
+    public IssueInputBuilder setFixVersions(List<Version> versions) {
+        return setFixVersionsNames(versions.stream().map(version -> version.getName()).collect(Collectors.toList()));
     }
 
     public IssueInputBuilder setPriority(BasicPriority priority) {
@@ -224,14 +221,10 @@ public class IssueInputBuilder {
         return valueTransformerManager;
     }
 
-    private <T> Iterable<ComplexIssueInputFieldValue> toListOfComplexIssueInputFieldValueWithSingleKey(final Iterable<T> items, final String key) {
-        return Iterables.transform(items, new Function<T, ComplexIssueInputFieldValue>() {
-
-            @Override
-            public ComplexIssueInputFieldValue apply(T value) {
-                return ComplexIssueInputFieldValue.with(key, value);
-            }
-        });
+    private <T> List<ComplexIssueInputFieldValue> toListOfComplexIssueInputFieldValueWithSingleKey(final List<T> items, final String key) {
+        return items.stream() //
+                .map(item -> ComplexIssueInputFieldValue.with(key, item)) //
+                .collect(Collectors.toList());
     }
 
 }

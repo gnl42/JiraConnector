@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
-import java.util.Collection;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -29,7 +29,7 @@ public class TransitionJsonParser {
 
     public Transition parse(JSONObject json, int id) throws JSONException, URISyntaxException {
         final String name = json.getString("name");
-        final Collection<Transition.Field> fields = JsonParseUtil.parseJsonArray(json.getJSONArray("fields"),
+        final List<Transition.Field> fields = JsonParseUtil.parseJsonArray(json.getJSONArray("fields"),
                 transitionFieldJsonParser);
         return new Transition(name, id, fields);
     }

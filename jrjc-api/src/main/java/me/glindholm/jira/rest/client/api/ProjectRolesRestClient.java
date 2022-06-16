@@ -17,6 +17,7 @@ package me.glindholm.jira.rest.client.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
@@ -58,6 +59,6 @@ public interface ProjectRolesRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed
      *                             messages, etc.)
      */
-    Promise<Iterable<ProjectRole>> getRoles(URI projectUri) throws URISyntaxException;
+    Promise<List<ProjectRole>> getRoles(URI projectUri) throws URISyntaxException;
 
 }

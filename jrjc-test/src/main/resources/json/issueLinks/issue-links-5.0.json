@@ -1,0 +1,58 @@
+{"issueLinkTypes":[
+    {
+        "id":"10160",
+        "name":"Bonfire Testing",
+        "inward":"discovered while testing",
+        "outward":"testing discovered",
+        "self":"https://jdog.atlassian.com/rest/api/2/issueLinkType/10160"
+    },
+    {
+        "id":"10050",
+        "name":"caused",
+        "inward":"caused by",
+        "outward":"causes",
+        "self":"https://jdog.atlassian.com/rest/api/2/issueLinkType/10050"
+    },
+    {
+        "id":"10040",
+        "name":"Cloners",
+        "inward":"clones",
+        "outward":"is cloned by",
+        "self":"https://jdog.atlassian.com/rest/api/2/issueLinkType/10040"
+    },
+    {
+        "id":"10011",
+        "name":"Dependent",
+        "inward":"is depended on by",
+        "outward":"depends on",
+        "self":"https://jdog.atlassian.com/rest/api/2/issueLinkType/10011"
+    },
+    {
+        "id":"10030",
+        "name":"Derived",
+        "inward":"is derived by",
+        "outward":"derived from",
+        "self":"https://jdog.atlassian.com/rest/api/2/issueLinkType/10030"
+    },
+    {
+        "id":"10010",
+        "name":"Duplicate",
+        "inward":"is duplicated by",
+        "outward":"duplicates",
+        "self":"https://jdog.atlassian.com/rest/api/2/issueLinkType/10010"
+    },
+    {
+        "id":"10260",
+        "name":"Epic",
+        "inward":"is the Epic for",
+        "outward":"belongs to Epic",
+        "self":"https://jdog.atlassian.com/rest/api/2/issueLinkType/10260"
+    },
+    {
+        "id":"10020",
+        "name":"Relates",
+        "inward":"is related to",
+        "outward":"relates to",
+        "self":"https://jdog.atlassian.com/rest/api/2/issueLinkType/10020"
+    }
+]}
