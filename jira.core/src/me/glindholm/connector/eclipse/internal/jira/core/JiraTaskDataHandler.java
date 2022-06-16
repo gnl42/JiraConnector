@@ -341,8 +341,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
         createAttribute(data, JiraAttribute.WATCHERS);
 
-        createAttribute(data, JiraAttribute.COMPONENTS);
-
     }
 
     public TaskAttribute createAttribute(TaskData data, JiraAttribute key) {
