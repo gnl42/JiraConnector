@@ -21,69 +21,6 @@
 		<jira.jvm.args>-Xms512m -Xmx1024m</jira.jvm.args>
 	</properties>
 
-	<dependencies>
-		<!-- <dependency> <groupId>io.atlassian.fugue</groupId> <artifactId>fugue</artifactId>
-			</dependency> <dependency> <groupId>org.glassfish.jersey.core</groupId> <artifactId>jersey-client</artifactId>
-			</dependency> <dependency> <groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-jettison</artifactId> </dependency> <dependency>
-			<groupId>org.hamcrest</groupId> <artifactId>hamcrest-core</artifactId> </dependency>
-			<dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> </dependency>
-			<dependency> <groupId>org.hamcrest</groupId> <artifactId>hamcrest-library</artifactId>
-			</dependency> <dependency> <groupId>commons-io</groupId> <artifactId>commons-io</artifactId>
-			</dependency> <dependency> <groupId>com.atlassian.jira</groupId> <artifactId>jira-func-tests</artifactId>
-			<version>${jira.test-lib.version}</version> <exclusions> <exclusion> <groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId> </exclusion> <exclusion> <groupId>javax.jms</groupId>
-			<artifactId>jms</artifactId> </exclusion> <exclusion> <groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId> </exclusion> <exclusion> <groupId>org.apache.httpcomponents</groupId>
-			<artifactId>*</artifactId> </exclusion> <exclusion> <groupId>jta</groupId>
-			<artifactId>jta</artifactId> </exclusion> <exclusion> <groupId>jndi</groupId>
-			<artifactId>jndi</artifactId> </exclusion> <exclusion> <groupId>com.google.errorprone</groupId>
-			<artifactId>error_prone_annotations</artifactId> </exclusion> </exclusions>
-			</dependency> -->
-		<dependency>
-			<groupId>com.atlassian.jira.tests</groupId>
-			<version>8.1.28</version>
-			<artifactId>jira-testkit-client</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.atlassian.jira</groupId>
-			<artifactId>jira-nimble-func-tests</artifactId>
-			<version>1.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>com.atlassian.jira.tests</groupId>
-			<artifactId>jira-testkit-common</artifactId>
-			<version>8.1.28</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>listenablefuture</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>failureaccess</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.atlassian.jira</groupId>
-			<version>6.8.6</version>
-			<artifactId>jira-rest-api</artifactId>
-		</dependency>
-
-	</dependencies>
 
 	<build>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
