@@ -138,7 +138,7 @@
 						<configuration>
 							<repositories>
 								<repository>
-									<id>2020-12</id>
+									<id>latest</id>
 									<layout>p2</layout>
 									<url>https://download.eclipse.org/releases/latest</url>
 								</repository>
