@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector for Eclipse UI Commons
 Automatic-Module-Name: JiraConnector for Eclipse UI Commons
 Bundle-SymbolicName: me.glindholm.connector.eclipse.commons.ui;singleton:=true
-Bundle-Version: 4.1.3.qualifier
+Bundle-Version: 4.1.4.qualifier
 Bundle-Vendor: George Lindholm
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
