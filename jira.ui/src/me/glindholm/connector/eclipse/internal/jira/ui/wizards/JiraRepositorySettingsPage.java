@@ -119,9 +119,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
     private Button useServerSettingsButton;
 
+    private Button useToken;
+
     public JiraRepositorySettingsPage(TaskRepository taskRepository) {
-        super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings,
-                Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
+        super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings, Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
         setNeedsProxy(true);
         setNeedsHttpAuth(false);
     }
@@ -141,6 +142,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         } else {
             configuration = new JiraLocalConfiguration();
         }
+
+        addTokenCheckbox(true); // Should check Server version >= 8.14
 
         toolkit = new FormToolkit(parent.getDisplay());
 
@@ -191,10 +194,11 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         Composite timeTrackingComposite = new Composite(parent, SWT.NONE);
         timeTrackingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
-        //		useServerSettingsButton = new Button(timeTrackingComposite, SWT.CHECK | SWT.LEFT);
-        //		useServerSettingsButton.setText(Messages.JiraRepositorySettingsPage_use_server_settings);
-        //		useServerSettingsButton.setToolTipText(Messages.JiraRepositorySettingsPage_Administration_priviliges_required);
-        //		GridDataFactory.fillDefaults().span(2, 1).applyTo(useServerSettingsButton);
+        // useServerSettingsButton = new Button(timeTrackingComposite, SWT.CHECK |
+        // SWT.LEFT);
+        // useServerSettingsButton.setText(Messages.JiraRepositorySettingsPage_use_server_settings);
+        // useServerSettingsButton.setToolTipText(Messages.JiraRepositorySettingsPage_Administration_priviliges_required);
+        // GridDataFactory.fillDefaults().span(2, 1).applyTo(useServerSettingsButton);
 
         workDaysPerWeekSpinner = new Spinner(timeTrackingComposite, SWT.BORDER | SWT.RIGHT);
         workDaysPerWeekSpinner.setValues(JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, 1, 7, 0, 1, 1);
@@ -224,13 +228,13 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
         }
 
-        //		useServerSettingsButton.addSelectionListener(new SelectionAdapter() {
-        //			@Override
-        //			public void widgetSelected(SelectionEvent e) {
-        //				workDaysPerWeekSpinner.setEnabled(!useServerSettingsButton.getSelection());
-        //				workHoursPerDaySpinner.setEnabled(!useServerSettingsButton.getSelection());
-        //			}
-        //		});
+        // useServerSettingsButton.addSelectionListener(new SelectionAdapter() {
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // workDaysPerWeekSpinner.setEnabled(!useServerSettingsButton.getSelection());
+        // workHoursPerDaySpinner.setEnabled(!useServerSettingsButton.getSelection());
+        // }
+        // });
 
         Composite maxSearchResultsComposite = new Composite(parent, SWT.NONE);
         maxSearchResultsComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
@@ -289,13 +293,13 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         composite.setLayout(layout);
         expandableComposite.setClient(composite);
 
-        //		compressionButton = new Button(composite, SWT.CHECK | SWT.LEFT);
-        //		compressionButton.setText("Customize");
-        //		if (repository != null) {
-        //			compressionButton.setSelection(JiraUtil.getCompression(repository));
-        //		}
+        // compressionButton = new Button(composite, SWT.CHECK | SWT.LEFT);
+        // compressionButton.setText("Customize");
+        // if (repository != null) {
+        // compressionButton.setSelection(JiraUtil.getCompression(repository));
+        // }
         //
-        //		new Label(composite, SWT.NONE);
+        // new Label(composite, SWT.NONE);
 
         Label label = new Label(composite, SWT.NONE);
         label.setText(Messages.JiraRepositorySettingsPage_Date_Picker_Format);
@@ -328,8 +332,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         }
         localeCombo.setText(configuration.getLocale().getDisplayName());
 
-        Hyperlink hyperlink = toolkit.createHyperlink(composite, Messages.JiraRepositorySettingsPage_Reset_to_defaults,
-                SWT.NONE);
+        Hyperlink hyperlink = toolkit.createHyperlink(composite, Messages.JiraRepositorySettingsPage_Reset_to_defaults, SWT.NONE);
         hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
             @Override
             public void linkActivated(HyperlinkEvent e) {
@@ -362,8 +365,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     @SuppressWarnings("restriction")
     @Override
     public void applyTo(final TaskRepository repository) {
-        //		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
-        //		super.applyTo(repository);
+        // MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+        // super.applyTo(repository);
 
         this.repository = applyToValidate(repository);
 
@@ -391,39 +394,44 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
             JiraUtil.setCharacterEncodingValidated(repository, true);
         }
 
-        //		if (!JiraUtil.isUseServerTimeTrackingSettings(repository) && useServerSettingsButton.getSelection()) {
-        //			Job refreshServerSettingsJob = new Job(Messages.JiraRepositorySettingsPage_Getting_repository_configuration) {
+        JiraUtil.setAccessToken(repository, useToken != null && useToken.getSelection());
+
+        // if (!JiraUtil.isUseServerTimeTrackingSettings(repository) &&
+        // useServerSettingsButton.getSelection()) {
+        // Job refreshServerSettingsJob = new
+        // Job(Messages.JiraRepositorySettingsPage_Getting_repository_configuration) {
         //
-        //				@Override
-        //				protected IStatus run(IProgressMonitor monitor) {
-        //					monitor.beginTask(Messages.JiraRepositorySettingsPage_Getting_repository_configuration,
-        //							IProgressMonitor.UNKNOWN);
-        //					JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-        //					try {
-        //						client.getCache().refreshConfiguration(monitor);
-        //					} catch (JiraException e) {
-        //						Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, NLS.bind(
-        //								Messages.JiraRepositorySettingsPage_Failed_retrieve_repository_configuration,
-        //								repository.getRepositoryUrl()));
-        //						StatusHandler.log(status);
-        //					} finally {
-        //						monitor.done();
-        //					}
-        //					return Status.OK_STATUS;
-        //				}
-        //			};
+        // @Override
+        // protected IStatus run(IProgressMonitor monitor) {
+        // monitor.beginTask(Messages.JiraRepositorySettingsPage_Getting_repository_configuration,
+        // IProgressMonitor.UNKNOWN);
+        // JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+        // try {
+        // client.getCache().refreshConfiguration(monitor);
+        // } catch (JiraException e) {
+        // Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+        // Messages.JiraRepositorySettingsPage_Failed_retrieve_repository_configuration,
+        // repository.getRepositoryUrl()));
+        // StatusHandler.log(status);
+        // } finally {
+        // monitor.done();
+        // }
+        // return Status.OK_STATUS;
+        // }
+        // };
         //
-        //			refreshServerSettingsJob.setUser(false);
-        //			refreshServerSettingsJob.schedule();
+        // refreshServerSettingsJob.setUser(false);
+        // refreshServerSettingsJob.schedule();
         //
-        //		}
+        // }
         //
-        //		JiraUtil.setUseServerTimeTrackingSettings(repository, useServerSettingsButton.getSelection());
+        // JiraUtil.setUseServerTimeTrackingSettings(repository,
+        // useServerSettingsButton.getSelection());
     }
 
     /**
-     * Helper method for distinguishing between hitting Finish and Validate (because Validation leads to calling applyTo
-     * in the superclass)
+     * Helper method for distinguishing between hitting Finish and Validate (because
+     * Validation leads to calling applyTo in the superclass)
      */
     public TaskRepository applyToValidate(TaskRepository repository) {
         MigrateToSecureStorageJob.migrateToSecureStorage(repository);
@@ -449,12 +457,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
             super.validateSettings();
 
-            repository.setCredentials(AuthenticationType.REPOSITORY, repoCredentials,
-                    repository.getSavePassword(AuthenticationType.REPOSITORY));
-            repository.setCredentials(AuthenticationType.HTTP, httpCredentials,
-                    repository.getSavePassword(AuthenticationType.HTTP));
-            repository.setCredentials(AuthenticationType.PROXY, proxyCredentials,
-                    repository.getSavePassword(AuthenticationType.PROXY));
+            repository.setCredentials(AuthenticationType.REPOSITORY, repoCredentials, repository.getSavePassword(AuthenticationType.REPOSITORY));
+            repository.setCredentials(AuthenticationType.HTTP, httpCredentials, repository.getSavePassword(AuthenticationType.HTTP));
+            repository.setCredentials(AuthenticationType.PROXY, proxyCredentials, repository.getSavePassword(AuthenticationType.PROXY));
         } else {
             super.validateSettings();
         }
@@ -489,14 +494,12 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
                 setEncoding(TaskRepository.DEFAULT_CHARACTER_ENCODING);
 
                 jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
-                        Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_character_encodeing,
-                        null));
+                        Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_character_encodeing, null));
             }
 
             if (serverInfo.isInsecureRedirect()) {
                 jiraValidator.setStatus(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
-                        Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_server_redirected,
-                        null));
+                        Messages.JiraRepositorySettingsPage_Authentication_credentials_are_valid_server_redirected, null));
             }
 
             characterEncodingValidated = true;
@@ -529,8 +532,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
             try {
                 new URL(repository.getRepositoryUrl());
             } catch (MalformedURLException ex) {
-                throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, IStatus.OK,
-                        INVALID_REPOSITORY_URL, null));
+                throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, IStatus.OK, INVALID_REPOSITORY_URL, null));
             }
 
             AbstractWebLocation location = new JiraTaskRepositoryLocation(repository);
@@ -544,11 +546,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
                         new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open();
                     }
                 });
-                throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
-                        JiraUiPlugin.ID_PLUGIN, Messages.JiraRepositorySettingsPage_remote_api_locked));
+                throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR, JiraUiPlugin.ID_PLUGIN,
+                        Messages.JiraRepositorySettingsPage_remote_api_locked));
             } catch (JiraAuthenticationException e) {
-                throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR,
-                        JiraUiPlugin.ID_PLUGIN, INVALID_LOGIN));
+                throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, INVALID_LOGIN));
             } catch (Exception e) {
                 StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, e.getMessage(), e));
                 throw new CoreException(JiraCorePlugin.toStatus(repository, e));
@@ -556,11 +557,11 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
             MultiStatus status = new MultiStatus(JiraUiPlugin.ID_PLUGIN, 0, NLS.bind("Validation results for {0}", //$NON-NLS-1$
                     repository.getRepositoryLabel()), null);
-            //			status.addAll(serverInfo.getStatistics().getStatus());
-            status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
-                    "Web base: {0}", serverInfo.getWebBaseUrl()))); //$NON-NLS-1$
-            //			status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
-            //					"Character encoding: {0}", serverInfo.getCharacterEncoding()))); //$NON-NLS-1$
+            // status.addAll(serverInfo.getStatistics().getStatus());
+            status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind("Web base: {0}", serverInfo.getWebBaseUrl()))); //$NON-NLS-1$
+            // status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+            // "Character encoding: {0}", serverInfo.getCharacterEncoding())));
+            // //$NON-NLS-1$
             status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind("Version: {0}", serverInfo.toString()))); //$NON-NLS-1$
             StatusHandler.log(status);
         }
@@ -651,6 +652,108 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
             return selectedUrl;
         }
 
+    }
+
+    /**
+     * Inserts a checkbox into the page where the user can specify that token
+     * authentication shall be used for the task repository.
+     *
+     * @param userOptional whether or not a user name is optional
+     */
+    private boolean needsUser = true;
+
+    protected void addTokenCheckbox(boolean userOptional) {
+        needsUser = !userOptional;
+        useToken = new Button(compositeContainer, SWT.CHECK);
+        useToken.setText(Messages.JiraRepositorySettingsPage_LabelUseToken);
+        useToken.setToolTipText(Messages.JiraRepositorySettingsPage_TooltipUseToken);
+        useToken.moveBelow(savePasswordButton);
+        GridDataFactory.defaultsFor(useToken).span(3, 1).applyTo(useToken);
+        String savePasswordText = savePasswordButton.getText();
+        boolean[] allowAnon = { isAnonymousAccess() };
+        SelectionAdapter listener = new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                boolean isChecked = useToken.getSelection();
+                if (isChecked) {
+                    repositoryPasswordEditor.setLabelText(Messages.JiraRepositorySettingsPage_LabelToken);
+                    savePasswordButton.setText(Messages.JiraRepositorySettingsPage_LabelSaveToken);
+                    if (anonymousButton != null) {
+                        allowAnon[0] = isAnonymousAccess();
+                        setAnonymous(false);
+                        anonymousButton.setEnabled(false);
+                    }
+                } else {
+                    repositoryPasswordEditor.setLabelText(LABEL_PASSWORD);
+                    savePasswordButton.setText(savePasswordText);
+                    if (anonymousButton != null) {
+                        anonymousButton.setEnabled(true);
+                        setAnonymous(allowAnon[0]);
+                    }
+                }
+                if (userOptional) {
+                    repositoryUserNameEditor.getTextControl(compositeContainer).setEnabled(!isChecked);
+                    repositoryUserNameEditor.setEmptyStringAllowed(isChecked);
+                    if (isChecked) {
+                        repositoryUserNameEditor.setStringValue("");
+                    }
+                }
+                repositoryPasswordEditor.getLabelControl(compositeContainer).requestLayout();
+                // Trigger page validation if needed
+                if (userOptional && getWizard() != null) {
+                    getWizard().getContainer().updateButtons();
+                }
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                widgetSelected(e);
+            }
+        };
+        useToken.addSelectionListener(listener);
+        TaskRepository taskRepository = getRepository();
+        if (taskRepository != null) { // FIXME
+            useToken.setSelection(JiraUtil.isAccessToken(taskRepository));
+            // setSelection does not fire a selection event
+            listener.widgetSelected(null);
+        }
+    }
+
+    /**
+     * Tells whether the task repository uses token authentication.
+     *
+     * @return {@code true} if token authentication shall be used; {@code false}
+     *         otherwise
+     */
+    protected boolean useTokenAuth() {
+        return useToken != null && useToken.getSelection();
+    }
+
+    @Override
+    protected boolean isMissingCredentials() {
+        if (!needsUser && useTokenAuth()) {
+            return repositoryPasswordEditor.getStringValue().trim().isEmpty();
+        } else {
+            return super.isMissingCredentials();
+        }
+    }
+
+    @SuppressWarnings("restriction")
+    @Override
+    public void setMessage(String newMessage, int newType) {
+        // This is a bit hacky since it relies on an internal message and the
+        // way it is used in the super class. But it beats re-implementing
+        // isPageComplete().
+        if (useTokenAuth() && org.eclipse.mylyn.internal.tasks.ui.wizards.Messages.AbstractRepositorySettingsPage_Enter_a_user_id_Message0.equals(newMessage)) {
+            if (needsUser) {
+                super.setMessage(Messages.JiraRepositorySettingsPage_EnterUserAndToken, newType);
+            } else {
+                super.setMessage(Messages.JiraRepositorySettingsPage_EnterToken, newType);
+            }
+        } else {
+            super.setMessage(newMessage, newType);
+        }
     }
 
     @Override

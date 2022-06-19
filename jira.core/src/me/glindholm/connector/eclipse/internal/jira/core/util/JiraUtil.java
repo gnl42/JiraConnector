@@ -88,6 +88,8 @@ public class JiraUtil {
 
     private static final String LOCALE_KEY = "jira.locale"; //$NON-NLS-1$
 
+    private static final String USE_TOKEN = "jira.userPersonalAccessToken"; //$NON-NLS-1$
+
     public static String dateToString(Instant date) {
         if (date == null) {
             return ""; //$NON-NLS-1$
@@ -470,4 +472,11 @@ public class JiraUtil {
         return false;
     }
 
+    public static void setAccessToken(TaskRepository repository, boolean useToken) {
+        repository.setProperty(USE_TOKEN, Boolean.toString(useToken));
+    }
+
+    public static boolean isAccessToken(TaskRepository repository) {
+        return Boolean.parseBoolean(repository.getProperty(USE_TOKEN));
+    }
 }
