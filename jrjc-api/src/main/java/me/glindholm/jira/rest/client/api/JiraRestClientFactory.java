@@ -64,4 +64,15 @@ public interface JiraRestClientFactory {
      * @param httpClient - instance of Atlassian HttpClient.
      */
     JiraRestClient create(final URI serverUri, final HttpClient httpClient) throws URISyntaxException;
+
+    /**
+     * Creates an instance of JiraRestClient with Bearer HttpClient settings.
+     * HttpClient will conduct a Bearer authentication for given token.
+     *
+     * @param serverUri
+     * @param password
+     * @return
+     * @throws URISyntaxException
+     */
+    JiraRestClient createWithBearerHttpAuthentication(URI serverUri, String token) throws URISyntaxException;
 }

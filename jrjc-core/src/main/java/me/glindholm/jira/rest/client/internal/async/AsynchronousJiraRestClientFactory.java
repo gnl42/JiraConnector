@@ -24,6 +24,7 @@ import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.JiraRestClientFactory;
 import me.glindholm.jira.rest.client.auth.BasicHttpAuthenticationHandler;
+import me.glindholm.jira.rest.client.auth.BearerHttpAuthenticationHandler;
 
 /**
  * Serves asynchronous implementations of the JiraRestClient.
@@ -42,6 +43,11 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
     @Override
     public JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) throws URISyntaxException {
         return create(serverUri, new BasicHttpAuthenticationHandler(username, password));
+    }
+
+    @Override
+    public JiraRestClient createWithBearerHttpAuthentication(final URI serverUri, final String token) throws URISyntaxException {
+        return create(serverUri, new BearerHttpAuthenticationHandler(token));
     }
 
     @Override
