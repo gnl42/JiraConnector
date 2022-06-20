@@ -42,11 +42,6 @@
 			<id>atlassian</id>
 			<url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
 		</repository>
-
-		<repository>
-			<id>Eclipse CBI</id>
-			<url>https://repo.eclipse.org/content/repositories/cbi-releases</url>
-		</repository>
 	</repositories>
 
 	<pluginRepositories>
