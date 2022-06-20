@@ -7,7 +7,7 @@
 
 	<groupId>me.glindholm.jira</groupId>
 	<artifactId>jira-rest-java-client-parent</artifactId>
-	<version>6.0.1-SNAPSHOT</version>
+	<version>6.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>JIRA REST Java Client</name>
@@ -42,11 +42,16 @@
 			<id>atlassian</id>
 			<url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
 		</repository>
+
+		<repository>
+			<id>Eclipse CBI</id>
+			<url>https://repo.eclipse.org/content/repositories/cbi-releases</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
 		<pluginRepository>
-			<id>release</id>
+			<id>atlassian release</id>
 			<url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
 		</pluginRepository>
 	</pluginRepositories>
@@ -57,7 +62,7 @@
 		<module>jrjc-core</module>
 		<module>jrjc-test</module>
 		<!-- <module>jrjc-test-it</module> -->
-	<!-- <module>jrjc-app</module> -->
+		<!-- <module>jrjc-app</module> -->
 	</modules>
 
 	<scm>
@@ -78,7 +83,6 @@
 
 
 		<platform.version>5.2.1</platform.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jira.version>8.18.0-QR-20210527053111</jira.version>
 		<jira.data.version>${jira.version}</jira.data.version>
 		<jira.test-lib.version>${jira.version}</jira.test-lib.version>
@@ -201,9 +205,22 @@
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho.extras</groupId>
-					<artifactId>tycho-source-feature-plugin</artifactId>
+					<artifactId>tycho-document-bundle-plugin</artifactId>
 					<version>${tycho.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-packaging-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addBuildEnvironmentEntries></addBuildEnvironmentEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-p2-plugin</artifactId>
@@ -242,39 +259,8 @@
 				<plugin>
 					<groupId>org.eclipse.cbi.maven.plugins</groupId>
 					<artifactId>eclipse-jarsigner-plugin</artifactId>
-					<version>1.1.7</version>
+					<version>1.3.2</version>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>3.2.1</version>
-					<executions>
-						<execution>
-							<id>attach-sources</id>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.4.0</version>
-					<executions>
-						<execution>
-							<id>attach-javadocs</id>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-							<configuration>
-								<failOnError>false</failOnError>
-								<quiet>true</quiet>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -300,6 +286,7 @@
 				<artifactId>tycho-maven-plugin</artifactId>
 				<extensions>true</extensions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-p2-repository-plugin</artifactId>
@@ -566,7 +553,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-					<excludePackageNames>com.atlassian.jira.rest.client.internal*</excludePackageNames>
+					<excludePackageNames>me.glindholm.jira.rest.client.internal*</excludePackageNames>
 					<links>
 						<link>https://docs.atlassian.com/software/jira/docs/api/${jira.version}/</link>
 					</links>

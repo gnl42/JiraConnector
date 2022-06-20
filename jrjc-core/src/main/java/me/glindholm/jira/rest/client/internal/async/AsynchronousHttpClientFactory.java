@@ -18,11 +18,17 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import javax.annotation.Nonnull;
 
@@ -45,14 +51,38 @@ import me.glindholm.jira.rest.client.api.AuthenticationHandler;
  * @since v2.0
  */
 public class AsynchronousHttpClientFactory {
+    private static final Logger log = LoggerFactory.getLogger(AsynchronousHttpClientFactory.class);
+
+    private static String libraryVersion = "unknown";
+    private static Instant libraryDate = Instant.now();
+
+    static {
+        URL url = Thread.currentThread().getContextClassLoader().getResource("META-INF/MANIFEST.MF");
+        try {
+            try (InputStream is = url.openStream()) {
+                Manifest mf = new Manifest(is);
+                Attributes attrs = mf.getMainAttributes();
+                String versionStr = attrs.getValue("Bundle-Version");
+                String[] parts = versionStr.split("\\.");
+                libraryVersion = parts[0] + "." + parts[1] + "." + parts[2];
+                DateTimeFormatter parse = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
+                if (parts[3].equals("qualifier")) {
+                    libraryDate = Instant.now();
+                } else {
+                    libraryDate = LocalDateTime.parse(parts[4], parse).atOffset(ZoneOffset.UTC).toInstant();
+                }
+            }
+        } catch (Exception e) {
+            log.debug("", e);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
         final HttpClientOptions options = new HttpClientOptions();
 
         final DefaultHttpClientFactory defaultHttpClientFactory = new DefaultHttpClientFactory(new NoOpEventPublisher(),
-                new RestClientApplicationProperties(serverUri),
-                new ThreadLocalContextManager<Object>() {
+                new RestClientApplicationProperties(serverUri), new ThreadLocalContextManager<Object>() {
             @Override
             public Object getThreadLocalContext() {
                 return null;
@@ -110,7 +140,8 @@ public class AsynchronousHttpClientFactory {
     }
 
     /**
-     * These properties are used to present JRJC as a User-Agent during http requests.
+     * These properties are used to present JRJC as a User-Agent during http
+     * requests.
      */
     private static class RestClientApplicationProperties implements ApplicationProperties {
 
@@ -137,7 +168,7 @@ public class AsynchronousHttpClientFactory {
         @Nonnull
         @Override
         public String getDisplayName() {
-            return "Atlassian JIRA Rest Java Client";
+            return "JIRA Rest Java Client";
         }
 
         @Nonnull
@@ -149,14 +180,13 @@ public class AsynchronousHttpClientFactory {
         @Nonnull
         @Override
         public String getVersion() {
-            return MavenUtils.getVersion("com.atlassian.jira", "jira-rest-java-client-core");
+            return libraryVersion;
         }
 
         @Nonnull
         @Override
         public Date getBuildDate() {
-            // TODO implement using MavenUtils, JRJC-123
-            throw new UnsupportedOperationException();
+            return Date.from(libraryDate);
         }
 
         @Nonnull
@@ -194,27 +224,4 @@ public class AsynchronousHttpClientFactory {
             return getLocalHomeDirectory();
         }
     }
-
-    private static final class MavenUtils {
-        private static final Logger logger = LoggerFactory.getLogger(MavenUtils.class);
-
-        private static final String UNKNOWN_VERSION = "unknown";
-
-        static String getVersion(String groupId, String artifactId) {
-            final Properties props = new Properties();
-            try (InputStream resourceAsStream = MavenUtils.class
-                    .getResourceAsStream(String.format("/META-INF/maven/%s/%s/pom.properties", groupId, artifactId))) {
-                if (resourceAsStream != null) {
-                    props.load(resourceAsStream);
-                }
-                return props.getProperty("version", UNKNOWN_VERSION);
-
-            } catch (Exception e) {
-                logger.debug("Could not find version for maven artifact {}:{}", groupId, artifactId);
-                logger.debug("Got the following exception", e);
-                return UNKNOWN_VERSION;
-            }
-        }
-    }
-
 }
