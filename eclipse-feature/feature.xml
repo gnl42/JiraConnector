@@ -30,10 +30,6 @@
          id="me.glindholm.connector.eclipse.jira"
          version="0.0.0"/>
 
-   <includes
-         id="me.glindholm.connector.eclipse.directclickthrough"
-         version="0.0.0"/>
-
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>

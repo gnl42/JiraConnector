@@ -16,14 +16,12 @@ Require-Bundle:
  me.glindholm.connector.eclipse.commons.core
 Export-Package: me.glindholm.connector.eclipse.internal.core;
   x-friends:="me.glindholm.connector.eclipse.bamboo.core,
-   me.glindholm.connector.eclipse.bamboo.ui,
-   me.glindholm.connector.eclipse.directclickthrough.ui,
+   me.glindholm.connector.eclipse.bamboo.ui
    me.glindholm.connector.eclipse.ui",
  me.glindholm.connector.eclipse.internal.core.client;x-friends:="me.glindholm.connector.eclipse.bamboo.core,me.glindholm.connector.eclipse.bamboo.ui,me.glindholm.connector.eclipse.ui",
  me.glindholm.connector.eclipse.internal.core.jobs;
   x-friends:="me.glindholm.connector.eclipse.bamboo.core,
    me.glindholm.connector.eclipse.bamboo.ui,
-   me.glindholm.connector.eclipse.directclickthrough.ui,
    me.glindholm.connector.eclipse.ui"
 Bundle-Activator: me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin
 Bundle-ClassPath: .

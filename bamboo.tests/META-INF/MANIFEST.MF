@@ -14,8 +14,7 @@ Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  org.eclipse.mylyn.commons.net,
  org.eclipse.mylyn.tasks.ui,
- org.eclipse.jface,
- me.glindholm.connector.eclipse.directclickthrough.ui
+ org.eclipse.jface
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: me.glindholm.connector.eclipse.internal.bamboo.core;x-internal:=true,
  me.glindholm.connector.eclipse.internal.bamboo.tests;x-internal:=true,

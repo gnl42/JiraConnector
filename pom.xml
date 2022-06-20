@@ -149,9 +149,6 @@
 		<module>ui</module>
 
 		<module>dependencies-feature</module>
-		<module>directclickthrough-feature</module>
-		<module>directclickthrough.ui</module>
-
 
 		<module>bamboo-feature</module>
 		<module>bamboo.core</module>
