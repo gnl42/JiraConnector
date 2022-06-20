@@ -149,10 +149,26 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-document-bundle-plugin</artifactId>
 				<configuration>
-					<excludePackageNames>com.atlassian.jira.rest.client.internal*</excludePackageNames>
+					<javadocOptions>
+						<excludes>
+							<exclude>me.glindholm.jira.rest.client.internal*</exclude>
+						</excludes>
+					</javadocOptions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries></addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -165,8 +181,8 @@
 				<artifactId>maven-jxr-plugin</artifactId>
 				<configuration>
 					<excludes>
-						<exclude>com/atlassian/jira/rest/client/internal/**/*.java</exclude>
-					</excludes>
+						<exclude>me/glindholm/jira/rest/client/internal/**/*.java</exclude>
+					</excludes>-
 				</configuration>
 			</plugin>
 		</plugins>
