@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.glindholm.connector.eclipse</groupId>
 	<artifactId>JiraConnector</artifactId>
-	<version>4.1.4-SNAPSHOT</version>
+	<version>4.1.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<developers>
@@ -149,9 +149,6 @@
 		<module>ui</module>
 
 		<module>dependencies-feature</module>
-		<module>directclickthrough-feature</module>
-		<module>directclickthrough.ui</module>
-
 
 		<module>bamboo-feature</module>
 		<module>bamboo.core</module>
