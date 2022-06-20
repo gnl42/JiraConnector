@@ -160,8 +160,11 @@ public class JiraRestClientAdapter {
             // });
             HttpClientOptions httpOptions = new HttpClientOptions();
             httpOptions.setUserAgent("JiraConnector for Eclipse");
-
-            restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password);
+            if (userName.isEmpty()) {
+                restClient = new AsynchronousJiraRestClientFactory().createWithBearerHttpAuthentication(new URI(url), password);
+            } else {
+                restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password);
+            }
 
             // restClient = new JerseyJiraRestClientBuilder().header("User-Agent",
             // "JiraConnector for Eclipse") //$NON-NLS-1$ //$NON-NLS-2$
@@ -405,10 +408,8 @@ public class JiraRestClientAdapter {
         try {
             Project projectWithDetails = restClient.getProjectClient().getProject(project.getKey()).get();
 
-            GetCreateIssueMetadataOptions builder = new GetCreateIssueMetadataOptionsBuilder()
-                    .withProjectIds(Long.valueOf(project.getId()))
-                    .withExpandedIssueTypesFields()
-                    .build();
+            GetCreateIssueMetadataOptions builder = new GetCreateIssueMetadataOptionsBuilder().withProjectIds(Long.valueOf(project.getId()))
+                    .withExpandedIssueTypesFields().build();
             CimProject cimProjectWithDetails = restClient.getIssueClient().getCreateIssueMetadata(builder).get().iterator().next();
 
             Map<Long, Map<String, CimFieldInfo>> projectMetadata = new HashMap<>();
@@ -462,10 +463,8 @@ public class JiraRestClientAdapter {
 
     public List<JiraAction> getTransitions(String issueKey) throws JiraException {
 
-
         try {
-            URI transitionUri = new URIBuilder(url)
-                    .appendPath("/rest/api/latest") //
+            URI transitionUri = new URIBuilder(url).appendPath("/rest/api/latest") //
                     .appendPath("issue") //
                     .appendPath(issueKey) //
                     .appendPath("transitions") //$NON-NLS-1$
@@ -649,10 +648,12 @@ public class JiraRestClientAdapter {
                     Map.entry(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m"));
 
             // TODO Remove
-            //                    ImmutableMap.<String, Object>builder()
-            //                    .put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m") //$NON-NLS-1$
-            //                    .put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m") //$NON-NLS-1$
-            //                    .build();
+            // ImmutableMap.<String, Object>builder()
+            // .put(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() /
+            // 60) + "m") //$NON-NLS-1$
+            // .put(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() /
+            // 60) + "m") //$NON-NLS-1$
+            // .build();
             issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
         }
 
@@ -738,9 +739,11 @@ public class JiraRestClientAdapter {
                         Map.entry(JiraRestFields.REMAINING_ESTIMATE, outputRemainingEstimateInMinutes + "m"));
 
                 // TODO Remove
-                //                        ImmutableMap.<String, Object>builder().put(JiraRestFields.ORIGINAL_ESTIMATE, outputOriginalEstimateInMinutes + "m") //$NON-NLS-1$
-                //                        .put(JiraRestFields.REMAINING_ESTIMATE, outputRemainingEstimateInMinutes + "m") //$NON-NLS-1$
-                //                        .build();
+                // ImmutableMap.<String, Object>builder().put(JiraRestFields.ORIGINAL_ESTIMATE,
+                // outputOriginalEstimateInMinutes + "m") //$NON-NLS-1$
+                // .put(JiraRestFields.REMAINING_ESTIMATE, outputRemainingEstimateInMinutes +
+                // "m") //$NON-NLS-1$
+                // .build();
 
                 updateFields.add(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
             }

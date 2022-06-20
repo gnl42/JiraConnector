@@ -429,7 +429,6 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         setAttributeValue(data, JiraAttribute.USER_REPORTER,
                 getPerson(data, client, jiraIssue.getReporter(), jiraIssue.getReporterName()));
         setAttributeWatchers(data, JiraAttribute.WATCHERS, jiraIssue.getWatchers());
-        setAttributeComponents(data, JiraAttribute.COMPONENTS, jiraIssue.getComponents());
 
         setAttributeValue(data, JiraAttribute.PROJECT, jiraIssue.getProject().getId());
 
