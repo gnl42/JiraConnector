@@ -11,6 +11,7 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.ui.notifications;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.eclipse.mylyn.commons.notifications.ui.AbstractUiNotification;
@@ -63,7 +64,7 @@ public class BambooNotification extends AbstractUiNotification {
 
     @Override
     public Date getDate() {
-        return build.getCompletionDate();
+        return Date.from(build.getCompletionDate());
     }
 
     @Override
@@ -108,11 +109,11 @@ public class BambooNotification extends AbstractUiNotification {
         if (anotherNotification == null) {
             throw new ClassCastException("A BambooNotification object expected."); //$NON-NLS-1$
         }
-        final Date date;
+        final Instant date;
         if (anotherNotification instanceof BambooNotification) {
             date = ((BambooNotification) anotherNotification).getBuild().getCompletionDate();
         } else {
-            date = anotherNotification.getDate();
+            date = anotherNotification.getDate().toInstant();
         }
         if (build.getCompletionDate() != null && date != null) {
             return build.getCompletionDate().compareTo(date);

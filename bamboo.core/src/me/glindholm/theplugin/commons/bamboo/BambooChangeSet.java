@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Atlassian
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,19 +16,20 @@
 
 package me.glindholm.theplugin.commons.bamboo;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import me.glindholm.theplugin.commons.BambooFileInfo;
+import me.glindholm.theplugin.commons.VirtualFileSystem;
 
 public interface BambooChangeSet {
-	String getAuthor();
+    String getAuthor();
 
-	String getComment();
+    String getComment();
 
-	Date getCommitDate();
+    Instant getCommitDate();
 
-	List<BambooFileInfo> getFiles();
+    List<BambooFileInfo> getFiles();
 
-	me.glindholm.theplugin.commons.VirtualFileSystem getVirtualFileSystem();
+    VirtualFileSystem getVirtualFileSystem();
 }

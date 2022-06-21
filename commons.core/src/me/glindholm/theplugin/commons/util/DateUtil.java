@@ -18,11 +18,13 @@ package me.glindholm.theplugin.commons.util;
 
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
+
 
 /**
  * @author lguminski
@@ -36,10 +38,14 @@ public abstract class DateUtil {
     private DateUtil() {
     }
 
+    public static String getRelativePastDate(Instant someDate) {
+        return getRelativePastDate(Date.from(someDate));
+    }
+
     public static String getRelativePastDate(Date someDate) {
 
         if (someDate != null) {
-            return DateUtil.getRelativePastDate(new Date(), someDate);
+            return getRelativePastDate(new Date(), someDate);
         }
         return "Unknown";
     }

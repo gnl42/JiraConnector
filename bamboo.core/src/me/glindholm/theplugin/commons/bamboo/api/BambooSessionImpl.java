@@ -18,9 +18,13 @@ package me.glindholm.theplugin.commons.bamboo.api;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -28,18 +32,15 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.xpath.XPath;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.theplugin.commons.BambooFileInfo;
@@ -208,11 +209,12 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
+    @Override
     @Nonnull
     public List<BambooProject> listProjectNames() throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + LIST_PROJECT_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken);
 
-        List<BambooProject> projects = new ArrayList<BambooProject>();
+        List<BambooProject> projects = new ArrayList<>();
         try {
             Document doc = retrieveGetResponse(buildResultUrl);
             XPath xpath = XPath.newInstance("/response/project");
@@ -238,7 +240,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     private List<BambooPlan> listPlanNames() throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + LIST_PLAN_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken);
 
-        List<BambooPlan> plans = new ArrayList<BambooPlan>();
+        List<BambooPlan> plans = new ArrayList<>();
         try {
             Document doc = retrieveGetResponse(buildResultUrl);
             XPath xpath = XPath.newInstance("/response/build");
@@ -271,7 +273,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         // String buildResultUrl = getBaseUrl() + LIST_PLANS + "?auth=" + UrlUtil.encodeUrl(authToken);
         String buildResultUrl = getBaseUrl() + LIST_PLANS;
 
-        List<BambooPlan> plans = new ArrayList<BambooPlan>();
+        List<BambooPlan> plans = new ArrayList<>();
         try {
             Document doc = retrieveGetResponse(buildResultUrl);
             // XPath xpath = XPath.newInstance("/response/build");
@@ -311,6 +313,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      *            ID of the plan to get info about
      * @return Information about the last build or error message
      */
+    @Override
     @Nonnull
     public BambooBuild getLatestBuildForPlan(@Nonnull String planKey, final int timezoneOffset)
             throws RemoteApiException {
@@ -346,7 +349,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             Document doc = retrieveGetResponse(buildResultUrl);
             String exception = getExceptionMessages(doc);
             if (null != exception) {
-                return constructBuildErrorInfo(planKey, exception, new Date());
+                return constructBuildErrorInfo(planKey, exception, Instant.now());
             }
 
             @SuppressWarnings("unchecked")
@@ -354,16 +357,14 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             if (elements != null && !elements.isEmpty()) {
                 Element e = elements.iterator().next();
                 final Set<String> commiters = constructBuildCommiters(e);
-                return constructBuilderItem(e, new Date(), planKey, commiters, timezoneOffset);
+                return constructBuilderItem(e, Instant.now(), planKey, commiters, timezoneOffset);
             } else {
-                return constructBuildErrorInfo(planKey, "Malformed server reply: no response element", new Date());
+                return constructBuildErrorInfo(planKey, "Malformed server reply: no response element", Instant.now());
             }
-        } catch (IOException e) {
-            return constructBuildErrorInfo(planKey, e.getMessage(), e, new Date());
         } catch (JDOMException e) {
-            return constructBuildErrorInfo(planKey, "Server returned malformed response", e, new Date());
-        } catch (RemoteApiException e) {
-            return constructBuildErrorInfo(planKey, e.getMessage(), e, new Date());
+            return constructBuildErrorInfo(planKey, "Server returned malformed response", e, Instant.now());
+        } catch (IOException | RemoteApiException e) {
+            return constructBuildErrorInfo(planKey, e.getMessage(), e, Instant.now());
         }
     }
 
@@ -385,7 +386,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             Document doc = retrieveGetResponse(buildResultUrl);
             String exception = getExceptionMessages(doc);
             if (null != exception) {
-                return constructBuildErrorInfo(planKey, exception, new Date());
+                return constructBuildErrorInfo(planKey, exception, Instant.now());
             }
 
             @SuppressWarnings("unchecked")
@@ -396,7 +397,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 // final Set<String> commiters = constructBuildCommiters(e);
                 String buildNumber = e.getAttributeValue("number");
                 final Set<String> commiters = getCommitersForBuild_40(planKey, buildNumber);
-                return constructBuilderItem_40(e, new Date(), planKey, commiters, timezoneOffset);
+                return constructBuilderItem_40(e, Instant.now(), planKey, commiters, timezoneOffset);
             } else {
                 // plan may have no builds (never built)
                 elements = (List<Element>) XPath.newInstance("/results/results").selectNodes(doc);
@@ -406,19 +407,17 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     String size = e.getAttributeValue("size");
                     if (size != null && size.length() > 0 && "0".equals(size)) {
                         return new BambooBuildInfo.Builder(planKey, serverData, BuildStatus.UNKNOWN).pollingTime(
-                                new Date()).reason("Never built");
+                                Instant.now()).reason("Never built");
                     }
                 }
 
-                return constructBuildErrorInfo(planKey, "Malformed server reply: no response element", new Date());
+                return constructBuildErrorInfo(planKey, "Malformed server reply: no response element", Instant.now());
 
             }
-        } catch (IOException e) {
-            return constructBuildErrorInfo(planKey, e.getMessage(), e, new Date());
         } catch (JDOMException e) {
-            return constructBuildErrorInfo(planKey, "Server returned malformed response", e, new Date());
-        } catch (RemoteApiException e) {
-            return constructBuildErrorInfo(planKey, e.getMessage(), e, new Date());
+            return constructBuildErrorInfo(planKey, "Server returned malformed response", e, Instant.now());
+        } catch (IOException | RemoteApiException e) {
+            return constructBuildErrorInfo(planKey, e.getMessage(), e, Instant.now());
         }
     }
 
@@ -428,7 +427,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         String buildResultUrl =
                 getBaseUrl() + GET_BUILD_DETAILS + UrlUtil.encodeUrl(planKey) + "/" + buildNumber + "?expand=changes";
 
-        Set<String> commiters = new HashSet<String>();
+        Set<String> commiters = new HashSet<>();
 
         try {
             Document doc = retrieveGetResponse(buildResultUrl);
@@ -448,6 +447,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
+    @Override
     @Nonnull
     public BambooPlan getPlanDetails(@Nonnull final String planKey) throws RemoteApiException {
         String planUrl = getBaseUrl() + PLAN_STATE + UrlUtil.encodeUrl(planKey);
@@ -458,7 +458,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             final List<Element> elements = (List<Element>) XPath.newInstance("/plan").selectNodes(doc);
             if (elements != null && !elements.isEmpty()) {
                 Element e = elements.iterator().next();
-                return constructPlanItem(e, Boolean.TRUE);
+                return constructPlanItem(e, true);
             } else {
                 throw new RemoteApiException("Malformed server reply: no 'plan' element");
             }
@@ -478,6 +478,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      * @return
      * @throws RemoteApiException
      */
+    @Override
     @Nonnull
     public BambooBuild getLatestBuildForPlanNew(@Nonnull final String planKey, @Nullable final String masterPlanKey, final boolean isPlanEnabled,
             final int timezoneOffset) throws RemoteApiException {
@@ -513,17 +514,16 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 // Document d = retrieveGetResponse(buildUrl);
 
             } else {
-                return constructBuildErrorInfo(planKey, "Malformed server reply: no 'plan' element", new Date()).build();
+                return constructBuildErrorInfo(planKey, "Malformed server reply: no 'plan' element", Instant.now()).build();
             }
-        } catch (IOException e) {
-            return constructBuildErrorInfo(planKey, e.getMessage(), e, new Date()).build();
         } catch (JDOMException e) {
-            return constructBuildErrorInfo(planKey, "Server returned malformed response", e, new Date()).build();
-        } catch (RemoteApiException e) {
-            return constructBuildErrorInfo(planKey, e.getMessage(), e, new Date()).build();
+            return constructBuildErrorInfo(planKey, "Server returned malformed response", e, Instant.now()).build();
+        } catch (IOException | RemoteApiException e) {
+            return constructBuildErrorInfo(planKey, e.getMessage(), e, Instant.now()).build();
         }
     }
 
+    @Override
     @Nonnull
     public BambooBuild getBuildForPlanAndNumber(@Nonnull String planKey, final int buildNumber, final int timezoneOffset)
             throws RemoteApiException {
@@ -562,55 +562,55 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             Document doc = retrieveGetResponse(buildResultUrl);
             String exception = getExceptionMessages(doc);
             if (null != exception) {
-                return constructBuildErrorInfo(buildResultUrl, exception, new Date()).build();
+                return constructBuildErrorInfo(buildResultUrl, exception, Instant.now()).build();
             }
 
             @SuppressWarnings("unchecked")
             final List<Element> elements = (List<Element>) XPath.newInstance(nodePath).selectNodes(doc);
             Element el = elements.get(0);
-            return constructBuildItemFromNewApi(el, new Date(), planKey);
+            return constructBuildItemFromNewApi(el, Instant.now(), planKey);
 
-        } catch (IOException e) {
-            throw new RemoteApiException(e);
-        } catch (JDOMException e) {
+        } catch (IOException | JDOMException e) {
             throw new RemoteApiException(e);
         }
     }
 
+    @Override
     public Collection<BambooBuild> getRecentBuildsForPlan(@Nonnull final String planKey, final int timezoneOffset)
             throws RemoteApiException {
         if (getBamboBuildNumber() >= BAMBOO_4_0_BUILD_NUMBER) {
             return getBuildsCollection_40(planKey, timezoneOffset);
         } else {
             String buildResultUrl = getBaseUrl() + RECENT_BUILDS_FOR_PLAN_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken)
-                    + "&buildKey=" + UrlUtil.encodeUrl(planKey);
+            + "&buildKey=" + UrlUtil.encodeUrl(planKey);
             return getBuildsCollection(buildResultUrl, planKey, timezoneOffset);
         }
     }
 
+    @Override
     public Collection<BambooBuild> getRecentBuildsForUser(final int timezoneOffset) throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + RECENT_BUILDS_FOR_USER_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken)
-                + "&username=" + UrlUtil.encodeUrl(getUsername());
+        + "&username=" + UrlUtil.encodeUrl(getUsername());
         return getBuildsCollection(buildResultUrl, getUsername(), timezoneOffset);
     }
 
     private Collection<BambooBuild> getBuildsCollection(@Nonnull final String url, @Nonnull final String planKey,
             final int timezoneOffset) throws RemoteApiException {
 
-        final Date pollingTime = new Date();
-        final List<BambooBuild> builds = new ArrayList<BambooBuild>();
+        final Instant pollingTime = Instant.now();
+        final List<BambooBuild> builds = new ArrayList<>();
         try {
             Document doc = retrieveGetResponse(url);
             String exception = getExceptionMessages(doc);
             if (null != exception) {
-                builds.add(constructBuildErrorInfo(url, exception, new Date()).build());
+                builds.add(constructBuildErrorInfo(url, exception, Instant.now()).build());
                 return builds;
             }
 
             @SuppressWarnings("unchecked")
             final List<Element> elements = (List<Element>) XPath.newInstance("/response/build").selectNodes(doc);
             if (elements == null || elements.isEmpty()) {
-                builds.add(constructBuildErrorInfo(url, "Malformed server reply: no response element", new Date()).build());
+                builds.add(constructBuildErrorInfo(url, "Malformed server reply: no response element", Instant.now()).build());
             } else {
                 for (Element element : elements) {
                     final Set<String> commiters = constructBuildCommiters(element);
@@ -618,37 +618,35 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                             .build());
                 }
             }
-        } catch (IOException e) {
-            builds.add(constructBuildErrorInfo(planKey, e.getMessage(), e, pollingTime).build());
         } catch (JDOMException e) {
             builds.add(constructBuildErrorInfo(planKey, "Server returned malformed response", e, pollingTime).build());
-        } catch (RemoteApiException e) {
+        } catch (IOException | RemoteApiException e) {
             builds.add(constructBuildErrorInfo(planKey, e.getMessage(), e, pollingTime).build());
         }
         return builds;
     }
 
     private Collection<BambooBuild> getBuildsCollection_40(@Nonnull final String planKey,
-                                                        final int timezoneOffset) throws RemoteApiException {
+            final int timezoneOffset) throws RemoteApiException {
 
         String url = getBaseUrl() + LATEST_BUILD_FOR_PLAN + UrlUtil.encodeUrl(planKey) + "?expand="
-                        + UrlUtil.encodeUrl("results[0:10].result");
+                + UrlUtil.encodeUrl("results[0:10].result");
 
-        final Date pollingTime = new Date();
-        final List<BambooBuild> builds = new ArrayList<BambooBuild>();
+        final Instant pollingTime = Instant.now();
+        final List<BambooBuild> builds = new ArrayList<>();
 
         try {
             Document doc = retrieveGetResponse(url);
 
             String exception = getExceptionMessages(doc);
             if (null != exception) {
-                builds.add(constructBuildErrorInfo(url, exception, new Date()).build());
+                builds.add(constructBuildErrorInfo(url, exception, Instant.now()).build());
                 return builds;
             }
 
             List<Element> elements = (List<Element>) XPath.newInstance("/results/results/result").selectNodes(doc);
             if (elements == null || elements.isEmpty()) {
-                builds.add(constructBuildErrorInfo(url, "Malformed server reply: no response element", new Date()).build());
+                builds.add(constructBuildErrorInfo(url, "Malformed server reply: no response element", Instant.now()).build());
             } else {
                 for (Element element : elements) {
                     final Set<String> commiters = constructBuildCommiters(element);
@@ -656,11 +654,9 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                             .build());
                 }
             }
-        } catch (IOException e) {
-            builds.add(constructBuildErrorInfo(planKey, e.getMessage(), e, pollingTime).build());
         } catch (JDOMException e) {
             builds.add(constructBuildErrorInfo(planKey, "Server returned malformed response", e, pollingTime).build());
-        } catch (RemoteApiException e) {
+        } catch (IOException | RemoteApiException e) {
             builds.add(constructBuildErrorInfo(planKey, e.getMessage(), e, pollingTime).build());
         }
         return builds;
@@ -668,7 +664,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
     private Set<String> constructBuildCommiters(final Element element) throws JDOMException {
 
-        Set<String> commiters = new HashSet<String>();
+        Set<String> commiters = new HashSet<>();
         @SuppressWarnings("unchecked")
         final List<Element> commitElements = (List<Element>) XPath.newInstance("commits/commit").selectNodes(element);
         if (!commitElements.isEmpty()) {
@@ -679,9 +675,10 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return commiters;
     }
 
+    @Override
     @Nonnull
     public List<String> getFavouriteUserPlans() throws RemoteApiException {
-        List<String> builds = new ArrayList<String>();
+        List<String> builds = new ArrayList<>();
         String buildResultUrl = getBaseUrl() + LATEST_USER_BUILDS_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken);
 
         try {
@@ -702,16 +699,14 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             } else {
                 return builds;
             }
-        } catch (IOException e) {
-            return builds;
-        } catch (JDOMException e) {
+        } catch (IOException | JDOMException e) {
             return builds;
         }
     }
 
     @Nonnull
     public List<String> getFavouriteUserPlansNew() throws RemoteApiException {
-        List<String> builds = new ArrayList<String>();
+        List<String> builds = new ArrayList<>();
         String buildResultUrl = getBaseUrl() + PLAN_STATE + "?favourite&expand=plans";
 
         try {
@@ -732,9 +727,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             } else {
                 return builds;
             }
-        } catch (IOException e) {
-            return builds;
-        } catch (JDOMException e) {
+        } catch (IOException | JDOMException e) {
             return builds;
         }
     }
@@ -742,7 +735,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     @Nonnull
     private BuildDetails getBuildResultDetailsOld(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         final String buildResultUrl = getBaseUrl() + GET_BUILD_DETAILS_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken)
-                + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber;
+        + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber;
 
         try {
             BuildDetailsInfo build = new BuildDetailsInfo();
@@ -786,14 +779,14 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             @SuppressWarnings("unchecked")
             final List<Element> sucTestResElements = (List<Element>) XPath.newInstance("/response/successfulTests/testResult")
-                    .selectNodes(doc);
+            .selectNodes(doc);
             for (Element element : sucTestResElements) {
                 TestDetailsInfo tInfo = new TestDetailsInfo();
                 tInfo.setTestClassName(element.getAttributeValue("testClass"));
                 tInfo.setTestMethodName(element.getAttributeValue("testMethod"));
                 double duration;
                 try {
-                    duration = Double.valueOf(element.getAttributeValue("duration"));
+                    duration = Double.parseDouble(element.getAttributeValue("duration"));
                 } catch (NumberFormatException e) {
                     // leave 0
                     duration = 0;
@@ -805,7 +798,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             @SuppressWarnings("unchecked")
             final List<Element> failedTestResElements = (List<Element>) XPath.newInstance("/response/failedTests/testResult")
-                    .selectNodes(doc);
+            .selectNodes(doc);
             if (!failedTestResElements.isEmpty()) {
                 int i = 1;
                 for (Element element : failedTestResElements) {
@@ -814,7 +807,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     tInfo.setTestMethodName(element.getAttributeValue("testMethod"));
                     double duration;
                     try {
-                        duration = Double.valueOf(element.getAttributeValue("duration"));
+                        duration = Double.parseDouble(element.getAttributeValue("duration"));
                     } catch (NumberFormatException e) {
                         // leave 0
                         duration = 0;
@@ -853,9 +846,10 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      * @return
      * @throws RemoteApiException
      */
+    @Override
     public int getBamboBuildNumber() throws RemoteApiException {
         if (serverBuildNumber != null) {
-            return serverBuildNumber.intValue();
+            return serverBuildNumber;
         }
         // I am not afraid of races here, they are not harmful
         try {
@@ -867,6 +861,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return serverBuildNumber;
     }
 
+    @Override
     public BuildDetails getBuildResultDetails(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         // as we are phasing out BambooServerFacade and BambooServerFacade2,
         // but still make life of the clients using this lib easy, we make this decision here which API to use
@@ -916,7 +911,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
                 @SuppressWarnings("unchecked")
                 final List<Element> testResElements = (List<Element>) XPath.newInstance("/result/testResults/allTests/testResult")
-                        .selectNodes(doc);
+                .selectNodes(doc);
                 for (Element element : testResElements) {
                     TestDetailsInfo tInfo = new TestDetailsInfo();
                     tInfo.setTestClassName(element.getAttributeValue("className"));
@@ -959,11 +954,9 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     build.setCommitInfo(parseChangeSets(changesElement));
                 }
                 // return build;
-            } catch (JDOMException e) {
-                throw new RemoteApiException("Server returned malformed response", e);
             } catch (IOException e) {
                 throw new RemoteApiException(e.getMessage(), e);
-            } catch (ParseException e) {
+            } catch (JDOMException | ParseException e) {
                 throw new RemoteApiException("Server returned malformed response", e);
             }
         }
@@ -1005,7 +998,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
                 @SuppressWarnings("unchecked")
                 final List<Element> testResElements = (List<Element>) XPath.newInstance("/result/testResults/all/testResult")
-                        .selectNodes(doc);
+                .selectNodes(doc);
                 for (Element element : testResElements) {
                     TestDetailsInfo tInfo = new TestDetailsInfo();
                     tInfo.setTestClassName(element.getAttributeValue("className"));
@@ -1048,11 +1041,9 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     build.setCommitInfo(parseChangeSets(changesElement));
                 }
                 // return build;
-            } catch (JDOMException e) {
-                throw new RemoteApiException("Server returned malformed response", e);
             } catch (IOException e) {
                 throw new RemoteApiException(e.getMessage(), e);
-            } catch (ParseException e) {
+            } catch (JDOMException | ParseException e) {
                 throw new RemoteApiException("Server returned malformed response", e);
             }
         }
@@ -1064,8 +1055,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     BuildDetails getBuildResultDetailsMoreRestish(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
 
         final String buildResultUrl = getBaseUrl() + GET_BUILD_BY_NUMBER_ACTION + "/" + UrlUtil.encodeUrl(planKey)
-                + "/" + buildNumber + "?auth=" + UrlUtil.encodeUrl(authToken)
-                + "&expand=testResults.all.testResult.errors&expand=changes.change.files";
+        + "/" + buildNumber + "?auth=" + UrlUtil.encodeUrl(authToken)
+        + "&expand=testResults.all.testResult.errors&expand=changes.change.files";
 
         try {
             BuildDetailsInfo build = new BuildDetailsInfo();
@@ -1077,7 +1068,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             @SuppressWarnings("unchecked")
             final List<Element> testResElements = (List<Element>) XPath.newInstance("/build/testResults/all/testResult")
-                    .selectNodes(doc);
+            .selectNodes(doc);
             for (Element element : testResElements) {
                 TestDetailsInfo tInfo = new TestDetailsInfo();
                 tInfo.setTestClassName(element.getAttributeValue("className"));
@@ -1118,11 +1109,9 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 build.setCommitInfo(parseChangeSets(changesElement));
             }
             return build;
-        } catch (JDOMException e) {
-            throw new RemoteApiException("Server returned malformed response", e);
         } catch (IOException e) {
             throw new RemoteApiException(e.getMessage(), e);
-        } catch (ParseException e) {
+        } catch (JDOMException | ParseException e) {
             throw new RemoteApiException("Server returned malformed response", e);
         }
     }
@@ -1181,10 +1170,11 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      * Currently length of the comment is limited by poor implementation which uses GET HTTP method (sic!) to post a new comment
      * and the comment becomes part of URL, which is typically truncated by web servers.
      */
+    @Override
     public void addLabelToBuild(@Nonnull String planKey, int buildNumber, String buildLabel) throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + ADD_LABEL_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken)
-                + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber + "&label="
-                + UrlUtil.encodeUrl(buildLabel);
+        + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber + "&label="
+        + UrlUtil.encodeUrl(buildLabel);
 
         try {
             Document doc = retrieveGetResponse(buildResultUrl);
@@ -1203,11 +1193,12 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      * Currently length of the comment is limited by poor implementation which uses GET HTTP method (sic!) to post a new comment
      * and the comment becomes part of URL, which is typically truncated by web servers.
      */
+    @Override
     public void addCommentToBuild(@Nonnull String planKey, int buildNumber, String buildComment)
             throws RemoteApiException {
         String buildResultUrl = getBaseUrl() + ADD_COMMENT_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken)
-                + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber + "&content="
-                + UrlUtil.encodeUrl(buildComment);
+        + "&buildKey=" + UrlUtil.encodeUrl(planKey) + "&buildNumber=" + buildNumber + "&content="
+        + UrlUtil.encodeUrl(buildComment);
 
         try {
             Document doc = retrieveGetResponse(buildResultUrl);
@@ -1222,6 +1213,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
+    @Override
     public void executeBuild(@Nonnull String planKey) throws RemoteApiException {
 
         if (getBamboBuildNumber() >= BAMBOO_2_7_2_BUILD_NUMBER) {
@@ -1261,12 +1253,12 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    BambooBuildInfo.Builder constructBuildErrorInfo(String planKey, String message, Date lastPollingTime) {
+    BambooBuildInfo.Builder constructBuildErrorInfo(String planKey, String message, Instant instant) {
         return new BambooBuildInfo.Builder(planKey, null, serverData, null, null, BuildStatus.UNKNOWN).pollingTime(
-                lastPollingTime).errorMessage(message);
+                instant).errorMessage(message);
     }
 
-    BambooBuildInfo.Builder constructBuildErrorInfo(String planKey, String message, Throwable exception, Date lastPollingTime) {
+    BambooBuildInfo.Builder constructBuildErrorInfo(String planKey, String message, Throwable exception, Instant lastPollingTime) {
         return new BambooBuildInfo.Builder(planKey, null, serverData, null, null, BuildStatus.UNKNOWN).pollingTime(
                 lastPollingTime).errorMessage(message, exception);
     }
@@ -1318,16 +1310,16 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 isBuilding);
     }
 
-    private BambooBuildInfo.Builder constructBuilderItem(Element buildItemNode, Date lastPollingTime, final String aPlanKey,
+    private BambooBuildInfo.Builder constructBuilderItem(Element buildItemNode, Instant instant, final String aPlanKey,
             Set<String> commiters, final int timezoneOffset)
-            throws RemoteApiException {
+                    throws RemoteApiException {
 
         BambooBuildInfo.Builder builder;
         // for never executed build we actually have no data here (no children)
         if (!buildItemNode.getChildren().iterator().hasNext()) {
             builder =
                     new BambooBuildInfo.Builder(aPlanKey, serverData, BuildStatus.UNKNOWN).pollingTime(
-                            lastPollingTime).reason("Never built");
+                            instant).reason("Never built");
         } else {
 
             final String planKey = getChildText(buildItemNode, "buildKey");
@@ -1335,41 +1327,41 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             final String projectName = getChildText(buildItemNode, "projectName");
             final int buildNumber = parseInt(getChildText(buildItemNode, "buildNumber"));
             final String relativeBuildDate = getChildText(buildItemNode, "buildRelativeBuildDate");
-            final Date startTime =
+            final Instant startTime =
                     parseBuildDate(getChildText(buildItemNode, "buildTime"), CANNOT_PARSE_BUILD_TIME, timezoneOffset);
             final String buildCompletedDateStr = getChildText(buildItemNode, BUILD_COMPLETED_DATE_ELEM);
-            final Date completionTime =
-                    (buildCompletedDateStr != null && buildCompletedDateStr.length() > 0) ? parseDateUniversal(
+            final Instant completionTime =
+                    buildCompletedDateStr != null && buildCompletedDateStr.length() > 0 ? parseDateUniversal(
                             buildCompletedDateStr, BUILD_COMPLETED_DATE_ELEM, timezoneOffset)
                             // older Bamboo versions do not generate buildCompletedDate so we set it as buildTime
                             : startTime;
-            final String durationDescription = getChildText(buildItemNode, "buildDurationDescription");
+                    final String durationDescription = getChildText(buildItemNode, "buildDurationDescription");
 
-            final String stateStr = getChildText(buildItemNode, "buildState");
-            builder =
-                    new BambooBuildInfo.Builder(planKey, buildName, serverData, projectName, buildNumber, getStatus(stateStr))
-                            .pollingTime(lastPollingTime).reason(getChildText(buildItemNode, "buildReason"))
+                    final String stateStr = getChildText(buildItemNode, "buildState");
+                    builder =
+                            new BambooBuildInfo.Builder(planKey, buildName, serverData, projectName, buildNumber, getStatus(stateStr))
+                            .pollingTime(instant).reason(getChildText(buildItemNode, "buildReason"))
                             .startTime(startTime).testSummary(getChildText(buildItemNode, "buildTestSummary")).commitComment(
                                     getChildText(buildItemNode, "buildCommitComment")).testsPassedCount(
-                                    parseInt(getChildText(buildItemNode, "successfulTestCount"))).testsFailedCount(
-                                    parseInt(getChildText(buildItemNode, "failedTestCount"))).completionTime(completionTime)
+                                            parseInt(getChildText(buildItemNode, "successfulTestCount"))).testsFailedCount(
+                                                    parseInt(getChildText(buildItemNode, "failedTestCount"))).completionTime(completionTime)
                             .relativeBuildDate(relativeBuildDate).durationDescription(durationDescription)
                             .commiters(commiters);
         }
         return builder;
     }
 
-    private BambooBuildInfo.Builder constructBuilderItem_40(Element buildItemNode, Date lastPollingTime,
+    private BambooBuildInfo.Builder constructBuilderItem_40(Element buildItemNode, Instant instant,
             final String aPlanKey,
             Set<String> commiters, final int timezoneOffset)
-            throws RemoteApiException {
+                    throws RemoteApiException {
 
         BambooBuildInfo.Builder builder;
         // for never executed build we actually have no data here (no children)
         if (!buildItemNode.getChildren().iterator().hasNext()) {
             builder =
                     new BambooBuildInfo.Builder(aPlanKey, serverData, BuildStatus.UNKNOWN).pollingTime(
-                            lastPollingTime).reason("Never built");
+                            instant).reason("Never built");
         } else {
 
             final String planKey = aPlanKey;
@@ -1377,8 +1369,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             final String projectName = getChildText(buildItemNode, "projectName");
             final int buildNumber = parseInt(buildItemNode.getAttributeValue("number"));
             final String relativeBuildDate = getChildText(buildItemNode, "buildRelativeTime");
-            final Date startTime = parseNewApiBuildTime(getChildText(buildItemNode, "buildStartedTime"));
-            final Date completionTime = parseNewApiBuildTime(getChildText(buildItemNode, "buildCompletedTime"));
+            final Instant startTime = parseNewApiBuildTime(getChildText(buildItemNode, "buildStartedTime"));
+            final Instant completionTime = parseNewApiBuildTime(getChildText(buildItemNode, "buildCompletedTime"));
 
             final String durationDescription = getChildText(buildItemNode, "buildDurationDescription");
 
@@ -1386,14 +1378,14 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             builder =
                     new BambooBuildInfo.Builder(planKey, buildName, serverData, projectName, buildNumber, getStatus(stateStr))
-                            .pollingTime(lastPollingTime)
-                            .reason(getBuildReason_40(getChildText(buildItemNode, "buildReason")))
-                            .startTime(startTime).testSummary(getChildText(buildItemNode, "buildTestSummary")).commitComment(
-                                    getChildText(buildItemNode, "buildCommitComment")).testsPassedCount(
+                    .pollingTime(instant)
+                    .reason(getBuildReason_40(getChildText(buildItemNode, "buildReason")))
+                    .startTime(startTime).testSummary(getChildText(buildItemNode, "buildTestSummary")).commitComment(
+                            getChildText(buildItemNode, "buildCommitComment")).testsPassedCount(
                                     parseInt(getChildText(buildItemNode, "successfulTestCount"))).testsFailedCount(
-                                    parseInt(getChildText(buildItemNode, "failedTestCount"))).completionTime(completionTime)
-                            .relativeBuildDate(relativeBuildDate).durationDescription(durationDescription)
-                            .commiters(commiters);
+                                            parseInt(getChildText(buildItemNode, "failedTestCount"))).completionTime(completionTime)
+                    .relativeBuildDate(relativeBuildDate).durationDescription(durationDescription)
+                    .commiters(commiters);
         }
         return builder;
     }
@@ -1411,7 +1403,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return reasonOriginal;
     }
 
-    private BambooBuild constructBuildItemFromNewApi(Element el, Date pollingTime, String planKey)
+    private BambooBuild constructBuildItemFromNewApi(Element el, Instant instant, String planKey)
             throws RemoteApiException {
 
         BambooPlan plan = getPlanDetails(planKey);
@@ -1426,7 +1418,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         builder.completionTime(parseNewApiBuildTime(getChildText(el, "buildCompletedTime")));
         builder.durationDescription(getChildText(el, "buildDurationDescription"));
         builder.reason(getChildText(el, "buildReason"));
-        builder.pollingTime(pollingTime);
+        builder.pollingTime(instant);
         builder.planState(plan.getState());
 
         return builder.build();
@@ -1443,7 +1435,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    private Date parseDateUniversal(@Nullable String dateStr, @Nonnull String element, final int timezoneOffset)
+    private static Instant parseDateUniversal(@Nullable String dateStr, @Nonnull String element, final int timezoneOffset)
             throws RemoteApiException {
         if (dateStr != null) {
             if (dateStr.indexOf('T') != -1) {
@@ -1457,11 +1449,11 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         throw new RemoteApiException(element + " cannot be found");
     }
 
-    private static DateTimeFormatter buildDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter buildDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    private static DateTimeFormatter commitDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+    private static final DateTimeFormatter commitDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 
-    private static DateTimeFormatter newApiDateFormat = ISODateTimeFormat.dateTime();
+    private static final DateTimeFormatter newApiDateFormat = DateTimeFormatter.ISO_DATE_TIME;
 
     /**
      * Parses date without timezone info
@@ -1477,42 +1469,39 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      * @return parsed date
      */
     @Nullable
-    private Date parseBuildDate(String date, String errorMessage, final int timezoneOffset) {
+    private static Instant parseBuildDate(String date, String errorMessage, final int timezoneOffset) {
         try {
-            final DateTime dateTime = buildDateFormat.parseDateTime(date);
             // now adjust the time for local caller time, as Bamboo servers always serves its local time
             // without the timezone info
-            return dateTime.plusHours(timezoneOffset).toDate();
+            return LocalDateTime.parse(date, buildDateFormat).atZone(ZoneId.systemDefault()).plusHours(timezoneOffset).toInstant();
         } catch (IllegalArgumentException e) {
             LoggerImpl.getInstance().debug("Cannot parse build date: " + errorMessage);
             return null;
         }
     }
 
-    private Date parseCommitTime(String date) throws RemoteApiException {
+    private static Instant parseCommitTime(String date) throws RemoteApiException {
         try {
-            return commitDateFormat.parseDateTime(date).toDate();
+            return OffsetDateTime.parse(date, commitDateFormat).toInstant();
         } catch (IllegalArgumentException e) {
             throw new RemoteApiException("Cannot parse date/time string [" + date + "]", e);
         }
     }
 
-    private Date parseNewApiBuildTime(String dateTime) throws RemoteApiException {
+    private static Instant parseNewApiBuildTime(String dateTime) throws RemoteApiException {
         try {
-            return newApiDateFormat.parseDateTime(dateTime).toDate();
+            return OffsetDateTime.parse(dateTime, newApiDateFormat).toInstant();
         } catch (IllegalArgumentException e) {
             throw new RemoteApiException("Cannot parse date/time string [" + dateTime + "]", e);
         }
     }
 
-    private String getChildText(Element node, String childName) {
+    private static String getChildText(Element node, String childName) {
         final Element child = node.getChild(childName);
-        if (child == null) {
-            return "";
-        }
-        return child.getText();
+        return child == null ? "" : child.getText();
     }
 
+    @Override
     public String getBuildLogs(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
 
         String buildResultUrl = null;
@@ -1564,6 +1553,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return null;
     }
 
+    @Override
     @Nonnull
     public Collection<String> getBranchKeys(String planKey, boolean useFavourites, boolean myBranchesOnly) throws RemoteApiException {
         List<String> branches = new ArrayList();
@@ -1590,17 +1580,16 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     branches.add(branchKey);
                 }
             }
-        } catch (IOException e) {
-            throw new RemoteApiException(e.getMessage(), e);
-        } catch (JDOMException e) {
+        } catch (IOException | JDOMException e) {
             throw new RemoteApiException(e.getMessage(), e);
         }
         return branches;
     }
 
+    @Override
     public List<BambooJobImpl> getJobsForPlan(String planKey) throws RemoteApiException {
 
-        List<BambooJobImpl> jobs = new ArrayList<BambooJobImpl>();
+        List<BambooJobImpl> jobs = new ArrayList<>();
 
         String url = getBaseUrl() + PLAN_STATE + UrlUtil.encodeUrl(planKey) + "?expand=stages.stage.plans";
 
@@ -1636,13 +1625,12 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
 
             return jobs;
-        } catch (IOException e) {
-            throw new RemoteApiException(e.getMessage(), e);
-        } catch (JDOMException e) {
+        } catch (IOException | JDOMException e) {
             throw new RemoteApiException(e.getMessage(), e);
         }
     }
 
+    @Override
     public Collection<BuildIssue> getIssuesForBuild(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
         int bambooBuild = getBamboBuildNumber();
         if (bambooBuild < BambooServerVersionNumberConstants.BAMBOO_1401_BUILD_NUMBER) {
@@ -1657,10 +1645,10 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         try {
             Document doc = retrieveGetResponse(planUrl);
 
-            List<BuildIssue> issues = new ArrayList<BuildIssue>();
+            List<BuildIssue> issues = new ArrayList<>();
             @SuppressWarnings("unchecked")
             List<Element> jiraIssuesNode = bambooBuild <= BAMBOO_2_6_3_BUILD_NUMBER
-                    ? (List<Element>) XPath.newInstance("build/jiraIssues").selectNodes(doc)
+            ? (List<Element>) XPath.newInstance("build/jiraIssues").selectNodes(doc)
                     : (List<Element>) XPath.newInstance("result/jiraIssues").selectNodes(doc);
 
             if (jiraIssuesNode == null) {
@@ -1684,13 +1672,12 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                 issues.add(issue);
             }
             return issues;
-        } catch (JDOMException e) {
-            throw new RemoteApiException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (JDOMException | IOException e) {
             throw new RemoteApiException(e.getMessage(), e);
         }
     }
 
+    @Override
     @Nonnull
     public Collection<BambooPlan> getPlanList() throws RemoteApiException {
 
@@ -1724,11 +1711,12 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return plans;
     }
 
+    @Override
     @Nonnull
     public Collection<BambooBuild> getSubscribedPlansResults(final Collection<SubscribedPlan> plans,
             boolean isUseFavourities,
             int timezoneOffset) throws RemoteApiLoginException {
-        Collection<BambooBuild> builds = new ArrayList<BambooBuild>();
+        Collection<BambooBuild> builds = new ArrayList<>();
 
         Collection<BambooPlan> plansForServer = null;
         RemoteApiException exception = null;
@@ -1753,11 +1741,11 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                             } catch (RemoteApiException e) {
                                 // go ahead, there are other builds
                                 loger.warn("Cannot fetch latest build for plan [" + bambooPlan.getKey()
-                                        + "] from Bamboo server [" + getUrl() + "]");
+                                + "] from Bamboo server [" + getUrl() + "]");
                             }
                         } else {
                             builds.add(constructBuildErrorInfo(bambooPlan.getKey(),
-                                    exception == null ? "" : exception.getMessage(), exception, new Date()).build());
+                                    exception == null ? "" : exception.getMessage(), exception, Instant.now()).build());
                         }
                     }
                 }
@@ -1778,7 +1766,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
                     }
                 } else {
                     builds.add(constructBuildErrorInfo(plan.getKey(), exception == null ? "" : exception.getMessage(),
-                            exception, new Date()).build());
+                            exception, Instant.now()).build());
                 }
             }
         }

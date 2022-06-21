@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector for Eclipse Bamboo Core
 Automatic-Module-Name: JiraConnector for Eclipse Bamboo Core
 Bundle-SymbolicName: me.glindholm.connector.eclipse.bamboo.core;singleton:=true
-Bundle-Version: 4.1.5.qualifier
+Bundle-Version: 4.1.6.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.internal.bamboo.core.BambooCorePlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
@@ -21,9 +21,7 @@ Export-Package: me.glindholm.connector.eclipse.internal.bamboo.core;x-friends:="
  org.codehaus.jettison,
  org.codehaus.jettison.json,
  org.codehaus.jettison.util,
- org.jaxen,
- org.joda.time,
- org.joda.time.format
+ org.jaxen
 Bundle-Vendor: George Lindholm
 Eclipse-RegisterBuddy: me.glindholm.connector.eclipse.core
 Import-Package: org.eclipse.mylyn.commons.core,
@@ -32,5 +30,4 @@ Import-Package: org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.tasks.core.sync
 Bundle-ClassPath: .,
  target/lib/jaxen.jar,
- target/lib/joda-time.jar,
  target/lib/jettison.jar

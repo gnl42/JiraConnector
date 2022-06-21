@@ -16,28 +16,28 @@
 
 package me.glindholm.theplugin.commons.bamboo;
 
+import java.time.Instant;
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 
-import java.util.Date;
-import java.util.Set;
-
 /**
  * Build information retrieved from Bamboo server.
  */
 public interface BambooBuild {
-	ConnectionCfg getServer();
+    ConnectionCfg getServer();
 
-	String getServerUrl();
+    String getServerUrl();
 
-	@Nullable
-	String getProjectName();
+    @Nullable
+    String getProjectName();
 
-	String getBuildUrl();
+    String getBuildUrl();
 
-	String getPlanName();
+    String getPlanName();
 
     @Nullable
     String getProjectKey();
@@ -45,78 +45,78 @@ public interface BambooBuild {
     @Nullable
     String getMasterPlanKey();
 
-	@Nonnull
-	String getPlanKey();
+    @Nonnull
+    String getPlanKey();
 
-	boolean getEnabled();
+    boolean getEnabled();
 
-	boolean isValid();
+    boolean isValid();
 
-	/**
-	 * @return build number
-	 * @throws UnsupportedOperationException in case this object represents invalid build
-	 */
-	int getNumber() throws UnsupportedOperationException;
+    /**
+     * @return build number
+     * @throws UnsupportedOperationException in case this object represents invalid build
+     */
+    int getNumber() throws UnsupportedOperationException;
 
-	String getResultUrl();
+    String getResultUrl();
 
-	@Nonnull
-	BuildStatus getStatus();
+    @Nonnull
+    BuildStatus getStatus();
 
-	/**
-	 * In the future we could think about better plan and build separation
-	 *
-	 * @return info whether something is happening to the plan this build belongs to
-	 * @since Bamboo 2.3+ returns this information.
-	 */
-	@Nullable
-	PlanState getPlanState();
+    /**
+     * In the future we could think about better plan and build separation
+     *
+     * @return info whether something is happening to the plan this build belongs to
+     * @since Bamboo 2.3+ returns this information.
+     */
+    @Nullable
+    PlanState getPlanState();
 
-	@Nullable
-	String getErrorMessage();
+    @Nullable
+    String getErrorMessage();
 
-	/**
-	 * @return human readable info about unit tests like "267 passed"
-	 */
-	@Nullable
-	String getTestSummary();
+    /**
+     * @return human readable info about unit tests like "267 passed"
+     */
+    @Nullable
+    String getTestSummary();
 
-	int getTestsPassed();
+    int getTestsPassed();
 
-	int getTestsFailed();
+    int getTestsFailed();
 
-	@Nullable
-	String getReason();
+    @Nullable
+    String getReason();
 
-	/**
-	 * @return human readable info about the time taken by given build - e.g. "3 minutes"
-	 */
-	@Nullable
-	String getDurationDescription();
+    /**
+     * @return human readable info about the time taken by given build - e.g. "3 minutes"
+     */
+    @Nullable
+    String getDurationDescription();
 
-	@Nullable
-	Date getStartDate();
+    @Nullable
+    Instant getStartDate();
 
-	@Nullable
-	Date getCompletionDate();
+    @Nullable
+    Instant getCompletionDate();
 
-	/**
-	 * Relative build completion date on Bamboo server. Unfortunately it does not respect calling client timezone,
-	 * so in most cases it's useless. Instead it's preferable to use {@link #getCompletionDate()} and then use
-	 * some utility method like {@link me.glindholm.theplugin.commons.util.DateUtil#getRelativePastDate(java.util.Date)}
-	 * to transform Date to relative string describing relative date.
-	 *
-	 * @return human readable string like "2 months ago"
-	 */
-	String getRelativeBuildDate();
+    /**
+     * Relative build completion date on Bamboo server. Unfortunately it does not respect calling client timezone,
+     * so in most cases it's useless. Instead it's preferable to use {@link #getCompletionDate()} and then use
+     * some utility method like {@link me.glindholm.theplugin.commons.util.DateUtil#getRelativePastDate(java.util.Date)}
+     * to transform Date to relative string describing relative date.
+     *
+     * @return human readable string like "2 months ago"
+     */
+    String getRelativeBuildDate();
 
-	boolean isMyBuild();
+    boolean isMyBuild();
 
-	Set<String> getCommiters();
+    Set<String> getCommiters();
 
-	@Nonnull
-	Date getPollingTime();
+    @Nonnull
+    Instant getPollingTime();
 
-	@Nullable
-	Throwable getException();
+    @Nullable
+    Throwable getException();
 }
