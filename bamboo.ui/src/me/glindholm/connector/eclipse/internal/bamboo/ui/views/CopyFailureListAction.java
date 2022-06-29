@@ -21,6 +21,8 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.ui.views;
 
+import java.util.List;
+
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -32,66 +34,54 @@ import org.eclipse.swt.dnd.Transfer;
 
 import me.glindholm.theplugin.commons.bamboo.TestDetails;
 
-import java.util.List;
-
 /**
  * Copies the names of the methods that failed and their traces to the clipboard.
  */
 public class CopyFailureListAction extends Action {
+    private static final String lineDelim = System.lineSeparator();
+    private final Clipboard fClipboard;
 
-	private final Clipboard fClipboard;
+    private final TestResultsView fRunner;
 
-	private final TestResultsView fRunner;
+    public CopyFailureListAction(TestResultsView runner, Clipboard clipboard) {
+        super("Copy Failure List");
+        fRunner = runner;
+        fClipboard = clipboard;
+    }
 
-	public CopyFailureListAction(TestResultsView runner, Clipboard clipboard) {
-		super("Copy Failure List");
-		fRunner = runner;
-		fClipboard = clipboard;
-	}
+    /*
+     * @see IAction#run()
+     */
+    @Override
+    public void run() {
+        TextTransfer plainTextTransfer = TextTransfer.getInstance();
 
-	/*
-	 * @see IAction#run()
-	 */
-	public void run() {
-		TextTransfer plainTextTransfer = TextTransfer.getInstance();
+        try {
+            fClipboard.setContents(new String[] { getAllFailureTraces() }, new Transfer[] { plainTextTransfer });
+        } catch (SWTError e) {
+            if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
+                throw e;
+            }
+            if (MessageDialog.openQuestion(JavaPlugin.getActiveWorkbenchShell(), "Problem Copying Failure List to Clipboard",
+                    "There was a problem when accessing the system clipboard. Retry?")) {
+                run();
+            }
+        }
+    }
 
-		try {
-			fClipboard.setContents(new String[] { getAllFailureTraces() }, new Transfer[] { plainTextTransfer });
-		} catch (SWTError e) {
-			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
-				throw e;
-			}
-			if (MessageDialog.openQuestion(JavaPlugin.getActiveWorkbenchShell(),
-					"Problem Copying Failure List to Clipboard",
-					"There was a problem when accessing the system clipboard. Retry?")) {
-				run();
-			}
-		}
-	}
+    public String getAllFailureTraces() {
+        StringBuilder buf = new StringBuilder();
+        List<TestDetails> failures = fRunner.getAllFailures();
 
-	public String getAllFailureTraces() {
-		StringBuffer buf = new StringBuffer();
-		List<TestDetails> failures = fRunner.getAllFailures();
-
-		String lineDelim = System.getProperty("line.separator", "\n"); //$NON-NLS-1$//$NON-NLS-2$
-		for (TestDetails failure : failures) {
-			buf.append(failure.getTestMethodName()).append(lineDelim);
-			String failureTrace = failure.getErrors();
-			if (failureTrace != null) {
-				int start = 0;
-				while (start < failureTrace.length()) {
-					int idx = failureTrace.indexOf('\n', start);
-					if (idx != -1) {
-						String line = failureTrace.substring(start, idx);
-						buf.append(line).append(lineDelim);
-						start = idx + 1;
-					} else {
-						start = Integer.MAX_VALUE;
-					}
-				}
-			}
-		}
-		return buf.toString();
-	}
+        for (TestDetails failure : failures) {
+            buf.append(failure.getTestMethodName()).append(lineDelim);
+            String failureTrace = failure.getErrors();
+            if (failureTrace != null) {
+                failureTrace = failureTrace.replaceAll("\\r\\n|\\r|\\n", lineDelim); //$NON-NLS-1$
+                buf.append(failureTrace);
+            }
+        }
+        return buf.toString();
+    }
 
 }
