@@ -91,6 +91,8 @@ public class Messages extends NLS {
 
     public static String JiraCorePlugin_JIRA_description;
 
+    public static String JiraRepositoryConnector_Disabled;
+
     public static String JiraRepositoryConnector_Getting_changed_tasks;
 
     public static String JiraRepositoryConnector_The_JIRA_query_is_invalid;
