@@ -42,6 +42,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.data.TaskMapper;
 import org.eclipse.mylyn.tasks.core.data.TaskRelation;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
+import org.eclipse.osgi.util.NLS;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraFilter;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
@@ -118,6 +119,10 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
             TaskDataCollector resultCollector, ISynchronizationSession session, IProgressMonitor monitor) {
         monitor = Policy.monitorFor(monitor);
         try {
+            if (repository.isOffline()) {
+                return RepositoryStatus.createStatus(repository, IStatus.INFO, JiraCorePlugin.ID_PLUGIN,
+                        NLS.bind(Messages.JiraRepositoryConnector_Disabled, repository.getRepositoryLabel()));
+            }
             monitor.beginTask(Messages.JiraRepositoryConnector_Query_Repository, IProgressMonitor.UNKNOWN);
             JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
             JiraFilter filter;

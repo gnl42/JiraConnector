@@ -22,222 +22,242 @@ import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
  */
 public class JiraLocalConfiguration {
 
-	public static final String DEFAULT_DATE_PATTERN = "dd/MMM/yy"; //$NON-NLS-1$
+    public static final String DEFAULT_DATE_PATTERN = "yyyy/MMM/dd"; //$NON-NLS-1$
 
-	public static final String DEFAULT_DATE_TIME_PATTERN = "dd/MMM/yy hh:mm a"; //$NON-NLS-1$
+    public static final String DEFAULT_DATE_TIME_PATTERN = "yyyy/MMM/dd HH:mm"; //$NON-NLS-1$
 
-	public static final Locale DEFAULT_LOCALE = Locale.US;
+    public static final Locale DEFAULT_LOCALE = Locale.getDefault();
 
-	public static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
+    public static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
 
-	public static final int DEFAULT_WORK_HOURS_PER_DAY = 24;
+    public static final int DEFAULT_WORK_HOURS_PER_DAY = 24;
 
-	private String characterEncoding;
+    private String characterEncoding;
 
-	private boolean compressionEnabled;
+    private boolean compressionEnabled;
 
-	private String datePattern;
+    private String datePattern;
 
-	private String dateTimePattern;
+    private String dateTimePattern;
 
-	private boolean followRedirects;
+    private boolean followRedirects;
 
-	private Locale locale;
+    private Locale locale;
 
-	private int workDaysPerWeek;
+    private int workDaysPerWeek;
 
-	private int workHoursPerDay;
+    private int workHoursPerDay;
 
-	private String defaultCharacterEncoding;
+    private String defaultCharacterEncoding;
 
-	private boolean useServerTimeTrackingSettings;
+    private boolean useServerTimeTrackingSettings;
 
-	private int maxSearchResults;
+    private int maxSearchResults;
 
-	public JiraLocalConfiguration() {
-		setDatePattern(DEFAULT_DATE_PATTERN);
-		setDateTimePattern(DEFAULT_DATE_TIME_PATTERN);
-		setLocale(DEFAULT_LOCALE);
-		setCompressionEnabled(false);
-		setWorkDaysPerWeek(DEFAULT_WORK_DAYS_PER_WEEK);
-		setWorkHoursPerDay(DEFAULT_WORK_HOURS_PER_DAY);
-		setDefaultCharacterEncoding(JiraClient.DEFAULT_CHARSET);
-	}
+    private int searchResultsTimeout;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		JiraLocalConfiguration other = (JiraLocalConfiguration) obj;
-		if (characterEncoding == null) {
-			if (other.characterEncoding != null) {
-				return false;
-			}
-		} else if (!characterEncoding.equals(other.characterEncoding)) {
-			return false;
-		}
-		if (compressionEnabled != other.compressionEnabled) {
-			return false;
-		}
-		if (datePattern == null) {
-			if (other.datePattern != null) {
-				return false;
-			}
-		} else if (!datePattern.equals(other.datePattern)) {
-			return false;
-		}
-		if (dateTimePattern == null) {
-			if (other.dateTimePattern != null) {
-				return false;
-			}
-		} else if (!dateTimePattern.equals(other.dateTimePattern)) {
-			return false;
-		}
-		if (followRedirects != other.followRedirects) {
-			return false;
-		}
-		if (locale == null) {
-			if (other.locale != null) {
-				return false;
-			}
-		} else if (!locale.equals(other.locale)) {
-			return false;
-		}
-		if (workDaysPerWeek != other.workDaysPerWeek) {
-			return false;
-		}
-		if (workHoursPerDay != other.workHoursPerDay) {
-			return false;
-		}
-		if (useServerTimeTrackingSettings != other.useServerTimeTrackingSettings) {
-			return false;
-		}
-		if (maxSearchResults != other.maxSearchResults) {
-			return false;
-		}
-		return true;
-	}
+    public JiraLocalConfiguration() {
+        setDatePattern(DEFAULT_DATE_PATTERN);
+        setDateTimePattern(DEFAULT_DATE_TIME_PATTERN);
+        setLocale(DEFAULT_LOCALE);
+        setCompressionEnabled(false);
+        setWorkDaysPerWeek(DEFAULT_WORK_DAYS_PER_WEEK);
+        setWorkHoursPerDay(DEFAULT_WORK_HOURS_PER_DAY);
+        setDefaultCharacterEncoding(JiraClient.DEFAULT_CHARSET);
+    }
 
-	public synchronized String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        JiraLocalConfiguration other = (JiraLocalConfiguration) obj;
+        if (characterEncoding == null) {
+            if (other.characterEncoding != null) {
+                return false;
+            }
+        } else if (!characterEncoding.equals(other.characterEncoding)) {
+            return false;
+        }
+        if (compressionEnabled != other.compressionEnabled) {
+            return false;
+        }
+        if (datePattern == null) {
+            if (other.datePattern != null) {
+                return false;
+            }
+        } else if (!datePattern.equals(other.datePattern)) {
+            return false;
+        }
+        if (dateTimePattern == null) {
+            if (other.dateTimePattern != null) {
+                return false;
+            }
+        } else if (!dateTimePattern.equals(other.dateTimePattern)) {
+            return false;
+        }
+        if (followRedirects != other.followRedirects) {
+            return false;
+        }
+        if (locale == null) {
+            if (other.locale != null) {
+                return false;
+            }
+        } else if (!locale.equals(other.locale)) {
+            return false;
+        }
+        if (workDaysPerWeek != other.workDaysPerWeek) {
+            return false;
+        }
+        if (workHoursPerDay != other.workHoursPerDay) {
+            return false;
+        }
+        if (useServerTimeTrackingSettings != other.useServerTimeTrackingSettings) {
+            return false;
+        }
+        if (maxSearchResults != other.maxSearchResults) {
+            return false;
+        }
 
-	public synchronized DateFormat getDateFormat() {
-		return new SimpleDateFormat(getDatePattern(), getLocale());
-	}
+        if (searchResultsTimeout != other.searchResultsTimeout) {
+            return false;
+        }
 
-	public synchronized String getDatePattern() {
-		return datePattern;
-	}
+        return true;
+    }
 
-	public synchronized DateFormat getDateTimeFormat() {
-		return new SimpleDateFormat(getDateTimePattern(), getLocale());
-	}
+    public synchronized String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	public synchronized String getDateTimePattern() {
-		return dateTimePattern;
-	}
+    public synchronized DateFormat getDateFormat() {
+        return new SimpleDateFormat(getDatePattern(), getLocale());
+    }
 
-	public synchronized String getDefaultCharacterEncoding() {
-		return defaultCharacterEncoding;
-	}
+    public synchronized String getDatePattern() {
+        return datePattern;
+    }
 
-	public synchronized boolean getFollowRedirects() {
-		return followRedirects;
-	}
+    public synchronized DateFormat getDateTimeFormat() {
+        return new SimpleDateFormat(getDateTimePattern(), getLocale());
+    }
 
-	public synchronized Locale getLocale() {
-		return locale;
-	}
+    public synchronized String getDateTimePattern() {
+        return dateTimePattern;
+    }
 
-	public synchronized int getWorkDaysPerWeek() {
-		return workDaysPerWeek;
-	}
+    public synchronized String getDefaultCharacterEncoding() {
+        return defaultCharacterEncoding;
+    }
 
-	public synchronized int getWorkHoursPerDay() {
-		return workHoursPerDay;
-	}
+    public synchronized boolean getFollowRedirects() {
+        return followRedirects;
+    }
 
-	public synchronized boolean isCompressionEnabled() {
-		return compressionEnabled;
-	}
+    public synchronized Locale getLocale() {
+        return locale;
+    }
 
-	public boolean isUseServerTimeTrackingSettings() {
-		return useServerTimeTrackingSettings;
-	}
+    public synchronized int getWorkDaysPerWeek() {
+        return workDaysPerWeek;
+    }
 
-	@Override
-	public synchronized int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((characterEncoding == null) ? 0 : characterEncoding.hashCode());
-		result = prime * result + (compressionEnabled ? 1231 : 1237);
-		result = prime * result + ((datePattern == null) ? 0 : datePattern.hashCode());
-		result = prime * result + ((dateTimePattern == null) ? 0 : dateTimePattern.hashCode());
-		result = prime * result + (followRedirects ? 1231 : 1237);
-		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-		result = prime * result + workDaysPerWeek;
-		result = prime * result + workHoursPerDay;
-		result = prime * result + maxSearchResults;
-		return result;
-	}
+    public synchronized int getWorkHoursPerDay() {
+        return workHoursPerDay;
+    }
 
-	public synchronized void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    public synchronized boolean isCompressionEnabled() {
+        return compressionEnabled;
+    }
 
-	public synchronized void setCompressionEnabled(boolean compressionEnabled) {
-		this.compressionEnabled = compressionEnabled;
-	}
+    public boolean isUseServerTimeTrackingSettings() {
+        return useServerTimeTrackingSettings;
+    }
 
-	public synchronized void setDatePattern(String dateFormat) {
-		this.datePattern = dateFormat;
-	}
+    @Override
+    public synchronized int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (characterEncoding == null ? 0 : characterEncoding.hashCode());
+        result = prime * result + (compressionEnabled ? 1231 : 1237);
+        result = prime * result + (datePattern == null ? 0 : datePattern.hashCode());
+        result = prime * result + (dateTimePattern == null ? 0 : dateTimePattern.hashCode());
+        result = prime * result + (followRedirects ? 1231 : 1237);
+        result = prime * result + (locale == null ? 0 : locale.hashCode());
+        result = prime * result + workDaysPerWeek;
+        result = prime * result + workHoursPerDay;
+        result = prime * result + maxSearchResults;
+        result = prime * result + searchResultsTimeout;
+        return result;
+    }
 
-	public synchronized void setDateTimePattern(String dateTimeFormat) {
-		this.dateTimePattern = dateTimeFormat;
-	}
+    public synchronized void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	public synchronized void setDefaultCharacterEncoding(String defaultCharacterEncoding) {
-		this.defaultCharacterEncoding = defaultCharacterEncoding;
-	}
+    public synchronized void setCompressionEnabled(boolean compressionEnabled) {
+        this.compressionEnabled = compressionEnabled;
+    }
 
-	public synchronized void setFollowRedirects(boolean followRedirects) {
-		this.followRedirects = followRedirects;
-	}
+    public synchronized void setDatePattern(String dateFormat) {
+        this.datePattern = dateFormat;
+    }
 
-	public synchronized void setLocale(Locale locale) {
-		this.locale = locale;
-	}
+    public synchronized void setDateTimePattern(String dateTimeFormat) {
+        this.dateTimePattern = dateTimeFormat;
+    }
 
-	public synchronized void setWorkDaysPerWeek(int workDaysPerWeek) {
-		this.workDaysPerWeek = workDaysPerWeek;
-	}
+    public synchronized void setDefaultCharacterEncoding(String defaultCharacterEncoding) {
+        this.defaultCharacterEncoding = defaultCharacterEncoding;
+    }
 
-	public synchronized void setWorkHoursPerDay(int workHoursPerDay) {
-		this.workHoursPerDay = workHoursPerDay;
-	}
+    public synchronized void setFollowRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
+    }
 
-	public void setUseServerTimeTrackingSettings(boolean useServerTimeTrackingSettings) {
-		this.useServerTimeTrackingSettings = useServerTimeTrackingSettings;
-	}
+    public synchronized void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 
-	public void setMaxSearchResults(int maxSearchResults) {
-		if (maxSearchResults <= 0) {
-			this.maxSearchResults = JiraUtil.DEFAULT_MAX_SEARCH_RESULTS;
-		} else {
-			this.maxSearchResults = maxSearchResults;
-		}
-	}
+    public synchronized void setWorkDaysPerWeek(int workDaysPerWeek) {
+        this.workDaysPerWeek = workDaysPerWeek;
+    }
 
-	public int getMaxSearchResults() {
-		return maxSearchResults;
-	}
+    public synchronized void setWorkHoursPerDay(int workHoursPerDay) {
+        this.workHoursPerDay = workHoursPerDay;
+    }
+
+    public void setUseServerTimeTrackingSettings(boolean useServerTimeTrackingSettings) {
+        this.useServerTimeTrackingSettings = useServerTimeTrackingSettings;
+    }
+
+    public synchronized void setMaxSearchResults(int maxSearchResults) {
+        if (maxSearchResults <= 0) {
+            this.maxSearchResults = JiraUtil.DEFAULT_MAX_SEARCH_RESULTS;
+        } else {
+            this.maxSearchResults = maxSearchResults;
+        }
+    }
+
+    public synchronized int getMaxSearchResults() {
+        return maxSearchResults;
+    }
+
+    public synchronized void setSearchResultsTimeout(int searchResultsTimeout) {
+        if (searchResultsTimeout < 0) {
+            this.searchResultsTimeout = JiraUtil.DEFAULT_SEARCH_RESULT_TIMEOUT;
+        } else {
+            this.searchResultsTimeout = searchResultsTimeout;
+        }
+    }
+
+    public synchronized int getSearchResultsTimeout() {
+        return searchResultsTimeout;
+    }
 }

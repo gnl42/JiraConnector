@@ -79,8 +79,12 @@ public class JiraUtil {
 
     private static final String MAX_SEARCH_RESULTS = "jira.maxSearchResults"; //$NON-NLS-1$
 
+    private static final String SEARCH_RESULTS_TIMEOUT = "jira.searchResultsTimeout"; //$NON-NLS-1$
+
     //	public static final int DEFAULT_MAX_SEARCH_RESULTS = TaskDataCollector.MAX_HITS;
     public static final int DEFAULT_MAX_SEARCH_RESULTS = 1000;
+
+    public static final int DEFAULT_SEARCH_RESULT_TIMEOUT = 20;
 
     private static final boolean TRACE_ENABLED = Boolean.parseBoolean(Platform.getDebugOption("me.glindholm.connector.eclipse.jira.core/debug/repository")); //$NON-NLS-1$
 
@@ -179,6 +183,17 @@ public class JiraUtil {
         } else if (value == 0) {
             // see bug 243849
             return DEFAULT_MAX_SEARCH_RESULTS;
+        }
+        return value;
+    }
+
+    public static int getSearchResultTimeout(TaskRepository repository) {
+        int value = getInteger(repository, SEARCH_RESULTS_TIMEOUT, DEFAULT_SEARCH_RESULT_TIMEOUT);
+        if (value < -1) {
+            return -1;
+        } else if (value == 0) {
+            // see bug 243849
+            return DEFAULT_SEARCH_RESULT_TIMEOUT;
         }
         return value;
     }
@@ -327,6 +342,10 @@ public class JiraUtil {
         repository.setProperty(MAX_SEARCH_RESULTS, String.valueOf(maxSearchResults));
     }
 
+    public static void setSearchResultTimeout(TaskRepository repository, int searchResultTimeout) {
+        repository.setProperty(SEARCH_RESULTS_TIMEOUT, String.valueOf(searchResultTimeout));
+    }
+
     public static void setQuery(TaskRepository taskRepository, IRepositoryQuery query, JiraFilter filter) {
         if (filter instanceof JiraNamedFilter) {
             final JiraNamedFilter namedFilter = (JiraNamedFilter) filter;
@@ -428,6 +447,16 @@ public class JiraUtil {
                 configuration.setMaxSearchResults(Integer.parseInt(repository.getProperty(MAX_SEARCH_RESULTS)));
             } catch (NumberFormatException e) {
                 configuration.setMaxSearchResults(DEFAULT_MAX_SEARCH_RESULTS);
+            }
+        }
+
+        if (repository.getProperty(SEARCH_RESULTS_TIMEOUT) == null) {
+            configuration.setSearchResultsTimeout(DEFAULT_SEARCH_RESULT_TIMEOUT);
+        } else {
+            try {
+                configuration.setSearchResultsTimeout(Integer.parseInt(repository.getProperty(SEARCH_RESULTS_TIMEOUT)));
+            } catch (NumberFormatException e) {
+                configuration.setSearchResultsTimeout(DEFAULT_SEARCH_RESULT_TIMEOUT);
             }
         }
 

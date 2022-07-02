@@ -27,14 +27,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 
@@ -160,91 +164,13 @@ public class JiraRestClientAdapter {
             // });
             HttpClientOptions httpOptions = new HttpClientOptions();
             httpOptions.setUserAgent("JiraConnector for Eclipse");
+            httpOptions.setConnectionTimeout(TIMEOUT_CONNECTION_IN_MS, TimeUnit.MILLISECONDS);
+            httpOptions.setSocketTimeout(TIMEOUT_READ_IN_MS, TimeUnit.MILLISECONDS);
             if (userName.isEmpty()) {
-                restClient = new AsynchronousJiraRestClientFactory().createWithBearerHttpAuthentication(new URI(url), password);
+                restClient = new AsynchronousJiraRestClientFactory().createWithBearerHttpAuthentication(new URI(url), password, httpOptions);
             } else {
-                restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password);
+                restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password, httpOptions);
             }
-
-            // restClient = new JerseyJiraRestClientBuilder().header("User-Agent",
-            // "JiraConnector for Eclipse") //$NON-NLS-1$ //$NON-NLS-2$
-            // .queryParam("requestSource", "eclipse-ide-connector")
-            // //$NON-NLS-1$//$NON-NLS-2$
-            // .create(new URI(url), new BasicHttpAuthenticationHandler(userName, password)
-            // {
-            // @Override
-            // public void configure(ApacheHttpClientConfig config) {
-            // super.configure(config);
-            // if (proxy != null) {
-            // InetSocketAddress address = (InetSocketAddress) proxy.address();
-            // if (proxy instanceof AuthenticatedProxy) {
-            // AuthenticatedProxy authProxy = (AuthenticatedProxy) proxy;
-            //
-            // config.getState().setProxyCredentials(AuthScope.ANY_REALM,
-            // address.getHostName(),
-            // address.getPort(), authProxy.getUserName(), authProxy.getPassword());
-            // }
-            //
-            // }
-            //
-            // // timeout
-            // config.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT,
-            // TIMEOUT_CONNECTION_IN_MS);
-            // config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT,
-            // TIMEOUT_READ_IN_MS);
-            //
-            //// SSLContext context;
-            //// try {
-            //// context = SSLContext.getInstance("SSL");
-            //// context.init(null, trustAll, new SecureRandom());
-            ////
-            //// config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-            //// new HTTPSProperties(new HostnameVerifier() {
-            //// public boolean verify(String s, SSLSession sslSession) {
-            //// return false;
-            //// }
-            ////
-            //// }, context));
-            ////
-            //// } catch (NoSuchAlgorithmException e1) {
-            //// // TODO Auto-generated catch block
-            //// e1.printStackTrace();
-            //// } catch (KeyManagementException e) {
-            //// // TODO Auto-generated catch block
-            //// e.printStackTrace();
-            //// }
-            //
-            // }
-            // }, followRedirects);
-            //
-            // if (proxy != null) {
-            // final InetSocketAddress address = (InetSocketAddress) proxy.address();
-            // restClient.getTransportClient()
-            // .getProperties()
-            // .put(ApacheHttpClientConfig.PROPERTY_PROXY_URI,
-            // "http://" + address.getHostName() + ":" + address.getPort()); //$NON-NLS-1$
-            // //$NON-NLS-2$
-            // }
-
-            // HttpClient httpClient =
-            // restClient.getTransportClient().getClientHandler().getHttpClient();
-            // X509HostnameVerifier hostnameVerifier = new AllowAllHostnameVerifier();
-            // SSLSocketFactory sslSf = new SSLSocketFactory(trustStrategy,
-            // hostnameVerifier);
-            // Scheme https = new Scheme("https", 443, sslSf);
-            // SchemeRegistry schemeRegistry = new SchemeRegistry();
-            // schemeRegistry.register(https);
-
-            // httpClient.getHttpConnectionManager().getParams();
-            // restClient.getTransportClient()
-            // .getProperties()
-            // .put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, new HTTPSProperties(new
-            // HostnameVerifier() {
-            // public boolean verify(String s, SSLSession sslSession) {
-            // return false;
-            // }
-            //
-            // }, context));
 
         } catch (URISyntaxException e) {
             // we should never get here as Mylyn constructs URI first and fails if it is
@@ -375,15 +301,21 @@ public class JiraRestClientAdapter {
 
             @Override
             public List<JiraIssue> call() throws Exception {
-                List<JiraIssue> issues = JiraRestConverter
-                        .convertIssues(restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, null).get().getIssues()); // FIXME 4th param
+                Set<String> fields = new TreeSet<>();
+                fields.add("*all");
+                monitor.subTask("Process issues");
+                SubMonitor progress = SubMonitor.convert(monitor, 100);
+                progress.split(0);
+                progress.setTaskName("Query server");
+                List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, fields).get().getIssues();
+                progress.split(20).setWorkRemaining(issuesFromServer.size());
 
                 List<JiraIssue> fullIssues = new ArrayList<>();
-
-                for (JiraIssue issue : issues) {
-                    fullIssues.add(JiraRestConverter.convertIssue(getIssue(issue.getKey()), cache, url, monitor));
+                for (Issue issue : issuesFromServer) {
+                    fullIssues.add(JiraRestConverter.convertIssue(issue, cache, url, progress));
+                    progress.split(1);
                 }
-
+                progress.done();
                 return fullIssues;
             }
 
@@ -410,11 +342,13 @@ public class JiraRestClientAdapter {
 
             GetCreateIssueMetadataOptions builder = new GetCreateIssueMetadataOptionsBuilder().withProjectIds(Long.valueOf(project.getId()))
                     .withExpandedIssueTypesFields().build();
-            CimProject cimProjectWithDetails = restClient.getIssueClient().getCreateIssueMetadata(builder).get().iterator().next();
+            List<CimProject> cimProjectWithDetails = restClient.getIssueClient().getCreateIssueMetadata(builder).get();
 
             Map<Long, Map<String, CimFieldInfo>> projectMetadata = new HashMap<>();
-            for (CimIssueType issueType : cimProjectWithDetails.getIssueTypes()) {
-                projectMetadata.put(issueType.getId(), issueType.getFields());
+            if (!cimProjectWithDetails.isEmpty()) {
+                for (CimIssueType issueType : cimProjectWithDetails.get(0).getIssueTypes()) {
+                    projectMetadata.put(issueType.getId(), issueType.getFields());
+                }
             }
             project.setfieldMetadata(projectMetadata);
 
