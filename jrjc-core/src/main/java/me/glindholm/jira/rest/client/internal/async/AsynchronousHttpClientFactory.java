@@ -77,10 +77,11 @@ public class AsynchronousHttpClientFactory {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-        final HttpClientOptions options = new HttpClientOptions();
+        return createClient(serverUri, authenticationHandler, new HttpClientOptions());
+    }
 
+    public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler, HttpClientOptions options) {
         final DefaultHttpClientFactory defaultHttpClientFactory = new DefaultHttpClientFactory(new NoOpEventPublisher(),
                 new RestClientApplicationProperties(serverUri), new ThreadLocalContextManager<Object>() {
             @Override
