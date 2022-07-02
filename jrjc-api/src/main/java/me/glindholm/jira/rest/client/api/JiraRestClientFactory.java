@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.httpclient.api.factory.HttpClientOptions;
 
 /**
  * Factory for producing JIRA REST com.atlassian.jira.client with selected authentication handler
@@ -75,4 +76,10 @@ public interface JiraRestClientFactory {
      * @throws URISyntaxException
      */
     JiraRestClient createWithBearerHttpAuthentication(URI serverUri, String token) throws URISyntaxException;
+
+    JiraRestClient createWithBearerHttpAuthentication(URI uri, String token, HttpClientOptions httpOptions) throws URISyntaxException;
+
+    JiraRestClient createWithBasicHttpAuthentication(URI uri, String username, String password, HttpClientOptions httpOptions) throws URISyntaxException;
+
+    JiraRestClient create(URI uri, AuthenticationHandler authenticationHandler, HttpClientOptions httpOptions) throws URISyntaxException;
 }

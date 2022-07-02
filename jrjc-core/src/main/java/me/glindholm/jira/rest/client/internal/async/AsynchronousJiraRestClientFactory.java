@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import com.atlassian.httpclient.api.HttpClient;
+import com.atlassian.httpclient.api.factory.HttpClientOptions;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 import me.glindholm.jira.rest.client.api.JiraRestClient;
@@ -59,5 +60,22 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
     public JiraRestClient create(final URI serverUri, final HttpClient httpClient) throws URISyntaxException {
         final DisposableHttpClient disposableHttpClient = new AsynchronousHttpClientFactory().createClient(httpClient);
         return new AsynchronousJiraRestClient(serverUri, disposableHttpClient);
+    }
+
+    @Override
+    public JiraRestClient createWithBearerHttpAuthentication(URI uri, String token, HttpClientOptions httpOptions) throws URISyntaxException {
+        return create(uri, new BearerHttpAuthenticationHandler(token), httpOptions);
+    }
+
+    @Override
+    public JiraRestClient create(URI uri, final AuthenticationHandler authenticationHandler, HttpClientOptions httpOptions) throws URISyntaxException {
+        final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory().createClient(uri, authenticationHandler, httpOptions);
+        return new AsynchronousJiraRestClient(uri, httpClient);
+    }
+
+    @Override
+    public JiraRestClient createWithBasicHttpAuthentication(URI uri, String username, String password, HttpClientOptions httpOptions)
+            throws URISyntaxException {
+        return create(uri, new BasicHttpAuthenticationHandler(username, password), httpOptions);
     }
 }
