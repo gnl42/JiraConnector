@@ -22,11 +22,11 @@ import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
  */
 public class JiraLocalConfiguration {
 
-    public static final String DEFAULT_DATE_PATTERN = "dd/MMM/yy"; //$NON-NLS-1$
+    public static final String DEFAULT_DATE_PATTERN = "yyyy/MMM/dd"; //$NON-NLS-1$
 
-    public static final String DEFAULT_DATE_TIME_PATTERN = "dd/MMM/yy hh:mm a"; //$NON-NLS-1$
+    public static final String DEFAULT_DATE_TIME_PATTERN = "yyyy/MMM/dd HH:mm"; //$NON-NLS-1$
 
-    public static final Locale DEFAULT_LOCALE = Locale.US;
+    public static final Locale DEFAULT_LOCALE = Locale.getDefault();
 
     public static final int DEFAULT_WORK_DAYS_PER_WEEK = 7;
 
