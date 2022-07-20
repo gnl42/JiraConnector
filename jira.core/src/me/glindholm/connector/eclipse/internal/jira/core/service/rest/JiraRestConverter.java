@@ -314,7 +314,9 @@ public class JiraRestConverter {
             issue.setLabels(rawIssue.getLabels().toArray(new String[rawIssue.getLabels().size()]));
         }
 
-        issue.setVotes(rawIssue.getVotes().getVotes());
+        if(rawIssue.getVotes() != null) {
+            issue.setVotes(rawIssue.getVotes().getVotes());
+        }
 
         BasicWatchers watched = rawIssue.getWatched();
         issue.setWatched(watched.isWatching());
