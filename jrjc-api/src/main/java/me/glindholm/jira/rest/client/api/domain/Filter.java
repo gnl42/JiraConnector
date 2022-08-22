@@ -43,7 +43,8 @@ public class Filter extends AddressableNamedEntity implements Serializable, Iden
     private final BasicUser owner;
     private final boolean favourite;
 
-    public Filter(URI self, Long id, String name, String description, String jql, URI viewUrl, URI searchUrl, BasicUser owner, boolean favourite) {
+    public Filter(final URI self, final Long id, final String name, final String description, final String jql, final URI viewUrl, final URI searchUrl,
+            final BasicUser owner, final boolean favourite) {
         super(self, name);
         this.id = id;
         this.description = description;
@@ -89,22 +90,12 @@ public class Filter extends AddressableNamedEntity implements Serializable, Iden
     }
 
     @Override
-    protected String getToStringHelper() {
-        return toString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof Filter) {
-            Filter that = (Filter) obj;
-            return super.equals(that)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.description, that.description)
-                    && Objects.equals(this.jql, that.jql)
-                    && Objects.equals(this.viewUrl, that.viewUrl)
-                    && Objects.equals(this.searchUrl, that.searchUrl)
-                    && Objects.equals(this.owner, that.owner)
-                    && Objects.equals(this.favourite, that.favourite);
+            final Filter that = (Filter) obj;
+            return super.equals(that) && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(jql, that.jql)
+                    && Objects.equals(viewUrl, that.viewUrl) && Objects.equals(searchUrl, that.searchUrl) && Objects.equals(owner, that.owner)
+                    && Objects.equals(favourite, that.favourite);
         }
         return false;
     }

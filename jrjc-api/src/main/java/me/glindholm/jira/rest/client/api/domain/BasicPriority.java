@@ -34,7 +34,7 @@ public class BasicPriority extends AddressableNamedEntity implements Serializabl
     @Nullable
     private final Long id;
 
-    public BasicPriority(URI self, @Nullable Long id, String name) {
+    public BasicPriority(final URI self, @Nullable final Long id, final String name) {
         super(self, name);
         this.id = id;
     }
@@ -48,11 +48,6 @@ public class BasicPriority extends AddressableNamedEntity implements Serializabl
     @Nullable
     public Long getId() {
         return id;
-    }
-
-    @Override
-    protected String getToStringHelper() {
-        return toString();
     }
 
     @Override

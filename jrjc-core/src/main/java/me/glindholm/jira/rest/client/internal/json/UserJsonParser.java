@@ -32,11 +32,11 @@ import me.glindholm.jira.rest.client.api.domain.User;
 
 public class UserJsonParser implements JsonObjectParser<User> {
     @Override
-    public User parse(JSONObject json) throws JSONException, URISyntaxException {
+    public User parse(final JSONObject json) throws JSONException, URISyntaxException {
         final BasicUser basicUser = Objects.requireNonNull(JsonParseUtil.parseBasicUser(json));
         final String timezone = JsonParseUtil.getOptionalString(json, "timeZone");
         final String avatarUrl = JsonParseUtil.getOptionalString(json, "avatarUrl");
-        Map<String, URI> avatarUris = new HashMap<>();
+        final Map<String, URI> avatarUris = new HashMap<>();
         if (avatarUrl != null) {
             // JIRA prior 5.0
             final URI avatarUri = JsonParseUtil.parseURI(avatarUrl);
@@ -44,24 +44,20 @@ public class UserJsonParser implements JsonObjectParser<User> {
         } else {
             // JIRA 5.0+
             final JSONObject avatarUrlsJson = json.getJSONObject("avatarUrls");
-            @SuppressWarnings("unchecked") final Iterator<String> iterator = avatarUrlsJson.keys();
+            @SuppressWarnings("unchecked")
+            final Iterator<String> iterator = avatarUrlsJson.keys();
             while (iterator.hasNext()) {
                 final String key = iterator.next();
                 avatarUris.put(key, JsonParseUtil.parseURI(avatarUrlsJson.getString(key)));
             }
         }
-        // e-mail may be not set in response if e-mail visibility in jira configuration is set to hidden (in jira 4.3+)
-        final String emailAddress = JsonParseUtil.getOptionalString(json, "emailAddress");
-        final boolean active = Boolean.parseBoolean(JsonParseUtil.getOptionalString(json, "active"));
         // optional because groups are not returned for issue->{reporter,assignee}
-        final ExpandableProperty<String> groups = JsonParseUtil.parseOptionalExpandableProperty(json
-                .optJSONObject("groups"), new JsonObjectParser<String>() {
+        final ExpandableProperty<String> groups = JsonParseUtil.parseOptionalExpandableProperty(json.optJSONObject("groups"), new JsonObjectParser<String>() {
             @Override
-            public String parse(JSONObject json) throws JSONException {
+            public String parse(final JSONObject json) throws JSONException {
                 return json.getString("name");
             }
         });
-        return new User(basicUser.getSelf(), basicUser.getName(), basicUser
-                .getDisplayName(), basicUser.getAccountId(), emailAddress, active, groups, avatarUris, timezone);
+        return new User(basicUser, groups, avatarUris, timezone);
     }
 }
