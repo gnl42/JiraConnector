@@ -5,5 +5,6 @@
 	"buildDate":"2010-09-23T00:00:00.000+0200",
 	"serverTime":"2010-09-30T16:11:09.767+0200",
 	"scmInfo": "abc128082",
-	"serverTitle":"Your Company JIRA"
+	"serverTitle":"Your Company JIRA",
+	"deployMentType": "cloud"
 }

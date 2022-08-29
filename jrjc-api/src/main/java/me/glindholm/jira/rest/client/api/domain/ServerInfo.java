@@ -17,11 +17,10 @@
 package me.glindholm.jira.rest.client.api.domain;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
-
-import java.time.OffsetDateTime;
 
 /**
  * Basic information about JIRA server
@@ -37,9 +36,10 @@ public class ServerInfo {
     private final OffsetDateTime serverTime;
     private final String scmInfo;
     private final String serverTitle;
+    private final String deploymentType;
 
-    public ServerInfo(URI baseUri, String version, int buildNumber, OffsetDateTime buildDate, @Nullable OffsetDateTime serverTime,
-            String scmInfo, String serverTitle) {
+    public ServerInfo(final URI baseUri, final String version, final int buildNumber, final OffsetDateTime buildDate, @Nullable final OffsetDateTime serverTime,
+            final String scmInfo, final String serverTitle, final String deploymentType) {
         this.baseUri = baseUri;
         this.version = version;
         this.buildNumber = buildNumber;
@@ -47,6 +47,7 @@ public class ServerInfo {
         this.serverTime = serverTime;
         this.scmInfo = scmInfo;
         this.serverTitle = serverTitle;
+        this.deploymentType = deploymentType;
     }
 
     /**
@@ -78,8 +79,8 @@ public class ServerInfo {
     }
 
     /**
-     * @return current time (when the response is generated) on the server side or <code>null</code>
-     * when the user is not authenticated.
+     * @return current time (when the response is generated) on the server side or
+     *         <code>null</code> when the user is not authenticated.
      */
     @Nullable
     public OffsetDateTime getServerTime() {
@@ -87,7 +88,8 @@ public class ServerInfo {
     }
 
     /**
-     * @return SCM information (like SVN revision) indicated from which sources this JIRA server has been built.
+     * @return SCM information (like SVN revision) indicated from which sources this
+     *         JIRA server has been built.
      */
     public String getScmInfo() {
         return scmInfo;
@@ -100,24 +102,23 @@ public class ServerInfo {
         return serverTitle;
     }
 
+    public String getDeploymentType() {
+        return deploymentType;
+    }
+
     @Override
     public String toString() {
         return "ServerInfo [baseUri=" + baseUri + ", version=" + version + ", buildNumber=" + buildNumber + ", scmInfo=" + scmInfo + ", serverTitle="
                 + serverTitle + "]";
     }
 
-
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof ServerInfo) {
-            ServerInfo that = (ServerInfo) obj;
-            return Objects.equals(this.baseUri, that.baseUri)
-                    && Objects.equals(this.version, that.version)
-                    && Objects.equals(this.buildNumber, that.buildNumber)
-                    && Objects.equals(this.buildDate, that.buildDate)
-                    && Objects.equals(this.serverTime, that.serverTime)
-                    && Objects.equals(this.scmInfo, that.scmInfo)
-                    && Objects.equals(this.serverTitle, that.serverTitle);
+            final ServerInfo that = (ServerInfo) obj;
+            return Objects.equals(baseUri, that.baseUri) && Objects.equals(version, that.version) && Objects.equals(buildNumber, that.buildNumber)
+                    && Objects.equals(buildDate, that.buildDate) && Objects.equals(serverTime, that.serverTime) && Objects.equals(scmInfo, that.scmInfo)
+                    && Objects.equals(serverTitle, that.serverTitle);
         }
         return false;
     }

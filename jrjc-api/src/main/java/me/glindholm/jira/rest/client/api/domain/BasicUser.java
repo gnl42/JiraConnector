@@ -33,7 +33,9 @@ public class BasicUser extends AddressableNamedEntity {
      * example in JRA-30263 bug, JIRA REST API will return user without selfUri for
      * deleted author of worklog entry.
      */
-    public static URI INCOMPLETE_URI = URI.create("incomplete://user");
+    public static final URI INCOMPLETE_URI = URI.create("incomplete://user");
+
+    public static final String UNASSIGNED = "-1";
 
     private final String displayName;
     private final String accountId;
@@ -54,6 +56,20 @@ public class BasicUser extends AddressableNamedEntity {
 
     public BasicUser(final BasicUser user) {
         this(user.getSelf(), user.getName(), user.getDisplayName(), user.getAccountId(), user.getEmailAddress(), user.isActive());
+    }
+
+    public String getId() {
+        if (super.getName() == null) {
+            return accountId;
+        } else if (super.getName() != null) {
+            return super.getName();
+        } else {
+            return UNASSIGNED;
+        }
+    }
+
+    public boolean isAssigned() {
+        return getId() != UNASSIGNED;
     }
 
     public String getDisplayName() {

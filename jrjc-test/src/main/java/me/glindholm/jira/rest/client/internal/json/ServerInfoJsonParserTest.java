@@ -16,28 +16,29 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.TestUtil;
-import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import org.junit.Assert;
 import org.junit.Test;
+
+import me.glindholm.jira.rest.client.TestUtil;
+import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 
 public class ServerInfoJsonParserTest {
     @Test
     public void testParse() throws Exception {
         final ServerInfoJsonParser parser = new ServerInfoJsonParser();
         final ServerInfo serverInfo = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/serverInfo/valid.json"));
-        Assert.assertEquals(new ServerInfo(TestUtil.toUri("http://localhost:8090/jira"), "4.2-SNAPSHOT",
-                580, TestUtil.toOffsetDateTime("2010-09-23T00:00:00.000+0200"), TestUtil.toOffsetDateTime("2010-09-30T16:11:09.767+0200"),
-                "abc128082", "Your Company JIRA"), serverInfo);
+        Assert.assertEquals(
+                new ServerInfo(TestUtil.toUri("http://localhost:8090/jira"), "4.2-SNAPSHOT", 580, TestUtil.toOffsetDateTime("2010-09-23T00:00:00.000+0200"),
+                        TestUtil.toOffsetDateTime("2010-09-30T16:11:09.767+0200"), "abc128082", "Your Company JIRA", "cloud"),
+                serverInfo);
     }
 
     @Test
     public void testParseAnonymous() throws Exception {
         final ServerInfoJsonParser parser = new ServerInfoJsonParser();
-        final ServerInfo serverInfo = parser.parse(ResourceUtil
-                .getJsonObjectFromResource("/json/serverInfo/valid-for-anonymous.json"));
-        Assert.assertEquals(new ServerInfo(TestUtil.toUri("http://localhost:8090/jira"), "4.2-SNAPSHOT",
-                580, TestUtil.toOffsetDateTime("2010-09-23T00:00:00.000+0200"), null, "128082", "Your Company JIRA"), serverInfo);
+        final ServerInfo serverInfo = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/serverInfo/valid-for-anonymous.json"));
+        Assert.assertEquals(new ServerInfo(TestUtil.toUri("http://localhost:8090/jira"), "4.2-SNAPSHOT", 580,
+                TestUtil.toOffsetDateTime("2010-09-23T00:00:00.000+0200"), null, "128082", "Your Company JIRA", "cloud"), serverInfo);
 
     }
 }
