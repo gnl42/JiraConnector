@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector for Eclipse Bamboo UI
 Automatic-Module-Name: JiraConnector for Eclipse Bamboo UI
 Bundle-SymbolicName: me.glindholm.connector.eclipse.bamboo.ui;singleton:=true
-Bundle-Version: 4.1.7.qualifier
+Bundle-Version: 4.1.8.qualifier
 Require-Bundle: me.glindholm.connector.eclipse.commons.core,
  org.eclipse.core.runtime,
  org.eclipse.core.expressions,
