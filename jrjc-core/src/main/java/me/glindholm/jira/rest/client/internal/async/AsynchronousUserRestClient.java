@@ -50,6 +50,7 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     private static final String MAX_RESULTS_ATTRIBUTE = "maxResults";
     private static final String INCLUDE_ACTIVE_ATTRIBUTE = "includeActive";
     private static final String INCLUDE_INACTIVE_ATTRIBUTE = "includeInactive";
+    private static final String ISSUE_ATTRIBUTE = "issueKey";
 
     private final UserJsonParser userJsonParser = new UserJsonParser();
     private final UsersJsonParser usersJsonParser = new UsersJsonParser();
@@ -110,10 +111,23 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     }
 
     @Override
-    public Promise<List<User>> findAssignableUsers(final String projectKey, final Integer startAt, final Integer maxResults, final Boolean includeActive,
+    public Promise<List<User>> findAssignableUsersForIssue(final String issueKey, final Integer startAt, final Integer maxResults, final Boolean includeActive,
+            final Boolean includeInactive) throws URISyntaxException {
+        return findAssignableUsers(ISSUE_ATTRIBUTE, issueKey, startAt, maxResults, includeActive, includeInactive);
+    }
+
+    @Override
+    public Promise<List<User>> findAssignableUsersForProject(final String projectKey, final Integer startAt, final Integer maxResults,
+            final Boolean includeActive, final Boolean includeInactive) throws URISyntaxException {
+        return findAssignableUsers(PROJECT_ATTRIBUTE, projectKey, startAt, maxResults, includeActive, includeInactive);
+    }
+
+    private Promise<List<User>> findAssignableUsers(final String searchAttriubute, final String key, final Integer startAt, final Integer maxResults,
+            final Boolean includeActive,
+
             final Boolean includeInactive) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX).appendPath(ASSIGNABLE_SEARCH_URI_PREFIX)
-                .addParameter(PROJECT_ATTRIBUTE, projectKey);
+                .addParameter(searchAttriubute, key);
 
         addOptionalQueryParam(uriBuilder, START_AT_ATTRIBUTE, startAt);
         addOptionalQueryParam(uriBuilder, MAX_RESULTS_ATTRIBUTE, maxResults);

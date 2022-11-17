@@ -138,10 +138,10 @@ public interface UserRestClient {
             @Nullable Boolean includeInactive) throws URISyntaxException;
 
     /**
-     * Returns a list of users that can be assigned to a project issue. This
-     * resource cannot be accessed anonymously.
+     * Returns a list of users that can be assigned to a issue. This resource cannot
+     * be accessed anonymously.
      *
-     * @param projectKey      projectKey
+     * @param projectKey      issueId or issueKey
      * @param startAt         The index of the first user to return (0-based)
      * @param maxResults      The maximum number of users to return (defaults to
      *                        50). The maximum allowed value is 1000. If you specify
@@ -158,7 +158,10 @@ public interface UserRestClient {
      *
      * @since v6.0.0
      */
-    Promise<List<User>> findAssignableUsers(String projectKey, @Nullable Integer startAt, @Nullable Integer maxResults, @Nullable Boolean includeActive,
-            @Nullable Boolean includeInactive) throws URISyntaxException;
+    Promise<List<User>> findAssignableUsersForIssue(final String issueKey, @Nullable Integer startAt, @Nullable Integer maxResults,
+            @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException;
+
+    Promise<List<User>> findAssignableUsersForProject(final String projectKey, @Nullable Integer startAt, @Nullable Integer maxResults,
+            @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException;
 
 }

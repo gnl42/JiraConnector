@@ -37,6 +37,8 @@ public class BasicUser extends AddressableNamedEntity {
 
     public static final String UNASSIGNED = "-1";
 
+    public static final BasicUser UNASSIGNED_USER = new BasicUser(null, UNASSIGNED, "");
+
     private final String displayName;
     private final String accountId;
     private final String emailAddress;
@@ -59,7 +61,7 @@ public class BasicUser extends AddressableNamedEntity {
     }
 
     public String getId() {
-        if (super.getName() == null) {
+        if (accountId != null) {
             return accountId;
         } else if (super.getName() != null) {
             return super.getName();
