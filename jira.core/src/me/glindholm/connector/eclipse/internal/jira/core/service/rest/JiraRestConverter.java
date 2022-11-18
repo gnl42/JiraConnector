@@ -181,15 +181,8 @@ public class JiraRestConverter {
         issue.setDescription(rawIssue.getDescription());
 
         if (rawIssue.getIssueType().isSubtask()) {
-            // TODO do we care?
-            // Object parent = rawIssue.getField(JiraRestFields.PARENT).getValue();
-            // if (parent instanceof JSONObject) {
-            // issue.setParentKey(JsonParseUtil.getOptionalString((JSONObject) parent,
-            // JiraRestFields.KEY));
-            // issue.setParentId(JsonParseUtil.getOptionalString((JSONObject) parent,
-            // JiraRestFields.ID));
-            // }
-
+            issue.setParentKey(rawIssue.getParent().getKey());
+            issue.setParentId(rawIssue.getParent().getId() + "");
         }
 
         if (rawIssue.getPriority() != null) {
