@@ -522,7 +522,8 @@ public class JiraRestConverter {
             case MULTIUSERPICKER:
                 // no support for multi users on the Mylyn side
                 // values = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
-                values = List.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiUserPicker(field), ", ")); //$NON-NLS-1$
+                final List<String> userPicks = JiraRestCustomFieldsParser.parseMultiUserPicker(field);
+                values = List.of(String.join(", ", userPicks)); //$NON-NLS-1$
                 break;
             case USERPICKER:
                 values = List.of(JiraRestCustomFieldsParser.parseUserPicker(field));
