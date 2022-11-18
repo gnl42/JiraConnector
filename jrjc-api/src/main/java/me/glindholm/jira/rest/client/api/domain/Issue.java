@@ -47,16 +47,14 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
                 + "]";
     }
 
-    public Issue(String summary, URI self, String key, Long id, BasicProject project, IssueType issueType, Status status,
-            String description, @Nullable BasicPriority priority, @Nullable Resolution resolution, List<Attachment> attachments,
-            @Nullable User reporter, @Nullable User assignee, OffsetDateTime creationDate, OffsetDateTime updateDate, OffsetDateTime dueDate,
-            List<Version> affectedVersions, List<Version> fixVersions, List<BasicComponent> components,
-            @Nullable TimeTracking timeTracking, List<IssueField> issueFields, List<Comment> comments,
-            @Nullable URI transitionsUri,
-            @Nullable List<IssueLink> issueLinks,
-            BasicVotes votes, List<Worklog> worklogs, BasicWatchers watched, List<String> expandos,
-            @Nullable List<Subtask> subtasks, @Nullable List<ChangelogGroup> changelog, @Nullable Operations operations,
-            Set<String> labels) {
+    public Issue(final String summary, final URI self, final String key, final Long id, final BasicProject project, final IssueType issueType,
+            final Status status, final String description, @Nullable final BasicPriority priority, @Nullable final Resolution resolution,
+            final List<Attachment> attachments, @Nullable final User reporter, @Nullable final User assignee, final OffsetDateTime creationDate,
+            final OffsetDateTime updateDate, final OffsetDateTime dueDate, final List<Version> affectedVersions, final List<Version> fixVersions,
+            final List<BasicComponent> components, @Nullable final TimeTracking timeTracking, final List<IssueField> issueFields, final List<Comment> comments,
+            @Nullable final URI transitionsUri, @Nullable final List<IssueLink> issueLinks, final BasicVotes votes, final List<Worklog> worklogs,
+            final BasicWatchers watched, final List<String> expandos, @Nullable final List<Subtask> subtasks, @Nullable final List<ChangelogGroup> changelog,
+            @Nullable final Operations operations, final Set<String> labels, final BasicIssue parent) {
         super(self, key, id);
         this.summary = summary;
         this.project = project;
@@ -87,6 +85,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
         this.changelog = changelog;
         this.operations = operations;
         this.labels = labels;
+        this.parent = parent;
     }
 
     private final Status status;
@@ -134,6 +133,9 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     private final Operations operations;
     private final Set<String> labels;
 
+    @Nullable
+    private final BasicIssue parent;
+
     private Watchers watchers;
 
     public Status getStatus() {
@@ -141,7 +143,8 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * @return reporter of this issue or <code>null</code> if this issue has no reporter
+     * @return reporter of this issue or <code>null</code> if this issue has no
+     *         reporter
      */
     @Nullable
     public User getReporter() {
@@ -149,13 +152,13 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * @return assignee of this issue or <code>null</code> if this issue is unassigned.
+     * @return assignee of this issue or <code>null</code> if this issue is
+     *         unassigned.
      */
     @Nullable
     public User getAssignee() {
         return assignee;
     }
-
 
     public String getSummary() {
         return summary;
@@ -170,7 +173,8 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * @return issue links for this issue (possibly nothing) or <code>null</code> when issue links are deactivated for this JIRA instance
+     * @return issue links for this issue (possibly nothing) or <code>null</code>
+     *         when issue links are deactivated for this JIRA instance
      */
     @Nullable
     public List<IssueLink> getIssueLinks() {
@@ -183,7 +187,8 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * @return fields inaccessible by concrete getter methods (e.g. all custom issueFields)
+     * @return fields inaccessible by concrete getter methods (e.g. all custom
+     *         issueFields)
      */
     public List<IssueField> getFields() {
         return issueFields;
@@ -191,11 +196,12 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
 
     /**
      * @param id identifier of the field (inaccessible by concrete getter method)
-     * @return field with given id, or <code>null</code> when no field with given id exists for this issue
+     * @return field with given id, or <code>null</code> when no field with given id
+     *         exists for this issue
      */
     @Nullable
-    public IssueField getField(String id) {
-        for (IssueField issueField : issueFields) {
+    public IssueField getField(final String id) {
+        for (final IssueField issueField : issueFields) {
             if (issueField.getId().equals(id)) {
                 return issueField;
             }
@@ -204,16 +210,18 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * This method returns the first field with specified name.
-     * Names of fields in JIRA do not need to be unique. Therefore this method does not guarantee that you will get what you really want.
-     * It's added just for convenience. For identify fields you should use id rather than name.
+     * This method returns the first field with specified name. Names of fields in
+     * JIRA do not need to be unique. Therefore this method does not guarantee that
+     * you will get what you really want. It's added just for convenience. For
+     * identify fields you should use id rather than name.
      *
      * @param name name of the field.
-     * @return the first field matching selected name or <code>null</code> when no field with given name exists for this issue
+     * @return the first field matching selected name or <code>null</code> when no
+     *         field with given name exists for this issue
      */
     @Nullable
-    public IssueField getFieldByName(String name) {
-        for (IssueField issueField : issueFields) {
+    public IssueField getFieldByName(final String name) {
+        for (final IssueField issueField : issueFields) {
             if (issueField.getName().equals(name)) {
                 return issueField;
             }
@@ -312,8 +320,9 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     /**
      * Returns changelog available for issues retrieved with CHANGELOG expanded.
      *
-     * @return issue changelog or <code>null</code> if CHANGELOG has not been expanded or REST API on the server side does not serve
-     * this information (pre-5.0)
+     * @return issue changelog or <code>null</code> if CHANGELOG has not been
+     *         expanded or REST API on the server side does not serve this
+     *         information (pre-5.0)
      * @see me.glindholm.jira.rest.client.api.IssueRestClient#getIssue(String, List)
      * @since me.glindholm.jira.rest.client.api 0.6, server 5.0
      */
@@ -323,10 +332,12 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * Returns operations available/allowed for issues retrieved with {@link Expandos#OPERATIONS} expanded.
+     * Returns operations available/allowed for issues retrieved with
+     * {@link Expandos#OPERATIONS} expanded.
      *
-     * @return issue operations or <code>null</code> if {@link Expandos#OPERATIONS} has not been expanded or
-     * REST API on the server side does not serve this information (pre-5.0)
+     * @return issue operations or <code>null</code> if {@link Expandos#OPERATIONS}
+     *         has not been expanded or REST API on the server side does not serve
+     *         this information (pre-5.0)
      * @see me.glindholm.jira.rest.client.api.IssueRestClient#getIssue(String, List)
      * @since me.glindholm.jira.rest.client.api 2.0, server 5.0
      */
@@ -338,7 +349,6 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     public URI getVotesUri() {
         return UriUtil.path(getSelf(), "votes");
     }
-
 
     @Nullable
     public Resolution getResolution() {
@@ -372,7 +382,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
         return toString();
     }
 
-    public void setWatchers(Watchers watchers) {
+    public void setWatchers(final Watchers watchers) {
         this.watchers = watchers;
     }
 
@@ -382,5 +392,9 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
 
     public BasicWatchers getWatched() {
         return watched;
+    }
+
+    public BasicIssue getParent() {
+        return parent;
     }
 }
