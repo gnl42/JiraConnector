@@ -8,4 +8,5 @@
          JiraConnector for Atlassian Jira/Bamboo
       </description>
    </category-def>
+   <repository-reference location="https://download.eclipse.org/mylyn/releases/latest" enabled="true" />
 </site>
