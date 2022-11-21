@@ -46,12 +46,14 @@ public interface UserRestClient {
     Promise<User> getUser(String username) throws URISyntaxException;
 
     /**
-     * Retrieves detailed information about selected user.
-     * This method is preferred over {@link #getUser(String)} as com.atlassian.jira.rest.it's more RESTful (well connected)
+     * Retrieves detailed information about selected user. This method is preferred
+     * over {@link #getUser(String)} as com.atlassian.jira.rest.it's more RESTful
+     * (well connected)
      *
      * @param userUri URI of user resource
      * @return complete information about given user
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      */
     Promise<User> getUser(URI userUri);
 
@@ -76,7 +78,8 @@ public interface UserRestClient {
      * @param userUri   URI to selected user resource
      * @param userInput UserInput with data to update
      * @return complete information about selected user
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      *
      * @since v5.1.0
      */
@@ -87,7 +90,8 @@ public interface UserRestClient {
      *
      * @param userUri URI to selected user resource
      * @return Void
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      *
      * @since v5.1.0
      */
@@ -130,7 +134,34 @@ public interface UserRestClient {
      *
      * @since v5.1.0
      */
-    Promise<List<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults,
+    Promise<List<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults, @Nullable Boolean includeActive,
+            @Nullable Boolean includeInactive) throws URISyntaxException;
+
+    /**
+     * Returns a list of users that can be assigned to a issue. This resource cannot
+     * be accessed anonymously.
+     *
+     * @param projectKey      issueId or issueKey
+     * @param startAt         The index of the first user to return (0-based)
+     * @param maxResults      The maximum number of users to return (defaults to
+     *                        50). The maximum allowed value is 1000. If you specify
+     *                        a value that is higher than this number, your search
+     *                        results will be truncated.
+     * @param includeActive   If true, then active users are included in the results
+     *                        (default true)
+     * @param includeInactive If true, then inactive users are included in the
+     *                        results (default false)
+     * @return list of users that match the search string
+     * @throws URISyntaxException
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
+     *
+     * @since v6.0.0
+     */
+    Promise<List<User>> findAssignableUsersForIssue(final String issueKey, @Nullable Integer startAt, @Nullable Integer maxResults,
+            @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException;
+
+    Promise<List<User>> findAssignableUsersForProject(final String projectKey, @Nullable Integer startAt, @Nullable Integer maxResults,
             @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException;
 
 }

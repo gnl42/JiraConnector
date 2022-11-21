@@ -38,11 +38,11 @@ public class Priority extends BasicPriority {
     private final String description;
     private final URI iconUrl;
 
-    public Priority(URI self, @Nullable Long id, String name, String statusColor, String description, URI iconUri) {
+    public Priority(final URI self, @Nullable final Long id, final String name, final String statusColor, final String description, final URI iconUri) {
         super(self, id, name);
         this.statusColor = statusColor;
         this.description = description;
-        this.iconUrl = iconUri;
+        iconUrl = iconUri;
     }
 
     public String getStatusColor() {
@@ -58,17 +58,11 @@ public class Priority extends BasicPriority {
     }
 
     @Override
-    protected String getToStringHelper() {
-        return toString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof Priority) {
-            Priority that = (Priority) obj;
-            return super.equals(obj) && Objects.equals(this.description, that.description)
-                    && Objects.equals(this.statusColor, that.statusColor)
-                    && Objects.equals(this.iconUrl, that.iconUrl);
+            final Priority that = (Priority) obj;
+            return super.equals(obj) && Objects.equals(description, that.description) && Objects.equals(statusColor, that.statusColor)
+                    && Objects.equals(iconUrl, that.iconUrl);
         }
         return false;
     }

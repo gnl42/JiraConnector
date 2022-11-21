@@ -16,17 +16,17 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 
-import java.net.URI;
-
 public class ServerInfoJsonParser implements JsonObjectParser<ServerInfo> {
     @Override
-    public ServerInfo parse(JSONObject json) throws JSONException {
+    public ServerInfo parse(final JSONObject json) throws JSONException {
         final URI baseUri = JsonParseUtil.parseURI(json.getString("baseUrl"));
         final String version = json.getString("version");
         final int buildNumber = json.getInt("buildNumber");
@@ -34,6 +34,7 @@ public class ServerInfoJsonParser implements JsonObjectParser<ServerInfo> {
         final OffsetDateTime serverTime = JsonParseUtil.parseOptionalOffsetDateTime(json, "serverTime");
         final String scmInfo = json.getString("scmInfo");
         final String serverTitle = json.getString("serverTitle");
-        return new ServerInfo(baseUri, version, buildNumber, buildDate, serverTime, scmInfo, serverTitle);
+        final String deploymentType = json.getString("deploymentType");
+        return new ServerInfo(baseUri, version, buildNumber, buildDate, serverTime, scmInfo, serverTitle, deploymentType);
     }
 }

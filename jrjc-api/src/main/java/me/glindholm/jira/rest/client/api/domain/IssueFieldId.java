@@ -24,34 +24,12 @@ import java.util.stream.Collectors;
  * Keeps field id that may be used to refer to field in fields maps.
  */
 public enum IssueFieldId {
-    AFFECTS_VERSIONS_FIELD("versions"),
-    ASSIGNEE_FIELD("assignee"),
-    ATTACHMENT_FIELD("attachment"),
-    COMMENT_FIELD("comment"),
-    COMPONENTS_FIELD("components"),
-    CREATED_FIELD("created"),
-    DESCRIPTION_FIELD("description"),
-    DUE_DATE_FIELD("duedate"),
-    FIX_VERSIONS_FIELD("fixVersions"),
-    ISSUE_TYPE_FIELD("issuetype"),
-    LABELS_FIELD("labels"),
-    LINKS_FIELD("issuelinks"),
-    LINKS_PRE_5_0_FIELD("links"),
-    PRIORITY_FIELD("priority"),
-    PROJECT_FIELD("project"),
-    REPORTER_FIELD("reporter"),
-    RESOLUTION_FIELD("resolution"),
-    STATUS_FIELD("status"),
-    SUBTASKS_FIELD("subtasks"),
-    SUMMARY_FIELD("summary"),
-    TIMETRACKING_FIELD("timetracking"),
-    TRANSITIONS_FIELD("transitions"),
-    UPDATED_FIELD("updated"),
-    VOTES_FIELD("votes"),
-    WATCHED_FIELD("watches"),
-    WATCHER_PRE_5_0_FIELD("watcher"),
-    WORKLOG_FIELD("worklog"),
-    WORKLOGS_FIELD("worklogs");
+    AFFECTS_VERSIONS_FIELD("versions"), ASSIGNEE_FIELD("assignee"), ATTACHMENT_FIELD("attachment"), COMMENT_FIELD("comment"), COMPONENTS_FIELD("components"),
+    CREATED_FIELD("created"), DESCRIPTION_FIELD("description"), DUE_DATE_FIELD("duedate"), FIX_VERSIONS_FIELD("fixVersions"), ISSUE_TYPE_FIELD("issuetype"),
+    LABELS_FIELD("labels"), LINKS_FIELD("issuelinks"), LINKS_PRE_5_0_FIELD("links"), PARENT("parent"), PRIORITY_FIELD("priority"), PROJECT_FIELD("project"),
+    REPORTER_FIELD("reporter"), RESOLUTION_FIELD("resolution"), STATUS_FIELD("status"), SUBTASKS_FIELD("subtasks"), SUMMARY_FIELD("summary"),
+    TIMETRACKING_FIELD("timetracking"), TRANSITIONS_FIELD("transitions"), UPDATED_FIELD("updated"), VOTES_FIELD("votes"), WATCHED_FIELD("watches"),
+    WATCHER_PRE_5_0_FIELD("watcher"), WORKLOG_FIELD("worklog"), WORKLOGS_FIELD("worklogs");
 
     public final String id;
 
@@ -59,7 +37,7 @@ public enum IssueFieldId {
         return id;
     }
 
-    IssueFieldId(String id) {
+    IssueFieldId(final String id) {
         this.id = id;
     }
 

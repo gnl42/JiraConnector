@@ -54,10 +54,6 @@ public class AddressableNamedEntity implements Serializable, AddressableEntity, 
         return "AddressableNamedEntity [self=" + self + ", name=" + name + "]";
     }
 
-    protected String getToStringHelper() {
-        return toString();
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof AddressableNamedEntity) {

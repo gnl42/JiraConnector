@@ -142,7 +142,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         if (valueObject == null) {
             return new ArrayList<>();
         }
-        List<T> res = new ArrayList<>(valueObject.length());
+        final List<T> res = new ArrayList<>(valueObject.length());
         for (int i = 0; i < valueObject.length(); i++) {
             res.add(jsonParser.parse(valueObject.get(i)));
         }
@@ -151,7 +151,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
     private <T> List<T> parseOptionalArrayNotNullable(final JSONObject json, final JsonWeakParser<T> jsonParser, final String... path)
             throws JSONException, URISyntaxException {
-        List<T> res = parseOptionalArray(json, jsonParser, path);
+        final List<T> res = parseOptionalArray(json, jsonParser, path);
         return res == null ? Collections.<T>emptyList() : res;
     }
 
@@ -244,7 +244,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         final List<IssueLink> issueLinks;
         issueLinks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(issueLinkJsonParserV5), FIELDS, LINKS_FIELD.id);
 
-        List<Subtask> subtasks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
+        final List<Subtask> subtasks = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(subtaskJsonParser), FIELDS, SUBTASKS_FIELD.id);
 
         final BasicVotes votes = getOptionalNestedField(issueJson, VOTES_FIELD.id, votesJsonParser);
         final Status status = statusJsonParser.parse(getFieldUnisex(issueJson, STATUS_FIELD.id));
@@ -260,7 +260,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
         final String transitionsUriString;
         if (issueJson.has(IssueFieldId.TRANSITIONS_FIELD.id)) {
-            Object transitionsObj = issueJson.get(IssueFieldId.TRANSITIONS_FIELD.id);
+            final Object transitionsObj = issueJson.get(IssueFieldId.TRANSITIONS_FIELD.id);
             transitionsUriString = transitionsObj instanceof String ? (String) transitionsObj : null;
         } else {
             transitionsUriString = getOptionalFieldStringUnisex(issueJson, IssueFieldId.TRANSITIONS_FIELD.id);
@@ -283,9 +283,10 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         final List<ChangelogGroup> changelog = parseOptionalArray(issueJson, new JsonWeakParserForJsonObject<>(changelogJsonParser), "changelog", "histories");
         final Operations operations = parseOptionalJsonObject(issueJson, "operations", operationsJsonParser);
 
+        final BasicIssue parent = getOptionalNestedField(issueJson, "parent", basicIssueJsonParser);
         return new Issue(summary, selfUri, basicIssue.getKey(), basicIssue.getId(), project, issueType, status, description, priority, resolution, attachments,
                 reporter, assignee, creationDate, updateDate, dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
-                transitionsUri, issueLinks, votes, worklogs, watched, expandos, subtasks, changelog, operations, labels);
+                transitionsUri, issueLinks, votes, worklogs, watched, expandos, subtasks, changelog, operations, labels, parent);
     }
 
     private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) throws URISyntaxException {
@@ -348,7 +349,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         final Iterator<String> it = JsonParseUtil.getStringKeys(json);
         while (it.hasNext()) {
             final String fieldId = it.next();
-            JSONObject fieldDefinition = json.getJSONObject(fieldId);
+            final JSONObject fieldDefinition = json.getJSONObject(fieldId);
             res.put(fieldId, fieldDefinition.getString("type"));
 
         }

@@ -7,7 +7,7 @@
 
 	<groupId>me.glindholm.jira</groupId>
 	<artifactId>jira-rest-java-client-parent</artifactId>
-	<version>6.0.3-SNAPSHOT</version>
+	<version>6.0.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>JIRA REST Java Client</name>
@@ -72,7 +72,7 @@
 	</issueManagement>
 
 	<properties>
-		<tycho.version>2.7.4</tycho.version>
+		<tycho.version>2.7.5</tycho.version>
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 

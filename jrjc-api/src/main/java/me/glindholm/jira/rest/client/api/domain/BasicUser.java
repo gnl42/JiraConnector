@@ -27,29 +27,57 @@ import java.util.Objects;
 public class BasicUser extends AddressableNamedEntity {
     private static final long serialVersionUID = 1L;
 
-    @Override
-    public String toString() {
-        return "BasicUser [displayName=" + displayName + ", accountId=" + accountId + "]";
-    }
-
     /**
-     * This value is used to mark incomplete user URI - when server response with user without selfUri set.
-     * This may happen due to bug in JIRA REST API - for example in JRA-30263 bug, JIRA REST API will return
-     * user without selfUri for deleted author of worklog entry.
+     * This value is used to mark incomplete user URI - when server response with
+     * user without selfUri set. This may happen due to bug in JIRA REST API - for
+     * example in JRA-30263 bug, JIRA REST API will return user without selfUri for
+     * deleted author of worklog entry.
      */
-    public static URI INCOMPLETE_URI = URI.create("incomplete://user");
+    public static final URI INCOMPLETE_URI = URI.create("incomplete://user");
+
+    public static final String UNASSIGNED = "-1";
+
+    public static final BasicUser UNASSIGNED_USER = new BasicUser(null, UNASSIGNED, "");
 
     private final String displayName;
     private final String accountId;
+    private final String emailAddress;
+    private final boolean active;
 
-    public BasicUser(URI self, String name, String displayName, String accountId) {
+    public BasicUser(final URI self, final String name, final String displayName, final String accountId, final String emailAddress, final boolean active) {
         super(self, name);
         this.displayName = displayName;
         this.accountId = accountId;
+        this.emailAddress = emailAddress;
+        this.active = active;
     }
 
-    public BasicUser(URI self, String name, String displayName) {
-        this(self, name, displayName, null);
+    public BasicUser(final URI self, final String name, final String displayName) {
+        this(self, name, displayName, null, null, true);
+    }
+
+    public BasicUser(final BasicUser user) {
+        this(user.getSelf(), user.getName(), user.getDisplayName(), user.getAccountId(), user.getEmailAddress(), user.isActive());
+    }
+
+    public String getId() {
+        if (accountId != null) {
+            return accountId;
+        } else if (super.getName() != null) {
+            return super.getName();
+        } else {
+            return UNASSIGNED;
+        }
+    }
+
+    public String getExternalId() {
+        final StringBuilder id = new StringBuilder(64);
+        id.append(displayName).append(" <").append(emailAddress != null && !emailAddress.isEmpty() ? emailAddress : getId()).append(">");
+        return id.toString();
+    }
+
+    public boolean isAssigned() {
+        return getId() != UNASSIGNED;
     }
 
     public String getDisplayName() {
@@ -60,30 +88,52 @@ public class BasicUser extends AddressableNamedEntity {
         return accountId;
     }
 
-    @Override
-    protected String getToStringHelper() {
-        return toString();
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof BasicUser) {
-            BasicUser that = (BasicUser) obj;
-            return super.equals(that) && Objects.equals(this.displayName, that.displayName) && Objects.equals(this.accountId, that.accountId);
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
         }
-        return false;
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof BasicUser)) {
+            return false;
+        }
+        final BasicUser other = (BasicUser) obj;
+        return Objects.equals(accountId, other.accountId) && active == other.active && Objects.equals(displayName, other.displayName)
+                && Objects.equals(emailAddress, other.emailAddress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), displayName, accountId);
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(accountId, active, displayName, emailAddress);
+        return result;
     }
 
     /**
-     * @return true when URI returned from server was incomplete. See {@link BasicUser#INCOMPLETE_URI} for more detail.
+     * @return true when URI returned from server was incomplete. See
+     *         {@link BasicUser#INCOMPLETE_URI} for more detail.
      */
     public boolean isSelfUriIncomplete() {
         return INCOMPLETE_URI.equals(self);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("BasicUser [self=").append(self).append(", name=").append(name).append(", displayName=").append(displayName).append(", accountId=")
+                .append(accountId).append(", emailAddress=").append(emailAddress).append(", active=").append(active).append("]");
+        return builder.toString();
     }
 
 }
