@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -54,7 +55,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
             final List<BasicComponent> components, @Nullable final TimeTracking timeTracking, final List<IssueField> issueFields, final List<Comment> comments,
             @Nullable final URI transitionsUri, @Nullable final List<IssueLink> issueLinks, final BasicVotes votes, final List<Worklog> worklogs,
             final BasicWatchers watched, final List<String> expandos, @Nullable final List<Subtask> subtasks, @Nullable final List<ChangelogGroup> changelog,
-            @Nullable final Operations operations, final Set<String> labels, final BasicIssue parent) {
+            @Nullable final Operations operations, final Set<String> labels, final BasicIssue parent, final Map<String, CimFieldInfo> metadata) {
         super(self, key, id);
         this.summary = summary;
         this.project = project;
@@ -85,7 +86,10 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
         this.changelog = changelog;
         this.operations = operations;
         this.labels = labels;
+
         this.parent = parent;
+
+        this.metadata = metadata;
     }
 
     private final Status status;
@@ -137,6 +141,9 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     private final BasicIssue parent;
 
     private Watchers watchers;
+
+    @Nullable
+    private final Map<String, CimFieldInfo> metadata;
 
     public Status getStatus() {
         return status;
@@ -396,5 +403,9 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
 
     public BasicIssue getParent() {
         return parent;
+    }
+
+    public Map<String, CimFieldInfo> getMetadata() {
+        return metadata;
     }
 }

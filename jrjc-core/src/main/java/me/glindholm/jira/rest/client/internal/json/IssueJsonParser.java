@@ -63,6 +63,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import me.glindholm.jira.rest.client.api.IssueRestClient;
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
@@ -71,6 +72,7 @@ import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.BasicVotes;
 import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
 import me.glindholm.jira.rest.client.api.domain.ChangelogGroup;
+import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.IssueField;
@@ -111,6 +113,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
     private final ChangelogJsonParser changelogJsonParser = new ChangelogJsonParser();
     private final OperationsJsonParser operationsJsonParser = new OperationsJsonParser();
     private final JsonWeakParserForString jsonWeakParserForString = new JsonWeakParserForString();
+    private final CimFieldsInfoMapJsonParser metaParserForString = new CimFieldsInfoMapJsonParser();
 
     private static final String FIELDS = "fields";
     private static final String VALUE_ATTR = "value";
@@ -284,9 +287,16 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
         final Operations operations = parseOptionalJsonObject(issueJson, "operations", operationsJsonParser);
 
         final BasicIssue parent = getOptionalNestedField(issueJson, "parent", basicIssueJsonParser);
+
+        final JSONObject editmeta = issueJson.optJSONObject(IssueRestClient.Expandos.EDITMETA.getValue());
+        Map<String, CimFieldInfo> metadata = null;
+        if (editmeta != null) {
+            final JSONObject metaFields = editmeta.getJSONObject("fields");
+            metadata = metaParserForString.parse(metaFields);
+        }
         return new Issue(summary, selfUri, basicIssue.getKey(), basicIssue.getId(), project, issueType, status, description, priority, resolution, attachments,
                 reporter, assignee, creationDate, updateDate, dueDate, affectedVersions, fixVersions, components, timeTracking, fields, comments,
-                transitionsUri, issueLinks, votes, worklogs, watched, expandos, subtasks, changelog, operations, labels, parent);
+                transitionsUri, issueLinks, votes, worklogs, watched, expandos, subtasks, changelog, operations, labels, parent, metadata);
     }
 
     private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) throws URISyntaxException {
