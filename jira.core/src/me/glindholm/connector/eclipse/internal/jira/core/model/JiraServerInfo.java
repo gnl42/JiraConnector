@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
  * @author Jacek Jaroczynski
  */
 public class JiraServerInfo implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6822423951913725245L;
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
 
@@ -34,7 +34,7 @@ public class JiraServerInfo implements Serializable {
 
     private String edition;
 
-    private String version;
+    private JiraServerVersion version;
 
     private String characterEncoding;
 
@@ -48,42 +48,42 @@ public class JiraServerInfo implements Serializable {
     }
 
     public String getBaseUrl() {
-        return this.baseUrl;
+        return baseUrl;
     }
 
-    public void setBaseUrl(String baseUrl) {
+    public void setBaseUrl(final String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
     public Instant getBuildDate() {
-        return this.buildDate;
+        return buildDate;
     }
 
-    public void setBuildDate(Instant buildDate) {
+    public void setBuildDate(final Instant buildDate) {
         this.buildDate = buildDate;
     }
 
     public String getBuildNumber() {
-        return this.buildNumber;
+        return buildNumber;
     }
 
-    public void setBuildNumber(String buildNumber) {
+    public void setBuildNumber(final String buildNumber) {
         this.buildNumber = buildNumber;
     }
 
     public String getEdition() {
-        return this.edition;
+        return edition;
     }
 
-    public void setEdition(String edition) {
+    public void setEdition(final String edition) {
         this.edition = edition;
     }
 
-    public String getVersion() {
-        return this.version;
+    public JiraServerVersion getVersion() {
+        return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(final JiraServerVersion version) {
         this.version = version;
     }
 
@@ -91,7 +91,7 @@ public class JiraServerInfo implements Serializable {
         return characterEncoding;
     }
 
-    public void setCharacterEncoding(String characterEncoding) {
+    public void setCharacterEncoding(final String characterEncoding) {
         this.characterEncoding = characterEncoding;
     }
 
@@ -99,7 +99,7 @@ public class JiraServerInfo implements Serializable {
         return webBaseUrl;
     }
 
-    public void setWebBaseUrl(String webBaseUrl) {
+    public void setWebBaseUrl(final String webBaseUrl) {
         this.webBaseUrl = webBaseUrl;
     }
 
@@ -107,7 +107,7 @@ public class JiraServerInfo implements Serializable {
         return insecureRedirect;
     }
 
-    public void setInsecureRedirect(boolean insecureRedirect) {
+    public void setInsecureRedirect(final boolean insecureRedirect) {
         this.insecureRedirect = insecureRedirect;
     }
 
@@ -117,7 +117,6 @@ public class JiraServerInfo implements Serializable {
         }
         return statistics;
     }
-
 
     @Override
     public String toString() {

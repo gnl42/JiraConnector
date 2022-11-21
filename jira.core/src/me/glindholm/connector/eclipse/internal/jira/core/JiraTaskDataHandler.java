@@ -1472,7 +1472,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         String taskDataVersion = taskData.getVersion();
         JiraServerVersion version = new JiraServerVersion(taskDataVersion != null ? taskDataVersion : "0.0"); //$NON-NLS-1$
         // 1.0: the value was stored in the attribute rather than the key
-        if (version.isSmallerOrEquals(TASK_DATA_VERSION_1_0)) {
+        if (version.isLessThanOrEquals(TASK_DATA_VERSION_1_0)) {
             for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
                 if (TaskAttribute.PRODUCT.equals(attribute.getId())) {
                     String projectName = attribute.getValue();
@@ -1504,7 +1504,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
             }
         }
         // 2.0: the type was not always set
-        if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_0)) {
+        if (version.isLessThanOrEquals(TASK_DATA_VERSION_2_0)) {
             Collection<TaskAttribute> attributes = new ArrayList<>(taskData.getRoot().getAttributes().values());
             for (TaskAttribute attribute : attributes) {
                 if (attribute.getId().startsWith(TaskAttribute.PREFIX_OPERATION)) {
@@ -1546,7 +1546,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         }
         // migration for v2.1 is now handled in the framework
         // store long values instead of formatted time spans
-        if (version.isSmallerOrEquals(TASK_DATA_VERSION_2_2)) {
+        if (version.isLessThanOrEquals(TASK_DATA_VERSION_2_2)) {
             for (TaskAttribute attribute : taskData.getRoot().getAttributes().values()) {
                 JiraTimeFormat format = new JiraTimeFormat();
                 if (isTimeSpanAttribute(attribute)) {
@@ -1565,7 +1565,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
                 }
             }
         }
-        if (version.isSmallerOrEquals(TASK_DATA_VERSION_CURRENT)) {
+        if (version.isLessThanOrEquals(TASK_DATA_VERSION_CURRENT)) {
             taskData.setVersion(TASK_DATA_VERSION_CURRENT.toString());
         }
     }

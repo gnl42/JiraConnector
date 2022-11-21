@@ -24,7 +24,6 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraUser;
-import me.glindholm.jira.rest.client.api.domain.Field;
 
 /**
  * Caches repository configuration data.
@@ -35,25 +34,25 @@ public class JiraClientData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    JiraGroup[] groups = new JiraGroup[0];
+    JiraGroup[] groups = {};
 
-    JiraIssueType[] issueTypes = new JiraIssueType[0];
+    JiraIssueType[] issueTypes = {};
 
     Map<String, JiraIssueType> issueTypesById = new HashMap<>();
 
-    JiraPriority[] priorities = new JiraPriority[0];
+    JiraPriority[] priorities = {};
 
     Map<String, JiraPriority> prioritiesById = new HashMap<>();
 
     Map<String, JiraPriority> prioritiesByName = new HashMap<>();
 
-    JiraProject[] projects = new JiraProject[0];
+    JiraProject[] projects = {};
 
     Map<String, JiraProject> projectsById = new HashMap<>();
 
     Map<String, JiraProject> projectsByKey = new HashMap<>();
 
-    JiraResolution[] resolutions = new JiraResolution[0];
+    JiraResolution[] resolutions = {};
 
     Map<String, JiraResolution> resolutionsById = new HashMap<>();
 
@@ -61,23 +60,21 @@ public class JiraClientData implements Serializable {
 
     volatile JiraServerInfo serverInfo;
 
-    JiraStatus[] statuses = new JiraStatus[0];
+    JiraStatus[] statuses = {};
 
-    JiraProjectRole[] projectRoles = new JiraProjectRole[0];
+    JiraProjectRole[] projectRoles = {};
 
     Map<String, JiraStatus> statusesById = new HashMap<>();
 
     Map<String, JiraStatus> statusesByName = new HashMap<>();
 
     // not used
-    JiraUser[] users = new JiraUser[0];
+    JiraUser[] users = {};
 
     Map<String, JiraUser> usersByName = new HashMap<>();
 
     long lastUpdate;
 
-    public Map<String, Field> metadata = new HashMap<>();
-
-    //	JiraConfiguration configuration;
+    // JiraConfiguration configuration;
 
 }

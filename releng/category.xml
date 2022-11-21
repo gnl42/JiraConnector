@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="me.glindholm.connector.eclipse_4.1.7.qualifier.jar" id="me.glindholm.connector.eclipse" version="4.1.7.qualifier">
+   <feature url="me.glindholm.connector.eclipse_4.1.8.qualifier.jar" id="me.glindholm.connector.eclipse" version="4.1.8.qualifier">
       <category name="Connector"/>
    </feature>
    <category-def name="Connector" label="JiraConnector">
@@ -8,4 +8,5 @@
          JiraConnector for Atlassian Jira/Bamboo
       </description>
    </category-def>
+   <repository-reference location="https://download.eclipse.org/mylyn/releases/latest" enabled="true" />
 </site>

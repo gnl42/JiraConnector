@@ -77,10 +77,9 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
     private static final String ID_POPUP_MENU = "org.eclipse.mylyn.jira.ui.editor.menu.worklog"; //$NON-NLS-1$
 
-    private final String[] columns = { Messages.WorkLogPart_Creator, Messages.WorkLogPart_Date,
-            Messages.WorkLogPart_Worked, Messages.WorkLogPart_Description };
+    private final String[] columns = { Messages.WorkLogPart_Creator, Messages.WorkLogPart_Date, Messages.WorkLogPart_Worked, Messages.WorkLogPart_Description };
 
-    private final int[] columnWidths = { 200, 250, 100, 300 };
+    private final int[] columnWidths = { 200, 300, 100, 300 };
 
     private List<TaskAttribute> logEntries;
 
@@ -116,36 +115,32 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         setPartName(Messages.WorkLogPart_Work_Log);
     }
 
-    private void createTable(FormToolkit toolkit, final Composite composite) {
-        Table table = toolkit.createTable(composite, SWT.MULTI | SWT.FULL_SELECTION);
+    private void createTable(final FormToolkit toolkit, final Composite composite) {
+        final Table table = toolkit.createTable(composite, SWT.MULTI | SWT.FULL_SELECTION);
         table.setLinesVisible(true);
         table.setHeaderVisible(true);
         table.setLayout(new GridLayout());
-        GridDataFactory.fillDefaults()
-        .align(SWT.FILL, SWT.FILL)
-        .grab(true, false)
-        .hint(500, SWT.DEFAULT)
-        .applyTo(table);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).hint(500, SWT.DEFAULT).applyTo(table);
 
         for (int i = 0; i < columns.length; i++) {
-            TableColumn column = new TableColumn(table, SWT.LEFT, i);
+            final TableColumn column = new TableColumn(table, SWT.LEFT, i);
             column.setText(columns[i]);
             column.setWidth(columnWidths[i]);
         }
         table.getColumn(2).setAlignment(SWT.RIGHT);
 
-        TableViewer attachmentsViewer = new TableViewer(table);
+        final TableViewer attachmentsViewer = new TableViewer(table);
         attachmentsViewer.setUseHashlookup(true);
         attachmentsViewer.setColumnProperties(columns);
         ColumnViewerToolTipSupport.enableFor(attachmentsViewer, ToolTip.NO_RECREATE);
 
         attachmentsViewer.setComparator(new ViewerComparator() {
             @Override
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                JiraWorkLog item1 = (JiraWorkLog) e1;
-                JiraWorkLog item2 = (JiraWorkLog) e2;
-                Instant created1 = item1.getCreated();
-                Instant created2 = item2.getCreated();
+            public int compare(final Viewer viewer, final Object e1, final Object e2) {
+                final JiraWorkLog item1 = (JiraWorkLog) e1;
+                final JiraWorkLog item2 = (JiraWorkLog) e2;
+                final Instant created1 = item1.getCreated();
+                final Instant created2 = item2.getCreated();
                 if (created1 != null && created2 != null) {
                     return created1.compareTo(created2);
                 } else if (created1 == null && created2 != null) {
@@ -158,18 +153,17 @@ public class WorkLogPart extends AbstractTaskEditorPart {
             }
         });
 
-        List<JiraWorkLog> workLogList = new ArrayList<>(logEntries.size());
-        for (TaskAttribute attribute : logEntries) {
-            JiraWorkLog log = new WorkLogConverter().createFrom(attribute);
+        final List<JiraWorkLog> workLogList = new ArrayList<>(logEntries.size());
+        for (final TaskAttribute attribute : logEntries) {
+            final JiraWorkLog log = new WorkLogConverter().createFrom(attribute);
             workLogList.add(log);
         }
         attachmentsViewer.setContentProvider(new ArrayContentProvider());
         attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider(getJiraTimeFormat()));
         attachmentsViewer.addOpenListener(new IOpenListener() {
             @Override
-            public void open(OpenEvent event) {
-                TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(),
-                        getModel().getTask()));
+            public void open(final OpenEvent event) {
+                TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(), getModel().getTask()));
             }
         });
         attachmentsViewer.addSelectionChangedListener(getTaskEditorPage());
@@ -179,17 +173,17 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         menuManager.setRemoveAllWhenShown(true);
         menuManager.addMenuListener(new IMenuListener() {
             @Override
-            public void menuAboutToShow(IMenuManager manager) {
+            public void menuAboutToShow(final IMenuManager manager) {
                 // TODO provide popup menu
             }
         });
         getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, false);
-        Menu menu = menuManager.createContextMenu(table);
+        final Menu menu = menuManager.createContextMenu(table);
         table.setMenu(menu);
     }
 
     @Override
-    public void createControl(Composite parent, final FormToolkit toolkit) {
+    public void createControl(final Composite parent, final FormToolkit toolkit) {
         initialize();
 
         final Section section = createSection(parent, toolkit, hasIncoming);
@@ -200,7 +194,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         } else {
             section.addExpansionListener(new ExpansionAdapter() {
                 @Override
-                public void expansionStateChanged(ExpansionEvent event) {
+                public void expansionStateChanged(final ExpansionEvent event) {
                     if (composite == null) {
                         expandSection(toolkit, section);
                         getTaskEditorPage().reflow();
@@ -212,7 +206,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         setSection(toolkit, section);
     }
 
-    private void expandSection(FormToolkit toolkit, Section section) {
+    private void expandSection(final FormToolkit toolkit, final Section section) {
         composite = toolkit.createComposite(section);
         composite.setLayout(new GridLayout(1, false));
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -222,7 +216,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         if (logEntries.size() > 0) {
             createTable(toolkit, composite);
         } else {
-            Label label = toolkit.createLabel(composite, Messages.WorkLogPart_No_work_logged);
+            final Label label = toolkit.createLabel(composite, Messages.WorkLogPart_No_work_logged);
             getTaskEditorPage().registerDefaultDropListener(label);
         }
         newWorkLogSection = createNewWorkLogSection(toolkit, composite);
@@ -230,7 +224,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
             private boolean firstTime = true;
 
             @Override
-            public void expansionStateChanged(ExpansionEvent e) {
+            public void expansionStateChanged(final ExpansionEvent e) {
                 if (firstTime) {
                     firstTime = false;
                 } else {
@@ -253,17 +247,15 @@ public class WorkLogPart extends AbstractTaskEditorPart {
     }
 
     private void initialize() {
-        logEntries = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(),
-                WorkLogConverter.TYPE_WORKLOG);
-        for (TaskAttribute attachmentAttribute : logEntries) {
+        logEntries = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(), WorkLogConverter.TYPE_WORKLOG);
+        for (final TaskAttribute attachmentAttribute : logEntries) {
             if (getModel().hasIncomingChanges(attachmentAttribute)) {
                 hasIncoming = true;
                 break;
             }
         }
 
-        TaskAttribute newWorkLogAttribute = getTaskData().getRoot()
-                .getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+        final TaskAttribute newWorkLogAttribute = getTaskData().getRoot().getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
         JiraWorkLog log = null;
         if (newWorkLogAttribute != null) {
             log = new WorkLogConverter().createFrom(newWorkLogAttribute);
@@ -277,7 +269,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
             }
             newWorkDoneDescription = log.getComment();
             newWorkDoneAdjustEstimate = log.getAdjustEstimate();
-            TaskAttribute newWorkLogSubmitAttribute = newWorkLogAttribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
+            final TaskAttribute newWorkLogSubmitAttribute = newWorkLogAttribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
             if (newWorkLogSubmitAttribute != null && newWorkLogSubmitAttribute.getValue().equals(String.valueOf(true))) {
                 includeWorklog = true;
             }
@@ -288,9 +280,9 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         return JiraUtil.getTimeFormat(getTaskEditorPage().getTaskRepository());
     }
 
-    private Section createNewWorkLogSection(FormToolkit toolkit, Composite parent) {
-        newWorkLogSection = toolkit.createSection(parent, ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT
-                | ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT);
+    private Section createNewWorkLogSection(final FormToolkit toolkit, final Composite parent) {
+        newWorkLogSection = toolkit.createSection(parent,
+                ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT | ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT);
         newWorkLogSection.setText(""); //$NON-NLS-1$
 
         createNewWorkLog = toolkit.createButton(newWorkLogSection, Messages.WorkLogPart_Log_Work_Done, SWT.CHECK);
@@ -300,7 +292,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
         createNewWorkLog.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 if (e.getSource().equals(createNewWorkLog)) {
                     newWorkLogSection.setExpanded(createNewWorkLog.getSelection());
                     showLogWorkComponents();
@@ -310,7 +302,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         });
         newWorkLogSection.setTextClient(createNewWorkLog);
 
-        Composite newWorkLogComposite = toolkit.createComposite(newWorkLogSection, SWT.NONE);
+        final Composite newWorkLogComposite = toolkit.createComposite(newWorkLogSection, SWT.NONE);
         newWorkLogSection.setClient(newWorkLogComposite);
         newWorkLogComposite.setLayout(GridLayoutFactory.swtDefaults().spacing(10, 5).numColumns(3).create());
 
@@ -320,7 +312,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         timeSpentText = toolkit.createText(newWorkLogComposite, getJiraTimeFormat().format(Long.valueOf(newWorkDoneAmount)));
         timeSpentText.addModifyListener(new ModifyListener() {
             @Override
-            public void modifyText(ModifyEvent e) {
+            public void modifyText(final ModifyEvent e) {
                 setTimeSpendDecorator();
                 timeSpentText.setToolTipText(timeSpendTooltip);
                 addWorkLogToModel();
@@ -328,11 +320,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         });
 
         timeSpentText.setToolTipText(timeSpendTooltip);
-        GridDataFactory.fillDefaults()
-        .span(2, 1)
-        .hint(135, SWT.DEFAULT)
-        .align(SWT.BEGINNING, SWT.FILL)
-        .applyTo(timeSpentText);
+        GridDataFactory.fillDefaults().span(2, 1).hint(135, SWT.DEFAULT).align(SWT.BEGINNING, SWT.FILL).applyTo(timeSpentText);
 
         toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Start_Date);
         dateWidget = new DateTime(newWorkLogComposite, SWT.DATE);
@@ -344,7 +332,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.FILL).applyTo(dateWidget);
         dateWidget.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 collectDate();
                 addWorkLogToModel();
             }
@@ -359,35 +347,33 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.FILL).applyTo(timeWidget);
         timeWidget.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 collectDate();
                 addWorkLogToModel();
             }
         });
 
         toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Adjust_Estimate);
-        Composite adjustComposite = toolkit.createComposite(newWorkLogComposite);
+        final Composite adjustComposite = toolkit.createComposite(newWorkLogComposite);
         adjustComposite.setLayout(GridLayoutFactory.fillDefaults().spacing(0, 0).create());
         GridDataFactory.fillDefaults().span(2, 1).applyTo(adjustComposite);
 
-        final Button autoAdjustButton = toolkit.createButton(adjustComposite, Messages.WorkLogPart_Auto_Adjust,
-                SWT.RADIO);
+        final Button autoAdjustButton = toolkit.createButton(adjustComposite, Messages.WorkLogPart_Auto_Adjust, SWT.RADIO);
         autoAdjustButton.setSelection(newWorkDoneAdjustEstimate == AdjustEstimateMethod.AUTO);
         autoAdjustButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 newWorkDoneAdjustEstimate = AdjustEstimateMethod.AUTO;
                 addWorkLogToModel();
             }
         });
         autoAdjustButton.setToolTipText(Messages.WorkLogPart_Auto_Adjust_Explanation_Tooltip);
 
-        final Button leaveAdjustButton = toolkit.createButton(adjustComposite,
-                Messages.WorkLogPart_Leave_Existing_Estimate, SWT.RADIO);
+        final Button leaveAdjustButton = toolkit.createButton(adjustComposite, Messages.WorkLogPart_Leave_Existing_Estimate, SWT.RADIO);
         leaveAdjustButton.setSelection(newWorkDoneAdjustEstimate == AdjustEstimateMethod.LEAVE);
         leaveAdjustButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 newWorkDoneAdjustEstimate = AdjustEstimateMethod.LEAVE;
                 addWorkLogToModel();
             }
@@ -395,11 +381,10 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         leaveAdjustButton.setToolTipText(Messages.WorkLogPart_Leave_Existing_Explanation_Tooltip);
 
         toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Work_Description);
-        final Text descriptionText = toolkit.createText(newWorkLogComposite, newWorkDoneDescription, SWT.WRAP
-                | SWT.MULTI | SWT.V_SCROLL);
+        final Text descriptionText = toolkit.createText(newWorkLogComposite, newWorkDoneDescription, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
         descriptionText.addModifyListener(new ModifyListener() {
             @Override
-            public void modifyText(ModifyEvent e) {
+            public void modifyText(final ModifyEvent e) {
                 newWorkDoneDescription = descriptionText.getText();
                 addWorkLogToModel();
             }
@@ -419,8 +404,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
     private String getTimeSpentTooltipText() {
         final String timeSpendTooltip = NLS.bind(Messages.WorkLogPart_Time_Spent_Explanation_Tooltip,
-                JiraUtil.getWorkDaysPerWeek(getTaskEditorPage().getTaskRepository()),
-                JiraUtil.getWorkHoursPerDay(getTaskEditorPage().getTaskRepository()));
+                JiraUtil.getWorkDaysPerWeek(getTaskEditorPage().getTaskRepository()), JiraUtil.getWorkHoursPerDay(getTaskEditorPage().getTaskRepository()));
         return timeSpendTooltip;
     }
 
@@ -428,15 +412,15 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         if (newWorkDoneDate == null) {
             newWorkDoneDate = new GregorianCalendar();
         }
-        newWorkDoneDate.set(dateWidget.getYear(), dateWidget.getMonth(), dateWidget.getDay(), timeWidget.getHours(),
-                timeWidget.getMinutes(), timeWidget.getSeconds());
+        newWorkDoneDate.set(dateWidget.getYear(), dateWidget.getMonth(), dateWidget.getDay(), timeWidget.getHours(), timeWidget.getMinutes(),
+                timeWidget.getSeconds());
     }
 
     /**
      * Updates the worklog and returns true if it has changed
      */
     private boolean updateNewWorkLog() {
-        JiraWorkLog tempworkLog = new JiraWorkLog();
+        final JiraWorkLog tempworkLog = new JiraWorkLog();
         tempworkLog.setAuthor(getTaskEditorPage().getTaskRepository().getUserName());
         tempworkLog.setComment(newWorkDoneDescription);
         tempworkLog.setStartDate(newWorkDoneDate.getTime().toInstant());
@@ -461,10 +445,9 @@ public class WorkLogPart extends AbstractTaskEditorPart {
     }
 
     private void setSubmitWorklog() {
-        TaskAttribute attribute = getTaskData().getRoot().getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+        final TaskAttribute attribute = getTaskData().getRoot().getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
         if (attribute != null) {
-            attribute.createAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG).setValue(
-                    String.valueOf(includeWorklog));
+            attribute.createAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG).setValue(String.valueOf(includeWorklog));
             getModel().attributeChanged(attribute);
         }
     }
@@ -472,8 +455,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
     private void setTimeSpendDecorator() {
         try {
             newWorkDoneAmount = getJiraTimeFormat().parse(timeSpentText.getText());
-        } catch (ParseException e) {
-            //ignore
+        } catch (final ParseException e) {
+            // ignore
         }
         JiraEditorUtil.setTimeSpentDecorator(timeSpentText, false, getTaskEditorPage().getTaskRepository(), false);
     }
@@ -483,7 +466,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
         private final FormToolkit toolkit;
 
-        public LogWorkDoneAction(FormToolkit toolkit, Section section) {
+        public LogWorkDoneAction(final FormToolkit toolkit, final Section section) {
             this.toolkit = toolkit;
             this.section = section;
             setImageDescriptor(CommonImages.CALENDAR);
@@ -511,7 +494,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
     private LogWorkDoneAction logWorkToolbarAction;
 
     @Override
-    protected void fillToolBar(ToolBarManager toolBarManager) {
+    protected void fillToolBar(final ToolBarManager toolBarManager) {
         if (logWorkToolbarAction != null) {
             toolBarManager.add(logWorkToolbarAction);
         }
