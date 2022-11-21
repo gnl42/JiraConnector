@@ -20,7 +20,8 @@ import java.io.Serializable;
  * @author Thomas Ehrnhoefer
  */
 public class JiraServerVersion implements Comparable<JiraServerVersion>, Serializable {
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = -838081214233322531L;
 
     public static final JiraServerVersion JIRA_3_13 = new JiraServerVersion("3.13"); //$NON-NLS-1$
 
@@ -36,7 +37,7 @@ public class JiraServerVersion implements Comparable<JiraServerVersion>, Seriali
 
     public static final JiraServerVersion JIRA_9_0 = new JiraServerVersion("9.0"); //$NON-NLS-1$
 
-    public final static JiraServerVersion MIN_VERSION = JIRA_8_0;
+    public final static JiraServerVersion MIN_VERSION = JIRA_5_0;
 
     private final int major;
 

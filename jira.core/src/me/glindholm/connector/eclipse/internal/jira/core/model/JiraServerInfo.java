@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
  * @author Jacek Jaroczynski
  */
 public class JiraServerInfo implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6822423951913725245L;
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.systemDefault());
 
