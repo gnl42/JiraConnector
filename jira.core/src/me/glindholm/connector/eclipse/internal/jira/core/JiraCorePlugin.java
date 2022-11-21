@@ -62,13 +62,13 @@ public class JiraCorePlugin extends Plugin {
      * This method is called upon plug-in activation
      */
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
         super.start(context);
-        File serverCache = getStateLocation().append("serverCache").toFile(); //$NON-NLS-1$
+        final File serverCache = getStateLocation().append("serverCache").toFile(); //$NON-NLS-1$
         initialize(serverCache);
     }
 
-    public static void initialize(File serverCacheDirectory) {
+    public static void initialize(final File serverCacheDirectory) {
         if (initialized) {
             throw new IllegalStateException("Already initialized"); //$NON-NLS-1$
         }
@@ -82,7 +82,7 @@ public class JiraCorePlugin extends Plugin {
      * This method is called when the plug-in is stopped
      */
     @Override
-    public void stop(BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
         super.stop(context);
 
         if (clientManager != null) {
@@ -106,8 +106,8 @@ public class JiraCorePlugin extends Plugin {
         return clientManager;
     }
 
-    public static IStatus toStatus(TaskRepository repository, Throwable e) {
-        String url = repository.getRepositoryUrl();
+    public static IStatus toStatus(final TaskRepository repository, final Throwable e) {
+        final String url = repository.getRepositoryUrl();
         if (e instanceof JiraCaptchaRequiredException) {
             return new RepositoryStatus(repository.getRepositoryUrl(), IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY_LOGIN,
                     CoreMessages.Captcha_authentication_required);
@@ -132,14 +132,14 @@ public class JiraCorePlugin extends Plugin {
         if (t.getCause() == null) {
             final List<String> errorMsg = new ArrayList<>();
             if (t instanceof RestClientException) {
-                RestClientException restException = (RestClientException) t;
-                for (ErrorCollection errors : restException.getErrorCollections()) {
+                final RestClientException restException = (RestClientException) t;
+                for (final ErrorCollection errors : restException.getErrorCollections()) {
                     if (errors.getErrorMessages() != null) {
-                        for (String msg : errors.getErrorMessages()) {
+                        for (final String msg : errors.getErrorMessages()) {
                             errorMsg.add(errors.getStatus() + ": " + msg);
                         }
                     } else {
-                        for (Entry<String, String> msgs : errors.getErrors().entrySet()) {
+                        for (final Entry<String, String> msgs : errors.getErrors().entrySet()) {
                             errorMsg.add(errors.getStatus() + ": " + msgs.getValue());
                         }
                     }

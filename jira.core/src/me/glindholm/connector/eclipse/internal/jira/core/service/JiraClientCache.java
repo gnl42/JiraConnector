@@ -13,11 +13,8 @@
 package me.glindholm.connector.eclipse.internal.jira.core.service;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
@@ -31,8 +28,6 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraUser;
-import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
-import me.glindholm.jira.rest.client.api.domain.Field;
 
 /**
  * @author Steffen Pingel
@@ -137,16 +132,6 @@ public class JiraClientCache {
         return data.projectRoles;
     }
 
-    public Map<String, CimFieldInfo> getFieldMetadata(final Long projectId, final Long issueType) throws JiraException {
-        final JiraProject project = getProjectById(projectId + "", new NullProgressMonitor());
-        final Map<Long, Map<String, CimFieldInfo>> fieldMetadata = project.getfieldMetadata();
-        return fieldMetadata.get(issueType);
-    }
-
-    public Field getMetadata(final String fieldId) {
-        return data.metadata.get(fieldId);
-    }
-
     private void initializePriorities(final JiraClientData data, IProgressMonitor monitor) throws JiraException {
         monitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_priorities, 1);
 
@@ -163,18 +148,6 @@ public class JiraClientCache {
 
     public JiraPriority[] getPriorities() {
         return data.priorities;
-    }
-
-    private void initializeMetadata(final JiraClientData data, final IProgressMonitor monitor) throws JiraException {
-        final SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_issue_types, 2);
-
-        final List<Field> metadata = jiraClient.getMetadata(submonitor);
-        final Map<String, Field> fieldMetadata = new HashMap<>();
-        for (final Field field : metadata) {
-            fieldMetadata.put(field.getId(), field);
-        }
-
-        data.metadata = fieldMetadata;
     }
 
     private void initializeIssueTypes(final JiraClientData data, final IProgressMonitor monitor) throws JiraException {

@@ -130,13 +130,14 @@ public class JiraRestClientAdapter {
 
     private final boolean followRedirects;
 
-    public JiraRestClientAdapter(String url, JiraClientCache cache, boolean followRedirects) {
+    public JiraRestClientAdapter(final String url, final JiraClientCache cache, final boolean followRedirects) {
         this.url = url;
         this.cache = cache;
         this.followRedirects = followRedirects;
     }
 
-    public JiraRestClientAdapter(String url, String userName, String password, final Proxy proxy, JiraClientCache cache, final boolean followRedirects) {
+    public JiraRestClientAdapter(final String url, final String userName, final String password, final Proxy proxy, final JiraClientCache cache,
+            final boolean followRedirects) {
         this(url, cache, followRedirects);
 
         // final TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
@@ -162,7 +163,7 @@ public class JiraRestClientAdapter {
             // return true;
             // }
             // });
-            HttpClientOptions httpOptions = new HttpClientOptions();
+            final HttpClientOptions httpOptions = new HttpClientOptions();
             httpOptions.setUserAgent("JiraConnector for Eclipse");
             httpOptions.setConnectionTimeout(TIMEOUT_CONNECTION_IN_MS, TimeUnit.MILLISECONDS);
             httpOptions.setSocketTimeout(TIMEOUT_READ_IN_MS, TimeUnit.MILLISECONDS);
@@ -172,7 +173,7 @@ public class JiraRestClientAdapter {
                 restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password, httpOptions);
             }
 
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             // we should never get here as Mylyn constructs URI first and fails if it is
             // incorrect
             StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
@@ -196,7 +197,8 @@ public class JiraRestClientAdapter {
             @Override
             public Issue call() throws JiraException {
                 try {
-                    Issue issue = restClient.getIssueClient().getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA)).get();
+                    final Issue issue = restClient.getIssueClient()
+                            .getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA, IssueRestClient.Expandos.EDITMETA)).get();
                     final BasicWatchers watched = issue.getWatched();
                     final Watchers watchers = restClient.getIssueClient().getWatchers(watched.getSelf()).get();
                     issue.setWatchers(watchers);
@@ -208,11 +210,11 @@ public class JiraRestClientAdapter {
         });
     }
 
-    public void addAttachment(String issueKey, byte[] content, String filename) throws JiraException {
+    public void addAttachment(final String issueKey, final byte[] content, final String filename) throws JiraException {
         restClient.getIssueClient().addAttachment(getIssue(issueKey).getAttachmentsUri(), new ByteArrayInputStream(content), filename).claim();
     }
 
-    public InputStream getAttachment(URI attachmentUri) throws JiraException {
+    public InputStream getAttachment(final URI attachmentUri) throws JiraException {
         try {
             return restClient.getIssueClient().getAttachment(attachmentUri).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -260,14 +262,14 @@ public class JiraRestClientAdapter {
 
     public List<Field> getMetadata() throws JiraException {
         try {
-            List<Field> metadata = restClient.getMetadataClient().getFields().get();
+            final List<Field> metadata = restClient.getMetadataClient().getFields().get();
             return metadata;
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
     }
 
-    public JiraIssue getIssueByKeyOrId(String issueKeyOrId, IProgressMonitor monitor) throws JiraException {
+    public JiraIssue getIssueByKeyOrId(final String issueKeyOrId, final IProgressMonitor monitor) throws JiraException {
         return JiraRestConverter.convertIssue(getIssue(issueKeyOrId), cache, url, monitor);
     }
 
@@ -287,7 +289,7 @@ public class JiraRestClientAdapter {
         }
     }
 
-    public JiraIssueType[] getIssueTypes(String projectKey) throws JiraException {
+    public JiraIssueType[] getIssueTypes(final String projectKey) throws JiraException {
         try {
             return JiraRestConverter.convertIssueTypes(restClient.getProjectClient().getProject(projectKey).get().getIssueTypes());
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
@@ -301,17 +303,17 @@ public class JiraRestClientAdapter {
 
             @Override
             public List<JiraIssue> call() throws Exception {
-                Set<String> fields = new TreeSet<>();
+                final Set<String> fields = new TreeSet<>();
                 fields.add("*all");
                 monitor.subTask("Process issues");
-                SubMonitor progress = SubMonitor.convert(monitor, 100);
+                final SubMonitor progress = SubMonitor.convert(monitor, 100);
                 progress.split(0);
                 progress.setTaskName("Query server");
-                List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, fields).get().getIssues();
+                final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, fields).get().getIssues();
                 progress.split(20).setWorkRemaining(issuesFromServer.size());
 
-                List<JiraIssue> fullIssues = new ArrayList<>();
-                for (Issue issue : issuesFromServer) {
+                final List<JiraIssue> fullIssues = new ArrayList<>();
+                for (final Issue issue : issuesFromServer) {
                     fullIssues.add(JiraRestConverter.convertIssue(issue, cache, url, progress));
                     progress.split(1);
                 }
@@ -335,18 +337,18 @@ public class JiraRestClientAdapter {
     // .getVersions());
     // }
 
-    public void getProjectDetails(JiraProject project) throws JiraException {
+    public void getProjectDetails(final JiraProject project) throws JiraException {
 
         try {
-            Project projectWithDetails = restClient.getProjectClient().getProject(project.getKey()).get();
+            final Project projectWithDetails = restClient.getProjectClient().getProject(project.getKey()).get();
 
-            GetCreateIssueMetadataOptions builder = new GetCreateIssueMetadataOptionsBuilder().withProjectIds(Long.valueOf(project.getId()))
+            final GetCreateIssueMetadataOptions builder = new GetCreateIssueMetadataOptionsBuilder().withProjectIds(Long.valueOf(project.getId()))
                     .withExpandedIssueTypesFields().build();
-            List<CimProject> cimProjectWithDetails = restClient.getIssueClient().getCreateIssueMetadata(builder).get();
+            final List<CimProject> cimProjectWithDetails = restClient.getIssueClient().getCreateIssueMetadata(builder).get();
 
-            Map<Long, Map<String, CimFieldInfo>> projectMetadata = new HashMap<>();
+            final Map<Long, Map<String, CimFieldInfo>> projectMetadata = new HashMap<>();
             if (!cimProjectWithDetails.isEmpty()) {
-                for (CimIssueType issueType : cimProjectWithDetails.get(0).getIssueTypes()) {
+                for (final CimIssueType issueType : cimProjectWithDetails.get(0).getIssueTypes()) {
                     projectMetadata.put(issueType.getId(), issueType.getFields());
                 }
             }
@@ -360,11 +362,11 @@ public class JiraRestClientAdapter {
         }
     }
 
-    public void addWorklog(String issueKey, JiraWorkLog jiraWorklog) throws JiraException {
-        Issue issue = getIssue(issueKey);
+    public void addWorklog(final String issueKey, final JiraWorkLog jiraWorklog) throws JiraException {
+        final Issue issue = getIssue(issueKey);
         try {
             restClient.getIssueClient().addWorklog(issue.getWorklogUri(), JiraRestConverter.convert(jiraWorklog, issue.getSelf())).claim();
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             throw new JiraException(e);
         }
     }
@@ -395,10 +397,10 @@ public class JiraRestClientAdapter {
         });
     }
 
-    public List<JiraAction> getTransitions(String issueKey) throws JiraException {
+    public List<JiraAction> getTransitions(final String issueKey) throws JiraException {
 
         try {
-            URI transitionUri = new URIBuilder(url).appendPath("/rest/api/latest") //
+            final URI transitionUri = new URIBuilder(url).appendPath("/rest/api/latest") //
                     .appendPath("issue") //
                     .appendPath(issueKey) //
                     .appendPath("transitions") //$NON-NLS-1$
@@ -410,16 +412,17 @@ public class JiraRestClientAdapter {
         }
     }
 
-    public void transitionIssue(JiraIssue issue, String transitionKey, String comment, List<JiraIssueField> transitionFields) throws JiraException {
+    public void transitionIssue(final JiraIssue issue, final String transitionKey, final String comment, final List<JiraIssueField> transitionFields)
+            throws JiraException {
 
-        Comment outComment = StringUtils.isEmpty(comment) ? null : Comment.valueOf(comment);
+        final Comment outComment = StringUtils.isEmpty(comment) ? null : Comment.valueOf(comment);
 
-        List<FieldInput> fields = new ArrayList<>();
-        for (JiraIssueField transitionField : transitionFields) {
+        final List<FieldInput> fields = new ArrayList<>();
+        for (final JiraIssueField transitionField : transitionFields) {
 
             if (transitionField.isRequired()) {
 
-                String[] values = issue.getFieldValues(transitionField.getName());
+                final String[] values = issue.getFieldValues(transitionField.getName());
 
                 if (values != null && values.length > 0) {
                     if (transitionField.getName().equals(JiraRestFields.SUMMARY) || transitionField.getName().equals(JiraRestFields.DESCRIPTION)
@@ -447,9 +450,9 @@ public class JiraRestClientAdapter {
                     } else if (transitionField.getType() != null && transitionField.getType().equals("array") //$NON-NLS-1$
                             && !transitionField.getName().startsWith("customfield_")) { //$NON-NLS-1$
 
-                        List<ComplexIssueInputFieldValue> array = new ArrayList<>();
+                        final List<ComplexIssueInputFieldValue> array = new ArrayList<>();
 
-                        for (String value : values) {
+                        for (final String value : values) {
                             array.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, value));
                         }
 
@@ -457,9 +460,9 @@ public class JiraRestClientAdapter {
 
                     } else if (transitionField.getName().startsWith("customfield_")) { //$NON-NLS-1$
 
-                        JiraCustomField customField = issue.getCustomFieldById(transitionField.getId());
+                        final JiraCustomField customField = issue.getCustomFieldById(transitionField.getId());
 
-                        FieldInput field = JiraRestConverter.convert(customField);
+                        final FieldInput field = JiraRestConverter.convert(customField);
                         if (field != null) {
                             fields.add(field);
                         }
@@ -471,7 +474,7 @@ public class JiraRestClientAdapter {
                     String message = "Field \"{0}\" is required for transition id \"{1}\""; //$NON-NLS-1$
 
                     if (name.startsWith("customfield_")) { //$NON-NLS-1$
-                        JiraCustomField customField = issue.getCustomFieldById(transitionField.getId());
+                        final JiraCustomField customField = issue.getCustomFieldById(transitionField.getId());
                         if (customField != null) {
                             name = customField.getName();
                         } else {
@@ -489,7 +492,7 @@ public class JiraRestClientAdapter {
         // fields.add(new FieldInput("resolution", new Resolution(null, "Duplicate",
         // null)));
 
-        TransitionInput transitionInput = new TransitionInput(Integer.parseInt(transitionKey), fields, outComment);
+        final TransitionInput transitionInput = new TransitionInput(Integer.parseInt(transitionKey), fields, outComment);
 
         try {
             restClient.getIssueClient().transition(getIssue(issue.getKey()), transitionInput).claim();
@@ -499,13 +502,14 @@ public class JiraRestClientAdapter {
 
     }
 
-    public void assignIssue(String issueKey, String user, String comment) throws JiraException {
-        Issue issue = getIssue(issueKey);
+    public void assignIssue(final String issueKey, final String user, final String comment) throws JiraException {
+        final Issue issue = getIssue(issueKey);
 
-        IssueInput fields = IssueInput.createWithFields(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, user)));
+        final IssueInput fields = IssueInput
+                .createWithFields(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, user)));
         try {
             restClient.getIssueClient().updateIssue(issue.getKey(), fields).claim();
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             throw new JiraException(e);
         }
 
@@ -516,7 +520,7 @@ public class JiraRestClientAdapter {
      * @return issue key
      * @throws JiraException
      */
-    public String createIssue(JiraIssue issue) throws JiraException {
+    public String createIssue(final JiraIssue issue) throws JiraException {
 
         // GetCreateIssueMetadataOptionsBuilder builder = new
         // GetCreateIssueMetadataOptionsBuilder();
@@ -537,7 +541,7 @@ public class JiraRestClientAdapter {
 
         try {
             issueTypeId = Long.parseLong(issue.getType().getId());
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new JiraException("Incorrect issue type.", e); //$NON-NLS-1$
         }
 
@@ -578,7 +582,7 @@ public class JiraRestClientAdapter {
         }
 
         if (issue.getEstimate() != null) {
-            Map<String, Object> map = Map.ofEntries(Map.entry(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m"),
+            final Map<String, Object> map = Map.ofEntries(Map.entry(JiraRestFields.ORIGINAL_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m"),
                     Map.entry(JiraRestFields.REMAINING_ESTIMATE, String.valueOf(issue.getEstimate() / 60) + "m"));
 
             // TODO Remove
@@ -610,12 +614,12 @@ public class JiraRestClientAdapter {
         });
     }
 
-    public void updateIssue(JiraIssue changedIssue, boolean updateEstimate) throws JiraException {
+    public void updateIssue(final JiraIssue changedIssue, final boolean updateEstimate) throws JiraException {
         final JiraIssue fullIssue = getIssueByKeyOrId(changedIssue.getKey(), new org.eclipse.core.runtime.NullProgressMonitor());
 
         final Issue issue = fullIssue.getRawIssue();
 
-        Collection<JiraIssueField> editableFields = Arrays.asList(fullIssue.getEditableFields());
+        final Collection<JiraIssueField> editableFields = Arrays.asList(fullIssue.getEditableFields());
 
         final List<FieldInput> updateFields = new ArrayList<>();
 
@@ -637,8 +641,8 @@ public class JiraRestClientAdapter {
         // if time tracking is enabled and estimate changed
         if (issue.getTimeTracking() != null && updateEstimate) {
 
-            Long currentEstimateInSeconds = changedIssue.getEstimate();
-            Integer previousEstimateInMinutes = issue.getTimeTracking().getRemainingEstimateMinutes();
+            final Long currentEstimateInSeconds = changedIssue.getEstimate();
+            final Integer previousEstimateInMinutes = issue.getTimeTracking().getRemainingEstimateMinutes();
 
             String outputOriginalEstimateInMinutes = null;
             String outputRemainingEstimateInMinutes = null;
@@ -671,7 +675,7 @@ public class JiraRestClientAdapter {
 
             if (outputOriginalEstimateInMinutes != null && outputRemainingEstimateInMinutes != null) {
 
-                Map<String, Object> map = Map.ofEntries(Map.entry(JiraRestFields.ORIGINAL_ESTIMATE, outputOriginalEstimateInMinutes + "m"),
+                final Map<String, Object> map = Map.ofEntries(Map.entry(JiraRestFields.ORIGINAL_ESTIMATE, outputOriginalEstimateInMinutes + "m"),
                         Map.entry(JiraRestFields.REMAINING_ESTIMATE, outputRemainingEstimateInMinutes + "m"));
 
                 // TODO Remove
@@ -686,24 +690,24 @@ public class JiraRestClientAdapter {
         }
 
         if (editableFields.contains(new JiraIssueField(JiraRestFields.VERSIONS, null))) {
-            List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<>();
-            for (JiraVersion version : changedIssue.getReportedVersions()) {
+            final List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<>();
+            for (final JiraVersion version : changedIssue.getReportedVersions()) {
                 reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
             }
             updateFields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
         }
 
         if (editableFields.contains(new JiraIssueField(JiraRestFields.FIX_VERSIONS, null))) {
-            List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<>();
-            for (JiraVersion version : changedIssue.getFixVersions()) {
+            final List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<>();
+            for (final JiraVersion version : changedIssue.getFixVersions()) {
                 fixVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
             }
             updateFields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
         }
 
         if (editableFields.contains(new JiraIssueField(JiraRestFields.COMPONENTS, null))) {
-            List<ComplexIssueInputFieldValue> components = new ArrayList<>();
-            for (JiraComponent component : changedIssue.getComponents()) {
+            final List<ComplexIssueInputFieldValue> components = new ArrayList<>();
+            for (final JiraComponent component : changedIssue.getComponents()) {
                 components.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, component.getId()));
             }
             updateFields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
@@ -712,7 +716,7 @@ public class JiraRestClientAdapter {
         if (changedIssue.getSecurityLevel() != null) {
             // security level value "-1" clears security level
             updateFields
-            .add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
+                    .add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
         } else {
             // do not clear security level as it might be not available on the screen
         }
@@ -730,8 +734,8 @@ public class JiraRestClientAdapter {
         }
 
         if (editableFields.contains(new JiraIssueField(JiraRestFields.ASSIGNEE, null))) {
-            String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee(); //$NON-NLS-1$//$NON-NLS-2$
-            String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getName() : ""; //$NON-NLS-1$
+            final String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee(); //$NON-NLS-1$//$NON-NLS-2$
+            final String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getName() : ""; //$NON-NLS-1$
 
             if (!assigne.equals(prevAssigne)) {
                 updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, assigne)));
@@ -742,8 +746,8 @@ public class JiraRestClientAdapter {
             updateFields.add(new FieldInput(JiraRestFields.LABELS, Arrays.asList(changedIssue.getLabels())));
         }
 
-        for (JiraCustomField customField : changedIssue.getCustomFields()) {
-            FieldInput field = JiraRestConverter.convert(customField);
+        for (final JiraCustomField customField : changedIssue.getCustomFields()) {
+            final FieldInput field = JiraRestConverter.convert(customField);
             if (field != null) {
                 updateFields.add(field);
             }
@@ -753,7 +757,7 @@ public class JiraRestClientAdapter {
 
             @Override
             public Void call() throws Exception {
-                IssueInput issueInput = IssueInput.createWithFields(updateFields.toArray(new FieldInput[0]));
+                final IssueInput issueInput = IssueInput.createWithFields(updateFields.toArray(new FieldInput[0]));
                 restClient.getIssueClient().updateIssue(issue.getKey(), issueInput).claim();
                 return null;
             }
@@ -761,11 +765,11 @@ public class JiraRestClientAdapter {
 
     }
 
-    private <V> V call(Callable<V> callable) throws JiraException {
+    private <V> V call(final Callable<V> callable) throws JiraException {
 
         try {
             return callable.call();
-        } catch (RestClientException e) {
+        } catch (final RestClientException e) {
             if (e.getMessage().contains(HTTP_401)) {
                 throw new JiraAuthenticationException(HTTP_401);
             } else if (e.getMessage().contains(HTTP_403)) {
@@ -773,13 +777,13 @@ public class JiraRestClientAdapter {
             } else if (e.getMessage().contains(CONNECTION_REFUSED)) {
                 throw new JiraException(CONNECTION_REFUSED, e);
             } else if (e.getMessage().contains(UNKNOWN_HOST_EXCEPTION)) {
-                int index = e.getMessage().indexOf(UNKNOWN_HOST_EXCEPTION);
+                final int index = e.getMessage().indexOf(UNKNOWN_HOST_EXCEPTION);
                 throw new JiraServiceUnavailableException(e.getMessage().substring(index));
             } else if (e.getMessage().contains(ILLEGAL_ARGUMENT_EXCEPTION)) {
-                int index = e.getMessage().indexOf(ILLEGAL_ARGUMENT_EXCEPTION);
+                final int index = e.getMessage().indexOf(ILLEGAL_ARGUMENT_EXCEPTION);
                 throw new JiraException(e.getMessage().substring(index), e);
             } else if (e.getMessage().contains(HTTP_302)) {
-                int index = e.getMessage().indexOf(HTTP_302);
+                final int index = e.getMessage().indexOf(HTTP_302);
                 throw new JiraException(e.getMessage().substring(index) + ". Https might be required.", e); //$NON-NLS-1$
             } else if (e.getMessage().contains(HTTP_404)) {
                 throw new JiraServiceUnavailableException(e);
@@ -790,10 +794,10 @@ public class JiraRestClientAdapter {
             } else if (e.getMessage().contains("Client response status: 301") && !followRedirects) { //$NON-NLS-1$
                 throw new JiraException("Client response status: 301. Please enable 'Follow redirects' checkbox for task repository.", e); //$NON-NLS-1$
             } else if (e.getMessage().contains(SOCKET_TIMEOUT_EXCEPTION)) {
-                int index = e.getMessage().indexOf(SOCKET_TIMEOUT_EXCEPTION);
+                final int index = e.getMessage().indexOf(SOCKET_TIMEOUT_EXCEPTION);
                 throw new JiraException(e.getMessage().substring(index), e);
             } else if (e.getMessage().contains(CONNECT_TIMEOUT_EXCEPTION)) {
-                int index = e.getMessage().indexOf(CONNECT_TIMEOUT_EXCEPTION);
+                final int index = e.getMessage().indexOf(CONNECT_TIMEOUT_EXCEPTION);
                 throw new JiraException(e.getMessage().substring(index), e);
             } else if (e.getMessage().contains("unable to find valid certification path")) { //$NON-NLS-1$
                 throw new JiraException(
@@ -804,7 +808,7 @@ public class JiraRestClientAdapter {
                 // (mainly TaskRepository dialog)
                 throw new JiraException(e.getMessage(), e);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
@@ -822,9 +826,9 @@ public class JiraRestClientAdapter {
         return REST_DATE_FORMAT;
     }
 
-    public JiraSecurityLevel[] getSecurityLevels(String projectKey) throws JiraException {
+    public JiraSecurityLevel[] getSecurityLevels(final String projectKey) throws JiraException {
 
-        GetCreateIssueMetadataOptionsBuilder builder = new GetCreateIssueMetadataOptionsBuilder();
+        final GetCreateIssueMetadataOptionsBuilder builder = new GetCreateIssueMetadataOptionsBuilder();
 
         List<CimProject> createIssueMetadata;
         try {
@@ -835,23 +839,23 @@ public class JiraRestClientAdapter {
         }
 
         if (createIssueMetadata.iterator().hasNext()) {
-            CimProject cimProject = createIssueMetadata.iterator().next();
+            final CimProject cimProject = createIssueMetadata.iterator().next();
 
             // get first issue type (security level is the same for all issue types in the
             // project)
             if (cimProject.getIssueTypes().iterator().hasNext()) {
-                CimIssueType cimIssueType = cimProject.getIssueTypes().iterator().next();
+                final CimIssueType cimIssueType = cimProject.getIssueTypes().iterator().next();
 
-                CimFieldInfo cimFieldSecurity = cimIssueType.getFields().get(JiraRestFields.SECURITY);
+                final CimFieldInfo cimFieldSecurity = cimIssueType.getFields().get(JiraRestFields.SECURITY);
 
                 if (cimFieldSecurity != null) {
-                    List<Object> allowedValues = cimFieldSecurity.getAllowedValues();
+                    final List<Object> allowedValues = cimFieldSecurity.getAllowedValues();
 
-                    List<JiraSecurityLevel> securityLevels = new ArrayList<>();
+                    final List<JiraSecurityLevel> securityLevels = new ArrayList<>();
 
-                    for (Object allowedValue : allowedValues) {
+                    for (final Object allowedValue : allowedValues) {
                         if (allowedValue instanceof JiraSecurityLevel) {
-                            JiraSecurityLevel securityLevel = (JiraSecurityLevel) allowedValue;
+                            final JiraSecurityLevel securityLevel = (JiraSecurityLevel) allowedValue;
 
                             securityLevels.add(new JiraSecurityLevel(securityLevel.getId().toString(), securityLevel.getName()));
                         }
@@ -868,13 +872,13 @@ public class JiraRestClientAdapter {
         return new JiraSecurityLevel[0];
     }
 
-    public void deleteIssue(final String key, IProgressMonitor monitor) throws JiraException {
+    public void deleteIssue(final String key, final IProgressMonitor monitor) throws JiraException {
         call(new Callable<Void>() {
             @Override
             public Void call() throws JiraException {
                 try {
                     restClient.getIssueClient().deleteIssue(key, true).claim();
-                } catch (URISyntaxException e) {
+                } catch (final URISyntaxException e) {
                     throw new JiraException(e);
                 }
                 return null;
