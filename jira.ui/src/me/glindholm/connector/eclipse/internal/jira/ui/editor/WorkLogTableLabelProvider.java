@@ -11,6 +11,10 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.editor;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
@@ -22,36 +26,38 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
  */
 public class WorkLogTableLabelProvider extends ColumnLabelProvider {
 
-	private final JiraTimeFormat format;
+    private final JiraTimeFormat formatTimeSpent;
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ssZ").withZone(ZoneId.systemDefault());
 
-	public WorkLogTableLabelProvider(JiraTimeFormat format) {
-		this.format = format;
-	}
+    public WorkLogTableLabelProvider(final JiraTimeFormat format) {
+        formatTimeSpent = format;
 
-	public String getColumnText(Object element, int columnIndex) {
-		JiraWorkLog attachment = (JiraWorkLog) element;
-		switch (columnIndex) {
-		case 0:
-			return attachment.getAuthor();
-		case 1:
-			// XXX use EditorUtil
-			if (attachment.getStartDate() != null) {
-				return attachment.getStartDate().toString();
-			} else {
-				return ""; //$NON-NLS-1$
-			}
-		case 2:
-			return format.format(attachment.getTimeSpent());
-		case 3:
-			return attachment.getComment();
-		}
-		return "unrecognized column"; //$NON-NLS-1$
-	}
+    }
 
-	@Override
-	public void update(ViewerCell cell) {
-		super.update(cell);
-		cell.setText(getColumnText(cell.getElement(), cell.getColumnIndex()));
-	}
+    public String getColumnText(final Object element, final int columnIndex) {
+        final JiraWorkLog attachment = (JiraWorkLog) element;
+        switch (columnIndex) {
+        case 0:
+            return attachment.getAuthor();
+        case 1:
+            // XXX use EditorUtil
+            if (attachment.getStartDate() != null) {
+                return dateFormat.format(attachment.getStartDate().atOffset(ZoneOffset.UTC));
+            } else {
+                return ""; //$NON-NLS-1$
+            }
+        case 2:
+            return formatTimeSpent.format(attachment.getTimeSpent());
+        case 3:
+            return attachment.getComment();
+        }
+        return "unrecognized column"; //$NON-NLS-1$
+    }
+
+    @Override
+    public void update(final ViewerCell cell) {
+        super.update(cell);
+        cell.setText(getColumnText(cell.getElement(), cell.getColumnIndex()));
+    }
 
 }
