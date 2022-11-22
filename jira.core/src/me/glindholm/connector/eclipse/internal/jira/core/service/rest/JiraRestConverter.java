@@ -498,7 +498,10 @@ public class JiraRestConverter {
                 values = List.of(String.join(", ", userPicks)); //$NON-NLS-1$
                 break;
             case USERPICKER:
-                values = List.of(JiraRestCustomFieldsParser.parseUserPicker(field));
+                final String user = JiraRestCustomFieldsParser.parseUserPicker(field);
+                if (user != null) {
+                    values = List.of(user);
+                }
                 break;
             case SELECT:
             case RADIOBUTTONS:
