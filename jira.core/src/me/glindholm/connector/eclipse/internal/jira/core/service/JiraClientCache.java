@@ -113,7 +113,7 @@ public class JiraClientCache {
 
     public JiraProject getProjectById(final String id, final IProgressMonitor monitor) throws JiraException {
         JiraProject project = data.projectsById.get(id);
-        if (project == null || project.getfieldMetadata() == null) {
+        if (project == null) {
             refreshProjectDetails(id, monitor);
             project = data.projectsById.get(id);
         }

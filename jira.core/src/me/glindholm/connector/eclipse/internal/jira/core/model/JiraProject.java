@@ -17,8 +17,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
+import me.glindholm.jira.rest.client.api.domain.User;
 
 /**
  * TODO need mapping statuses -> actions -> fields
@@ -58,9 +62,9 @@ public class JiraProject implements Serializable {
 
     private boolean details;
 
-    private Map<Long, Map<String, CimFieldInfo>> fieldMetadata;
+    private Map<String, BasicUser> assignables = new ConcurrentHashMap<>();
 
-    public JiraProject(String id) {
+    public JiraProject(final String id) {
         this.id = id;
     }
 
@@ -68,63 +72,63 @@ public class JiraProject implements Serializable {
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     public String getKey() {
-        return this.key;
+        return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(final String key) {
         this.key = key;
     }
 
     public String getLead() {
-        return this.lead;
+        return lead;
     }
 
-    public void setLead(String lead) {
+    public void setLead(final String lead) {
         this.lead = lead;
     }
 
     public String getProjectUrl() {
-        return this.projectUrl;
+        return projectUrl;
     }
 
-    public void setProjectUrl(String projectUrl) {
+    public void setProjectUrl(final String projectUrl) {
         this.projectUrl = projectUrl;
     }
 
     public String getUrl() {
-        return this.url;
+        return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 
-    public JiraComponent getComponent(String name) {
-        for (JiraComponent component : this.components) {
+    public JiraComponent getComponent(final String name) {
+        for (final JiraComponent component : components) {
             if (component.getName().equals(name)) {
                 return component;
             }
@@ -133,15 +137,15 @@ public class JiraProject implements Serializable {
     }
 
     public JiraComponent[] getComponents() {
-        return this.components;
+        return components;
     }
 
-    public void setComponents(JiraComponent[] components) {
+    public void setComponents(final JiraComponent[] components) {
         this.components = components;
     }
 
-    public JiraVersion getVersion(String name) {
-        for (JiraVersion version : this.versions) {
+    public JiraVersion getVersion(final String name) {
+        for (final JiraVersion version : versions) {
             if (version.getName().equals(name)) {
                 return version;
             }
@@ -149,14 +153,14 @@ public class JiraProject implements Serializable {
         return null;
     }
 
-    public void setVersions(JiraVersion[] versions) {
+    public void setVersions(final JiraVersion[] versions) {
         this.versions = versions;
     }
 
-    public JiraVersion[] getReleasedVersions(boolean includeArchived) {
-        List<JiraVersion> releasedVersions = new ArrayList<>();
+    public JiraVersion[] getReleasedVersions(final boolean includeArchived) {
+        final List<JiraVersion> releasedVersions = new ArrayList<>();
 
-        for (JiraVersion version : this.versions) {
+        for (final JiraVersion version : versions) {
             if (version.isReleased()) {
                 if (!version.isArchived() || includeArchived) {
                     releasedVersions.add(version);
@@ -167,10 +171,10 @@ public class JiraProject implements Serializable {
         return releasedVersions.toArray(new JiraVersion[releasedVersions.size()]);
     }
 
-    public JiraVersion[] getUnreleasedVersions(boolean includeArchived) {
-        List<JiraVersion> unreleasedVersions = new ArrayList<>();
+    public JiraVersion[] getUnreleasedVersions(final boolean includeArchived) {
+        final List<JiraVersion> unreleasedVersions = new ArrayList<>();
 
-        for (JiraVersion version : this.versions) {
+        for (final JiraVersion version : versions) {
             if (!version.isReleased()) {
                 if (!version.isArchived() || includeArchived) {
                     unreleasedVersions.add(version);
@@ -182,9 +186,9 @@ public class JiraProject implements Serializable {
     }
 
     public JiraVersion[] getArchivedVersions() {
-        List<JiraVersion> archivedVersions = new ArrayList<>();
+        final List<JiraVersion> archivedVersions = new ArrayList<>();
 
-        for (JiraVersion version : this.versions) {
+        for (final JiraVersion version : versions) {
             if (version.isArchived()) {
                 archivedVersions.add(version);
             }
@@ -194,11 +198,11 @@ public class JiraProject implements Serializable {
     }
 
     public JiraVersion[] getVersions() {
-        return this.versions;
+        return versions;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
@@ -207,9 +211,9 @@ public class JiraProject implements Serializable {
             return false;
         }
 
-        JiraProject that = (JiraProject) obj;
+        final JiraProject that = (JiraProject) obj;
 
-        return this.name.equals(that.name);
+        return name.equals(that.name);
     }
 
     @Override
@@ -219,40 +223,32 @@ public class JiraProject implements Serializable {
 
     @Override
     public String toString() {
-        return this.name;
+        return name;
     }
 
     public JiraIssueType[] getIssueTypes() {
         return issueTypes;
     }
 
-    public void setIssueTypes(JiraIssueType[] issueTypes) {
+    public void setIssueTypes(final JiraIssueType[] issueTypes) {
         this.issueTypes = issueTypes;
-        this.issueTypesById = new HashMap<>();
+        issueTypesById = new HashMap<>();
         if (issueTypes != null) {
-            for (JiraIssueType type : issueTypes) {
+            for (final JiraIssueType type : issueTypes) {
                 issueTypesById.put(type.getId(), type);
             }
         }
-    }
-
-    public Map<Long, Map<String, CimFieldInfo>> getfieldMetadata() {
-        return fieldMetadata;
-    }
-
-    public void setfieldMetadata(Map<Long, Map<String, CimFieldInfo>> fieldMetadata) {
-        this.fieldMetadata = fieldMetadata;
     }
 
     public JiraSecurityLevel[] getSecurityLevels() {
         return securityLevels;
     }
 
-    public void setSecurityLevels(JiraSecurityLevel[] securityLevels) {
+    public void setSecurityLevels(final JiraSecurityLevel[] securityLevels) {
         this.securityLevels = securityLevels;
     }
 
-    public void setDetails(boolean details) {
+    public void setDetails(final boolean details) {
         this.details = details;
     }
 
@@ -260,11 +256,25 @@ public class JiraProject implements Serializable {
         return details;
     }
 
-    public JiraIssueType getIssueTypeById(String typeId) {
+    public JiraIssueType getIssueTypeById(final String typeId) {
         if (issueTypesById != null) {
             return issueTypesById.get(typeId);
         }
         return null;
+    }
+
+    public Map<String, BasicUser> getAssignables() {
+        return assignables;
+    }
+
+    public void addAssignables(final List<? extends BasicUser> assignables) {
+        for (final BasicUser assignable : assignables) {
+            this.assignables.putIfAbsent(assignable.getId(), assignable);
+        }
+    }
+
+    public void setAssignables(final List<User> assignables) {
+        this.assignables = assignables.stream().collect(Collectors.toConcurrentMap(BasicUser::getId, Function.identity()));
     }
 
 }

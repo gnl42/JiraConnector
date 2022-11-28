@@ -352,8 +352,6 @@ public class JiraRestClientAdapter {
                     projectMetadata.put(issueType.getId(), issueType.getFields());
                 }
             }
-            project.setfieldMetadata(projectMetadata);
-
             project.setComponents(JiraRestConverter.convertComponents(projectWithDetails.getComponents()));
             project.setVersions(JiraRestConverter.convertVersions(projectWithDetails.getVersions()));
             project.setIssueTypes(JiraRestConverter.convertIssueTypes(projectWithDetails.getIssueTypes()));
