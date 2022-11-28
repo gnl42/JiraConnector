@@ -1042,7 +1042,7 @@ public class JiraRestConverter {
             }
 
             return new FieldInput(customField.getId(), values);
-        // }
+            // }
 
         case LABELSS:
             if (customField.getValues().size() > 0) {

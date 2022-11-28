@@ -106,23 +106,23 @@ public class FilterDefinitionConverter {
      *            date format which has to be used for classic queries; should match the one configured in JIRA; in case
      *            of JQL format is hard-coded and independent from user settings
      */
-    public FilterDefinitionConverter(String encoding, DateFormat dateFormat) {
+    public FilterDefinitionConverter(final String encoding, final DateFormat dateFormat) {
         Assert.isNotNull(dateFormat);
         Assert.isNotNull(encoding);
         this.encoding = encoding;
-        this.classicQueryOffsetDateTimeFormat = dateFormat;
+        classicQueryOffsetDateTimeFormat = dateFormat;
     }
 
-    public String toUrl(String repositoryUrl, FilterDefinition filter) {
+    public String toUrl(final String repositoryUrl, final FilterDefinition filter) {
         return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX + "&reset=true" + getQueryParams(filter); //$NON-NLS-1$
     }
 
-    public String toJqlUrl(String repositoryUrl, FilterDefinition filter) throws UnsupportedEncodingException {
+    public String toJqlUrl(final String repositoryUrl, final FilterDefinition filter) throws UnsupportedEncodingException {
         return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX_NEW
                 + URLEncoder.encode(getJqlString(filter), encoding);
     }
 
-    public FilterDefinition toFilter(JiraClient client, String classicUrl, boolean validate) {
+    public FilterDefinition toFilter(final JiraClient client, final String classicUrl, final boolean validate) {
         try {
             return toFilter(client, classicUrl, validate, false, null);
         } catch (JiraException | UnsupportedEncodingException ex) {
@@ -130,8 +130,8 @@ public class FilterDefinitionConverter {
         }
     }
 
-    public FilterDefinition toFilter(JiraClient client, String classicUrl, boolean validate, boolean update,
-            IProgressMonitor monitor) throws JiraException, UnsupportedEncodingException {
+    public FilterDefinition toFilter(final JiraClient client, final String classicUrl, final boolean validate, final boolean update,
+            final IProgressMonitor monitor) throws JiraException, UnsupportedEncodingException {
         final FilterDefinition filter = new FilterDefinition();
 
         final int n = classicUrl.indexOf('?');
@@ -140,11 +140,11 @@ public class FilterDefinitionConverter {
         }
 
         final HashMap<String, List<String>> params = new HashMap<>();
-        for (String pair : classicUrl.substring(n + 1).split("&")) { //$NON-NLS-1$
-            String[] tokens = pair.split("="); //$NON-NLS-1$
+        for (final String pair : classicUrl.substring(n + 1).split("&")) { //$NON-NLS-1$
+            final String[] tokens = pair.split("="); //$NON-NLS-1$
             if (tokens.length > 1) {
-                String key = tokens[0];
-                String value = tokens.length == 1 ? "" : URLDecoder.decode(tokens[1], encoding); //$NON-NLS-1$
+                final String key = tokens[0];
+                final String value = tokens.length == 1 ? "" : URLDecoder.decode(tokens[1], encoding); //$NON-NLS-1$
                 List<String> values = params.get(key);
                 if (values == null) {
                     values = new ArrayList<>();
@@ -154,10 +154,10 @@ public class FilterDefinitionConverter {
             }
         }
 
-        JiraFieldsNames jiraField = JiraFieldsNames.createClassic();
-        List<String> projectIds = getIds(params, jiraField.PROJECT());
-        List<JiraProject> projects = new ArrayList<>();
-        for (String projectId : projectIds) {
+        final JiraFieldsNames jiraField = JiraFieldsNames.createClassic();
+        final List<String> projectIds = getIds(params, jiraField.PROJECT());
+        final List<JiraProject> projects = new ArrayList<>();
+        for (final String projectId : projectIds) {
             JiraProject project = client.getCache().getProjectById(projectId);
             if (update && (project == null || !project.hasDetails())) {
                 project = client.getCache().refreshProjectDetails(projectId, monitor);
@@ -176,19 +176,19 @@ public class FilterDefinitionConverter {
         if (projects.size() > 0) {
             filter.setProjectFilter(new ProjectFilter(projects.toArray(new JiraProject[projects.size()])));
 
-            List<String> componentIds = getIds(params, jiraField.COMPONENT());
-            Set<JiraComponent> components = new LinkedHashSet<>();
-            Set<JiraVersion> versions = new LinkedHashSet<>();
+            final List<String> componentIds = getIds(params, jiraField.COMPONENT());
+            final Set<JiraComponent> components = new LinkedHashSet<>();
+            final Set<JiraVersion> versions = new LinkedHashSet<>();
 
             boolean hasNoComponent = false;
 
-            for (JiraProject project : projects) {
+            for (final JiraProject project : projects) {
                 if (!project.hasDetails()) {
                     continue;
                 }
-                for (String componentId : componentIds) {
-                    JiraComponent[] projectComponents = project.getComponents();
-                    for (JiraComponent component : projectComponents) {
+                for (final String componentId : componentIds) {
+                    final JiraComponent[] projectComponents = project.getComponents();
+                    for (final JiraComponent component : projectComponents) {
                         if (component.getId().equals(componentId)) {
                             components.add(component);
                         }
@@ -205,18 +205,18 @@ public class FilterDefinitionConverter {
                         hasNoComponent));
             }
 
-            JiraVersion[] projectVersions = versions.toArray(new JiraVersion[versions.size()]);
+            final JiraVersion[] projectVersions = versions.toArray(new JiraVersion[versions.size()]);
             filter.setFixForVersionFilter(createVersionFilter(getIds(params, jiraField.FIX_VERSION()), projectVersions));
             filter.setReportedInVersionFilter(createVersionFilter(getIds(params, jiraField.AFFECTED_VERSION()),
                     projectVersions));
         }
 
-        List<String> typeIds = getIds(params, JiraFields.ISSUE_TYPE.getClassic());
-        List<JiraIssueType> issueTypes = new ArrayList<>();
-        for (String typeId : typeIds) {
+        final List<String> typeIds = getIds(params, JiraFields.ISSUE_TYPE.getClassic());
+        final List<JiraIssueType> issueTypes = new ArrayList<>();
+        for (final String typeId : typeIds) {
             JiraIssueType issueType = null;
             if (projects.size() > 0) {
-                for (JiraProject project : projects) {
+                for (final JiraProject project : projects) {
                     issueType = project.getIssueTypeById(typeId);
                     if (issueType != null) {
                         break;
@@ -239,10 +239,10 @@ public class FilterDefinitionConverter {
             filter.setIssueTypeFilter(new IssueTypeFilter(issueTypes.toArray(new JiraIssueType[issueTypes.size()])));
         }
 
-        List<String> statusIds = getIds(params, JiraFields.STATUS.getClassic());
-        List<JiraStatus> statuses = new ArrayList<>();
-        for (String statusId : statusIds) {
-            JiraStatus status = client.getCache().getStatusById(statusId);
+        final List<String> statusIds = getIds(params, JiraFields.STATUS.getClassic());
+        final List<JiraStatus> statuses = new ArrayList<>();
+        for (final String statusId : statusIds) {
+            final JiraStatus status = client.getCache().getStatusById(statusId);
             if (status != null) {
                 statuses.add(status);
             } else if (validate) {
@@ -253,12 +253,12 @@ public class FilterDefinitionConverter {
             filter.setStatusFilter(new StatusFilter(statuses.toArray(new JiraStatus[statuses.size()])));
         }
 
-        List<String> resolutionIds = getIds(params, JiraFields.RESOLUTION.getClassic());
-        List<JiraResolution> resolutions = new ArrayList<>();
+        final List<String> resolutionIds = getIds(params, JiraFields.RESOLUTION.getClassic());
+        final List<JiraResolution> resolutions = new ArrayList<>();
         boolean unresolved = false;
-        for (String resolutionId : resolutionIds) {
+        for (final String resolutionId : resolutionIds) {
             if (!JiraFieldSpecialValue.UNRESOLVED.getClassic().equals(resolutionId)) {
-                JiraResolution resolution = client.getCache().getResolutionById(resolutionId);
+                final JiraResolution resolution = client.getCache().getResolutionById(resolutionId);
                 if (resolution != null) {
                     resolutions.add(resolution);
                 } else if (validate) {
@@ -274,10 +274,10 @@ public class FilterDefinitionConverter {
             filter.setResolutionFilter(new ResolutionFilter(new JiraResolution[0]));
         }
 
-        List<String> priorityIds = getIds(params, JiraFields.PRIORITY.getClassic());
-        List<JiraPriority> priorities = new ArrayList<>();
-        for (String priorityId : priorityIds) {
-            JiraPriority priority = client.getCache().getPriorityById(priorityId);
+        final List<String> priorityIds = getIds(params, JiraFields.PRIORITY.getClassic());
+        final List<JiraPriority> priorities = new ArrayList<>();
+        for (final String priorityId : priorityIds) {
+            final JiraPriority priority = client.getCache().getPriorityById(priorityId);
             if (priority != null) {
                 priorities.add(priority);
             } else if (validate) {
@@ -288,12 +288,12 @@ public class FilterDefinitionConverter {
             filter.setPriorityFilter(new PriorityFilter(priorities.toArray(new JiraPriority[priorities.size()])));
         }
 
-        List<String> queries = getIds(params, QUERY_KEY);
-        for (String query : queries) {
-            boolean searchSummary = getIds(params, jiraField.SUMMARY()).contains("true"); //$NON-NLS-1$
-            boolean searchDescription = getIds(params, jiraField.DESCRIPTION()).contains("true"); //$NON-NLS-1$
-            boolean searchEnvironment = getIds(params, jiraField.ENVIRONMENT()).contains("true"); //$NON-NLS-1$
-            boolean searchComments = getIds(params, jiraField.COMMENT()).contains("true"); //$NON-NLS-1$
+        final List<String> queries = getIds(params, QUERY_KEY);
+        for (final String query : queries) {
+            final boolean searchSummary = getIds(params, jiraField.SUMMARY()).contains("true"); //$NON-NLS-1$
+            final boolean searchDescription = getIds(params, jiraField.DESCRIPTION()).contains("true"); //$NON-NLS-1$
+            final boolean searchEnvironment = getIds(params, jiraField.ENVIRONMENT()).contains("true"); //$NON-NLS-1$
+            final boolean searchComments = getIds(params, jiraField.COMMENT()).contains("true"); //$NON-NLS-1$
             filter.setContentFilter(new ContentFilter(query, searchSummary, searchDescription, searchEnvironment,
                     searchComments));
         }
@@ -308,7 +308,7 @@ public class FilterDefinitionConverter {
         return filter;
     }
 
-    public String getQueryParams(FilterDefinition filter) {
+    public String getQueryParams(final FilterDefinition filter) {
         final StringBuilder sb = new StringBuilder();
         final JiraFieldsNames jiraField = JiraFieldsNames.createClassic();
         final FilterDataExtractor classicFilter = new ClassicFilterDataExtractor();
@@ -341,7 +341,7 @@ public class FilterDefinitionConverter {
         // content (summary, description, comments, environment)
         final ContentFilter contentFilter = filter.getContentFilter();
         if (contentFilter != null) {
-            String queryString = contentFilter.getQueryString();
+            final String queryString = contentFilter.getQueryString();
             if (queryString != null) {
                 addParameter(sb, QUERY_KEY, queryString);
             }
@@ -374,13 +374,13 @@ public class FilterDefinitionConverter {
         addOrdering(sb, filter.getOrdering());
 
         // estimation
-        EstimateVsActualFilter estimateFilter = filter.getEstimateVsActualFilter();
+        final EstimateVsActualFilter estimateFilter = filter.getEstimateVsActualFilter();
         if (estimateFilter != null) {
-            long min = estimateFilter.getMinVariation();
+            final long min = estimateFilter.getMinVariation();
             if (min != 0L) {
                 addParameter(sb, "minRatioLimit", Long.toString(min)); //$NON-NLS-1$
             }
-            long max = estimateFilter.getMaxVariation();
+            final long max = estimateFilter.getMaxVariation();
             if (max != 0L) {
                 addParameter(sb, "maxRatioLimit", Long.toString(max)); //$NON-NLS-1$
             }
@@ -389,7 +389,7 @@ public class FilterDefinitionConverter {
         return sb.toString();
     }
 
-    public String getJqlString(FilterDefinition filter) {
+    public String getJqlString(final FilterDefinition filter) {
         final List<String> searchParams = new ArrayList<>();
         final JiraFieldsNames jiraField = JiraFieldsNames.createJql();
         final FilterDataExtractor jqlFilter = new JQLFilterDataExtractor();
@@ -467,13 +467,13 @@ public class FilterDefinitionConverter {
         addJqlAndExpression(searchParams, jiraField.WORK_RATIO(),
                 jqlFilter.extractWorkRatios(filter.getEstimateVsActualFilter()));
 
-        String whereClause = StringUtils.join(searchParams, " AND "); //$NON-NLS-1$
-        String orderByClause = getJqlOrdering(filter.getOrdering());
+        final String whereClause = StringUtils.join(searchParams, " AND "); //$NON-NLS-1$
+        final String orderByClause = getJqlOrdering(filter.getOrdering());
 
         return whereClause + " " + orderByClause; //$NON-NLS-1$
     }
 
-    private VersionFilter createVersionFilter(List<String> fixForIds, JiraVersion[] projectVersions) {
+    private VersionFilter createVersionFilter(final List<String> fixForIds, final JiraVersion[] projectVersions) {
         if (fixForIds.isEmpty()) {
             return null;
         }
@@ -481,8 +481,8 @@ public class FilterDefinitionConverter {
         boolean hasNoVersions = false;
         boolean hasReleasedVersions = false;
         boolean hasUnreleasedVersions = false;
-        List<JiraVersion> fixForversions = new ArrayList<>();
-        for (String fixForId : fixForIds) {
+        final List<JiraVersion> fixForversions = new ArrayList<>();
+        for (final String fixForId : fixForIds) {
             if (fixForId.equals(JiraFieldSpecialValue.VERSION_NONE.getClassic())) {
                 hasNoVersions = true;
             }
@@ -493,7 +493,7 @@ public class FilterDefinitionConverter {
                 hasUnreleasedVersions = true;
             }
 
-            for (JiraVersion projectVersion : projectVersions) {
+            for (final JiraVersion projectVersion : projectVersions) {
                 if (projectVersion.getId().equals(fixForId)) {
                     fixForversions.add(projectVersion);
                 }
@@ -505,16 +505,16 @@ public class FilterDefinitionConverter {
 
     }
 
-    private DateFilter createDateFilter(Map<String, List<String>> params, String key) {
-        String after = getId(params, key + ":after"); //$NON-NLS-1$
-        String before = getId(params, key + ":before"); //$NON-NLS-1$
+    private DateFilter createDateFilter(final Map<String, List<String>> params, final String key) {
+        final String after = getId(params, key + ":after"); //$NON-NLS-1$
+        final String before = getId(params, key + ":before"); //$NON-NLS-1$
 
         Instant afterDate = null;
         try {
             if (after != null) {
                 afterDate = classicQueryOffsetDateTimeFormat.parse(after).toInstant();
             }
-        } catch (ParseException ex) {
+        } catch (final ParseException ex) {
             // swallow
         }
         Instant beforeDate = null;
@@ -522,26 +522,26 @@ public class FilterDefinitionConverter {
             if (before != null) {
                 beforeDate = classicQueryOffsetDateTimeFormat.parse(before).toInstant();
             }
-        } catch (ParseException ex) {
+        } catch (final ParseException ex) {
             // swallow
         }
 
-        String previous = getId(params, key + ":previous"); //$NON-NLS-1$
-        String next = getId(params, key + ":next"); //$NON-NLS-1$
+        final String previous = getId(params, key + ":previous"); //$NON-NLS-1$
+        final String next = getId(params, key + ":next"); //$NON-NLS-1$
 
         return afterDate == null && beforeDate == null && previous == null && next == null ? null
                 : new DateRangeFilter(afterDate, beforeDate, previous, next);
     }
 
-    private UserFilter createUserFilter(Map<String, List<String>> params, String key) {
-        String type = getId(params, key + "Select"); //$NON-NLS-1$
+    private UserFilter createUserFilter(final Map<String, List<String>> params, final String key) {
+        final String type = getId(params, key + "Select"); //$NON-NLS-1$
         if (JiraFieldSpecialValue.ISSUE_NO_REPORTER.getClassic().equals(type)
                 || JiraFieldSpecialValue.UNASSIGNED.getClassic().equals(type)) {
             return new NobodyFilter();
         } else if (JiraFieldSpecialValue.ISSUE_CURRENT_USER.getClassic().equals(type)) {
             return new CurrentUserFilter();
         } else {
-            String reporter = getId(params, key);
+            final String reporter = getId(params, key);
             if (reporter != null) {
                 if (JiraFieldSpecialValue.ISSUE_SPECIFIC_USER.getClassic().equals(type)) {
                     return new SpecificUserFilter(reporter);
@@ -553,24 +553,24 @@ public class FilterDefinitionConverter {
         return null;
     }
 
-    private String getId(Map<String, List<String>> params, String key) {
-        List<String> ids = getIds(params, key);
+    private String getId(final Map<String, List<String>> params, final String key) {
+        final List<String> ids = getIds(params, key);
         return ids.isEmpty() ? null : ids.get(0);
     }
 
-    private List<String> getIds(Map<String, List<String>> params, String key) {
-        List<String> ids = params.get(key);
+    private List<String> getIds(final Map<String, List<String>> params, final String key) {
+        final List<String> ids = params.get(key);
         if (ids == null) {
             return Collections.emptyList();
         }
         return ids;
     }
 
-    private String getJqlOrdering(Order[] ordering) {
+    private String getJqlOrdering(final Order[] ordering) {
         if (ordering.length == 0) {
             return ""; //$NON-NLS-1$
         } else {
-            StringBuilder sb = new StringBuilder(JQL_ORDER_BY);
+            final StringBuilder sb = new StringBuilder(JQL_ORDER_BY);
             for (int i = 0; i < ordering.length; i++) {
                 sb.append(ordering[i].getField().getJql());
                 sb.append(" "); //$NON-NLS-1$
@@ -584,10 +584,10 @@ public class FilterDefinitionConverter {
         }
     }
 
-    private String getOrdering(Order[] ordering) {
-        StringBuilder sb = new StringBuilder();
-        for (Order order : ordering) {
-            String fieldName = order.getField().getClassic();
+    private String getOrdering(final Order[] ordering) {
+        final StringBuilder sb = new StringBuilder();
+        for (final Order order : ordering) {
+            final String fieldName = order.getField().getClassic();
             if (fieldName == null) {
                 continue;
             }
@@ -597,13 +597,13 @@ public class FilterDefinitionConverter {
         return sb.toString();
     }
 
-    private void addOrdering(StringBuilder sb, Order[] ordering) {
+    private void addOrdering(final StringBuilder sb, final Order[] ordering) {
         sb.append(getOrdering(ordering));
     }
 
-    private void addDateFilter(StringBuilder sb, DateFilter filter, String type) {
+    private void addDateFilter(final StringBuilder sb, final DateFilter filter, final String type) {
         if (filter instanceof DateRangeFilter) {
-            DateRangeFilter rangeFilter = (DateRangeFilter) filter;
+            final DateRangeFilter rangeFilter = (DateRangeFilter) filter;
             if (rangeFilter.getFromDate() != null) {
                 addParameter(sb, type + ":after", classicQueryOffsetDateTimeFormat.format(Date.from(rangeFilter.getFromDate()))); //$NON-NLS-1$
             }
@@ -617,7 +617,7 @@ public class FilterDefinitionConverter {
                 addParameter(sb, type + ":next", rangeFilter.getTo()); //$NON-NLS-1$
             }
         } else if (filter instanceof RelativeDateRangeFilter) {
-            RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) filter;
+            final RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) filter;
             if (rangeFilter.previousMilliseconds() != 0L) {
                 addParameter(
                         sb,
@@ -632,7 +632,7 @@ public class FilterDefinitionConverter {
         }
     }
 
-    private void addUserFilter(StringBuilder sb, UserFilter filter, String type, String nobodyText) {
+    private void addUserFilter(final StringBuilder sb, final UserFilter filter, final String type, final String nobodyText) {
         if (filter instanceof NobodyFilter) {
             addParameter(sb, type + "Select", nobodyText); //$NON-NLS-1$
         } else if (filter instanceof CurrentUserFilter) {
@@ -656,9 +656,9 @@ public class FilterDefinitionConverter {
      * @param name
      * @param values
      */
-    private void addParameters(StringBuilder sb, String name, Collection<String> values) {
+    private void addParameters(final StringBuilder sb, final String name, final Collection<String> values) {
         // ignore
-        for (String value : values) {
+        for (final String value : values) {
             addParameter(sb, name, value);
         }
     }
@@ -671,10 +671,10 @@ public class FilterDefinitionConverter {
      * @param name
      * @param value
      */
-    private void addParameter(StringBuilder sb, String name, String value) {
+    private void addParameter(final StringBuilder sb, final String name, final String value) {
         try {
             sb.append('&').append(name).append('=').append(URLEncoder.encode(value, encoding));
-        } catch (UnsupportedEncodingException ex) {
+        } catch (final UnsupportedEncodingException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -691,14 +691,14 @@ public class FilterDefinitionConverter {
      * @param field        name of the jira field
      * @param values       list of key values we search for, list can be empty
      */
-    private void addJqlInExpression(Collection<String> searchParams, String key, Collection<String> values) {
+    private void addJqlInExpression(final Collection<String> searchParams, final String key, final Collection<String> values) {
         // don't append expression if there are no values
         if (values.size() == 0) {
             return;
         }
 
         // create "key in (value1, value2, ... )" query
-        StringBuilder param = new StringBuilder();
+        final StringBuilder param = new StringBuilder();
         param.append(key);
         param.append(" in ("); //$NON-NLS-1$
         param.append(StringUtils.join(values, ",")); //$NON-NLS-1$
@@ -718,7 +718,7 @@ public class FilterDefinitionConverter {
      * @param searchParams
      * @param expressions
      */
-    private void addJqlOrExpression(Collection<String> searchParams, Collection<String> expressions) {
+    private void addJqlOrExpression(final Collection<String> searchParams, final Collection<String> expressions) {
         if (expressions.size() > 0) {
             searchParams.add("(" + StringUtils.join(expressions, " OR ") + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
@@ -735,10 +735,10 @@ public class FilterDefinitionConverter {
      * @param searchParams
      * @param expressions
      */
-    private void addJqlAndExpression(Collection<String> searchParams, String field, Collection<String> operatorAndValue) {
+    private void addJqlAndExpression(final Collection<String> searchParams, final String field, final Collection<String> operatorAndValue) {
         if (operatorAndValue.size() > 0) {
-            StringBuilder buffer = new StringBuilder("("); //$NON-NLS-1$
-            for (Iterator<String> valueIter = operatorAndValue.iterator(); valueIter.hasNext();) {
+            final StringBuilder buffer = new StringBuilder("("); //$NON-NLS-1$
+            for (final Iterator<String> valueIter = operatorAndValue.iterator(); valueIter.hasNext();) {
                 buffer.append(field);
                 buffer.append(" "); //$NON-NLS-1$
                 buffer.append(valueIter.next());

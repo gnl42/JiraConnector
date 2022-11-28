@@ -203,11 +203,7 @@ public class JiraProject implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
-            return false;
-        }
-
-        if (!(obj instanceof JiraProject)) {
+        if ((obj == null) || !(obj instanceof JiraProject)) {
             return false;
         }
 

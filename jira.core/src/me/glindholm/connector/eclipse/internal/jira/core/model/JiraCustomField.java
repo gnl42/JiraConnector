@@ -17,52 +17,52 @@ import java.util.List;
 
 /**
  * Custom field container.
- * 
+ *
  * @author Eugene Kuleshov
  * @author Steffen Pingel
  */
 public class JiraCustomField extends JiraIssueField {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public static final String NONE_ALLOWED_VALUE = "-1"; //$NON-NLS-1$
+    public static final String NONE_ALLOWED_VALUE = "-1"; //$NON-NLS-1$
 
-	private final String key;
+    private final String key;
 
-	private final List<String> values;
+    private final List<String> values;
 
-	private boolean readOnly;
+    private boolean readOnly;
 
-	private boolean markupDetected;
+    private boolean markupDetected;
 
-	public JiraCustomField(String id, String key, String name, List<String> values) {
-		super(id, name);
-		this.key = key;
-		this.values = new ArrayList<String>(values);
-	}
+    public JiraCustomField(final String id, final String key, final String name, final List<String> values) {
+        super(id, name);
+        this.key = key;
+        this.values = new ArrayList<>(values);
+    }
 
-	public String getKey() {
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public List<String> getValues() {
-		return values;
-	}
+    public List<String> getValues() {
+        return values;
+    }
 
-	public boolean isReadOnly() {
-		return readOnly;
-	}
+    public boolean isReadOnly() {
+        return readOnly;
+    }
 
-	public void setReadOnly(boolean readOnly) {
-		this.readOnly = readOnly;
-	}
+    public void setReadOnly(final boolean readOnly) {
+        this.readOnly = readOnly;
+    }
 
-	public boolean isMarkupDetected() {
-		return markupDetected;
-	}
+    public boolean isMarkupDetected() {
+        return markupDetected;
+    }
 
-	public void setMarkupDetected(boolean markupDetected) {
-		this.markupDetected = markupDetected;
-	}
+    public void setMarkupDetected(final boolean markupDetected) {
+        this.markupDetected = markupDetected;
+    }
 
 }

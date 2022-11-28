@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public class SelectWorkflowActionDialog extends MessageDialog {
 
-    private final static String[] buttons = new String[] { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL };
+    private final static String[] buttons = { IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL };
 
     private final TaskRepository repository;
 

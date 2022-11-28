@@ -17,25 +17,25 @@ import java.io.Serializable;
  * @author Brock Janiczak
  */
 public class JiraGroup implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String name;
+    private String name;
 
-	private JiraUser[] users;
+    private JiraUser[] users;
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public JiraUser[] getUsers() {
-		return this.users;
-	}
+    public JiraUser[] getUsers() {
+        return users;
+    }
 
-	public void setUsers(JiraUser[] users) {
-		this.users = users;
-	}
+    public void setUsers(final JiraUser[] users) {
+        this.users = users;
+    }
 }

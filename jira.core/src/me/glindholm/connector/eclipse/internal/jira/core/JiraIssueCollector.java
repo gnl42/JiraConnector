@@ -23,41 +23,46 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.filter.IssueColle
  */
 class JiraIssueCollector implements IssueCollector {
 
-	private final IProgressMonitor monitor;
+    private final IProgressMonitor monitor;
 
-	private final List<JiraIssue> issues;
+    private final List<JiraIssue> issues;
 
-	private boolean done = false;
+    private boolean done = false;
 
-	private final int maxHits;
+    private final int maxHits;
 
-	JiraIssueCollector(IProgressMonitor monitor, List<JiraIssue> issues, int maxHits) {
-		this.monitor = monitor;
-		this.issues = issues;
-		this.maxHits = maxHits;
-	}
+    JiraIssueCollector(final IProgressMonitor monitor, final List<JiraIssue> issues, final int maxHits) {
+        this.monitor = monitor;
+        this.issues = issues;
+        this.maxHits = maxHits;
+    }
 
-	public void start() {
-	}
+    @Override
+    public void start() {
+    }
 
-	public void done() {
-		done = true;
-	}
+    @Override
+    public void done() {
+        done = true;
+    }
 
-	public boolean isCancelled() {
-		return monitor.isCanceled();
-	}
+    @Override
+    public boolean isCancelled() {
+        return monitor.isCanceled();
+    }
 
-	public void collectIssue(JiraIssue issue) {
-		issues.add(issue);
-	}
+    @Override
+    public void collectIssue(final JiraIssue issue) {
+        issues.add(issue);
+    }
 
-	public boolean isDone() {
-		return done;
-	}
+    public boolean isDone() {
+        return done;
+    }
 
-	public int getMaxHits() {
-		return maxHits;
-	}
+    @Override
+    public int getMaxHits() {
+        return maxHits;
+    }
 
 }

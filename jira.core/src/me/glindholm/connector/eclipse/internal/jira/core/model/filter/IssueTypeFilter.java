@@ -21,46 +21,46 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
  * @author Brock Janiczak
  */
 public class IssueTypeFilter implements Filter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final JiraIssueType[] issueTypes;
+    private final JiraIssueType[] issueTypes;
 
-	private final boolean standardTypes;
+    private final boolean standardTypes;
 
-	private final boolean subTaskTypes;
+    private final boolean subTaskTypes;
 
-	public IssueTypeFilter(JiraIssueType[] issueTypes) {
-		this.issueTypes = issueTypes;
-		standardTypes = false;
-		subTaskTypes = false;
-	}
+    public IssueTypeFilter(final JiraIssueType[] issueTypes) {
+        this.issueTypes = issueTypes;
+        standardTypes = false;
+        subTaskTypes = false;
+    }
 
-	public IssueTypeFilter(boolean standardTypes, boolean subTaskTypes) {
-		assert (standardTypes ^ subTaskTypes);
+    public IssueTypeFilter(final boolean standardTypes, final boolean subTaskTypes) {
+        assert standardTypes ^ subTaskTypes;
 
-		this.issueTypes = null;
-		this.standardTypes = standardTypes;
-		this.subTaskTypes = subTaskTypes;
-	}
+        issueTypes = null;
+        this.standardTypes = standardTypes;
+        this.subTaskTypes = subTaskTypes;
+    }
 
-	public JiraIssueType[] getIsueTypes() {
-		return this.issueTypes;
-	}
+    public JiraIssueType[] getIsueTypes() {
+        return issueTypes;
+    }
 
-	public boolean isStandardTypes() {
-		return this.standardTypes;
-	}
+    public boolean isStandardTypes() {
+        return standardTypes;
+    }
 
-	public boolean isSubTaskTypes() {
-		return this.subTaskTypes;
-	}
+    public boolean isSubTaskTypes() {
+        return subTaskTypes;
+    }
 
-	IssueTypeFilter copy() {
-		if (issueTypes != null) {
-			return new IssueTypeFilter(this.issueTypes);
-		}
+    IssueTypeFilter copy() {
+        if (issueTypes != null) {
+            return new IssueTypeFilter(issueTypes);
+        }
 
-		return new IssueTypeFilter(standardTypes, subTaskTypes);
-	}
+        return new IssueTypeFilter(standardTypes, subTaskTypes);
+    }
 
 }

@@ -16,27 +16,27 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
  * @author Brock Janiczak
  */
 public class UserInGroupFilter extends UserFilter {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String group;
+    private final String group;
 
-	public UserInGroupFilter(String group) {
-		assert (group != null);
+    public UserInGroupFilter(final String group) {
+        assert group != null;
 
-		this.group = group;
-	}
+        this.group = group;
+    }
 
-	public String getGroup() {
-		return group;
-	}
+    public String getGroup() {
+        return group;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gbst.jira.core.model.filter.UserFilter#copy()
-	 */
-	@Override
-	UserFilter copy() {
-		return new UserInGroupFilter(this.group);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.gbst.jira.core.model.filter.UserFilter#copy()
+     */
+    @Override
+    UserFilter copy() {
+        return new UserInGroupFilter(group);
+    }
 }

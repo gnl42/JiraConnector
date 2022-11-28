@@ -16,75 +16,78 @@
 
 package me.glindholm.connector.commons.jira.cache;
 
-import javax.swing.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.GrayFilter;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
 public final class CachedIconLoader {
-	private static Map<String, Icon> icons = new HashMap<String, Icon>();
-	private static Map<String, Icon> disabledIcons = new HashMap<String, Icon>();
+    private static Map<String, Icon> icons = new HashMap<>();
+    private static Map<String, Icon> disabledIcons = new HashMap<>();
 
-	private CachedIconLoader() {
-	}
+    private CachedIconLoader() {
+    }
 
-	public static Icon getDisabledIcon(String urlString) {
-		return disabledIcons.get(urlString);
-	}
+    public static Icon getDisabledIcon(final String urlString) {
+        return disabledIcons.get(urlString);
+    }
 
-	private static void addDisabledIcon(String urlString, Icon icon) {
-		disabledIcons.put(urlString, icon);
-	}
+    private static void addDisabledIcon(final String urlString, final Icon icon) {
+        disabledIcons.put(urlString, icon);
+    }
 
-	private static Icon generateDisabledIcon(Icon icon) {
-		return new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon) icon).getImage()));
-	}
+    private static Icon generateDisabledIcon(final Icon icon) {
+        return new ImageIcon(GrayFilter.createDisabledImage(((ImageIcon) icon).getImage()));
+    }
 
-	private static void maybeGenerateDisabledIcon(String urlString, Icon icon) {
-		if (disabledIcons.containsKey(urlString) || icon == null) {
-			return;
-		}
-		addDisabledIcon(urlString, generateDisabledIcon(icon));
-	}
+    private static void maybeGenerateDisabledIcon(final String urlString, final Icon icon) {
+        if (disabledIcons.containsKey(urlString) || icon == null) {
+            return;
+        }
+        addDisabledIcon(urlString, generateDisabledIcon(icon));
+    }
 
-	public static Icon getIcon(URL url) {
-		if (url != null) {
-			String key = url.toString();
-			if (!icons.containsKey(key)) {
-				Icon i = new ImageIcon(url);
-				icons.put(key, i);
-				maybeGenerateDisabledIcon(key, i);
-			}
-			return icons.get(key);
-		} else {
-			return null;
-		}
-	}
+    public static Icon getIcon(final URL url) {
+        if (url != null) {
+            final String key = url.toString();
+            if (!icons.containsKey(key)) {
+                final Icon i = new ImageIcon(url);
+                icons.put(key, i);
+                maybeGenerateDisabledIcon(key, i);
+            }
+            return icons.get(key);
+        } else {
+            return null;
+        }
+    }
 
-	public static Icon getIcon(String urlString) {
-		if (urlString != null) {
-			if (!icons.containsKey(urlString)) {
-				loadIcon(urlString);
-			}
-			return icons.get(urlString);
-		} else {
-			return null;
-		}
-	}
+    public static Icon getIcon(final String urlString) {
+        if (urlString != null) {
+            if (!icons.containsKey(urlString)) {
+                loadIcon(urlString);
+            }
+            return icons.get(urlString);
+        } else {
+            return null;
+        }
+    }
 
-	public static void loadIcon(String urlString) {
-		if (urlString != null && !icons.containsKey(urlString)) {
-			try {
+    public static void loadIcon(final String urlString) {
+        if (urlString != null && !icons.containsKey(urlString)) {
+            try {
 
-				URL url = new URL(urlString);
-				Icon i = new ImageIcon(url);
-				icons.put(urlString, i);
-				maybeGenerateDisabledIcon(urlString, i);
-			} catch (MalformedURLException e) {
-				//logger.warn("Cannot load icon: [" + urlString + "]", e);
-			}
-		}
-	}
+                final URL url = new URL(urlString);
+                final Icon i = new ImageIcon(url);
+                icons.put(urlString, i);
+                maybeGenerateDisabledIcon(urlString, i);
+            } catch (final MalformedURLException e) {
+                //logger.warn("Cannot load icon: [" + urlString + "]", e);
+            }
+        }
+    }
 
 }

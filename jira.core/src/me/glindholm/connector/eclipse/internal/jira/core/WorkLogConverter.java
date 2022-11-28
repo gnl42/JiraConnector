@@ -78,8 +78,8 @@ public class WorkLogConverter {
 
     private static final String ADJUST_ESTIMATE_KEY = "attribute.jira.worklog.adjustEstimate"; //$NON-NLS-1$
 
-    private static <T> JiraField<T> create(Class<T> clazz, String key, String label, String type) {
-        JiraField<T> field = new JiraField<>(clazz, "attribute.jira.worklog." + key, key, label, type); //$NON-NLS-1$
+    private static <T> JiraField<T> create(final Class<T> clazz, final String key, final String label, final String type) {
+        final JiraField<T> field = new JiraField<>(clazz, "attribute.jira.worklog." + key, key, label, type); //$NON-NLS-1$
         _taskFields.add(field);
         return field;
     }
@@ -89,7 +89,7 @@ public class WorkLogConverter {
     }
 
     public WorkLogConverter() {
-        this.fields = taskFields();
+        fields = taskFields();
     }
 
     protected JiraWorkLog newInstance() {
@@ -98,17 +98,17 @@ public class WorkLogConverter {
 
     private final List<? extends TaskField<?>> fields;
 
-    public JiraWorkLog createFrom(TaskAttribute taskAttribute) {
+    public JiraWorkLog createFrom(final TaskAttribute taskAttribute) {
         Assert.isNotNull(taskAttribute);
-        JiraWorkLog instance = newInstance();
-        for (TaskField<?> field : fields) {
-            TaskAttribute child = taskAttribute.getAttribute(field.key());
+        final JiraWorkLog instance = newInstance();
+        for (final TaskField<?> field : fields) {
+            final TaskAttribute child = taskAttribute.getAttribute(field.key());
             if (child != null) {
                 setJavaField(instance, field, child);
             }
         }
 
-        TaskAttribute child = taskAttribute.getAttribute(ADJUST_ESTIMATE_KEY);
+        final TaskAttribute child = taskAttribute.getAttribute(ADJUST_ESTIMATE_KEY);
         if (child != null) {
             instance.setAdjustEstimate(AdjustEstimateMethod.fromValue(child.getValue()));
         } else {
@@ -118,36 +118,38 @@ public class WorkLogConverter {
         return instance;
     }
 
-    public void applyTo(JiraWorkLog instance, TaskAttribute taskAttribute) {
+    public void applyTo(final JiraWorkLog instance, final TaskAttribute taskAttribute) {
         Assert.isNotNull(taskAttribute);
-        for (TaskField<?> field : fields) {
-            TaskAttribute child = addAttribute(taskAttribute, field);
+        for (final TaskField<?> field : fields) {
+            final TaskAttribute child = addAttribute(taskAttribute, field);
             setAttributeValue(instance, field, child);
         }
 
         if (instance.getAdjustEstimate() != null) {
-            TaskAttribute child = addAttribute(taskAttribute,
+            final TaskAttribute child = addAttribute(taskAttribute,
                     new JiraField<>(String.class, ADJUST_ESTIMATE_KEY, "adjustEstimate", "Adjust Estimate", TaskAttribute.TYPE_SHORT_TEXT)); //$NON-NLS-1$ //$NON-NLS-2$
             child.setValue(instance.getAdjustEstimate().value());
         }
     }
 
-    private boolean setJavaField(JiraWorkLog instance, TaskField<?> taskField, TaskAttribute attribute) {
+    private boolean setJavaField(final JiraWorkLog instance, final TaskField<?> taskField, final TaskAttribute attribute) {
         if (taskField.javaKey() != null) {
             Field field;
             try {
                 field = instance.getClass().getDeclaredField(taskField.javaKey());
                 field.setAccessible(true);
                 Object value = null;
-                TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
+                final TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
                 if (TaskAttribute.TYPE_DATE.equals(taskField.getType())) {
                     @Nullable
+                    final
                     Date date = mapper.getDateValue(attribute);
                     if (date != null) {
                         value = date.toInstant();
                     }
                 } else if (TaskAttribute.TYPE_DATETIME.equals(taskField.getType())) {
-                    @Nullable Date dateTime = mapper.getDateValue(attribute);
+                    @Nullable
+                    final Date dateTime = mapper.getDateValue(attribute);
                     if (dateTime != null) {
                         value = dateTime.toInstant();
                     }
@@ -170,7 +172,7 @@ public class WorkLogConverter {
                     value = attribute.getValue();
                 }
                 field.set(instance, value);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
                 return false;
             }
@@ -178,13 +180,13 @@ public class WorkLogConverter {
         return true;
     }
 
-    private boolean setAttributeValue(JiraWorkLog instance, TaskField<?> taskField, TaskAttribute attribute) {
+    private boolean setAttributeValue(final JiraWorkLog instance, final TaskField<?> taskField, final TaskAttribute attribute) {
         Field field;
         try {
             field = instance.getClass().getDeclaredField(taskField.javaKey());
             field.setAccessible(true);
-            Object value = field.get(instance);
-            TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
+            final Object value = field.get(instance);
+            final TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
             if (value == null) {
                 attribute.clearValues();
             } else {
@@ -200,25 +202,25 @@ public class WorkLogConverter {
                     attribute.setValue(value.toString());
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
         return true;
     }
 
-    public TaskAttribute addAttribute(TaskAttribute parent, TaskField<?> field) {
-        TaskAttribute attribute = parent.createAttribute(field.key());
+    public TaskAttribute addAttribute(final TaskAttribute parent, final TaskField<?> field) {
+        final TaskAttribute attribute = parent.createAttribute(field.key());
         // meta data
-        TaskAttributeMetaData metaData = attribute.getMetaData();
+        final TaskAttributeMetaData metaData = attribute.getMetaData();
         metaData.setLabel(field.getLabel());
         metaData.setType(field.getType());
         metaData.setReadOnly(field.isReadOnly());
         metaData.setKind(field.getKind());
         // options
-        Map<String, String> options = ((ITaskAttributeMapper2) parent.getTaskData().getAttributeMapper()).getRepositoryOptions(attribute);
+        final Map<String, String> options = ((ITaskAttributeMapper2) parent.getTaskData().getAttributeMapper()).getRepositoryOptions(attribute);
         if (options != null) {
-            for (Entry<String, String> option : options.entrySet()) {
+            for (final Entry<String, String> option : options.entrySet()) {
                 attribute.putOption(option.getKey(), option.getValue());
             }
         }

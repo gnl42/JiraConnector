@@ -69,7 +69,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
     public static final int SKIP_LOGGING = 1;
 
-    private final static String[] buttons = new String[] { Messages.LogJiraTimeDialog_Stop_And_Log,
+    private final static String[] buttons = { Messages.LogJiraTimeDialog_Stop_And_Log,
             Messages.LogJiraTimeDialog_Stop_Only, IDialogConstants.CANCEL_LABEL };
 
     private JiraWorkLog workLog;

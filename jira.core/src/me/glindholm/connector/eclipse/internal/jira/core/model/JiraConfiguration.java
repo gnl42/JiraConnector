@@ -16,103 +16,103 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
  */
 public class JiraConfiguration {
 
-	private int timeTrackingHoursPerDay;
+    private int timeTrackingHoursPerDay;
 
-	private int timeTrackingDaysPerWeek;
+    private int timeTrackingDaysPerWeek;
 
-	private boolean allowAttachments;
+    private boolean allowAttachments;
 
-	private boolean allowExternalUserManagment;
+    private boolean allowExternalUserManagment;
 
-	private boolean allowIssueLinking;
+    private boolean allowIssueLinking;
 
-	private boolean allowSubTasks;
+    private boolean allowSubTasks;
 
-	private boolean allowTimeTracking;
+    private boolean allowTimeTracking;
 
-	private boolean allowUnassignedIssues;
+    private boolean allowUnassignedIssues;
 
-	private boolean allowVoting;
+    private boolean allowVoting;
 
-	private boolean allowWatching;
+    private boolean allowWatching;
 
-	public void setTimeTrackingHoursPerDay(int timeTrackingHoursPerDay) {
-		this.timeTrackingHoursPerDay = timeTrackingHoursPerDay;
-	}
+    public void setTimeTrackingHoursPerDay(final int timeTrackingHoursPerDay) {
+        this.timeTrackingHoursPerDay = timeTrackingHoursPerDay;
+    }
 
-	public void setTimeTrackingDaysPerWeek(int timeTrackingDaysPerWeek) {
-		this.timeTrackingDaysPerWeek = timeTrackingDaysPerWeek;
-	}
+    public void setTimeTrackingDaysPerWeek(final int timeTrackingDaysPerWeek) {
+        this.timeTrackingDaysPerWeek = timeTrackingDaysPerWeek;
+    }
 
-	public void setAllowAttachments(boolean allowAttachments) {
-		this.allowAttachments = allowAttachments;
-	}
+    public void setAllowAttachments(final boolean allowAttachments) {
+        this.allowAttachments = allowAttachments;
+    }
 
-	public void setAllowExternalUserManagment(boolean allowExternalUserManagment) {
-		this.allowExternalUserManagment = allowExternalUserManagment;
-	}
+    public void setAllowExternalUserManagment(final boolean allowExternalUserManagment) {
+        this.allowExternalUserManagment = allowExternalUserManagment;
+    }
 
-	public void setAllowIssueLinking(boolean allowIssueLinking) {
-		this.allowIssueLinking = allowIssueLinking;
-	}
+    public void setAllowIssueLinking(final boolean allowIssueLinking) {
+        this.allowIssueLinking = allowIssueLinking;
+    }
 
-	public void setAllowSubTasks(boolean allowSubTasks) {
-		this.allowSubTasks = allowSubTasks;
-	}
+    public void setAllowSubTasks(final boolean allowSubTasks) {
+        this.allowSubTasks = allowSubTasks;
+    }
 
-	public void setAllowTimeTracking(boolean allowTimeTracking) {
-		this.allowTimeTracking = allowTimeTracking;
-	}
+    public void setAllowTimeTracking(final boolean allowTimeTracking) {
+        this.allowTimeTracking = allowTimeTracking;
+    }
 
-	public void setAllowUnassignedIssues(boolean allowUnassignedIssues) {
-		this.allowUnassignedIssues = allowUnassignedIssues;
-	}
+    public void setAllowUnassignedIssues(final boolean allowUnassignedIssues) {
+        this.allowUnassignedIssues = allowUnassignedIssues;
+    }
 
-	public void setAllowVoting(boolean allowVoting) {
-		this.allowVoting = allowVoting;
-	}
+    public void setAllowVoting(final boolean allowVoting) {
+        this.allowVoting = allowVoting;
+    }
 
-	public void setAllowWatching(boolean allowWatching) {
-		this.allowWatching = allowWatching;
-	}
+    public void setAllowWatching(final boolean allowWatching) {
+        this.allowWatching = allowWatching;
+    }
 
-	public int getTimeTrackingHoursPerDay() {
-		return timeTrackingHoursPerDay;
-	}
+    public int getTimeTrackingHoursPerDay() {
+        return timeTrackingHoursPerDay;
+    }
 
-	public int getTimeTrackingDaysPerWeek() {
-		return timeTrackingDaysPerWeek;
-	}
+    public int getTimeTrackingDaysPerWeek() {
+        return timeTrackingDaysPerWeek;
+    }
 
-	public boolean isAllowAttachments() {
-		return allowAttachments;
-	}
+    public boolean isAllowAttachments() {
+        return allowAttachments;
+    }
 
-	public boolean isAllowExternalUserManagment() {
-		return allowExternalUserManagment;
-	}
+    public boolean isAllowExternalUserManagment() {
+        return allowExternalUserManagment;
+    }
 
-	public boolean isAllowIssueLinking() {
-		return allowIssueLinking;
-	}
+    public boolean isAllowIssueLinking() {
+        return allowIssueLinking;
+    }
 
-	public boolean isAllowSubTasks() {
-		return allowSubTasks;
-	}
+    public boolean isAllowSubTasks() {
+        return allowSubTasks;
+    }
 
-	public boolean isAllowTimeTracking() {
-		return allowTimeTracking;
-	}
+    public boolean isAllowTimeTracking() {
+        return allowTimeTracking;
+    }
 
-	public boolean isAllowUnassignedIssues() {
-		return allowUnassignedIssues;
-	}
+    public boolean isAllowUnassignedIssues() {
+        return allowUnassignedIssues;
+    }
 
-	public boolean isAllowVoting() {
-		return allowVoting;
-	}
+    public boolean isAllowVoting() {
+        return allowVoting;
+    }
 
-	public boolean isAllowWatching() {
-		return allowWatching;
-	}
+    public boolean isAllowWatching() {
+        return allowWatching;
+    }
 }

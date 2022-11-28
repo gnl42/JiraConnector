@@ -59,11 +59,11 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
     }
 
     @Override
-    public Collection<String> extractDates(DateFilter dateFilter, DateFormat dateFormat) {
+    public Collection<String> extractDates(final DateFilter dateFilter, final DateFormat dateFormat) {
         final List<String> dates = new ArrayList<>();
 
         if (dateFilter instanceof DateRangeFilter) {
-            DateRangeFilter rangeFilter = (DateRangeFilter) dateFilter;
+            final DateRangeFilter rangeFilter = (DateRangeFilter) dateFilter;
             if (rangeFilter.getFromDate() != null) {
                 dates.add(">= " + putInDoubleQuotes(dateFormat.format(Date.from(rangeFilter.getFromDate())))); //$NON-NLS-1$
             }
@@ -77,7 +77,7 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
                 dates.add("<= " + putInDoubleQuotes(rangeFilter.getTo())); //$NON-NLS-1$
             }
         } else if (dateFilter instanceof RelativeDateRangeFilter) {
-            RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) dateFilter;
+            final RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) dateFilter;
             if (rangeFilter.previousMilliseconds() != 0L) {
                 dates.add(">= " //$NON-NLS-1$
                         + putInDoubleQuotes(createRelativeDateString(rangeFilter.getPreviousRangeType(),
@@ -222,7 +222,7 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
     }
 
     @Override
-    public Collection<String> extractWorkRatios(EstimateVsActualFilter estimateFilter) {
+    public Collection<String> extractWorkRatios(final EstimateVsActualFilter estimateFilter) {
         final List<String> workRatios = new ArrayList<>(2);
         if (estimateFilter != null) {
             final long minVariation = estimateFilter.getMinVariation();

@@ -29,7 +29,7 @@ public class JiraWorkLog implements Serializable {
 
         private final String value;
 
-        AdjustEstimateMethod(String value) {
+        AdjustEstimateMethod(final String value) {
             this.value = value;
         }
 
@@ -37,8 +37,8 @@ public class JiraWorkLog implements Serializable {
             return value;
         }
 
-        public static AdjustEstimateMethod fromValue(String v) {
-            for (AdjustEstimateMethod c : AdjustEstimateMethod.values()) {
+        public static AdjustEstimateMethod fromValue(final String v) {
+            for (final AdjustEstimateMethod c : AdjustEstimateMethod.values()) {
                 if (c.value.equals(v)) {
                     return c;
                 }
@@ -123,35 +123,35 @@ public class JiraWorkLog implements Serializable {
         return updated;
     }
 
-    public void setAdjustEstimate(AdjustEstimateMethod method) {
-        this.adjustEstimate = method;
+    public void setAdjustEstimate(final AdjustEstimateMethod method) {
+        adjustEstimate = method;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(final String author) {
         this.author = author;
     }
 
-    public void setComment(String comment) {
+    public void setComment(final String comment) {
         this.comment = comment;
     }
 
-    public void setCreated(Instant created) {
+    public void setCreated(final Instant created) {
         this.created = created;
     }
 
-    public void setGroupLevel(String groupLevel) {
+    public void setGroupLevel(final String groupLevel) {
         this.groupLevel = groupLevel;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
-    public void setRoleLevelId(String roleLevelId) {
+    public void setRoleLevelId(final String roleLevelId) {
         this.roleLevelId = roleLevelId;
     }
 
-    public void setStartDate(Instant startDate) {
+    public void setStartDate(final Instant startDate) {
         this.startDate = startDate;
     }
 
@@ -159,15 +159,15 @@ public class JiraWorkLog implements Serializable {
      * @param timeSpent
      *            seconds
      */
-    public void setTimeSpent(long timeSpent) {
+    public void setTimeSpent(final long timeSpent) {
         this.timeSpent = timeSpent;
     }
 
-    public void setUpdateAuthor(String updateAuthor) {
+    public void setUpdateAuthor(final String updateAuthor) {
         this.updateAuthor = updateAuthor;
     }
 
-    public void setUpdated(Instant updated) {
+    public void setUpdated(final Instant updated) {
         this.updated = updated;
     }
 
@@ -178,17 +178,14 @@ public class JiraWorkLog implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        JiraWorkLog other = (JiraWorkLog) obj;
+        final JiraWorkLog other = (JiraWorkLog) obj;
         return adjustEstimate == other.adjustEstimate && Objects.equals(author, other.author) && Objects.equals(comment, other.comment)
                 && Objects.equals(created, other.created) && Objects.equals(groupLevel, other.groupLevel) && Objects.equals(id, other.id)
                 && newRemainingEstimate == other.newRemainingEstimate && Objects.equals(roleLevelId, other.roleLevelId)
@@ -196,7 +193,7 @@ public class JiraWorkLog implements Serializable {
                 && Objects.equals(updated, other.updated);
     }
 
-    public void setNewRemainingEstimate(long newRemainingEstimate) {
+    public void setNewRemainingEstimate(final long newRemainingEstimate) {
         this.newRemainingEstimate = newRemainingEstimate;
     }
 

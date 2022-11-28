@@ -19,34 +19,34 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
  */
 public interface IssueCollector {
 
-	public static final int NO_LIMIT = -1;
+    public static final int NO_LIMIT = -1;
 
-	/**
-	 * Issues will start arriving soon. Do any setup that is required
-	 */
-	public void start();
+    /**
+     * Issues will start arriving soon. Do any setup that is required
+     */
+    public void start();
 
-	public void collectIssue(JiraIssue issue);
+    public void collectIssue(JiraIssue issue);
 
-	/**
-	 * Determine if the collector doesn't want to receive issue notifications anymore
-	 * 
-	 * @return <code>true</code> if the collector does not wish to be notified of new issues
-	 */
-	public boolean isCancelled();
+    /**
+     * Determine if the collector doesn't want to receive issue notifications anymore
+     *
+     * @return <code>true</code> if the collector does not wish to be notified of new issues
+     */
+    public boolean isCancelled();
 
-	/**
-	 * This method will be called by the issue processor when it has finished processing all of the issues. It is a hint
-	 * to the collector that there will be no more data.
-	 */
-	public void done();
+    /**
+     * This method will be called by the issue processor when it has finished processing all of the issues. It is a hint
+     * to the collector that there will be no more data.
+     */
+    public void done();
 
-	/**
-	 * If the server only supports inefficient mechanisims for getting issues the user can choose to limit the number of
-	 * matches. This is only used as a hint.
-	 * 
-	 * @return Maximum number of matches to return or<code>NO_LIMIT</code> if there is no limit.
-	 */
-	public int getMaxHits();
+    /**
+     * If the server only supports inefficient mechanisims for getting issues the user can choose to limit the number of
+     * matches. This is only used as a hint.
+     *
+     * @return Maximum number of matches to return or<code>NO_LIMIT</code> if there is no limit.
+     */
+    public int getMaxHits();
 
 }

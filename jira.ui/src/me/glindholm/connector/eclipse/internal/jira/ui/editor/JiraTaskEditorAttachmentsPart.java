@@ -96,12 +96,12 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         setPartName(Messages.TaskEditorAttachmentPart_Attachments);
     }
 
-    public void setUseDescriptionColumn(boolean useDescriptionColumn) {
+    public void setUseDescriptionColumn(final boolean useDescriptionColumn) {
         this.useDescriptionColumn = useDescriptionColumn;
     }
 
-    private void createAttachmentTable(FormToolkit toolkit, final Composite attachmentsComposite) {
-        Table attachmentsTable = toolkit.createTable(attachmentsComposite, SWT.MULTI | SWT.FULL_SELECTION);
+    private void createAttachmentTable(final FormToolkit toolkit, final Composite attachmentsComposite) {
+        final Table attachmentsTable = toolkit.createTable(attachmentsComposite, SWT.MULTI | SWT.FULL_SELECTION);
         attachmentsTable.setLinesVisible(true);
         attachmentsTable.setHeaderVisible(true);
         attachmentsTable.setLayout(new GridLayout());
@@ -116,7 +116,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
             if (!useDescriptionColumn && attachmentsColumns[i].equals(Messages.TaskEditorAttachmentPart_Description)) {
                 continue;
             }
-            TableColumn column = new TableColumn(attachmentsTable, SWT.LEFT, columnIndex);
+            final TableColumn column = new TableColumn(attachmentsTable, SWT.LEFT, columnIndex);
             column.setText(attachmentsColumns[i]);
             if (useDescriptionColumn) {
                 column.setWidth(attachmentsColumnWidths[i]);
@@ -125,21 +125,21 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
             }
             columnIndex++;
         }
-        int sizeColumn = useDescriptionColumn ? 2 : 1;
+        final int sizeColumn = useDescriptionColumn ? 2 : 1;
         attachmentsTable.getColumn(sizeColumn).setAlignment(SWT.RIGHT);
 
-        TableViewer attachmentsViewer = new TableViewer(attachmentsTable);
+        final TableViewer attachmentsViewer = new TableViewer(attachmentsTable);
         attachmentsViewer.setUseHashlookup(true);
         attachmentsViewer.setColumnProperties(attachmentsColumns);
         ColumnViewerToolTipSupport.enableFor(attachmentsViewer, ToolTip.NO_RECREATE);
 
-        ViewerComparator attachmentSorter = new ViewerComparator() {
+        final ViewerComparator attachmentSorter = new ViewerComparator() {
             @Override
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                ITaskAttachment attachment1 = (ITaskAttachment) e1;
-                ITaskAttachment attachment2 = (ITaskAttachment) e2;
-                Date created1 = attachment1.getCreationDate();
-                Date created2 = attachment2.getCreationDate();
+            public int compare(final Viewer viewer, final Object e1, final Object e2) {
+                final ITaskAttachment attachment1 = (ITaskAttachment) e1;
+                final ITaskAttachment attachment2 = (ITaskAttachment) e2;
+                final Date created1 = attachment1.getCreationDate();
+                final Date created2 = attachment2.getCreationDate();
                 if (created1 != null && created2 != null) {
                     return created1.compareTo(created2);
                 } else if (created1 == null && created2 != null) {
@@ -153,9 +153,9 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         };
         attachmentsViewer.setComparator(attachmentSorter);
 
-        List<ITaskAttachment> attachmentList = new ArrayList<>(attachments.size());
-        for (TaskAttribute attribute : attachments) {
-            TaskAttachment taskAttachment = new TaskAttachment(getModel().getTaskRepository(), getModel().getTask(),
+        final List<ITaskAttachment> attachmentList = new ArrayList<>(attachments.size());
+        for (final TaskAttribute attribute : attachments) {
+            final TaskAttachment taskAttachment = new TaskAttachment(getModel().getTaskRepository(), getModel().getTask(),
                     attribute);
             getTaskData().getAttributeMapper().updateTaskAttachment(taskAttachment, attribute);
             attachmentList.add(taskAttachment);
@@ -164,7 +164,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 
         attachmentsViewer.setLabelProvider(new CellLabelProvider() {
             @Override
-            public void update(ViewerCell cell) {
+            public void update(final ViewerCell cell) {
                 final TaskAttachment element = (TaskAttachment) cell.getElement();
                 final String text;
                 final int columnIndex = cell.getColumnIndex();
@@ -190,10 +190,10 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 
         attachmentsViewer.addOpenListener(new IOpenListener() {
             @Override
-            public void open(OpenEvent event) {
+            public void open(final OpenEvent event) {
                 if (!event.getSelection().isEmpty()) {
-                    StructuredSelection selection = (StructuredSelection) event.getSelection();
-                    ITaskAttachment attachment = (ITaskAttachment) selection.getFirstElement();
+                    final StructuredSelection selection = (StructuredSelection) event.getSelection();
+                    final ITaskAttachment attachment = (ITaskAttachment) selection.getFirstElement();
                     TasksUiUtil.openUrl(attachment.getUrl());
                 }
             }
@@ -205,12 +205,12 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         menuManager.setRemoveAllWhenShown(true);
         menuManager.addMenuListener(new IMenuListener() {
             @Override
-            public void menuAboutToShow(IMenuManager manager) {
+            public void menuAboutToShow(final IMenuManager manager) {
                 TasksUiMenus.fillTaskAttachmentMenu(manager);
             }
         });
         getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, true);
-        Menu menu = menuManager.createContextMenu(attachmentsTable);
+        final Menu menu = menuManager.createContextMenu(attachmentsTable);
         attachmentsTable.setMenu(menu);
     }
 
@@ -226,7 +226,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         if (-1000 < bytes && bytes < 1000) {
             return bytes + " B";
         }
-        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
+        final CharacterIterator ci = new StringCharacterIterator("kMGTPE");
         while (bytes <= -999_950 || bytes >= 999_950) {
             bytes /= 1000;
             ci.next();
@@ -234,28 +234,28 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         return String.format("%.1f %cB", bytes / 1000.0, ci.current());
     }
 
-    private void createButtons(Composite attachmentsComposite, FormToolkit toolkit) {
+    private void createButtons(final Composite attachmentsComposite, final FormToolkit toolkit) {
         final Composite attachmentControlsComposite = toolkit.createComposite(attachmentsComposite);
         attachmentControlsComposite.setLayout(new GridLayout(3, false));
         attachmentControlsComposite.setLayoutData(new GridData(GridData.BEGINNING));
 
-        Button attachFileButton = toolkit.createButton(attachmentControlsComposite,
+        final Button attachFileButton = toolkit.createButton(attachmentControlsComposite,
                 Messages.TaskEditorAttachmentPart_Attach_, SWT.PUSH);
         attachFileButton.setImage(CommonImages.getImage(CommonImages.FILE_PLAIN));
         attachFileButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.DEFAULT, null);
             }
         });
         getTaskEditorPage().registerDefaultDropListener(attachFileButton);
 
-        Button attachScreenshotButton = toolkit.createButton(attachmentControlsComposite,
+        final Button attachScreenshotButton = toolkit.createButton(attachmentControlsComposite,
                 Messages.TaskEditorAttachmentPart_Attach__Screenshot, SWT.PUSH);
         attachScreenshotButton.setImage(CommonImages.getImage(CommonImages.IMAGE_CAPTURE));
         attachScreenshotButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.SCREENSHOT, null);
             }
         });
@@ -270,7 +270,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
     }
 
     @Override
-    public void createControl(Composite parent, final FormToolkit toolkit) {
+    public void createControl(final Composite parent, final FormToolkit toolkit) {
         initialize();
 
         section = createSection(parent, toolkit, hasIncoming);
@@ -280,7 +280,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         } else {
             section.addExpansionListener(new ExpansionAdapter() {
                 @Override
-                public void expansionStateChanged(ExpansionEvent event) {
+                public void expansionStateChanged(final ExpansionEvent event) {
                     if (attachmentsComposite == null) {
                         expandSection(toolkit, section);
                         getTaskEditorPage().reflow();
@@ -291,7 +291,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         setSection(toolkit, section);
     }
 
-    private void expandSection(FormToolkit toolkit, Section section) {
+    private void expandSection(final FormToolkit toolkit, final Section section) {
         attachmentsComposite = toolkit.createComposite(section);
         attachmentsComposite.setLayout(EditorUtil.createSectionClientLayout());
         attachmentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -301,7 +301,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         if (attachments.size() > 0) {
             createAttachmentTable(toolkit, attachmentsComposite);
         } else {
-            Label label = toolkit.createLabel(attachmentsComposite, Messages.TaskEditorAttachmentPart_No_attachments);
+            final Label label = toolkit.createLabel(attachmentsComposite, Messages.TaskEditorAttachmentPart_No_attachments);
             getTaskEditorPage().registerDefaultDropListener(label);
         }
 
@@ -322,7 +322,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
     private void initialize() {
         attachments = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(),
                 TaskAttribute.TYPE_ATTACHMENT);
-        for (TaskAttribute attachmentAttribute : attachments) {
+        for (final TaskAttribute attachmentAttribute : attachments) {
             if (getModel().hasIncomingChanges(attachmentAttribute)) {
                 hasIncoming = true;
                 break;
@@ -331,8 +331,8 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
     }
 
     @Override
-    protected void fillToolBar(ToolBarManager toolBarManager) {
-        Action attachFileAction = new Action() {
+    protected void fillToolBar(final ToolBarManager toolBarManager) {
+        final Action attachFileAction = new Action() {
             @Override
             public void run() {
                 EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.DEFAULT, null);
@@ -342,7 +342,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachFileAction.setImageDescriptor(CommonImages.FILE_PLAIN_SMALL);
         toolBarManager.add(attachFileAction);
 
-        Action attachScreenshotAction = new Action() {
+        final Action attachScreenshotAction = new Action() {
             @Override
             public void run() {
                 EditorUtil.openNewAttachmentWizard(getTaskEditorPage(), Mode.SCREENSHOT, null);
@@ -355,12 +355,12 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
     }
 
     @Override
-    public boolean setFormInput(Object input) {
+    public boolean setFormInput(final Object input) {
         if (input instanceof String) {
-            String text = (String) input;
+            final String text = (String) input;
             if (text.startsWith(TaskAttribute.PREFIX_ATTACHMENT)) {
                 if (attachments != null) {
-                    for (TaskAttribute attachmentAttribute : attachments) {
+                    for (final TaskAttribute attachmentAttribute : attachments) {
                         if (text.equals(attachmentAttribute.getId())) {
                             selectReveal(attachmentAttribute);
                         }
@@ -371,12 +371,12 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         return super.setFormInput(input);
     }
 
-    public TaskAttribute selectReveal(TaskAttribute attachmentAttribute) {
+    public TaskAttribute selectReveal(final TaskAttribute attachmentAttribute) {
         if (attachmentAttribute == null) {
             return null;
         }
         expand();
-        for (TaskAttribute attachment : attachments) {
+        for (final TaskAttribute attachment : attachments) {
             if (attachment.equals(attachmentAttribute)) {
                 CommonFormUtil.ensureVisible(attachmentsComposite);
                 EditorUtil.focusOn(getTaskEditorPage().getManagedForm().getForm(), section);

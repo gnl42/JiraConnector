@@ -13,76 +13,76 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
 
 /**
  * Indicates that an error page was displayed by the remote repository.
- * 
+ *
  * @author Steffen Pingel
  */
 public class JiraRemoteMessageException extends JiraRemoteException {
 
-	private static final long serialVersionUID = 4622602207502097037L;
+    private static final long serialVersionUID = 4622602207502097037L;
 
-	private final String htmlMessage;
+    private final String htmlMessage;
 
-	public JiraRemoteMessageException(String message, String htmlMessage) {
-		super(message);
+    public JiraRemoteMessageException(final String message, final String htmlMessage) {
+        super(message);
 
-		this.htmlMessage = htmlMessage;
-	}
+        this.htmlMessage = htmlMessage;
+    }
 
-	public JiraRemoteMessageException(String htmlMessage) {
-		super(getTitle(htmlMessage));
+    public JiraRemoteMessageException(final String htmlMessage) {
+        super(getTitle(htmlMessage));
 
-		this.htmlMessage = htmlMessage;
-	}
+        this.htmlMessage = htmlMessage;
+    }
 
-	private static String getTitle(String text) {
-		if (text == null) {
-			return null;
-		}
+    private static String getTitle(final String text) {
+        if (text == null) {
+            return null;
+        }
 
-		int start = text.indexOf("<strong>"); //$NON-NLS-1$
-		if (start != -1) {
-			int stop = text.indexOf("</strong>", start + 8); //$NON-NLS-1$
-			if (stop != -1) {
-				return text.substring(start + 8, stop);
-			}
-		}
+        int start = text.indexOf("<strong>"); //$NON-NLS-1$
+        if (start != -1) {
+            final int stop = text.indexOf("</strong>", start + 8); //$NON-NLS-1$
+            if (stop != -1) {
+                return text.substring(start + 8, stop);
+            }
+        }
 
-		// JIRA 4.1 puts some errors into <li>xxx</li>
-		start = text.indexOf("<li>"); //$NON-NLS-1$
-		if (start != -1) {
-			int stop = text.indexOf("</li>", start + 4); //$NON-NLS-1$
-			if (stop != -1) {
-				return text.substring(start + 4, stop);
-			}
-		}
+        // JIRA 4.1 puts some errors into <li>xxx</li>
+        start = text.indexOf("<li>"); //$NON-NLS-1$
+        if (start != -1) {
+            final int stop = text.indexOf("</li>", start + 4); //$NON-NLS-1$
+            if (stop != -1) {
+                return text.substring(start + 4, stop);
+            }
+        }
 
-		// JIRA 4.2 puts some errors into <p>xxx</p>
-		start = text.indexOf("<p>"); //$NON-NLS-1$
-		if (start != -1) {
-			int stop = text.indexOf("</p>", start + 3); //$NON-NLS-1$
-			if (stop != -1) {
-				return text.substring(start + 3, stop);
-			}
-		}
-		return null;
-	}
+        // JIRA 4.2 puts some errors into <p>xxx</p>
+        start = text.indexOf("<p>"); //$NON-NLS-1$
+        if (start != -1) {
+            final int stop = text.indexOf("</p>", start + 3); //$NON-NLS-1$
+            if (stop != -1) {
+                return text.substring(start + 3, stop);
+            }
+        }
+        return null;
+    }
 
-	public String getHtmlMessage() {
-		return htmlMessage;
-	}
+    public String getHtmlMessage() {
+        return htmlMessage;
+    }
 
-	@Override
-	public String toString() {
-		String message = getMessage();
-		if (message != null) {
-			if (htmlMessage != null) {
-				return message + " (" + htmlMessage + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-			} else {
-				return message;
-			}
-		} else {
-			return htmlMessage;
-		}
-	}
+    @Override
+    public String toString() {
+        final String message = getMessage();
+        if (message != null) {
+            if (htmlMessage != null) {
+                return message + " (" + htmlMessage + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                return message;
+            }
+        } else {
+            return htmlMessage;
+        }
+    }
 
 }

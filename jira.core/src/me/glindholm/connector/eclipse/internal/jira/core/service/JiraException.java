@@ -13,26 +13,26 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
 
 /**
  * Indicates an error during repository access.
- * 
+ *
  * @author Steffen Pingel
  */
 public class JiraException extends Exception {
 
-	private static final long serialVersionUID = -4354184850277873071L;
+    private static final long serialVersionUID = -4354184850277873071L;
 
-	public JiraException() {
-	}
+    public JiraException() {
+    }
 
-	public JiraException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public JiraException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	public JiraException(String message) {
-		super(message);
-	}
+    public JiraException(final String message) {
+        super(message);
+    }
 
-	public JiraException(Throwable cause) {
-		super(cause);
-	}
+    public JiraException(final Throwable cause) {
+        super(cause);
+    }
 
 }

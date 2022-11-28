@@ -20,7 +20,7 @@ package me.glindholm.connector.commons.jira;
  * @date Jul 9, 2010
  */
 public class JiraUrlCustomField extends JiraCustomFieldImpl {
-    public JiraUrlCustomField(Builder builder) {
+    public JiraUrlCustomField(final Builder builder) {
         super(builder);
     }
 

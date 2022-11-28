@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 public class JiraDateTimeCustomField extends JiraCustomFieldImpl {
 
-    protected JiraDateTimeCustomField(Builder builder) {
+    protected JiraDateTimeCustomField(final Builder builder) {
         super(builder);
     }
 

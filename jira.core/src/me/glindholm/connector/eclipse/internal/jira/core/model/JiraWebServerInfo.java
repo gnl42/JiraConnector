@@ -16,46 +16,46 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
  */
 public class JiraWebServerInfo {
 
-	private String baseUrl;
+    private String baseUrl;
 
-	private String characterEncoding;
+    private String characterEncoding;
 
-	private boolean insecureRedirect;
+    private boolean insecureRedirect;
 
-	private transient JiraStatistics statistics;
+    private transient JiraStatistics statistics;
 
-	public JiraWebServerInfo() {
-	}
+    public JiraWebServerInfo() {
+    }
 
-	public synchronized JiraStatistics getStatistics() {
-		if (statistics == null) {
-			statistics = new JiraStatistics();
-		}
-		return statistics;
-	}
+    public synchronized JiraStatistics getStatistics() {
+        if (statistics == null) {
+            statistics = new JiraStatistics();
+        }
+        return statistics;
+    }
 
-	public String getBaseUrl() {
-		return baseUrl;
-	}
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 
-	public void setBaseUrl(String baseUrl) {
-		this.baseUrl = baseUrl;
-	}
+    public void setBaseUrl(final String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
 
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    public void setCharacterEncoding(final String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	public boolean isInsecureRedirect() {
-		return insecureRedirect;
-	}
+    public boolean isInsecureRedirect() {
+        return insecureRedirect;
+    }
 
-	public void setInsecureRedirect(boolean insecureRedirect) {
-		this.insecureRedirect = insecureRedirect;
-	}
+    public void setInsecureRedirect(final boolean insecureRedirect) {
+        this.insecureRedirect = insecureRedirect;
+    }
 
 }

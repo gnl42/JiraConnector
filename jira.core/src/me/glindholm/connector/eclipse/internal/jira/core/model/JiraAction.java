@@ -21,29 +21,29 @@ import java.util.List;
  */
 public class JiraAction implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String id;
+    private final String id;
 
-	private final String name;
+    private final String name;
 
-	private final List<JiraIssueField> fields = new ArrayList<JiraIssueField>();
+    private final List<JiraIssueField> fields = new ArrayList<>();
 
-	public JiraAction(String id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+    public JiraAction(final String id, final String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public List<JiraIssueField> getFields() {
-		return fields;
-	}
+    public List<JiraIssueField> getFields() {
+        return fields;
+    }
 
 }

@@ -21,95 +21,91 @@ import org.eclipse.core.runtime.Assert;
  */
 public class JiraResolution implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public static final String FIXED_ID = "1"; //$NON-NLS-1$
+    public static final String FIXED_ID = "1"; //$NON-NLS-1$
 
-	public static final String FIXED_NAME = "Fixed"; //$NON-NLS-1$
+    public static final String FIXED_NAME = "Fixed"; //$NON-NLS-1$
 
-	public static final String WONT_FIX_ID = "2"; //$NON-NLS-1$
+    public static final String WONT_FIX_ID = "2"; //$NON-NLS-1$
 
-	public static final String DUPLICATE_ID = "3"; //$NON-NLS-1$
+    public static final String DUPLICATE_ID = "3"; //$NON-NLS-1$
 
-	public static final String INCOMPLETE_ID = "4"; //$NON-NLS-1$
+    public static final String INCOMPLETE_ID = "4"; //$NON-NLS-1$
 
-	public static final String CANNOT_REPRODUCE_ID = "5"; //$NON-NLS-1$
+    public static final String CANNOT_REPRODUCE_ID = "5"; //$NON-NLS-1$
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private String description;
+    private String description;
 
-	private String icon;
+    private String icon;
 
-	public JiraResolution(String id, String name) {
-		Assert.isNotNull(id);
-		Assert.isNotNull(name);
-		this.id = id;
-		this.name = name;
-	}
+    public JiraResolution(final String id, final String name) {
+        Assert.isNotNull(id);
+        Assert.isNotNull(name);
+        this.id = id;
+        this.name = name;
+    }
 
-	public JiraResolution(String id, String name, String description, String icon) {
-		this(id, name);
-		this.description = description;
-		this.icon = icon;
-	}
+    public JiraResolution(final String id, final String name, final String description, final String icon) {
+        this(id, name);
+        this.description = description;
+        this.icon = icon;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public String getIcon() {
-		return this.icon;
-	}
+    public String getIcon() {
+        return icon;
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public void setIcon(final String icon) {
+        this.icon = icon;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(final String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object obj) {
+        if ((obj == null) || !(obj instanceof JiraResolution)) {
+            return false;
+        }
 
-		if (!(obj instanceof JiraResolution)) {
-			return false;
-		}
+        final JiraResolution that = (JiraResolution) obj;
 
-		JiraResolution that = (JiraResolution) obj;
+        return id.equals(that.id);
+    }
 
-		return this.id.equals(that.id);
-	}
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return name;
-	}
+    @Override
+    public String toString() {
+        return name;
+    }
 }

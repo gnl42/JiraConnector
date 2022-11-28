@@ -19,38 +19,38 @@ import java.io.Serializable;
  */
 public class JiraComponent implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	public JiraComponent(String id) {
-		this.id = id;
-	}
+    public JiraComponent(final String id) {
+        this.id = id;
+    }
 
-	public JiraComponent() {
-	}
+    public JiraComponent() {
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(final String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }

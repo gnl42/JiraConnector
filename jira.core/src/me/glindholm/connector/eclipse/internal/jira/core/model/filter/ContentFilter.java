@@ -17,67 +17,67 @@ import java.io.Serializable;
 /**
  * This filter will restrict matches to issues that have either a summary, description, environment or comment matching
  * the specified query string.
- * 
+ *
  * @author Brock Janiczak
  */
 public class ContentFilter implements Filter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String queryString;
+    private final String queryString;
 
-	private final boolean searchingSummary;
+    private final boolean searchingSummary;
 
-	private final boolean searchingDescription;
+    private final boolean searchingDescription;
 
-	private final boolean searchingComments;
+    private final boolean searchingComments;
 
-	private final boolean searchingEnvironment;
+    private final boolean searchingEnvironment;
 
-	/**
-	 * 
-	 * @param queryString
-	 *            content being searched for
-	 * @param searchSummary
-	 *            Search the issue's summary for matches of <code>queryString</code>
-	 * @param searchDescription
-	 *            Search the issue's description for matches of <code>queryString</code>
-	 * @param searchEnvironment
-	 *            Search the issue's environment for matches of </code>queryString</code>
-	 * @param searchComments
-	 *            Search the issue's comments for matches of </code>queryString</code>
-	 */
-	public ContentFilter(String queryString, boolean searchSummary, boolean searchDescription,
-			boolean searchEnvironment, boolean searchComments) {
-		assert (queryString != null);
-		this.queryString = queryString;
-		this.searchingComments = searchComments;
-		this.searchingDescription = searchDescription;
-		this.searchingSummary = searchSummary;
-		this.searchingEnvironment = searchEnvironment;
-	}
+    /**
+     *
+     * @param queryString
+     *            content being searched for
+     * @param searchSummary
+     *            Search the issue's summary for matches of <code>queryString</code>
+     * @param searchDescription
+     *            Search the issue's description for matches of <code>queryString</code>
+     * @param searchEnvironment
+     *            Search the issue's environment for matches of </code>queryString</code>
+     * @param searchComments
+     *            Search the issue's comments for matches of </code>queryString</code>
+     */
+    public ContentFilter(final String queryString, final boolean searchSummary, final boolean searchDescription,
+            final boolean searchEnvironment, final boolean searchComments) {
+        assert queryString != null;
+        this.queryString = queryString;
+        searchingComments = searchComments;
+        searchingDescription = searchDescription;
+        searchingSummary = searchSummary;
+        searchingEnvironment = searchEnvironment;
+    }
 
-	public String getQueryString() {
-		return this.queryString;
-	}
+    public String getQueryString() {
+        return queryString;
+    }
 
-	public boolean isSearchingComments() {
-		return this.searchingComments;
-	}
+    public boolean isSearchingComments() {
+        return searchingComments;
+    }
 
-	public boolean isSearchingDescription() {
-		return this.searchingDescription;
-	}
+    public boolean isSearchingDescription() {
+        return searchingDescription;
+    }
 
-	public boolean isSearchingEnvironment() {
-		return this.searchingEnvironment;
-	}
+    public boolean isSearchingEnvironment() {
+        return searchingEnvironment;
+    }
 
-	public boolean isSearchingSummary() {
-		return this.searchingSummary;
-	}
+    public boolean isSearchingSummary() {
+        return searchingSummary;
+    }
 
-	ContentFilter copy() {
-		return new ContentFilter(queryString, searchingSummary, searchingDescription, searchingEnvironment,
-				searchingComments);
-	}
+    ContentFilter copy() {
+        return new ContentFilter(queryString, searchingSummary, searchingDescription, searchingEnvironment,
+                searchingComments);
+    }
 }

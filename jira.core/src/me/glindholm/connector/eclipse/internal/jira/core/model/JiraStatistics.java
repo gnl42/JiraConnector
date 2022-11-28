@@ -23,25 +23,25 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
  */
 public class JiraStatistics {
 
-	private long startTime;
+    private long startTime;
 
-	private final MultiStatus status;
+    private final MultiStatus status;
 
-	public JiraStatistics() {
-		status = new MultiStatus(JiraCorePlugin.ID_PLUGIN, 0, "", null); //$NON-NLS-1$
-	}
+    public JiraStatistics() {
+        status = new MultiStatus(JiraCorePlugin.ID_PLUGIN, 0, "", null); //$NON-NLS-1$
+    }
 
-	public MultiStatus getStatus() {
-		return status;
-	}
+    public MultiStatus getStatus() {
+        return status;
+    }
 
-	public void mark() {
-		startTime = System.currentTimeMillis();
-	}
+    public void mark() {
+        startTime = System.currentTimeMillis();
+    }
 
-	public void record(String message) {
-		long t = System.currentTimeMillis() - startTime;
-		status.add(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN, NLS.bind(message, t + " ms"))); //$NON-NLS-1$
-	}
+    public void record(final String message) {
+        final long t = System.currentTimeMillis() - startTime;
+        status.add(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN, NLS.bind(message, t + " ms"))); //$NON-NLS-1$
+    }
 
 }

@@ -13,22 +13,22 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
 
 /**
  * Indicates that the repository returned a response of an invalid or unexpected type
- * 
+ *
  * @author Thomas Ehrnhoefer
  */
 public class JiraInvalidResponseTypeException extends JiraException {
 
-	private static final long serialVersionUID = 1225089680867318262L;
+    private static final long serialVersionUID = 1225089680867318262L;
 
-	public JiraInvalidResponseTypeException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public JiraInvalidResponseTypeException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	public JiraInvalidResponseTypeException(String message) {
-		super(message);
-	}
+    public JiraInvalidResponseTypeException(final String message) {
+        super(message);
+    }
 
-	public JiraInvalidResponseTypeException(Throwable cause) {
-		super(cause);
-	}
+    public JiraInvalidResponseTypeException(final Throwable cause) {
+        super(cause);
+    }
 }

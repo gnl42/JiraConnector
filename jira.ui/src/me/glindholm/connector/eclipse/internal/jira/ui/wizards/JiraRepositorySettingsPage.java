@@ -121,14 +121,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
     private Button useToken;
 
-    public JiraRepositorySettingsPage(TaskRepository taskRepository) {
+    public JiraRepositorySettingsPage(final TaskRepository taskRepository) {
         super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings, Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
         setNeedsProxy(true);
         setNeedsHttpAuth(false);
     }
 
     @Override
-    protected void repositoryTemplateSelected(RepositoryTemplate template) {
+    protected void repositoryTemplateSelected(final RepositoryTemplate template) {
         repositoryLabelEditor.setStringValue(template.label);
         setUrl(template.repositoryUrl);
         getContainer().updateButtons();
@@ -136,7 +136,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
     /** Create a button to validate the specified repository settings */
     @Override
-    protected void createAdditionalControls(Composite parent) {
+    protected void createAdditionalControls(final Composite parent) {
         if (repository != null) {
             configuration = JiraUtil.getLocalConfiguration(repository);
         } else {
@@ -150,10 +150,10 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         addRepositoryTemplatesToServerUrlCombo();
 
         if (repository != null) {
-            this.characterEncodingValidated = JiraUtil.getCharacterEncodingValidated(repository);
+            characterEncodingValidated = JiraUtil.getCharacterEncodingValidated(repository);
         }
 
-        Label compressionLabel = new Label(parent, SWT.NONE);
+        final Label compressionLabel = new Label(parent, SWT.NONE);
         compressionLabel.setText(Messages.JiraRepositorySettingsPage_Compression);
         compressionButton = new Button(parent, SWT.CHECK | SWT.LEFT);
         compressionButton.setText(Messages.JiraRepositorySettingsPage_Enabled);
@@ -179,7 +179,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
             linkedTasksAsSubtasksButton.setSelection(JiraUtil.getLinkedTasksAsSubtasks(repository));
         }
 
-        Label followRedirectsLabel = new Label(parent, SWT.NONE);
+        final Label followRedirectsLabel = new Label(parent, SWT.NONE);
         followRedirectsLabel.setText(Messages.JiraRepositorySettingsPage_Follow_redirects);
         followRedirectsButton = new Button(parent, SWT.CHECK | SWT.LEFT);
         followRedirectsButton.setText(Messages.JiraRepositorySettingsPage_Enabled);
@@ -191,7 +191,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         label.setText(Messages.JiraRepositorySettingsPage_Time_tracking);
         GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).applyTo(label);
 
-        Composite timeTrackingComposite = new Composite(parent, SWT.NONE);
+        final Composite timeTrackingComposite = new Composite(parent, SWT.NONE);
         timeTrackingComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
         // useServerSettingsButton = new Button(timeTrackingComposite, SWT.CHECK |
@@ -236,7 +236,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         // }
         // });
 
-        Composite maxSearchResultsComposite = new Composite(parent, SWT.NONE);
+        final Composite maxSearchResultsComposite = new Composite(parent, SWT.NONE);
         maxSearchResultsComposite.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
 
         limitSearchResultsButton = new Button(maxSearchResultsComposite, SWT.CHECK | SWT.LEFT);
@@ -246,7 +246,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         maxSearchResultsSpinner.setValues(JiraUtil.DEFAULT_MAX_SEARCH_RESULTS, 1, 99999, 0, 1, 1000);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).applyTo(maxSearchResultsSpinner);
         if (repository != null) {
-            int maxSearchResults = JiraUtil.getMaxSearchResults(repository);
+            final int maxSearchResults = JiraUtil.getMaxSearchResults(repository);
             if (maxSearchResults != -1) {
                 maxSearchResultsSpinner.setSelection(maxSearchResults);
                 limitSearchResultsButton.setSelection(true);
@@ -261,7 +261,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         }
         limitSearchResultsButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 maxSearchResultsSpinner.setEnabled(limitSearchResultsButton.getSelection());
             }
         });
@@ -270,9 +270,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     }
 
     private void createAdvancedComposite(final Composite parent) {
-        ExpandableComposite expandableComposite = toolkit.createExpandableComposite(parent,
+        final ExpandableComposite expandableComposite = toolkit.createExpandableComposite(parent,
                 ExpandableComposite.TITLE_BAR | ExpandableComposite.COMPACT | ExpandableComposite.TWISTIE);
-        GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+        final GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
         gd.horizontalSpan = 2;
         gd.horizontalIndent = -5;
         expandableComposite.setLayoutData(gd);
@@ -281,14 +281,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         expandableComposite.setText(Messages.JiraRepositorySettingsPage_Advanced_Configuration);
         expandableComposite.addExpansionListener(new ExpansionAdapter() {
             @Override
-            public void expansionStateChanged(ExpansionEvent e) {
+            public void expansionStateChanged(final ExpansionEvent e) {
                 getControl().getShell().pack();
             }
         });
         toolkit.paintBordersFor(expandableComposite);
 
-        Composite composite = toolkit.createComposite(expandableComposite, SWT.BORDER);
-        GridLayout layout = new GridLayout();
+        final Composite composite = toolkit.createComposite(expandableComposite, SWT.BORDER);
+        final GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         composite.setLayout(layout);
         expandableComposite.setClient(composite);
@@ -321,21 +321,16 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
         localeCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
         locales = Locale.getAvailableLocales();
-        Arrays.sort(locales, new Comparator<Locale>() {
-            @Override
-            public int compare(Locale o1, Locale o2) {
-                return o1.getDisplayName().compareTo(o2.getDisplayName());
-            }
-        });
-        for (Locale locale : locales) {
+        Arrays.sort(locales, Comparator.comparing(Locale::getDisplayName));
+        for (final Locale locale : locales) {
             localeCombo.add(locale.getDisplayName());
         }
         localeCombo.setText(configuration.getLocale().getDisplayName());
 
-        Hyperlink hyperlink = toolkit.createHyperlink(composite, Messages.JiraRepositorySettingsPage_Reset_to_defaults, SWT.NONE);
+        final Hyperlink hyperlink = toolkit.createHyperlink(composite, Messages.JiraRepositorySettingsPage_Reset_to_defaults, SWT.NONE);
         hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
             @Override
-            public void linkActivated(HyperlinkEvent e) {
+            public void linkActivated(final HyperlinkEvent e) {
                 datePatternText.setText(JiraLocalConfiguration.DEFAULT_DATE_PATTERN);
                 dateTimePatternText.setText(JiraLocalConfiguration.DEFAULT_DATE_TIME_PATTERN);
                 localeCombo.setText(JiraLocalConfiguration.DEFAULT_LOCALE.getDisplayName());
@@ -346,19 +341,19 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     }
 
     @Override
-    protected boolean isValidUrl(String name) {
+    protected boolean isValidUrl(final String name) {
         if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
             try {
                 new URL(name);
                 return true;
-            } catch (MalformedURLException e) {
+            } catch (final MalformedURLException e) {
             }
         }
         return false;
     }
 
     @Override
-    protected Validator getValidator(TaskRepository repository) {
+    protected Validator getValidator(final TaskRepository repository) {
         return new JiraValidator(repository);
     }
 
@@ -433,7 +428,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
      * Helper method for distinguishing between hitting Finish and Validate (because
      * Validation leads to calling applyTo in the superclass)
      */
-    public TaskRepository applyToValidate(TaskRepository repository) {
+    public TaskRepository applyToValidate(final TaskRepository repository) {
         MigrateToSecureStorageJob.migrateToSecureStorage(repository);
         super.applyTo(repository);
 
@@ -444,16 +439,16 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
     @Override
     public TaskRepository createTaskRepository() {
-        TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
+        final TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
         return applyToValidate(repository);
     }
 
     @Override
     protected void validateSettings() {
         if (repository != null) {
-            AuthenticationCredentials repoCredentials = repository.getCredentials(AuthenticationType.REPOSITORY);
-            AuthenticationCredentials proxyCredentials = repository.getCredentials(AuthenticationType.PROXY);
-            AuthenticationCredentials httpCredentials = repository.getCredentials(AuthenticationType.HTTP);
+            final AuthenticationCredentials repoCredentials = repository.getCredentials(AuthenticationType.REPOSITORY);
+            final AuthenticationCredentials proxyCredentials = repository.getCredentials(AuthenticationType.PROXY);
+            final AuthenticationCredentials httpCredentials = repository.getCredentials(AuthenticationType.HTTP);
 
             super.validateSettings();
 
@@ -467,22 +462,22 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     }
 
     @Override
-    protected void applyValidatorResult(Validator validator) {
-        JiraValidator jiraValidator = (JiraValidator) validator;
-        JiraServerInfo serverInfo = jiraValidator.getServerInfo();
+    protected void applyValidatorResult(final Validator validator) {
+        final JiraValidator jiraValidator = (JiraValidator) validator;
+        final JiraServerInfo serverInfo = jiraValidator.getServerInfo();
         if (serverInfo != null) {
-            String url = jiraValidator.getRepositoryUrl();
+            final String url = jiraValidator.getRepositoryUrl();
             if (serverInfo.getBaseUrl() != null && !url.equals(serverInfo.getBaseUrl())) {
-                Set<String> urls = new LinkedHashSet<>();
+                final Set<String> urls = new LinkedHashSet<>();
                 urls.add(url);
                 urls.add(serverInfo.getBaseUrl());
                 if (serverInfo.getWebBaseUrl() != null) {
                     urls.add(serverInfo.getWebBaseUrl());
                 }
 
-                UrlSelectionDialog dialog = new UrlSelectionDialog(getShell(), urls.toArray(new String[0]));
+                final UrlSelectionDialog dialog = new UrlSelectionDialog(getShell(), urls.toArray(new String[0]));
                 dialog.setSelectedUrl(serverInfo.getBaseUrl());
-                int result = dialog.open();
+                final int result = dialog.open();
                 if (result == Window.OK) {
                     setUrl(dialog.getSelectedUrl());
                 }
@@ -515,7 +510,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
         private JiraServerInfo serverInfo;
 
-        public JiraValidator(TaskRepository repository) {
+        public JiraValidator(final TaskRepository repository) {
             this.repository = repository;
         }
 
@@ -528,18 +523,18 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         }
 
         @Override
-        public void run(IProgressMonitor monitor) throws CoreException {
+        public void run(final IProgressMonitor monitor) throws CoreException {
             try {
                 new URL(repository.getRepositoryUrl());
-            } catch (MalformedURLException ex) {
+            } catch (final MalformedURLException ex) {
                 throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, IStatus.OK, INVALID_REPOSITORY_URL, null));
             }
 
-            AbstractWebLocation location = new JiraTaskRepositoryLocation(repository);
-            JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(repository);
+            final AbstractWebLocation location = new JiraTaskRepositoryLocation(repository);
+            final JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(repository);
             try {
-                this.serverInfo = JiraClientFactory.getDefault().validateConnection(location, configuration, monitor);
-            } catch (JiraCaptchaRequiredException e) {
+                serverInfo = JiraClientFactory.getDefault().validateConnection(location, configuration, monitor);
+            } catch (final JiraCaptchaRequiredException e) {
                 Display.getDefault().asyncExec(new Runnable() {
                     @Override
                     public void run() {
@@ -548,14 +543,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
                 });
                 throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR, JiraUiPlugin.ID_PLUGIN,
                         Messages.JiraRepositorySettingsPage_remote_api_locked));
-            } catch (JiraAuthenticationException e) {
+            } catch (final JiraAuthenticationException e) {
                 throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, INVALID_LOGIN));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, e.getMessage(), e));
                 throw new CoreException(JiraCorePlugin.toStatus(repository, e));
             }
 
-            MultiStatus status = new MultiStatus(JiraUiPlugin.ID_PLUGIN, 0, NLS.bind("Validation results for {0}", //$NON-NLS-1$
+            final MultiStatus status = new MultiStatus(JiraUiPlugin.ID_PLUGIN, 0, NLS.bind("Validation results for {0}", //$NON-NLS-1$
                     repository.getRepositoryLabel()), null);
             // status.addAll(serverInfo.getStatistics().getStatus());
             status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind("Web base: {0}", serverInfo.getWebBaseUrl()))); //$NON-NLS-1$
@@ -574,7 +569,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
         private String selectedUrl;
 
-        protected UrlSelectionDialog(Shell parentShell, String[] locations) {
+        protected UrlSelectionDialog(final Shell parentShell, final String[] locations) {
             super(parentShell);
 
             if (locations == null || locations.length < 2) {
@@ -585,11 +580,11 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         }
 
         @Override
-        protected Control createDialogArea(Composite parent) {
+        protected Control createDialogArea(final Composite parent) {
             getShell().setText(Messages.JiraRepositorySettingsPage_Select_repository_location);
 
-            Composite composite = new Composite(parent, SWT.NONE);
-            GridLayout layout = new GridLayout();
+            final Composite composite = new Composite(parent, SWT.NONE);
+            final GridLayout layout = new GridLayout();
             layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
             layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
             layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
@@ -598,7 +593,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
             composite.setLayoutData(new GridData(GridData.FILL_BOTH));
             applyDialogFont(composite);
 
-            Label label = new Label(composite, SWT.NONE);
+            final Label label = new Label(composite, SWT.NONE);
             label.setText(Messages.JiraRepositorySettingsPage_The_repository_location_reported_by_the_server_does_not_match_the_provided_location);
 
             final List<Button> buttons = new ArrayList<>(locations.length);
@@ -608,28 +603,28 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
             }
 
             for (int i = 1; i < locations.length; i++) {
-                Button button = new Button(composite, SWT.RADIO);
+                final Button button = new Button(composite, SWT.RADIO);
                 button.setText(Messages.JiraRepositorySettingsPage_Use_server_location_ + locations[i]);
                 button.setData(locations[i]);
                 button.setSelection(getSelectedUrl().equals(locations[i]));
                 buttons.add(button);
             }
 
-            Button keepLocationButton = new Button(composite, SWT.RADIO);
+            final Button keepLocationButton = new Button(composite, SWT.RADIO);
             keepLocationButton.setText(Messages.JiraRepositorySettingsPage_Keep_current_location_ + locations[0]);
             keepLocationButton.setData(locations[0]);
             keepLocationButton.setSelection(getSelectedUrl().equals(locations[0]));
             buttons.add(keepLocationButton);
 
-            SelectionListener listener = new SelectionListener() {
+            final SelectionListener listener = new SelectionListener() {
                 @Override
-                public void widgetDefaultSelected(SelectionEvent e) {
+                public void widgetDefaultSelected(final SelectionEvent e) {
                     widgetSelected(e);
                 }
 
                 @Override
-                public void widgetSelected(SelectionEvent e) {
-                    Object source = e.getSource();
+                public void widgetSelected(final SelectionEvent e) {
+                    final Object source = e.getSource();
                     if (source instanceof Button && ((Button) source).getSelection()) {
                         setSelectedUrl((String) ((Button) source).getData());
                     }
@@ -637,14 +632,14 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
             };
 
-            for (Button button : buttons) {
+            for (final Button button : buttons) {
                 button.addSelectionListener(listener);
             }
 
             return composite;
         }
 
-        public void setSelectedUrl(String selectedUrl) {
+        public void setSelectedUrl(final String selectedUrl) {
             this.selectedUrl = selectedUrl;
         }
 
@@ -662,20 +657,20 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
      */
     private boolean needsUser = true;
 
-    protected void addTokenCheckbox(boolean userOptional) {
+    protected void addTokenCheckbox(final boolean userOptional) {
         needsUser = !userOptional;
         useToken = new Button(compositeContainer, SWT.CHECK);
         useToken.setText(Messages.JiraRepositorySettingsPage_LabelUseToken);
         useToken.setToolTipText(Messages.JiraRepositorySettingsPage_TooltipUseToken);
         useToken.moveBelow(savePasswordButton);
         GridDataFactory.defaultsFor(useToken).span(3, 1).applyTo(useToken);
-        String savePasswordText = savePasswordButton.getText();
-        boolean[] allowAnon = { isAnonymousAccess() };
-        SelectionAdapter listener = new SelectionAdapter() {
+        final String savePasswordText = savePasswordButton.getText();
+        final boolean[] allowAnon = { isAnonymousAccess() };
+        final SelectionAdapter listener = new SelectionAdapter() {
 
             @Override
-            public void widgetSelected(SelectionEvent e) {
-                boolean isChecked = useToken.getSelection();
+            public void widgetSelected(final SelectionEvent e) {
+                final boolean isChecked = useToken.getSelection();
                 if (isChecked) {
                     repositoryPasswordEditor.setLabelText(Messages.JiraRepositorySettingsPage_LabelToken);
                     savePasswordButton.setText(Messages.JiraRepositorySettingsPage_LabelSaveToken);
@@ -707,12 +702,12 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
             }
 
             @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 widgetSelected(e);
             }
         };
         useToken.addSelectionListener(listener);
-        TaskRepository taskRepository = getRepository();
+        final TaskRepository taskRepository = getRepository();
         if (taskRepository != null) { // FIXME
             useToken.setSelection(JiraUtil.isAccessToken(taskRepository));
             // setSelection does not fire a selection event
@@ -741,7 +736,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
     @SuppressWarnings("restriction")
     @Override
-    public void setMessage(String newMessage, int newType) {
+    public void setMessage(final String newMessage, final int newType) {
         // This is a bit hacky since it relies on an internal message and the
         // way it is used in the super class. But it beats re-implementing
         // isPageComplete().

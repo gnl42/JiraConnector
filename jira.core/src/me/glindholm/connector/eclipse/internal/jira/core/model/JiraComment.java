@@ -34,10 +34,10 @@ public final class JiraComment implements Serializable {
 
     private String authorDisplayName;
 
-    public JiraComment(String comment, String author, String roleLvel, Instant created) {
+    public JiraComment(final String comment, final String author, final String roleLvel, final Instant created) {
         this.comment = comment;
         this.author = author;
-        this.roleLevel = roleLvel;
+        roleLevel = roleLvel;
         this.created = created;
     }
 
@@ -45,52 +45,52 @@ public final class JiraComment implements Serializable {
     }
 
     public String getAuthor() {
-        return this.author;
+        return author;
     }
 
     public String getComment() {
-        return this.comment;
+        return comment;
     }
 
     public Instant getCreated() {
-        return this.created;
+        return created;
     }
 
     public String getRoleLevel() {
-        return this.roleLevel;
+        return roleLevel;
     }
 
     public boolean isMarkupDetected() {
         return markupDetected;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(final String author) {
         this.author = author;
     }
 
-    public void setComment(String comment) {
+    public void setComment(final String comment) {
         this.comment = comment;
     }
 
-    public void setCreated(Instant created) {
+    public void setCreated(final Instant created) {
         this.created = created;
     }
 
-    public void setRoleLevel(String level) {
-        this.roleLevel = level;
+    public void setRoleLevel(final String level) {
+        roleLevel = level;
     }
 
-    public void setMarkupDetected(boolean markupDetected) {
+    public void setMarkupDetected(final boolean markupDetected) {
         this.markupDetected = markupDetected;
     }
 
     @Override
     public String toString() {
-        return this.author + ": " + this.comment; //$NON-NLS-1$
+        return author + ": " + comment; //$NON-NLS-1$
     }
 
-    public void setAuthorDisplayName(String displayName) {
-        this.authorDisplayName = displayName;
+    public void setAuthorDisplayName(final String displayName) {
+        authorDisplayName = displayName;
     }
 
     public String getAuthorDisplayName() {

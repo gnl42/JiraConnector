@@ -15,8 +15,8 @@ import me.glindholm.connector.eclipse.internal.jira.core.TaskSchema.TaskField;
 
 public class JiraField<T> extends TaskField<T> {
 
-	public JiraField(Class<T> clazz, String key, String javaKey, String label, String type) {
-		super(clazz, key, javaKey, label, type);
-	}
+    public JiraField(final Class<T> clazz, final String key, final String javaKey, final String label, final String type) {
+        super(clazz, key, javaKey, label, type);
+    }
 
 }

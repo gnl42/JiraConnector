@@ -19,16 +19,16 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
  * @author Brock Janiczak
  */
 public class CurrentUserFilter extends UserFilter {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gbst.jira.core.model.filter.UserFilter#copy()
-	 */
-	@Override
-	UserFilter copy() {
-		return new CurrentUserFilter();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.gbst.jira.core.model.filter.UserFilter#copy()
+     */
+    @Override
+    UserFilter copy() {
+        return new CurrentUserFilter();
+    }
 
 }

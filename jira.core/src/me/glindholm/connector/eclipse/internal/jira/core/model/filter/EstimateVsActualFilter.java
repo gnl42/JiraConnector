@@ -19,26 +19,26 @@ import java.io.Serializable;
  * @author Brock Janiczak
  */
 public class EstimateVsActualFilter implements Filter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final long minVariation;
+    private final long minVariation;
 
-	private final long maxVariation;
+    private final long maxVariation;
 
-	public EstimateVsActualFilter(long minVariation, long maxVariation) {
-		this.minVariation = minVariation;
-		this.maxVariation = maxVariation;
-	}
+    public EstimateVsActualFilter(final long minVariation, final long maxVariation) {
+        this.minVariation = minVariation;
+        this.maxVariation = maxVariation;
+    }
 
-	public long getMaxVariation() {
-		return this.maxVariation;
-	}
+    public long getMaxVariation() {
+        return maxVariation;
+    }
 
-	public long getMinVariation() {
-		return this.minVariation;
-	}
+    public long getMinVariation() {
+        return minVariation;
+    }
 
-	EstimateVsActualFilter copy() {
-		return new EstimateVsActualFilter(this.minVariation, this.maxVariation);
-	}
+    EstimateVsActualFilter copy() {
+        return new EstimateVsActualFilter(minVariation, maxVariation);
+    }
 }

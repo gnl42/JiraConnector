@@ -18,30 +18,30 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
  */
 public class AttributeValueConverter<T> {
 
-	private final Class<T> clazz;
+    private final Class<T> clazz;
 
-	private final String type;
+    private final String type;
 
-	public AttributeValueConverter(Class<T> clazz, String type) {
-		this.clazz = clazz;
-		this.type = type;
-	}
+    public AttributeValueConverter(final Class<T> clazz, final String type) {
+        this.clazz = clazz;
+        this.type = type;
+    }
 
-	@SuppressWarnings("unchecked")
-	public T getValue(TaskAttribute attribute) {
-		return (T) attribute.getTaskData().getAttributeMapper().getValue(attribute);
-	}
+    @SuppressWarnings("unchecked")
+    public T getValue(final TaskAttribute attribute) {
+        return (T) attribute.getTaskData().getAttributeMapper().getValue(attribute);
+    }
 
-	public void setValue(TaskAttribute attribute, T value) {
-		attribute.getTaskData().getAttributeMapper().setValue(attribute, value.toString());
-	}
+    public void setValue(final TaskAttribute attribute, final T value) {
+        attribute.getTaskData().getAttributeMapper().setValue(attribute, value.toString());
+    }
 
-	public Class<T> getClazz() {
-		return clazz;
-	}
+    public Class<T> getClazz() {
+        return clazz;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
 }

@@ -34,72 +34,68 @@ public class JiraVersion implements Serializable {
 
     private long sequence;
 
-    public JiraVersion(String id, String name) {
+    public JiraVersion(final String id, final String name) {
         this.id = id;
         this.name = name;
     }
 
     public boolean isArchived() {
-        return this.archived;
+        return archived;
     }
 
-    public void setArchived(boolean archived) {
+    public void setArchived(final boolean archived) {
         this.archived = archived;
     }
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     public boolean isReleased() {
-        return this.released;
+        return released;
     }
 
-    public void setReleased(boolean released) {
+    public void setReleased(final boolean released) {
         this.released = released;
     }
 
     public Instant getReleaseDate() {
-        return this.releaseDate;
+        return releaseDate;
     }
 
-    public void setReleaseDate(Instant releaseDate) {
+    public void setReleaseDate(final Instant releaseDate) {
         this.releaseDate = releaseDate;
     }
 
     public long getSequence() {
-        return this.sequence;
+        return sequence;
     }
 
-    public void setSequence(long sequence) {
+    public void setSequence(final long sequence) {
         this.sequence = sequence;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
+    public boolean equals(final Object obj) {
+        if ((obj == null) || !(obj instanceof JiraVersion)) {
             return false;
         }
 
-        if (!(obj instanceof JiraVersion)) {
-            return false;
-        }
+        final JiraVersion that = (JiraVersion) obj;
 
-        JiraVersion that = (JiraVersion) obj;
-
-        return this.id.equals(that.id);
+        return id.equals(that.id);
     }
 
     @Override

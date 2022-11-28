@@ -13,21 +13,21 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
 
 public class JiraAllowedValue {
 
-	private final String value;
+    private final String value;
 
-	private final String id;
+    private final String id;
 
-	public JiraAllowedValue(String id, String value) {
-		this.id = id;
-		this.value = value;
-	}
+    public JiraAllowedValue(final String id, final String value) {
+        this.id = id;
+        this.value = value;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
 }

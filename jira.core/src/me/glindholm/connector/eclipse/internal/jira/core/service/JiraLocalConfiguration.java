@@ -14,6 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 
@@ -67,49 +68,30 @@ public class JiraLocalConfiguration {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        JiraLocalConfiguration other = (JiraLocalConfiguration) obj;
-        if (characterEncoding == null) {
-            if (other.characterEncoding != null) {
-                return false;
-            }
-        } else if (!characterEncoding.equals(other.characterEncoding)) {
+        final JiraLocalConfiguration other = (JiraLocalConfiguration) obj;
+        if (!Objects.equals(characterEncoding, other.characterEncoding)) {
             return false;
         }
         if (compressionEnabled != other.compressionEnabled) {
             return false;
         }
-        if (datePattern == null) {
-            if (other.datePattern != null) {
-                return false;
-            }
-        } else if (!datePattern.equals(other.datePattern)) {
+        if (!Objects.equals(datePattern, other.datePattern)) {
             return false;
         }
-        if (dateTimePattern == null) {
-            if (other.dateTimePattern != null) {
-                return false;
-            }
-        } else if (!dateTimePattern.equals(other.dateTimePattern)) {
+        if (!Objects.equals(dateTimePattern, other.dateTimePattern)) {
             return false;
         }
         if (followRedirects != other.followRedirects) {
             return false;
         }
-        if (locale == null) {
-            if (other.locale != null) {
-                return false;
-            }
-        } else if (!locale.equals(other.locale)) {
+        if (!Objects.equals(locale, other.locale)) {
             return false;
         }
         if (workDaysPerWeek != other.workDaysPerWeek) {
@@ -182,62 +164,50 @@ public class JiraLocalConfiguration {
 
     @Override
     public synchronized int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (characterEncoding == null ? 0 : characterEncoding.hashCode());
-        result = prime * result + (compressionEnabled ? 1231 : 1237);
-        result = prime * result + (datePattern == null ? 0 : datePattern.hashCode());
-        result = prime * result + (dateTimePattern == null ? 0 : dateTimePattern.hashCode());
-        result = prime * result + (followRedirects ? 1231 : 1237);
-        result = prime * result + (locale == null ? 0 : locale.hashCode());
-        result = prime * result + workDaysPerWeek;
-        result = prime * result + workHoursPerDay;
-        result = prime * result + maxSearchResults;
-        result = prime * result + searchResultsTimeout;
-        return result;
+        return Objects.hash(characterEncoding, compressionEnabled, datePattern, dateTimePattern, followRedirects, locale, workDaysPerWeek, workHoursPerDay, maxSearchResults, searchResultsTimeout);
     }
 
-    public synchronized void setCharacterEncoding(String characterEncoding) {
+    public synchronized void setCharacterEncoding(final String characterEncoding) {
         this.characterEncoding = characterEncoding;
     }
 
-    public synchronized void setCompressionEnabled(boolean compressionEnabled) {
+    public synchronized void setCompressionEnabled(final boolean compressionEnabled) {
         this.compressionEnabled = compressionEnabled;
     }
 
-    public synchronized void setDatePattern(String dateFormat) {
-        this.datePattern = dateFormat;
+    public synchronized void setDatePattern(final String dateFormat) {
+        datePattern = dateFormat;
     }
 
-    public synchronized void setDateTimePattern(String dateTimeFormat) {
-        this.dateTimePattern = dateTimeFormat;
+    public synchronized void setDateTimePattern(final String dateTimeFormat) {
+        dateTimePattern = dateTimeFormat;
     }
 
-    public synchronized void setDefaultCharacterEncoding(String defaultCharacterEncoding) {
+    public synchronized void setDefaultCharacterEncoding(final String defaultCharacterEncoding) {
         this.defaultCharacterEncoding = defaultCharacterEncoding;
     }
 
-    public synchronized void setFollowRedirects(boolean followRedirects) {
+    public synchronized void setFollowRedirects(final boolean followRedirects) {
         this.followRedirects = followRedirects;
     }
 
-    public synchronized void setLocale(Locale locale) {
+    public synchronized void setLocale(final Locale locale) {
         this.locale = locale;
     }
 
-    public synchronized void setWorkDaysPerWeek(int workDaysPerWeek) {
+    public synchronized void setWorkDaysPerWeek(final int workDaysPerWeek) {
         this.workDaysPerWeek = workDaysPerWeek;
     }
 
-    public synchronized void setWorkHoursPerDay(int workHoursPerDay) {
+    public synchronized void setWorkHoursPerDay(final int workHoursPerDay) {
         this.workHoursPerDay = workHoursPerDay;
     }
 
-    public void setUseServerTimeTrackingSettings(boolean useServerTimeTrackingSettings) {
+    public void setUseServerTimeTrackingSettings(final boolean useServerTimeTrackingSettings) {
         this.useServerTimeTrackingSettings = useServerTimeTrackingSettings;
     }
 
-    public synchronized void setMaxSearchResults(int maxSearchResults) {
+    public synchronized void setMaxSearchResults(final int maxSearchResults) {
         if (maxSearchResults <= 0) {
             this.maxSearchResults = JiraUtil.DEFAULT_MAX_SEARCH_RESULTS;
         } else {
@@ -249,7 +219,7 @@ public class JiraLocalConfiguration {
         return maxSearchResults;
     }
 
-    public synchronized void setSearchResultsTimeout(int searchResultsTimeout) {
+    public synchronized void setSearchResultsTimeout(final int searchResultsTimeout) {
         if (searchResultsTimeout < 0) {
             this.searchResultsTimeout = JiraUtil.DEFAULT_SEARCH_RESULT_TIMEOUT;
         } else {

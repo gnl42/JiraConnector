@@ -11,13 +11,13 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui;
 
+import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
+
 import me.glindholm.connector.eclipse.internal.commons.ui.CategoryAddingRepositoryMigrator;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 
-import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
-
 public class JiraRepositoryMigrator extends CategoryAddingRepositoryMigrator {
-	public JiraRepositoryMigrator() {
-		super(JiraCorePlugin.CONNECTOR_KIND, IRepositoryConstants.CATEGORY_BUGS);
-	}
+    public JiraRepositoryMigrator() {
+        super(JiraCorePlugin.CONNECTOR_KIND, IRepositoryConstants.CATEGORY_BUGS);
+    }
 }

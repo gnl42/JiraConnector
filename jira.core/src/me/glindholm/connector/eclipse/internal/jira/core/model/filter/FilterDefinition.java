@@ -30,272 +30,272 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraFilter;
  * @author Brock Janiczak
  */
 public class FilterDefinition implements JiraFilter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private ProjectFilter projectFilter;
+    private ProjectFilter projectFilter;
 
-	private ComponentFilter componentFilter;
+    private ComponentFilter componentFilter;
 
-	private ContentFilter contentFilter;
+    private ContentFilter contentFilter;
 
-	private IssueTypeFilter issueTypeFilter;
+    private IssueTypeFilter issueTypeFilter;
 
-	private UserFilter assignedToFilter;
+    private UserFilter assignedToFilter;
 
-	private UserFilter reportedByFilter;
+    private UserFilter reportedByFilter;
 
-	private PriorityFilter priorityFilter;
+    private PriorityFilter priorityFilter;
 
-	private StatusFilter statusFilter;
+    private StatusFilter statusFilter;
 
-	private ResolutionFilter resolutionFilter;
+    private ResolutionFilter resolutionFilter;
 
-	private VersionFilter reportedInVersionFilter;
+    private VersionFilter reportedInVersionFilter;
 
-	private VersionFilter fixForVersionFilter;
+    private VersionFilter fixForVersionFilter;
 
-	private EstimateVsActualFilter estimateVsActualFilter;
+    private EstimateVsActualFilter estimateVsActualFilter;
 
-	private DateFilter updatedDateFilter;
+    private DateFilter updatedDateFilter;
 
-	private DateFilter createdDateFilter;
+    private DateFilter createdDateFilter;
 
-	private DateFilter dueDateFilter;
+    private DateFilter dueDateFilter;
 
-	private Order[] ordering = new Order[0];
-
-	public FilterDefinition() {
-	}
-
-	public void copyAttributes(FilterDefinition copy) {
-		if (copy.assignedToFilter != null) {
-			this.assignedToFilter = copy.assignedToFilter.copy();
-		} else {
-			this.assignedToFilter = null;
-		}
-
-		if (copy.componentFilter != null) {
-			this.componentFilter = copy.componentFilter.copy();
-		} else {
-			this.componentFilter = null;
-		}
-
-		if (copy.contentFilter != null) {
-			this.contentFilter = copy.contentFilter.copy();
-		} else {
-			this.contentFilter = null;
-		}
-
-		if (copy.createdDateFilter != null) {
-			this.createdDateFilter = copy.createdDateFilter.copy();
-		} else {
-			this.createdDateFilter = null;
-		}
-
-		if (copy.dueDateFilter != null) {
-			this.dueDateFilter = copy.dueDateFilter.copy();
-		} else {
-			this.dueDateFilter = null;
-		}
-
-		if (copy.estimateVsActualFilter != null) {
-			this.estimateVsActualFilter = copy.estimateVsActualFilter.copy();
-		} else {
-			this.estimateVsActualFilter = null;
-		}
-
-		if (copy.fixForVersionFilter != null) {
-			this.fixForVersionFilter = copy.fixForVersionFilter.copy();
-		} else {
-			this.fixForVersionFilter = null;
-		}
-
-		if (copy.issueTypeFilter != null) {
-			this.issueTypeFilter = copy.issueTypeFilter.copy();
-		} else {
-			this.issueTypeFilter = null;
-		}
-
-		if (copy.priorityFilter != null) {
-			this.priorityFilter = copy.priorityFilter.copy();
-		} else {
-			this.priorityFilter = null;
-		}
-
-		if (copy.projectFilter != null) {
-			this.projectFilter = copy.projectFilter.copy();
-		} else {
-			this.projectFilter = null;
-		}
-
-		if (copy.reportedByFilter != null) {
-			this.reportedByFilter = copy.reportedByFilter.copy();
-		} else {
-			this.reportedByFilter = null;
-		}
-
-		if (copy.reportedInVersionFilter != null) {
-			this.reportedInVersionFilter = copy.reportedInVersionFilter.copy();
-		} else {
-			this.reportedInVersionFilter = null;
-		}
-
-		if (copy.resolutionFilter != null) {
-			this.resolutionFilter = copy.resolutionFilter.copy();
-		} else {
-			this.resolutionFilter = null;
-		}
-
-		if (copy.statusFilter != null) {
-			this.statusFilter = copy.statusFilter.copy();
-		} else {
-			this.statusFilter = null;
-		}
-
-		if (copy.updatedDateFilter != null) {
-			this.updatedDateFilter = copy.updatedDateFilter.copy();
-		} else {
-			this.updatedDateFilter = null;
-		}
-	}
-
-	/**
-	 * Copy constructor for cloning filter definitions
-	 * 
-	 * @param copy
-	 *            Filter definition to copy
-	 */
-	public FilterDefinition(FilterDefinition copy) {
-		copyAttributes(copy);
-	}
-
-	public void setProjectFilter(ProjectFilter projectFilter) {
-		this.projectFilter = projectFilter;
-	}
-
-	public ProjectFilter getProjectFilter() {
-		return projectFilter;
-	}
-
-	public void setComponentFilter(ComponentFilter componentFilter) {
-		this.componentFilter = componentFilter;
-	}
-
-	public ComponentFilter getComponentFilter() {
-		return componentFilter;
-	}
-
-	public void setContentFilter(ContentFilter contentFilter) {
-		this.contentFilter = contentFilter;
-	}
-
-	public ContentFilter getContentFilter() {
-		return contentFilter;
-	}
-
-	public void setIssueTypeFilter(IssueTypeFilter issueTypeFilter) {
-		this.issueTypeFilter = issueTypeFilter;
-	}
-
-	public IssueTypeFilter getIssueTypeFilter() {
-		return issueTypeFilter;
-	}
-
-	public void setAssignedToFilter(UserFilter assignedToFilter) {
-		this.assignedToFilter = assignedToFilter;
-	}
-
-	public UserFilter getAssignedToFilter() {
-		return assignedToFilter;
-	}
-
-	public UserFilter getReportedByFilter() {
-		return this.reportedByFilter;
-	}
-
-	public void setReportedByFilter(UserFilter reportedByFilter) {
-		this.reportedByFilter = reportedByFilter;
-	}
-
-	public void setPriorityFilter(PriorityFilter priorityFilter) {
-		this.priorityFilter = priorityFilter;
-	}
-
-	public PriorityFilter getPriorityFilter() {
-		return priorityFilter;
-	}
-
-	public void setStatusFilter(StatusFilter statusFilter) {
-		this.statusFilter = statusFilter;
-	}
-
-	public StatusFilter getStatusFilter() {
-		return statusFilter;
-	}
-
-	public void setResolutionFilter(ResolutionFilter resolutionFilter) {
-		this.resolutionFilter = resolutionFilter;
-	}
-
-	public ResolutionFilter getResolutionFilter() {
-		return resolutionFilter;
-	}
-
-	public void setReportedInVersionFilter(VersionFilter reportedInVersionFilter) {
-		this.reportedInVersionFilter = reportedInVersionFilter;
-	}
-
-	public VersionFilter getReportedInVersionFilter() {
-		return reportedInVersionFilter;
-	}
-
-	public void setFixForVersionFilter(VersionFilter fixForVersionFilter) {
-		this.fixForVersionFilter = fixForVersionFilter;
-	}
-
-	public VersionFilter getFixForVersionFilter() {
-		return fixForVersionFilter;
-	}
-
-	public EstimateVsActualFilter getEstimateVsActualFilter() {
-		return this.estimateVsActualFilter;
-	}
-
-	public void setEstimateVsActualFilter(EstimateVsActualFilter estimateVsActualFilter) {
-		this.estimateVsActualFilter = estimateVsActualFilter;
-	}
-
-	public DateFilter getCreatedDateFilter() {
-		return this.createdDateFilter;
-	}
-
-	public void setCreatedDateFilter(DateFilter createdDateFilter) {
-		this.createdDateFilter = createdDateFilter;
-	}
-
-	public DateFilter getDueDateFilter() {
-		return this.dueDateFilter;
-	}
-
-	public void setDueDateFilter(DateFilter dueDateFilter) {
-		this.dueDateFilter = dueDateFilter;
-	}
-
-	public DateFilter getUpdatedDateFilter() {
-		return this.updatedDateFilter;
-	}
-
-	public void setUpdatedDateFilter(DateFilter updatedDateFilter) {
-		this.updatedDateFilter = updatedDateFilter;
-	}
-
-	public Order[] getOrdering() {
-		return this.ordering;
-	}
-
-	public void setOrdering(Order[] ordering) {
-		Assert.isNotNull(ordering);
-		this.ordering = ordering;
-	}
+    private Order[] ordering = {};
+
+    public FilterDefinition() {
+    }
+
+    public void copyAttributes(final FilterDefinition copy) {
+        if (copy.assignedToFilter != null) {
+            assignedToFilter = copy.assignedToFilter.copy();
+        } else {
+            assignedToFilter = null;
+        }
+
+        if (copy.componentFilter != null) {
+            componentFilter = copy.componentFilter.copy();
+        } else {
+            componentFilter = null;
+        }
+
+        if (copy.contentFilter != null) {
+            contentFilter = copy.contentFilter.copy();
+        } else {
+            contentFilter = null;
+        }
+
+        if (copy.createdDateFilter != null) {
+            createdDateFilter = copy.createdDateFilter.copy();
+        } else {
+            createdDateFilter = null;
+        }
+
+        if (copy.dueDateFilter != null) {
+            dueDateFilter = copy.dueDateFilter.copy();
+        } else {
+            dueDateFilter = null;
+        }
+
+        if (copy.estimateVsActualFilter != null) {
+            estimateVsActualFilter = copy.estimateVsActualFilter.copy();
+        } else {
+            estimateVsActualFilter = null;
+        }
+
+        if (copy.fixForVersionFilter != null) {
+            fixForVersionFilter = copy.fixForVersionFilter.copy();
+        } else {
+            fixForVersionFilter = null;
+        }
+
+        if (copy.issueTypeFilter != null) {
+            issueTypeFilter = copy.issueTypeFilter.copy();
+        } else {
+            issueTypeFilter = null;
+        }
+
+        if (copy.priorityFilter != null) {
+            priorityFilter = copy.priorityFilter.copy();
+        } else {
+            priorityFilter = null;
+        }
+
+        if (copy.projectFilter != null) {
+            projectFilter = copy.projectFilter.copy();
+        } else {
+            projectFilter = null;
+        }
+
+        if (copy.reportedByFilter != null) {
+            reportedByFilter = copy.reportedByFilter.copy();
+        } else {
+            reportedByFilter = null;
+        }
+
+        if (copy.reportedInVersionFilter != null) {
+            reportedInVersionFilter = copy.reportedInVersionFilter.copy();
+        } else {
+            reportedInVersionFilter = null;
+        }
+
+        if (copy.resolutionFilter != null) {
+            resolutionFilter = copy.resolutionFilter.copy();
+        } else {
+            resolutionFilter = null;
+        }
+
+        if (copy.statusFilter != null) {
+            statusFilter = copy.statusFilter.copy();
+        } else {
+            statusFilter = null;
+        }
+
+        if (copy.updatedDateFilter != null) {
+            updatedDateFilter = copy.updatedDateFilter.copy();
+        } else {
+            updatedDateFilter = null;
+        }
+    }
+
+    /**
+     * Copy constructor for cloning filter definitions
+     *
+     * @param copy
+     *            Filter definition to copy
+     */
+    public FilterDefinition(final FilterDefinition copy) {
+        copyAttributes(copy);
+    }
+
+    public void setProjectFilter(final ProjectFilter projectFilter) {
+        this.projectFilter = projectFilter;
+    }
+
+    public ProjectFilter getProjectFilter() {
+        return projectFilter;
+    }
+
+    public void setComponentFilter(final ComponentFilter componentFilter) {
+        this.componentFilter = componentFilter;
+    }
+
+    public ComponentFilter getComponentFilter() {
+        return componentFilter;
+    }
+
+    public void setContentFilter(final ContentFilter contentFilter) {
+        this.contentFilter = contentFilter;
+    }
+
+    public ContentFilter getContentFilter() {
+        return contentFilter;
+    }
+
+    public void setIssueTypeFilter(final IssueTypeFilter issueTypeFilter) {
+        this.issueTypeFilter = issueTypeFilter;
+    }
+
+    public IssueTypeFilter getIssueTypeFilter() {
+        return issueTypeFilter;
+    }
+
+    public void setAssignedToFilter(final UserFilter assignedToFilter) {
+        this.assignedToFilter = assignedToFilter;
+    }
+
+    public UserFilter getAssignedToFilter() {
+        return assignedToFilter;
+    }
+
+    public UserFilter getReportedByFilter() {
+        return reportedByFilter;
+    }
+
+    public void setReportedByFilter(final UserFilter reportedByFilter) {
+        this.reportedByFilter = reportedByFilter;
+    }
+
+    public void setPriorityFilter(final PriorityFilter priorityFilter) {
+        this.priorityFilter = priorityFilter;
+    }
+
+    public PriorityFilter getPriorityFilter() {
+        return priorityFilter;
+    }
+
+    public void setStatusFilter(final StatusFilter statusFilter) {
+        this.statusFilter = statusFilter;
+    }
+
+    public StatusFilter getStatusFilter() {
+        return statusFilter;
+    }
+
+    public void setResolutionFilter(final ResolutionFilter resolutionFilter) {
+        this.resolutionFilter = resolutionFilter;
+    }
+
+    public ResolutionFilter getResolutionFilter() {
+        return resolutionFilter;
+    }
+
+    public void setReportedInVersionFilter(final VersionFilter reportedInVersionFilter) {
+        this.reportedInVersionFilter = reportedInVersionFilter;
+    }
+
+    public VersionFilter getReportedInVersionFilter() {
+        return reportedInVersionFilter;
+    }
+
+    public void setFixForVersionFilter(final VersionFilter fixForVersionFilter) {
+        this.fixForVersionFilter = fixForVersionFilter;
+    }
+
+    public VersionFilter getFixForVersionFilter() {
+        return fixForVersionFilter;
+    }
+
+    public EstimateVsActualFilter getEstimateVsActualFilter() {
+        return estimateVsActualFilter;
+    }
+
+    public void setEstimateVsActualFilter(final EstimateVsActualFilter estimateVsActualFilter) {
+        this.estimateVsActualFilter = estimateVsActualFilter;
+    }
+
+    public DateFilter getCreatedDateFilter() {
+        return createdDateFilter;
+    }
+
+    public void setCreatedDateFilter(final DateFilter createdDateFilter) {
+        this.createdDateFilter = createdDateFilter;
+    }
+
+    public DateFilter getDueDateFilter() {
+        return dueDateFilter;
+    }
+
+    public void setDueDateFilter(final DateFilter dueDateFilter) {
+        this.dueDateFilter = dueDateFilter;
+    }
+
+    public DateFilter getUpdatedDateFilter() {
+        return updatedDateFilter;
+    }
+
+    public void setUpdatedDateFilter(final DateFilter updatedDateFilter) {
+        this.updatedDateFilter = updatedDateFilter;
+    }
+
+    public Order[] getOrdering() {
+        return ordering;
+    }
+
+    public void setOrdering(final Order[] ordering) {
+        Assert.isNotNull(ordering);
+        this.ordering = ordering;
+    }
 
 }

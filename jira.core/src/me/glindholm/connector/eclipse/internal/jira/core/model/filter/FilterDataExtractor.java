@@ -152,7 +152,7 @@ public abstract class FilterDataExtractor {
      * @param components
      * @return
      */
-    protected Collection<String> getComponentIds(Collection<JiraComponent> components) {
+    protected Collection<String> getComponentIds(final Collection<JiraComponent> components) {
         return components.stream().map(element -> element.getId()).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(components, new Function<JiraComponent, String>() {
@@ -170,7 +170,7 @@ public abstract class FilterDataExtractor {
      * @param issueTypes
      * @return
      */
-    protected Collection<String> getIssueTypeIds(Collection<JiraIssueType> issueTypes) {
+    protected Collection<String> getIssueTypeIds(final Collection<JiraIssueType> issueTypes) {
         return issueTypes.stream().map(element -> element.getId()).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(issueTypes, new Function<JiraIssueType, String>() {
@@ -188,7 +188,7 @@ public abstract class FilterDataExtractor {
      * @param issueTypes
      * @return
      */
-    protected Collection<String> getIssueTypeNames(Collection<JiraIssueType> issueTypes) {
+    protected Collection<String> getIssueTypeNames(final Collection<JiraIssueType> issueTypes) {
         return issueTypes.stream().map(element -> putInDoubleQuotes(element.getName())).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(issueTypes, new Function<JiraIssueType, String>() {
@@ -206,7 +206,7 @@ public abstract class FilterDataExtractor {
      * @param priorities
      * @return
      */
-    protected Collection<String> getPriorityIds(Collection<JiraPriority> priorities) {
+    protected Collection<String> getPriorityIds(final Collection<JiraPriority> priorities) {
         return priorities.stream().map(element -> element.getId()).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(priorities, new Function<JiraPriority, String>() {
@@ -224,7 +224,7 @@ public abstract class FilterDataExtractor {
      * @param resolutions
      * @return
      */
-    protected Collection<String> getResolutionIds(Collection<JiraResolution> resolutions) {
+    protected Collection<String> getResolutionIds(final Collection<JiraResolution> resolutions) {
         return resolutions.stream().map(element -> element.getId()).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(resolutions, new Function<JiraResolution, String>() {
@@ -242,7 +242,7 @@ public abstract class FilterDataExtractor {
      * @param resolutions
      * @return
      */
-    protected Collection<? extends String> getResolutionNames(List<JiraResolution> resolutions) {
+    protected Collection<? extends String> getResolutionNames(final List<JiraResolution> resolutions) {
         return resolutions.stream().map(element -> putInDoubleQuotes(element.getName())).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(resolutions, new Function<JiraResolution, String>() {
@@ -260,7 +260,7 @@ public abstract class FilterDataExtractor {
      * @param jiraStatuses
      * @return
      */
-    protected Collection<String> getStatusIds(Collection<JiraStatus> jiraStatuses) {
+    protected Collection<String> getStatusIds(final Collection<JiraStatus> jiraStatuses) {
         return jiraStatuses.stream().map(element -> element.getId()).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(jiraStatuses, new Function<JiraStatus, String>() {
@@ -278,7 +278,7 @@ public abstract class FilterDataExtractor {
      * @param projects
      * @return
      */
-    protected Collection<String> getProjectIds(List<JiraProject> projects) {
+    protected Collection<String> getProjectIds(final List<JiraProject> projects) {
         return projects.stream().map(element -> element.getId()).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(projects, new Function<JiraProject, String>() {
@@ -296,7 +296,7 @@ public abstract class FilterDataExtractor {
      * @param projects
      * @return
      */
-    protected Collection<String> getProjectKeys(Collection<JiraProject> projects) {
+    protected Collection<String> getProjectKeys(final Collection<JiraProject> projects) {
         return projects.stream().map(element -> element.getKey()).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(projects, new Function<JiraProject, String>() {
@@ -314,7 +314,7 @@ public abstract class FilterDataExtractor {
      * @param versions
      * @return list of version integer identifiers
      */
-    protected Collection<String> getVersionIds(Collection<JiraVersion> versions) {
+    protected Collection<String> getVersionIds(final Collection<JiraVersion> versions) {
         return versions.stream().map(element -> element.getId()).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(versions, new Function<JiraVersion, String>() {
@@ -332,7 +332,7 @@ public abstract class FilterDataExtractor {
      * @param versions
      * @return list of version names in double quotes
      */
-    protected Collection<String> getVersionNames(Collection<JiraVersion> versions) {
+    protected Collection<String> getVersionNames(final Collection<JiraVersion> versions) {
         return versions.stream().map(element -> putInDoubleQuotes(element.getName())).collect(Collectors.toList());
         // TODO Remove
         //        return Collections2.transform(versions, new Function<JiraVersion, String>() {
@@ -350,13 +350,13 @@ public abstract class FilterDataExtractor {
      * @param input
      * @return
      */
-    public static String putInDoubleQuotes(String input) {
+    public static String putInDoubleQuotes(final String input) {
         // [abc"def ghi] -> ["abc\"def ghi"]
         return '"' + input.replace("\"", "\\\"") + '"'; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    public static String createRelativeDateString(RelativeDateRangeFilter.RangeType rangeType, long count) {
-        StringBuilder sb = new StringBuilder();
+    public static String createRelativeDateString(final RelativeDateRangeFilter.RangeType rangeType, final long count) {
+        final StringBuilder sb = new StringBuilder();
         sb.append(Long.toString(count));
         if (RangeType.MINUTE.equals(rangeType)) {
             sb.append('m');

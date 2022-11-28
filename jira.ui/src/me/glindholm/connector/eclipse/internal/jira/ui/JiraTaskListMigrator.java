@@ -49,7 +49,7 @@ public class JiraTaskListMigrator extends AbstractTaskListMigrator {
 
     @Override
     public Set<String> getQueryElementNames() {
-        Set<String> names = new HashSet<>();
+        final Set<String> names = new HashSet<>();
         names.add(KEY_JIRA_QUERY);
         names.add(KEY_JIRA_CUSTOM);
         return names;
@@ -61,14 +61,14 @@ public class JiraTaskListMigrator extends AbstractTaskListMigrator {
     }
 
     @Override
-    public void migrateQuery(IRepositoryQuery query, Element element) {
+    public void migrateQuery(final IRepositoryQuery query, final Element element) {
         query.setAttribute(KEY_FILTER_CUSTOM_URL, element.getAttribute(KEY_FILTER_CUSTOM_URL));
         query.setAttribute(KEY_FILTER_ID, element.getAttribute(KEY_FILTER_ID));
         query.setAttribute(KEY_FILTER_NAME, element.getAttribute(KEY_FILTER_NAME));
     }
 
     @Override
-    public void migrateTask(ITask task, Element element) {
+    public void migrateTask(final ITask task, final Element element) {
         task.setModificationDate(Date.from(JiraUtil.stringToDate(element.getAttribute(KEY_LAST_MOD_DATE))));
         task.setTaskKey(element.getAttribute(KEY_KEY));
     }

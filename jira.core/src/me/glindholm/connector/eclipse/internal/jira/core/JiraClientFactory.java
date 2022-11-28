@@ -103,7 +103,7 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 
     @Override
     public synchronized void repositoryAdded(final TaskRepository repository) {
-        if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
+        if (JiraCorePlugin.CONNECTOR_KIND.equals(repository.getConnectorKind())) {
             assert clientManager.getClient(repository.getRepositoryUrl()) == null;
             getJiraClient(repository);
         }
@@ -111,7 +111,7 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
 
     @Override
     public synchronized void repositoryRemoved(final TaskRepository repository) {
-        if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
+        if (JiraCorePlugin.CONNECTOR_KIND.equals(repository.getConnectorKind())) {
             final JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
             if (client != null) {
                 clientManager.removeClient(client, true);
@@ -127,7 +127,7 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
     @Override
     public synchronized void repositoryChanged(final TaskRepositoryChangeEvent event) {
         final TaskRepository repository = event.getRepository();
-        if (repository.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
+        if (JiraCorePlugin.CONNECTOR_KIND.equals(repository.getConnectorKind())) {
             final JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
             if (client != null) {
                 if (event.getDelta().getType() == Type.ALL) {

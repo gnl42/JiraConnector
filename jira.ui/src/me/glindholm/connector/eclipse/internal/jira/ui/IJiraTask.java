@@ -15,5 +15,5 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.mylyn.tasks.core.ITask;
 
 public interface IJiraTask extends IAdaptable {
-	ITask getTask();
+    ITask getTask();
 }

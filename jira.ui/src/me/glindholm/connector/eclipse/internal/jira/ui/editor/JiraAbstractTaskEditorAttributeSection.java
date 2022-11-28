@@ -81,7 +81,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
     }
 
     @Override
-    public void createControl(Composite parent, final FormToolkit toolkit) {
+    public void createControl(final Composite parent, final FormToolkit toolkit) {
         initialize();
         super.createControl(parent, toolkit);
     }
@@ -90,7 +90,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
         return hasIncoming;
     }
 
-    public void selectReveal(TaskAttribute attribute) {
+    public void selectReveal(final TaskAttribute attribute) {
         if (attribute == null) {
             return;
         }
@@ -101,11 +101,11 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
     }
 
     @Override
-    public boolean setFormInput(Object input) {
+    public boolean setFormInput(final Object input) {
         if (input instanceof String) {
-            String text = (String) input;
-            Collection<TaskAttribute> attributes = getAttributes();
-            for (TaskAttribute attribute : attributes) {
+            final String text = (String) input;
+            final Collection<TaskAttribute> attributes = getAttributes();
+            for (final TaskAttribute attribute : attributes) {
                 if (text.equals(attribute.getId())) {
                     selectReveal(attribute);
                 }
@@ -114,11 +114,11 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
         return super.setFormInput(input);
     }
 
-    private void createAttributeControls(Composite attributesComposite, FormToolkit toolkit, int columnCount) {
+    private void createAttributeControls(final Composite attributesComposite, final FormToolkit toolkit, final int columnCount) {
         int currentColumn = 1;
         int currentPriority = 0;
-        for (AbstractAttributeEditor attributeEditor : attributeEditors) {
-            int priority = attributeEditor.getLayoutHint() != null
+        for (final AbstractAttributeEditor attributeEditor : attributeEditors) {
+            final int priority = attributeEditor.getLayoutHint() != null
                     ? attributeEditor.getLayoutHint().getPriority()
                             : LayoutHint.DEFAULT_PRIORITY;
             if (priority != currentPriority) {
@@ -134,14 +134,14 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
 
             if (attributeEditor.hasLabel()) {
                 attributeEditor.createLabelControl(attributesComposite, toolkit);
-                Label label = attributeEditor.getLabelControl();
-                String text = label.getText();
-                String shortenText = TaskDiffUtil.shortenText(label, text, LABEL_WIDTH);
+                final Label label = attributeEditor.getLabelControl();
+                final String text = label.getText();
+                final String shortenText = TaskDiffUtil.shortenText(label, text, LABEL_WIDTH);
                 label.setText(shortenText);
                 if (!text.equals(shortenText)) {
                     label.setToolTipText(text);
                 }
-                GridData gd = GridDataFactory.fillDefaults()
+                final GridData gd = GridDataFactory.fillDefaults()
                         .align(SWT.RIGHT, SWT.CENTER)
                         .hint(LABEL_WIDTH, SWT.DEFAULT)
                         .create();
@@ -154,10 +154,10 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
             }
 
             attributeEditor.createControl(attributesComposite, toolkit);
-            LayoutHint layoutHint = attributeEditor.getLayoutHint();
-            GridData gd = new GridData(SWT.FILL, SWT.CENTER, false, false);
-            RowSpan rowSpan = layoutHint != null && layoutHint.rowSpan != null ? layoutHint.rowSpan : RowSpan.SINGLE;
-            ColumnSpan columnSpan = layoutHint != null && layoutHint.columnSpan != null
+            final LayoutHint layoutHint = attributeEditor.getLayoutHint();
+            final GridData gd = new GridData(SWT.FILL, SWT.CENTER, false, false);
+            final RowSpan rowSpan = layoutHint != null && layoutHint.rowSpan != null ? layoutHint.rowSpan : RowSpan.SINGLE;
+            final ColumnSpan columnSpan = layoutHint != null && layoutHint.columnSpan != null
                     ? layoutHint.columnSpan
                             : ColumnSpan.SINGLE;
             gd.horizontalIndent = 1;// prevent clipping of decorators on Windows
@@ -189,9 +189,9 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
         attributeEditors = new ArrayList<>();
         hasIncoming = false;
 
-        Collection<TaskAttribute> attributes = getAttributes();
-        for (TaskAttribute attribute : attributes) {
-            AbstractAttributeEditor attributeEditor = createAttributeEditor(attribute);
+        final Collection<TaskAttribute> attributes = getAttributes();
+        for (final TaskAttribute attribute : attributes) {
+            final AbstractAttributeEditor attributeEditor = createAttributeEditor(attribute);
             if (attributeEditor != null) {
                 attributeEditors.add(attributeEditor);
                 if (getModel().hasIncomingChanges(attribute)) {
@@ -200,7 +200,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
             }
         }
 
-        Comparator<AbstractAttributeEditor> attributeSorter = createAttributeEditorSorter();
+        final Comparator<AbstractAttributeEditor> attributeSorter = createAttributeEditorSorter();
         if (attributeSorter != null) {
             Collections.sort(attributeEditors, attributeSorter);
         }
@@ -215,34 +215,34 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
     protected Comparator<AbstractAttributeEditor> createAttributeEditorSorter() {
         return new Comparator<>() {
             @Override
-            public int compare(AbstractAttributeEditor o1, AbstractAttributeEditor o2) {
-                int p1 = o1.getLayoutHint() != null ? o1.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
-                int p2 = o2.getLayoutHint() != null ? o2.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
+            public int compare(final AbstractAttributeEditor o1, final AbstractAttributeEditor o2) {
+                final int p1 = o1.getLayoutHint() != null ? o1.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
+                final int p2 = o2.getLayoutHint() != null ? o2.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
                 return p1 - p2;
             }
         };
     }
 
     @Override
-    protected Control createContent(FormToolkit toolkit, Composite parent) {
+    protected Control createContent(final FormToolkit toolkit, final Composite parent) {
         attributesComposite = toolkit.createComposite(parent);
         attributesComposite.addListener(SWT.MouseDown, new Listener() {
             @Override
-            public void handleEvent(Event event) {
-                Control focus = event.display.getFocusControl();
-                if (focus instanceof Text && ((Text) focus).getEditable() == false) {
+            public void handleEvent(final Event event) {
+                final Control focus = event.display.getFocusControl();
+                if (focus instanceof Text && !((Text) focus).getEditable()) {
                     getManagedForm().getForm().setFocus();
                 }
             }
         });
 
-        GridLayout attributesLayout = EditorUtil.createSectionClientLayout();
+        final GridLayout attributesLayout = EditorUtil.createSectionClientLayout();
         attributesLayout.numColumns = 4;
         attributesLayout.horizontalSpacing = 9;
         attributesLayout.verticalSpacing = 6;
         attributesComposite.setLayout(attributesLayout);
 
-        GridData attributesData = new GridData(GridData.FILL_BOTH);
+        final GridData attributesData = new GridData(GridData.FILL_BOTH);
         attributesData.horizontalSpan = 1;
         attributesData.grabExcessVerticalSpace = false;
         attributesComposite.setLayoutData(attributesData);
@@ -254,7 +254,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
     }
 
     protected IAction doCreateRefreshAction() {
-        UpdateRepositoryConfigurationAction repositoryConfigRefresh = new UpdateRepositoryConfigurationAction() {
+        final UpdateRepositoryConfigurationAction repositoryConfigRefresh = new UpdateRepositoryConfigurationAction() {
             @Override
             public void run() {
                 getTaskEditorPage().showEditorBusy(true);
@@ -263,7 +263,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
                         getTaskEditorPage().getTask());
                 job.addJobChangeListener(new JobChangeAdapter() {
                     @Override
-                    public void done(IJobChangeEvent event) {
+                    public void done(final IJobChangeEvent event) {
                         PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
                             @Override
                             public void run() {
@@ -284,7 +284,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
                 job.setProperty(IProgressConstants2.SHOW_IN_TASKBAR_ICON_PROPERTY, Boolean.TRUE);
                 job.setPriority(Job.INTERACTIVE);
                 job.schedule();
-            };
+            }
         };
         repositoryConfigRefresh.setImageDescriptor(TasksUiImages.REPOSITORY_SYNCHRONIZE_SMALL);
         repositoryConfigRefresh.selectionChanged(new StructuredSelection(getTaskEditorPage().getTaskRepository()));
@@ -293,9 +293,9 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
     }
 
     @Override
-    protected void fillToolBar(ToolBarManager toolBar) {
+    protected void fillToolBar(final ToolBarManager toolBar) {
         if (needsRefresh()) {
-            IAction repositoryConfigRefresh = doCreateRefreshAction();
+            final IAction repositoryConfigRefresh = doCreateRefreshAction();
             toolBar.add(repositoryConfigRefresh);
         }
     }
@@ -307,10 +307,10 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
 
     @Override
     protected String getInfoOverlayText() {
-        StringBuilder sb = new StringBuilder();
-        List<TaskAttribute> overlayAttributes = getOverlayAttributes();
-        for (TaskAttribute attribute : overlayAttributes) {
-            String label = getModel().getTaskData().getAttributeMapper().getValueLabel(attribute);
+        final StringBuilder sb = new StringBuilder();
+        final List<TaskAttribute> overlayAttributes = getOverlayAttributes();
+        for (final TaskAttribute attribute : overlayAttributes) {
+            final String label = getModel().getTaskData().getAttributeMapper().getValueLabel(attribute);
             if (label != null) {
                 if (sb.length() > 0) {
                     sb.append(" / "); //$NON-NLS-1$
@@ -332,7 +332,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
         return needsRefresh;
     }
 
-    protected void setNeedsRefresh(boolean needsRefresh) {
+    protected void setNeedsRefresh(final boolean needsRefresh) {
         this.needsRefresh = needsRefresh;
     }
 

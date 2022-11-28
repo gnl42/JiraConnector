@@ -423,12 +423,12 @@ public class JiraRestClientAdapter {
                 final String[] values = issue.getFieldValues(transitionField.getName());
 
                 if (values != null && values.length > 0) {
-                    if (transitionField.getName().equals(JiraRestFields.SUMMARY) || transitionField.getName().equals(JiraRestFields.DESCRIPTION)
-                            || transitionField.getName().equals(JiraRestFields.ENVIRONMENT)) {
+                    if (JiraRestFields.SUMMARY.equals(transitionField.getName()) || JiraRestFields.DESCRIPTION.equals(transitionField.getName())
+                            || JiraRestFields.ENVIRONMENT.equals(transitionField.getName())) {
 
                         fields.add(new FieldInput(transitionField.getName(), values[0]));
 
-                    } else if (transitionField.getName().equals(JiraRestFields.DUEDATE)) {
+                    } else if (JiraRestFields.DUEDATE.equals(transitionField.getName())) {
 
                         String date = DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT).format(issue.getDue());
                         if (values[0] == null) {
@@ -436,16 +436,16 @@ public class JiraRestClientAdapter {
                         }
                         fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 
-                    } else if (transitionField.getName().equals(JiraRestFields.LABELS)) {
+                    } else if (JiraRestFields.LABELS.equals(transitionField.getName())) {
 
                         fields.add(new FieldInput(transitionField.getName(), Arrays.asList(values)));
 
-                    } else if (transitionField.getName().equals(JiraRestFields.RESOLUTION) || transitionField.getName().equals(JiraRestFields.ISSUETYPE)
-                            || transitionField.getName().equals(JiraRestFields.PRIORITY) || transitionField.getName().equals(JiraRestFields.SECURITY)) {
+                    } else if (JiraRestFields.RESOLUTION.equals(transitionField.getName()) || JiraRestFields.ISSUETYPE.equals(transitionField.getName())
+                            || JiraRestFields.PRIORITY.equals(transitionField.getName()) || JiraRestFields.SECURITY.equals(transitionField.getName())) {
 
                         fields.add(new FieldInput(transitionField.getId(), ComplexIssueInputFieldValue.with(JiraRestFields.ID, values[0])));
 
-                    } else if (transitionField.getType() != null && transitionField.getType().equals("array") //$NON-NLS-1$
+                    } else if (transitionField.getType() != null && "array".equals(transitionField.getType()) //$NON-NLS-1$
                             && !transitionField.getName().startsWith("customfield_")) { //$NON-NLS-1$
 
                         final List<ComplexIssueInputFieldValue> array = new ArrayList<>();
@@ -554,7 +554,7 @@ public class JiraRestClientAdapter {
         }
 
         // Mylyn sets -1 as a value of empty assignee
-        if (issue.getAssignee() != null && !issue.getAssignee().equals("-1")) { //$NON-NLS-1$
+        if (issue.getAssignee() != null && !"-1".equals(issue.getAssignee())) { //$NON-NLS-1$
             issueInputBuilder.setAssignee(new BasicUser(null, issue.getAssignee(), null));
         }
 
@@ -714,7 +714,7 @@ public class JiraRestClientAdapter {
         if (changedIssue.getSecurityLevel() != null) {
             // security level value "-1" clears security level
             updateFields
-                    .add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
+            .add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
         } else {
             // do not clear security level as it might be not available on the screen
         }

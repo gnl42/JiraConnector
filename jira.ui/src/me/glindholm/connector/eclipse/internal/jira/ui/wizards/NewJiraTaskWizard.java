@@ -24,37 +24,37 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
 
 /**
  * Wizard for creating new JIRA tasks in a rich editor.
- * 
+ *
  * @author Steffen Pingel
  */
 public class NewJiraTaskWizard extends NewTaskWizard implements INewWizard {
 
-	private JiraProjectPage projectPage;
+    private JiraProjectPage projectPage;
 
-	public NewJiraTaskWizard(TaskRepository taskRepository, ITaskMapping taskSelection) {
-		super(taskRepository, taskSelection);
-		setWindowTitle(Messages.NewJiraTaskWizard_New_Jira_Task_Title);
-	}
+    public NewJiraTaskWizard(final TaskRepository taskRepository, final ITaskMapping taskSelection) {
+        super(taskRepository, taskSelection);
+        setWindowTitle(Messages.NewJiraTaskWizard_New_Jira_Task_Title);
+    }
 
-	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-	}
+    @Override
+    public void init(final IWorkbench workbench, final IStructuredSelection selection) {
+    }
 
-	@Override
-	public void addPages() {
-		projectPage = new JiraProjectPage(getTaskRepository());
-		addPage(projectPage);
-	}
+    @Override
+    public void addPages() {
+        projectPage = new JiraProjectPage(getTaskRepository());
+        addPage(projectPage);
+    }
 
-	@Override
-	protected ITaskMapping getInitializationData() {
-		final JiraProject project = projectPage.getSelectedProject();
-		return new TaskMapping() {
-			@Override
-			public String getProduct() {
-				return project.getKey();
-			}
-		};
-	}
+    @Override
+    protected ITaskMapping getInitializationData() {
+        final JiraProject project = projectPage.getSelectedProject();
+        return new TaskMapping() {
+            @Override
+            public String getProduct() {
+                return project.getKey();
+            }
+        };
+    }
 
 }

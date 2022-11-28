@@ -80,7 +80,7 @@ public class JiraIssue implements Serializable {
 
     private int votes;
 
-    private JiraComment[] comments = new JiraComment[0];
+    private JiraComment[] comments = {};
 
     private Long initialEstimate;
 
@@ -94,17 +94,17 @@ public class JiraIssue implements Serializable {
 
     private String url;
 
-    private JiraAttachment[] attachments = new JiraAttachment[0];
+    private JiraAttachment[] attachments = {};
 
-    private JiraCustomField[] customFields = new JiraCustomField[0];
+    private JiraCustomField[] customFields = {};
 
-    private JiraIssueField[] editableFields = new JiraIssueField[0];
+    private JiraIssueField[] editableFields = {};
 
-    private JiraSubtask[] subtasks = new JiraSubtask[0];
+    private JiraSubtask[] subtasks = {};
 
-    private JiraIssueLink[] issueLinks = new JiraIssueLink[0];
+    private JiraIssueLink[] issueLinks = {};
 
-    private JiraWorkLog[] worklogs = new JiraWorkLog[0];
+    private JiraWorkLog[] worklogs = {};
 
     private JiraSecurityLevel securityLevel;
 
@@ -114,7 +114,7 @@ public class JiraIssue implements Serializable {
 
     private Long rank = null;
 
-    private String[] labels = new String[0];
+    private String[] labels = {};
 
     private Issue rawIssue;
 
@@ -128,15 +128,15 @@ public class JiraIssue implements Serializable {
         return self;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
     public String getKey() {
-        return this.key;
+        return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(final String key) {
         this.key = key;
     }
 
@@ -144,7 +144,7 @@ public class JiraIssue implements Serializable {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(final String parentId) {
         this.parentId = parentId;
     }
 
@@ -152,49 +152,49 @@ public class JiraIssue implements Serializable {
         return parentKey;
     }
 
-    public void setParentKey(String parentKey) {
+    public void setParentKey(final String parentKey) {
         this.parentKey = parentKey;
     }
 
     public String getAssignee() {
-        return this.assignee;
+        return assignee;
     }
 
-    public void setAssignee(String asignee) {
-        this.assignee = asignee;
+    public void setAssignee(final String asignee) {
+        assignee = asignee;
     }
 
     public JiraComponent[] getComponents() {
-        return this.components;
+        return components;
     }
 
-    public void setComponents(JiraComponent[] components) {
+    public void setComponents(final JiraComponent[] components) {
         this.components = components;
     }
 
     public Instant getCreated() {
-        return this.created;
+        return created;
     }
 
-    public void setCreated(Instant created) {
+    public void setCreated(final Instant created) {
         this.created = created;
     }
 
     public String getDescription() {
-        return this.description;
+        return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
     public Instant getDue() {
-        return this.due;
+        return due;
     }
 
-    public void setDue(Instant due) {
+    public void setDue(final Instant due) {
         this.due = due;
-        this.hasDueDate = true;
+        hasDueDate = true;
     }
 
     public boolean hasDueDate() {
@@ -202,134 +202,134 @@ public class JiraIssue implements Serializable {
     }
 
     public JiraVersion[] getFixVersions() {
-        return this.fixVersions;
+        return fixVersions;
     }
 
-    public void setFixVersions(JiraVersion[] fixVersions) {
+    public void setFixVersions(final JiraVersion[] fixVersions) {
         this.fixVersions = fixVersions;
     }
 
     public JiraPriority getPriority() {
-        return this.priority;
+        return priority;
     }
 
-    public void setPriority(JiraPriority priority) {
+    public void setPriority(final JiraPriority priority) {
         this.priority = priority;
     }
 
     public String getReporter() {
-        return this.reporter;
+        return reporter;
     }
 
-    public void setReporter(String reporter) {
+    public void setReporter(final String reporter) {
         this.reporter = reporter;
     }
 
     public JiraResolution getResolution() {
-        return this.resolution;
+        return resolution;
     }
 
-    public void setResolution(JiraResolution resolution) {
+    public void setResolution(final JiraResolution resolution) {
         this.resolution = resolution;
     }
 
     public JiraStatus getStatus() {
-        return this.status;
+        return status;
     }
 
-    public void setStatus(JiraStatus status) {
+    public void setStatus(final JiraStatus status) {
         this.status = status;
     }
 
     public String getSummary() {
-        return this.summary;
+        return summary;
     }
 
-    public void setSummary(String summary) {
+    public void setSummary(final String summary) {
         this.summary = summary;
     }
 
     public JiraIssueType getType() {
-        return this.type;
+        return type;
     }
 
-    public void setType(JiraIssueType type) {
+    public void setType(final JiraIssueType type) {
         this.type = type;
     }
 
     public Instant getUpdated() {
-        return this.updated;
+        return updated;
     }
 
-    public void setUpdated(Instant updated) {
+    public void setUpdated(final Instant updated) {
         this.updated = updated;
     }
 
     public JiraVersion[] getReportedVersions() {
-        return this.reportedVersions;
+        return reportedVersions;
     }
 
-    public void setReportedVersions(JiraVersion[] reportedVersions) {
+    public void setReportedVersions(final JiraVersion[] reportedVersions) {
         this.reportedVersions = reportedVersions;
     }
 
     public int getVotes() {
-        return this.votes;
+        return votes;
     }
 
-    public void setVotes(int votes) {
+    public void setVotes(final int votes) {
         this.votes = votes;
     }
 
     public JiraComment[] getComments() {
-        return this.comments;
+        return comments;
     }
 
-    public void setComments(JiraComment[] comments) {
+    public void setComments(final JiraComment[] comments) {
         this.comments = comments;
     }
 
     public String getEnvironment() {
-        return this.environment;
+        return environment;
     }
 
-    public void setEnvironment(String environment) {
+    public void setEnvironment(final String environment) {
         this.environment = environment;
     }
 
     public JiraProject getProject() {
-        return this.project;
+        return project;
     }
 
-    public void setProject(JiraProject project) {
+    public void setProject(final JiraProject project) {
         this.project = project;
     }
 
     public long getActual() {
-        return this.actual;
+        return actual;
     }
 
-    public void setActual(long actual) {
+    public void setActual(final long actual) {
         this.actual = actual;
     }
 
     public Long getInitialEstimate() {
-        return this.initialEstimate;
+        return initialEstimate;
     }
 
-    public void setInitialEstimate(long initialEstimate) {
+    public void setInitialEstimate(final long initialEstimate) {
         this.initialEstimate = initialEstimate;
     }
 
     public Long getEstimate() {
-        return this.estimate;
+        return estimate;
     }
 
-    public void setEstimate(long estimate) {
+    public void setEstimate(final long estimate) {
         this.estimate = estimate;
     }
 
-    public void setWatched(boolean isWatched) {
+    public void setWatched(final boolean isWatched) {
         this.isWatched = isWatched;
     }
 
@@ -345,12 +345,12 @@ public class JiraIssue implements Serializable {
      * @return <code>true</code> if it is valid for <code>user</code> to vote for
      *         the issue
      */
-    public boolean canUserVote(String user) {
-        return (this.getResolution() == null || this.getResolution().getId() == null || "".equals(this.getResolution() //$NON-NLS-1$
-                .getId())) && !user.equals(this.getReporter());
+    public boolean canUserVote(final String user) {
+        return (getResolution() == null || getResolution().getId() == null || "".equals(getResolution() //$NON-NLS-1$
+                .getId())) && !user.equals(getReporter());
     }
 
-    public void setHasVote(boolean hasVote) {
+    public void setHasVote(final boolean hasVote) {
         this.hasVote = hasVote;
     }
 
@@ -362,32 +362,32 @@ public class JiraIssue implements Serializable {
      */
     public boolean getHasVote() {
         // XXX Required new API to work
-        return this.hasVote;
+        return hasVote;
     }
 
     public String getUrl() {
-        return this.url;
+        return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 
     @Override
     public String toString() {
-        return this.key + " " + this.summary; //$NON-NLS-1$
+        return key + " " + summary; //$NON-NLS-1$
     }
 
     public JiraAttachment[] getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(JiraAttachment[] attachments) {
+    public void setAttachments(final JiraAttachment[] attachments) {
         this.attachments = attachments;
     }
 
-    public JiraAttachment getAttachmentById(String id) {
-        for (JiraAttachment attachment : this.attachments) {
+    public JiraAttachment getAttachmentById(final String id) {
+        for (final JiraAttachment attachment : attachments) {
             if (attachment.getId().equals(id)) {
                 return attachment;
             }
@@ -395,7 +395,7 @@ public class JiraIssue implements Serializable {
         return null;
     }
 
-    public void setCustomFields(JiraCustomField[] customFields) {
+    public void setCustomFields(final JiraCustomField[] customFields) {
         this.customFields = customFields;
     }
 
@@ -403,8 +403,8 @@ public class JiraIssue implements Serializable {
         return customFields;
     }
 
-    public JiraCustomField getCustomFieldById(String fieldId) {
-        for (JiraCustomField field : getCustomFields()) {
+    public JiraCustomField getCustomFieldById(final String fieldId) {
+        for (final JiraCustomField field : getCustomFields()) {
             if (fieldId.equals(field.getId())) {
                 return field;
             }
@@ -416,7 +416,7 @@ public class JiraIssue implements Serializable {
         return subtasks;
     }
 
-    public void setSubtasks(JiraSubtask[] subtasks) {
+    public void setSubtasks(final JiraSubtask[] subtasks) {
         this.subtasks = subtasks;
     }
 
@@ -424,7 +424,7 @@ public class JiraIssue implements Serializable {
         return issueLinks;
     }
 
-    public void setIssueLinks(JiraIssueLink[] issueLinks) {
+    public void setIssueLinks(final JiraIssueLink[] issueLinks) {
         this.issueLinks = issueLinks;
     }
 
@@ -433,7 +433,7 @@ public class JiraIssue implements Serializable {
      * @return list of field actual values without faked "none" value for combo and
      *         radio buttons
      */
-    public String[] getFieldValues(String field) {
+    public String[] getFieldValues(final String field) {
         if ("summary".equals(field)) { //$NON-NLS-1$
             return new String[] { getSummary() };
         } else if ("description".equals(field)) { //$NON-NLS-1$
@@ -456,7 +456,7 @@ public class JiraIssue implements Serializable {
             }
         } else if ("components".equals(field)) { //$NON-NLS-1$
             if (components != null) {
-                String[] res = new String[components.length];
+                final String[] res = new String[components.length];
                 for (int i = 0; i < components.length; i++) {
                     res[i] = components[i].getId();
                 }
@@ -464,7 +464,7 @@ public class JiraIssue implements Serializable {
             }
         } else if ("versions".equals(field)) { //$NON-NLS-1$
             if (reportedVersions != null) {
-                String[] res = new String[reportedVersions.length];
+                final String[] res = new String[reportedVersions.length];
                 for (int i = 0; i < reportedVersions.length; i++) {
                     res[i] = reportedVersions[i].getId();
                 }
@@ -472,7 +472,7 @@ public class JiraIssue implements Serializable {
             }
         } else if ("fixVersions".equals(field)) { //$NON-NLS-1$
             if (fixVersions != null) {
-                String[] res = new String[fixVersions.length];
+                final String[] res = new String[fixVersions.length];
                 for (int i = 0; i < fixVersions.length; i++) {
                     res[i] = fixVersions[i].getId();
                 }
@@ -497,9 +497,9 @@ public class JiraIssue implements Serializable {
         // TODO add other fields
 
         if (field.startsWith("customfield_")) { //$NON-NLS-1$
-            for (JiraCustomField customField : customFields) {
+            for (final JiraCustomField customField : customFields) {
                 if (customField.getId().equals(field)) {
-                    List<String> values = customField.getValues();
+                    final List<String> values = customField.getValues();
                     values.remove(JiraCustomField.NONE_ALLOWED_VALUE);
                     return values.toArray(new String[values.size()]);
                 }
@@ -547,7 +547,7 @@ public class JiraIssue implements Serializable {
         return securityLevel;
     }
 
-    public void setSecurityLevel(JiraSecurityLevel securityLevel) {
+    public void setSecurityLevel(final JiraSecurityLevel securityLevel) {
         this.securityLevel = securityLevel;
     }
 
@@ -555,7 +555,7 @@ public class JiraIssue implements Serializable {
         return markupDetected;
     }
 
-    public void setMarkupDetected(boolean markupDetected) {
+    public void setMarkupDetected(final boolean markupDetected) {
         this.markupDetected = markupDetected;
     }
 
@@ -563,7 +563,7 @@ public class JiraIssue implements Serializable {
         return reporterName;
     }
 
-    public void setReporterName(String reporterName) {
+    public void setReporterName(final String reporterName) {
         this.reporterName = reporterName;
     }
 
@@ -571,11 +571,11 @@ public class JiraIssue implements Serializable {
         return assigneeName;
     }
 
-    public void setAssigneeName(String assigneeName) {
+    public void setAssigneeName(final String assigneeName) {
         this.assigneeName = assigneeName;
     }
 
-    public void setSelf(URI self) {
+    public void setSelf(final URI self) {
         this.self = self;
     }
 
@@ -583,35 +583,35 @@ public class JiraIssue implements Serializable {
         return worklogs;
     }
 
-    public void setWorklogs(JiraWorkLog[] worklogs) {
+    public void setWorklogs(final JiraWorkLog[] worklogs) {
         this.worklogs = worklogs;
     }
 
-    public void setRank(Long rank) {
+    public void setRank(final Long rank) {
         this.rank = rank;
     }
 
     public Long getRank() {
-        return this.rank;
+        return rank;
     }
 
     public JiraIssueField[] getEditableFields() {
         return editableFields;
     }
 
-    public void setEditableFields(JiraIssueField[] editableFields) {
+    public void setEditableFields(final JiraIssueField[] editableFields) {
         this.editableFields = editableFields;
     }
 
-    public void setLabels(String[] strings) {
-        this.labels = strings;
+    public void setLabels(final String[] strings) {
+        labels = strings;
     }
 
     public String[] getLabels() {
         return labels;
     }
 
-    public void setRawIssue(Issue rawIssue) {
+    public void setRawIssue(final Issue rawIssue) {
         this.rawIssue = rawIssue;
     }
 
@@ -619,7 +619,7 @@ public class JiraIssue implements Serializable {
         return rawIssue;
     }
 
-    public void setWatchers(Watchers watchers) {
+    public void setWatchers(final Watchers watchers) {
         this.watchers = watchers;
     }
 

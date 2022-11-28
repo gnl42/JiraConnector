@@ -93,7 +93,7 @@ public class JiraProjectPage extends WizardPage {
 
     private Button offlineButton;
 
-    public JiraProjectPage(TaskRepository repository) {
+    public JiraProjectPage(final TaskRepository repository) {
         super("jiraProject"); //$NON-NLS-1$
         Assert.isNotNull(repository);
         setTitle(Messages.JiraProjectPage_New_JIRA_Task);
@@ -102,18 +102,18 @@ public class JiraProjectPage extends WizardPage {
     }
 
     @Override
-    public void createControl(Composite parent) {
+    public void createControl(final Composite parent) {
         // create the composite to hold the widgets
-        Composite composite = new Composite(parent, SWT.NULL);
+        final Composite composite = new Composite(parent, SWT.NULL);
 
         // create the desired layout for this wizard page
         composite.setLayout(new GridLayout());
 
-        PatternFilter patternFilter = new PatternFilter() { // matching on project keys
+        final PatternFilter patternFilter = new PatternFilter() { // matching on project keys
             @Override
-            protected boolean isLeafMatch(Viewer viewer, Object element) {
+            protected boolean isLeafMatch(final Viewer viewer, final Object element) {
                 if (element instanceof JiraProject) {
-                    JiraProject project = (JiraProject) element;
+                    final JiraProject project = (JiraProject) element;
                     if (wordMatches(project.getKey())) {
                         return true;
                     }
@@ -129,12 +129,12 @@ public class JiraProjectPage extends WizardPage {
                 .hint(SWT.DEFAULT, 200)
                 .create());
 
-        TreeViewer projectTreeViewer = projectTree.getViewer();
+        final TreeViewer projectTreeViewer = projectTree.getViewer();
         projectTreeViewer.setLabelProvider(new LabelProvider() {
             @Override
-            public String getText(Object element) {
+            public String getText(final Object element) {
                 if (element instanceof JiraProject) {
-                    JiraProject project = (JiraProject) element;
+                    final JiraProject project = (JiraProject) element;
                     return project.getName() + "  (" + project.getKey() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 return ""; //$NON-NLS-1$
@@ -144,7 +144,7 @@ public class JiraProjectPage extends WizardPage {
         projectTreeViewer.setContentProvider(new ITreeContentProvider() {
 
             @Override
-            public Object[] getChildren(Object parentElement) {
+            public Object[] getChildren(final Object parentElement) {
                 if (parentElement instanceof JiraProject[]) {
                     return (JiraProject[]) parentElement;
                 }
@@ -152,17 +152,17 @@ public class JiraProjectPage extends WizardPage {
             }
 
             @Override
-            public Object getParent(Object element) {
+            public Object getParent(final Object element) {
                 return null;
             }
 
             @Override
-            public boolean hasChildren(Object element) {
+            public boolean hasChildren(final Object element) {
                 return false;
             }
 
             @Override
-            public Object[] getElements(Object inputElement) {
+            public Object[] getElements(final Object inputElement) {
                 return getChildren(inputElement);
             }
 
@@ -171,7 +171,7 @@ public class JiraProjectPage extends WizardPage {
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
             }
         });
 
@@ -181,8 +181,8 @@ public class JiraProjectPage extends WizardPage {
         if (projects != null && projects.length > 0) {
             new UIJob("") { // waiting on delayed refresh of filtered tree //$NON-NLS-1$
                 @Override
-                public IStatus runInUIThread(IProgressMonitor monitor) {
-                    TreeViewer viewer = projectTree.getViewer();
+                public IStatus runInUIThread(final IProgressMonitor monitor) {
+                    final TreeViewer viewer = projectTree.getViewer();
                     if (viewer != null && viewer.getTree() != null && !viewer.getTree().isDisposed()) {
                         viewer.setSelection(new StructuredSelection(projects));
                         viewer.reveal(projects);
@@ -197,7 +197,7 @@ public class JiraProjectPage extends WizardPage {
         projectTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent event) {
+            public void selectionChanged(final SelectionChangedEvent event) {
                 if (getSelectedProject() == null) {
                     setErrorMessage(Messages.JiraProjectPage_You_must_select_a_project);
                 } else if (!getSelectedProject().hasDetails()) {
@@ -213,7 +213,7 @@ public class JiraProjectPage extends WizardPage {
 
         projectTreeViewer.addOpenListener(new IOpenListener() {
             @Override
-            public void open(OpenEvent event) {
+            public void open(final OpenEvent event) {
                 if (getWizard().canFinish()) {
                     if (getWizard().performFinish()) {
                         ((WizardDialog) getContainer()).close();
@@ -224,7 +224,7 @@ public class JiraProjectPage extends WizardPage {
 
         projectTreeViewer.addFilter(new ViewerFilter() {
             @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
+            public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
                 if (element instanceof JiraProject) {
                     return offlineButton != null && !offlineButton.getSelection() || ((JiraProject) element).hasDetails();
                 }
@@ -234,8 +234,8 @@ public class JiraProjectPage extends WizardPage {
 
         projectTree.getFilterControl().addModifyListener(new ModifyListener() {
             @Override
-            public void modifyText(ModifyEvent e) {
-                String text = projectTree.getFilterControl().getText();
+            public void modifyText(final ModifyEvent e) {
+                final String text = projectTree.getFilterControl().getText();
                 if (!StringUtils.isEmpty(text) && !text.equals(WorkbenchMessages.FilteredTree_FilterMessage)) {
                     if (offlineButton != null && offlineButton.getSelection()) {
                         offlineButton.setSelection(false);
@@ -249,18 +249,18 @@ public class JiraProjectPage extends WizardPage {
         offlineButton.setSelection(true);
         offlineButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 projectTree.getViewer().refresh();
             }
         });
         GridDataFactory.fillDefaults().applyTo(offlineButton);
 
-        Button updateButton = new Button(composite, SWT.LEFT | SWT.PUSH);
+        final Button updateButton = new Button(composite, SWT.LEFT | SWT.PUSH);
         updateButton.setText(Messages.JiraProjectPage_Update_Project_Listing);
         updateButton.setLayoutData(new GridData());
         updateButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent event) {
+            public void widgetSelected(final SelectionEvent event) {
                 updateProjectsFromRepository(true);
             }
         });
@@ -277,13 +277,13 @@ public class JiraProjectPage extends WizardPage {
     private void updateProjectsFromRepository(final boolean force) {
         final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
         if (!client.getCache().hasDetails() || force) {
-            ICoreRunnable runner = new ICoreRunnable() {
+            final ICoreRunnable runner = new ICoreRunnable() {
                 @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
+                public void run(final IProgressMonitor monitor) throws CoreException {
                     try {
-                        JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+                        final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
                         client.getCache().refreshDetails(monitor);
-                    } catch (JiraException e) {
+                    } catch (final JiraException e) {
                         throw new CoreException(JiraCorePlugin.toStatus(repository, e));
                     }
                 }
@@ -295,15 +295,15 @@ public class JiraProjectPage extends WizardPage {
                 } else {
                     WorkbenchUtil.busyCursorWhile(runner);
                 }
-            } catch (OperationCanceledException e) {
+            } catch (final OperationCanceledException e) {
                 // canceled
                 return;
-            } catch (CoreException e) {
+            } catch (final CoreException e) {
                 CommonUiUtil.setMessage(this, e.getStatus());
             }
         }
 
-        JiraProject[] projects = client.getCache().getProjects();
+        final JiraProject[] projects = client.getCache().getProjects();
         projectTree.getViewer().setInput(projects);
         getWizard().getContainer().updateButtons();
 
@@ -315,38 +315,38 @@ public class JiraProjectPage extends WizardPage {
     }
 
     public JiraProject getSelectedProject() {
-        IStructuredSelection selection = (IStructuredSelection) projectTree.getViewer().getSelection();
+        final IStructuredSelection selection = (IStructuredSelection) projectTree.getViewer().getSelection();
         return (JiraProject) selection.getFirstElement();
     }
 
     private JiraProject[] discoverProject() {
         // TODO similarity with TasksUiUtil and Bugzilla implementation. consider adapting to TaskSelection or RepositoryTaskData
-        Object element = getSelectedElement();
+        final Object element = getSelectedElement();
         if (element == null) {
             return new JiraProject[0];
         }
         if (element instanceof ITask) {
-            ITask task = (ITask) element;
+            final ITask task = (ITask) element;
             if (task.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
                 try {
-                    TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
-                    JiraProject project = getProject(taskData);
+                    final TaskData taskData = TasksUi.getTaskDataManager().getTaskData(task);
+                    final JiraProject project = getProject(taskData);
                     if (project != null) {
                         return new JiraProject[] { project };
                     }
-                } catch (CoreException e) {
+                } catch (final CoreException e) {
                     StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.ID_PLUGIN,
                             "Failed to determine selected project", //$NON-NLS-1$
                             e));
                 }
             }
         } else if (element instanceof IRepositoryQuery) {
-            IRepositoryQuery query = (IRepositoryQuery) element;
+            final IRepositoryQuery query = (IRepositoryQuery) element;
             if (query.getRepositoryUrl().equals(repository.getRepositoryUrl())) {
-                JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-                FilterDefinition filter = JiraUtil.getFilterDefinition(repository, client, query, false);
+                final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+                final FilterDefinition filter = JiraUtil.getFilterDefinition(repository, client, query, false);
                 if (filter != null) {
-                    ProjectFilter projectFilter = filter.getProjectFilter();
+                    final ProjectFilter projectFilter = filter.getProjectFilter();
                     if (projectFilter != null) {
                         return projectFilter.getProjects();
                     }
@@ -357,23 +357,23 @@ public class JiraProjectPage extends WizardPage {
     }
 
     private Object getSelectedElement() {
-        IStructuredSelection selection = getSelection();
+        final IStructuredSelection selection = getSelection();
         if (selection != null) {
             return selection.getFirstElement();
         } else {
-            IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
             if (window == null) {
                 return null;
             }
-            IWorkbenchPage page = window.getActivePage();
+            final IWorkbenchPage page = window.getActivePage();
             if (page == null) {
                 return null;
             }
-            IEditorPart editor = page.getActiveEditor();
+            final IEditorPart editor = page.getActiveEditor();
             if (editor == null) {
                 return null;
             }
-            IEditorInput editorInput = editor.getEditorInput();
+            final IEditorInput editorInput = editor.getEditorInput();
             if (editorInput instanceof TaskEditorInput) {
                 return ((TaskEditorInput) editorInput).getTask();
             }
@@ -381,11 +381,11 @@ public class JiraProjectPage extends WizardPage {
         return null;
     }
 
-    private JiraProject getProject(TaskData taskData) {
+    private JiraProject getProject(final TaskData taskData) {
         if (taskData != null) {
-            TaskAttribute attribute = taskData.getRoot().getMappedAttribute(JiraAttribute.PROJECT.id());
+            final TaskAttribute attribute = taskData.getRoot().getMappedAttribute(JiraAttribute.PROJECT.id());
             if (attribute != null) {
-                JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+                final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
                 return client.getCache().getProjectById(attribute.getValue());
             }
         }
@@ -393,8 +393,8 @@ public class JiraProjectPage extends WizardPage {
     }
 
     private IStructuredSelection getSelection() {
-        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        ISelection selection = window.getSelectionService().getSelection();
+        final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        final ISelection selection = window.getSelectionService().getSelection();
         if (selection instanceof IStructuredSelection) {
             return (IStructuredSelection) selection;
         }

@@ -20,23 +20,23 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
  * @author Brock Janiczak
  */
 public class StatusFilter implements Filter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final JiraStatus[] statuses;
+    private final JiraStatus[] statuses;
 
-	public StatusFilter(JiraStatus[] statuses) {
-		assert (statuses != null);
-		assert (statuses.length > 0);
+    public StatusFilter(final JiraStatus[] statuses) {
+        assert statuses != null;
+        assert statuses.length > 0;
 
-		this.statuses = statuses;
-	}
+        this.statuses = statuses;
+    }
 
-	public JiraStatus[] getStatuses() {
-		return this.statuses;
-	}
+    public JiraStatus[] getStatuses() {
+        return statuses;
+    }
 
-	StatusFilter copy() {
-		return new StatusFilter(this.statuses);
-	}
+    StatusFilter copy() {
+        return new StatusFilter(statuses);
+    }
 
 }

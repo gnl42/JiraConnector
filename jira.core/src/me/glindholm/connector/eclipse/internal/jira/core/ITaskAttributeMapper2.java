@@ -17,6 +17,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 
 public interface ITaskAttributeMapper2 {
 
-	public Map<String, String> getRepositoryOptions(TaskAttribute attribute);
+    public Map<String, String> getRepositoryOptions(TaskAttribute attribute);
 
 }

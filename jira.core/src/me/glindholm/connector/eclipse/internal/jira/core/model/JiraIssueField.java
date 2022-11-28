@@ -14,6 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Steffen Pingel
@@ -33,7 +34,7 @@ public class JiraIssueField implements Serializable {
 
     private List<JiraAllowedValue> allowedValues = Collections.emptyList();
 
-    public JiraIssueField(String id, String name) {
+    public JiraIssueField(final String id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -51,7 +52,7 @@ public class JiraIssueField implements Serializable {
         return "JiraIssueField [id=" + id + ", name=" + name + ", type=" + type + "]";
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -59,15 +60,15 @@ public class JiraIssueField implements Serializable {
         return type;
     }
 
-    public void setRequired(boolean required) {
+    public void setRequired(final boolean required) {
         this.required = required;
     }
 
     public boolean isRequired() {
-        return this.required;
+        return required;
     }
 
-    public void setAllowedValues(List<JiraAllowedValue> allowedValues) {
+    public void setAllowedValues(final List<JiraAllowedValue> allowedValues) {
         this.allowedValues = allowedValues;
     }
 
@@ -84,7 +85,7 @@ public class JiraIssueField implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -92,13 +93,9 @@ public class JiraIssueField implements Serializable {
             return false;
         }
 
-        JiraIssueField other = (JiraIssueField) obj;
+        final JiraIssueField other = (JiraIssueField) obj;
 
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
+        if (!Objects.equals(id, other.id)) {
             return false;
         }
 

@@ -19,40 +19,40 @@ import java.io.Serializable;
  */
 public class JiraUser implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String name;
+    private String name;
 
-	private String email;
+    private String email;
 
-	private String fullName;
+    private String fullName;
 
-	public String getEmail() {
-		return this.email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(final String email) {
+        this.email = email;
+    }
 
-	public String getFullName() {
-		return this.fullName;
-	}
+    public String getFullName() {
+        return fullName;
+    }
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+    public void setFullName(final String fullName) {
+        this.fullName = fullName;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	@Override
-	public String toString() {
-		return this.name + "(" + this.fullName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-	}
+    @Override
+    public String toString() {
+        return name + "(" + fullName + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
 }

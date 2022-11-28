@@ -56,7 +56,7 @@ public class JiraClientManager {
 
     private final Map<String, JiraClientData> clientDataByUrl = new HashMap<>();
 
-    public JiraClientManager(File cacheLocation) {
+    public JiraClientManager(final File cacheLocation) {
         this.cacheLocation = cacheLocation;
     }
 
@@ -64,13 +64,13 @@ public class JiraClientManager {
         // on first load the cache may not exist
         cacheLocation.mkdirs();
 
-        File file = new File(cacheLocation, CONFIGURATION_DATA_FILENAME);
+        final File file = new File(cacheLocation, CONFIGURATION_DATA_FILENAME);
         if (!file.exists()) {
             // clean up legacy data
-            File[] clients = this.cacheLocation.listFiles();
+            final File[] clients = cacheLocation.listFiles();
             if (clients != null) {
-                for (File directory : clients) {
-                    File oldData = new File(directory, "server.ser"); //$NON-NLS-1$
+                for (final File directory : clients) {
+                    final File oldData = new File(directory, "server.ser"); //$NON-NLS-1$
                     if (oldData.exists()) {
                         oldData.delete();
                         directory.delete();
@@ -82,20 +82,20 @@ public class JiraClientManager {
             try {
                 in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
                 in.readInt(); // version
-                int count = in.readInt();
+                final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
-                    String url = (String) in.readObject();
-                    JiraClientData data = (JiraClientData) in.readObject();
+                    final String url = (String) in.readObject();
+                    final JiraClientData data = (JiraClientData) in.readObject();
                     clientDataByUrl.put(url, data);
                 }
-            } catch (Throwable e) {
+            } catch (final Throwable e) {
                 StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN,
                         "Reset JIRA repository configuration cache due to format change")); //$NON-NLS-1$
             } finally {
                 if (in != null) {
                     try {
                         in.close();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                     }
                 }
             }
@@ -103,21 +103,21 @@ public class JiraClientManager {
     }
 
     protected void stop() {
-        File file = new File(cacheLocation, CONFIGURATION_DATA_FILENAME);
+        final File file = new File(cacheLocation, CONFIGURATION_DATA_FILENAME);
 
         // update data map from clients
-        for (String url : clientByUrl.keySet()) {
+        for (final String url : clientByUrl.keySet()) {
             clientDataByUrl.put(url, clientByUrl.get(url).getCache().getData());
         }
 
         try (ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
             out.writeInt(CONFIGURATION_DATA_VERSION);
             out.writeInt(clientDataByUrl.size());
-            for (String url : clientDataByUrl.keySet()) {
+            for (final String url : clientDataByUrl.keySet()) {
                 out.writeObject(url);
                 out.writeObject(clientDataByUrl.get(url));
             }
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
                     "Error writing JIRA repository configuration cache", e)); //$NON-NLS-1$
         }
@@ -137,16 +137,16 @@ public class JiraClientManager {
      *                                         password were incorrect
      * @throws JiraServiceUnavailableException URL was not valid
      */
-    public JiraServerInfo validateConnection(AbstractWebLocation location, JiraLocalConfiguration configuration,
-            IProgressMonitor monitor) throws JiraException {
-        JiraClient client = createClient(location, configuration);
+    public JiraServerInfo validateConnection(final AbstractWebLocation location, final JiraLocalConfiguration configuration,
+            final IProgressMonitor monitor) throws JiraException {
+        final JiraClient client = createClient(location, configuration);
 
         client.getSession(monitor);
 
         return client.getServerInfo(monitor);
     }
 
-    public JiraClient getClient(String url) {
+    public JiraClient getClient(final String url) {
         return clientByUrl.get(url);
     }
 
@@ -154,20 +154,20 @@ public class JiraClientManager {
         return clientByUrl.values().toArray(new JiraClient[clientByUrl.size()]);
     }
 
-    private JiraClient createClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
+    private JiraClient createClient(final AbstractWebLocation location, final JiraLocalConfiguration configuration) {
         //		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
         //			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
         //		}
         return new JiraClient(location, configuration);
     }
 
-    public JiraClient addClient(AbstractWebLocation location, JiraLocalConfiguration configuration) {
+    public JiraClient addClient(final AbstractWebLocation location, final JiraLocalConfiguration configuration) {
         if (clientByUrl.containsKey(location.getUrl())) {
             throw new RuntimeException("A client with that url already exists"); //$NON-NLS-1$
         }
 
-        JiraClient client = createClient(location, configuration);
-        JiraClientData data = clientDataByUrl.get(location.getUrl());
+        final JiraClient client = createClient(location, configuration);
+        final JiraClientData data = clientDataByUrl.get(location.getUrl());
         if (data != null) {
             client.getCache().setData(data);
         }
@@ -180,7 +180,7 @@ public class JiraClientManager {
 
     }
 
-    public void removeClient(JiraClient client, boolean clearData) {
+    public void removeClient(final JiraClient client, final boolean clearData) {
         // TODO trigger logout?
         if (clearData) {
             clientDataByUrl.remove(client.getBaseUrl());
@@ -190,7 +190,7 @@ public class JiraClientManager {
         clientByUrl.remove(client.getBaseUrl());
     }
 
-    public void removeAllClients(boolean clearData) {
+    public void removeAllClients(final boolean clearData) {
         if (clearData) {
             clientDataByUrl.clear();
         }

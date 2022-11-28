@@ -18,32 +18,32 @@ import java.io.Serializable;
  * @author Brock Janiczak
  */
 public class Order implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final JiraFields field;
+    private final JiraFields field;
 
-	private final boolean ascending;
+    private final boolean ascending;
 
-	public Order(JiraFields field, boolean ascending) {
-		this.field = field;
-		this.ascending = ascending;
-	}
+    public Order(final JiraFields field, final boolean ascending) {
+        this.field = field;
+        this.ascending = ascending;
+    }
 
-	public boolean isAscending() {
-		return this.ascending;
-	}
+    public boolean isAscending() {
+        return ascending;
+    }
 
-	public JiraFields getField() {
-		return field;
-	}
+    public JiraFields getField() {
+        return field;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "order by " + field.toString() + " " + (this.ascending ? "asc" : "desc"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "order by " + field.toString() + " " + (ascending ? "asc" : "desc"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    }
 }
