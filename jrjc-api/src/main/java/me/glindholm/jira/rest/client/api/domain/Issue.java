@@ -140,8 +140,6 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     @Nullable
     private final BasicIssue parent;
 
-    private Watchers watchers;
-
     @Nullable
     private final Map<String, CimFieldInfo> metadata;
 
@@ -293,14 +291,6 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
         return worklogs;
     }
 
-    /**
-     * @return <code>null</code> when watching is disabled in JIRA
-     */
-    @Nullable
-    public Watchers getWatchers() {
-        return watchers;
-    }
-
     @Nullable
     public List<Version> getFixVersions() {
         return fixVersions;
@@ -387,10 +377,6 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     @Override
     protected String getToStringHelper() {
         return toString();
-    }
-
-    public void setWatchers(final Watchers watchers) {
-        this.watchers = watchers;
     }
 
     public List<IssueField> getIssueFields() {
