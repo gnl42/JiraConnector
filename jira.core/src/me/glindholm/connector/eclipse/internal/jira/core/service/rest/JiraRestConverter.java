@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONException;
@@ -61,6 +62,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
+import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
@@ -155,8 +157,8 @@ public class JiraRestConverter {
         return outPriority;
     }
 
-    public static JiraIssue convertIssue(final Issue rawIssue, final JiraClientCache cache, final String url, final IProgressMonitor monitor)
-            throws JiraException {
+    public static JiraIssue convertIssue(final JiraRestClient restClient, final Issue rawIssue, final JiraClientCache cache, final String url,
+            final IProgressMonitor monitor) throws JiraException {
         final JiraIssue issue = convert(rawIssue);
 
         issue.setRawIssue(rawIssue);
@@ -317,9 +319,14 @@ public class JiraRestConverter {
         final BasicWatchers watched = rawIssue.getWatched();
         issue.setWatched(watched.isWatching());
 
-        final Watchers watchers = rawIssue.getWatchers();
-        issue.setWatchers(watchers);
-
+        if (issue.isWatched()) {
+            try {
+                final Watchers watchers = restClient.getIssueClient().getWatchers(watched.getSelf()).get();
+                issue.setWatchers(watchers);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new JiraException(e);
+            }
+        }
         return issue;
     }
 
@@ -1042,7 +1049,7 @@ public class JiraRestConverter {
             }
 
             return new FieldInput(customField.getId(), values);
-            // }
+        // }
 
         case LABELSS:
             if (customField.getValues().size() > 0) {

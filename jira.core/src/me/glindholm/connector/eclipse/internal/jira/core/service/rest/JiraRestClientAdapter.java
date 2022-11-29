@@ -72,7 +72,6 @@ import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
-import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.CimIssueType;
 import me.glindholm.jira.rest.client.api.domain.CimProject;
@@ -81,7 +80,6 @@ import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.api.domain.Session;
-import me.glindholm.jira.rest.client.api.domain.Watchers;
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
@@ -199,9 +197,6 @@ public class JiraRestClientAdapter {
                 try {
                     final Issue issue = restClient.getIssueClient()
                             .getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA, IssueRestClient.Expandos.EDITMETA)).get();
-                    final BasicWatchers watched = issue.getWatched();
-                    final Watchers watchers = restClient.getIssueClient().getWatchers(watched.getSelf()).get();
-                    issue.setWatchers(watchers);
                     return issue;
                 } catch (InterruptedException | ExecutionException | URISyntaxException e) {
                     throw new JiraException(e);
@@ -270,7 +265,7 @@ public class JiraRestClientAdapter {
     }
 
     public JiraIssue getIssueByKeyOrId(final String issueKeyOrId, final IProgressMonitor monitor) throws JiraException {
-        return JiraRestConverter.convertIssue(getIssue(issueKeyOrId), cache, url, monitor);
+        return JiraRestConverter.convertIssue(restClient, getIssue(issueKeyOrId), cache, url, monitor);
     }
 
     public JiraStatus[] getStatuses() throws JiraException {
@@ -314,7 +309,7 @@ public class JiraRestClientAdapter {
 
                 final List<JiraIssue> fullIssues = new ArrayList<>();
                 for (final Issue issue : issuesFromServer) {
-                    fullIssues.add(JiraRestConverter.convertIssue(issue, cache, url, progress));
+                    fullIssues.add(JiraRestConverter.convertIssue(restClient, issue, cache, url, progress));
                     progress.split(1);
                 }
                 progress.done();
@@ -714,7 +709,7 @@ public class JiraRestClientAdapter {
         if (changedIssue.getSecurityLevel() != null) {
             // security level value "-1" clears security level
             updateFields
-            .add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
+                    .add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
         } else {
             // do not clear security level as it might be not available on the screen
         }
