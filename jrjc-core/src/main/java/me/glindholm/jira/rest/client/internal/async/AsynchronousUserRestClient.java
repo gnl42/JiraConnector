@@ -63,6 +63,12 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     }
 
     @Override
+    public Promise<User> getCurrentUser() throws URISyntaxException {
+        final URI userUri = new URIBuilder(baseUri).appendPath("myself").build();
+        return getUser(userUri);
+    }
+
+    @Override
     public Promise<User> getUser(final String username) throws URISyntaxException {
         final URI userUri = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX).addParameter("username", username).addParameter("expand", "groups").build();
         return getUser(userUri);

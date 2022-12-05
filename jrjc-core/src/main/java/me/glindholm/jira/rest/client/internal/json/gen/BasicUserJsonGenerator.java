@@ -23,10 +23,8 @@ import me.glindholm.jira.rest.client.api.domain.BasicUser;
 
 public class BasicUserJsonGenerator implements JsonGenerator<BasicUser> {
     @Override
-    public JSONObject generate(BasicUser user) throws JSONException {
-        return new JSONObject()
-                .put("self", user.getSelf())
-                .put("name", user.getName())
-                .put("displayName", user.getDisplayName());
+    public JSONObject generate(final BasicUser user) throws JSONException {
+        return new JSONObject().put("self", user.getSelf()).put("name", user.getName()).put("accountId", user.getAccountId()).put("displayName",
+                user.getDisplayName());
     }
 }

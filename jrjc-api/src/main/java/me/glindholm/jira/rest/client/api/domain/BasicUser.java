@@ -35,7 +35,7 @@ public class BasicUser extends AddressableNamedEntity {
      */
     public static final URI INCOMPLETE_URI = URI.create("incomplete://user");
 
-    public static final String UNASSIGNED = "-1";
+    public static final String UNASSIGNED = "";
 
     public static final BasicUser UNASSIGNED_USER = new BasicUser(null, UNASSIGNED, "");
 

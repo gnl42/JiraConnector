@@ -21,12 +21,13 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 
 /**
- * Issue worklog - single worklog entry describing the work logged for selected issue
+ * Issue worklog - single worklog entry describing the work logged for selected
+ * issue
  *
  * @since v0.1
  */
@@ -45,8 +46,9 @@ public class Worklog implements Serializable, AddressableEntity {
     @Nullable
     private final Visibility visibility;
 
-    public Worklog(URI self, URI issueUri, BasicUser author, BasicUser updateAuthor, @Nullable String comment,
-            OffsetDateTime creationDate, OffsetDateTime updateDate, OffsetDateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+    public Worklog(final URI self, final URI issueUri, final BasicUser author, final BasicUser updateAuthor, @Nullable final String comment,
+            final OffsetDateTime creationDate, final OffsetDateTime updateDate, final OffsetDateTime startDate, final int minutesSpent,
+            @Nullable final Visibility visibility) {
         this.self = self;
         this.issueUri = issueUri;
         this.author = author;
@@ -108,19 +110,13 @@ public class Worklog implements Serializable, AddressableEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof Worklog) {
-            Worklog that = (Worklog) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.issueUri, that.issueUri)
-                    && Objects.equals(this.author, that.author)
-                    && Objects.equals(this.updateAuthor, that.updateAuthor)
-                    && Objects.equals(this.comment, that.comment)
-                    && Objects.equals(this.visibility, that.visibility)
-                    && this.creationDate.isEqual(that.creationDate)
-                    && this.updateDate.isEqual(that.updateDate)
-                    && this.startDate.isEqual(that.startDate)
-                    && Objects.equals(this.minutesSpent, that.minutesSpent);
+            final Worklog that = (Worklog) obj;
+            return Objects.equals(self, that.self) && Objects.equals(issueUri, that.issueUri) && Objects.equals(author, that.author)
+                    && Objects.equals(updateAuthor, that.updateAuthor) && Objects.equals(comment, that.comment) && Objects.equals(visibility, that.visibility)
+                    && creationDate.isEqual(that.creationDate) && updateDate.isEqual(that.updateDate) && startDate.isEqual(that.startDate)
+                    && Objects.equals(minutesSpent, that.minutesSpent);
         }
         return false;
     }

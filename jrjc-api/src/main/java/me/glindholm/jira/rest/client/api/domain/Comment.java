@@ -21,7 +21,7 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 
@@ -46,7 +46,8 @@ public class Comment implements Serializable, AddressableEntity {
     @Nullable
     private final Visibility visibility;
 
-    public Comment(URI self, String body, @Nullable BasicUser author, @Nullable BasicUser updateAuthor, OffsetDateTime creationDate, OffsetDateTime updateDate, Visibility visibility, @Nullable Long id) {
+    public Comment(final URI self, final String body, @Nullable final BasicUser author, @Nullable final BasicUser updateAuthor,
+            final OffsetDateTime creationDate, final OffsetDateTime updateDate, final Visibility visibility, @Nullable final Long id) {
         this.author = author;
         this.updateAuthor = updateAuthor;
         this.creationDate = creationDate;
@@ -57,15 +58,15 @@ public class Comment implements Serializable, AddressableEntity {
         this.id = id;
     }
 
-    public static Comment valueOf(String body) {
+    public static Comment valueOf(final String body) {
         return new Comment(null, body, null, null, null, null, null, null);
     }
 
-    public static Comment createWithRoleLevel(String body, String roleLevel) {
+    public static Comment createWithRoleLevel(final String body, final String roleLevel) {
         return new Comment(null, body, null, null, null, null, Visibility.role(roleLevel), null);
     }
 
-    public static Comment createWithGroupLevel(String body, String groupLevel) {
+    public static Comment createWithGroupLevel(final String body, final String groupLevel) {
         return new Comment(null, body, null, null, null, null, Visibility.group(groupLevel), null);
     }
 
@@ -117,18 +118,12 @@ public class Comment implements Serializable, AddressableEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof Comment) {
-            Comment that = (Comment) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.body, that.body)
-                    && Objects.equals(this.author, that.author)
-                    && Objects.equals(this.updateAuthor, that.updateAuthor)
-                    && Objects.equals(this.creationDate, that.creationDate)
-                    && Objects.equals(this.updateDate, that.updateDate)
-                    && Objects.equals(this.visibility, that.visibility)
-                    && Objects.equals(this.body, that.body);
+            final Comment that = (Comment) obj;
+            return Objects.equals(self, that.self) && Objects.equals(id, that.id) && Objects.equals(body, that.body) && Objects.equals(author, that.author)
+                    && Objects.equals(updateAuthor, that.updateAuthor) && Objects.equals(creationDate, that.creationDate)
+                    && Objects.equals(updateDate, that.updateDate) && Objects.equals(visibility, that.visibility) && Objects.equals(body, that.body);
         }
         return false;
     }

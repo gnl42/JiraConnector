@@ -34,6 +34,14 @@ import me.glindholm.jira.rest.client.api.domain.input.UserInput;
 public interface UserRestClient {
 
     /**
+     * Retrieve current user
+     *
+     * @return user
+     * @throws URISyntaxException
+     */
+    Promise<User> getCurrentUser() throws URISyntaxException;
+
+    /**
      * Retrieves detailed information about selected user. Try to use
      * {@link #getUser(URI)} instead as that method is more RESTful (well connected)
      *

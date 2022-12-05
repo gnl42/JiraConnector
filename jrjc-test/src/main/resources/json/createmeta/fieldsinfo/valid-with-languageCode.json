@@ -1,0 +1,19 @@
+{
+      "customfield_10033": {
+        "required": false,
+        "schema": {
+          "type": "sd-request-lang",
+          "custom": "com.atlassian.servicedesk.servicedesk-lingo-integration-plugin:sd-request-language",
+          "customId": 10033
+        },
+        "name": "Request language",
+        "key": "customfield_10033",
+        "operations": [],
+        "allowedValues": [
+          {
+            "languageCode": "de",
+            "displayName": "German"
+          }
+        ]
+      }
+}
