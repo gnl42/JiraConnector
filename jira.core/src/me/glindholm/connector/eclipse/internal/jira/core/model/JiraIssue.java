@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.List;
 
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.Watchers;
 
@@ -56,13 +57,9 @@ public class JiraIssue implements Serializable {
 
     private JiraResolution resolution;
 
-    private String assignee;
+    private BasicUser assignee;
 
-    private String reporter;
-
-    private String assigneeName;
-
-    private String reporterName;
+    private BasicUser reporter;
 
     private Instant created;
 
@@ -156,11 +153,11 @@ public class JiraIssue implements Serializable {
         this.parentKey = parentKey;
     }
 
-    public String getAssignee() {
+    public BasicUser getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(final String asignee) {
+    public void setAssignee(final BasicUser asignee) {
         assignee = asignee;
     }
 
@@ -217,11 +214,11 @@ public class JiraIssue implements Serializable {
         this.priority = priority;
     }
 
-    public String getReporter() {
+    public BasicUser getReporter() {
         return reporter;
     }
 
-    public void setReporter(final String reporter) {
+    public void setReporter(final BasicUser reporter) {
         this.reporter = reporter;
     }
 
@@ -443,9 +440,9 @@ public class JiraIssue implements Serializable {
                 return new String[] { resolution.getId() };
             }
         } else if ("assignee".equals(field)) { //$NON-NLS-1$
-            return new String[] { assignee };
+            return new String[] { assignee.getId() };
         } else if ("reporter".equals(field)) { //$NON-NLS-1$
-            return new String[] { reporter };
+            return new String[] { reporter.getId() };
         } else if ("issuetype".equals(field)) { //$NON-NLS-1$
             if (type != null) {
                 return new String[] { type.getId() };
@@ -557,22 +554,6 @@ public class JiraIssue implements Serializable {
 
     public void setMarkupDetected(final boolean markupDetected) {
         this.markupDetected = markupDetected;
-    }
-
-    public String getReporterName() {
-        return reporterName;
-    }
-
-    public void setReporterName(final String reporterName) {
-        this.reporterName = reporterName;
-    }
-
-    public String getAssigneeDisplayName() {
-        return assigneeName;
-    }
-
-    public void setAssigneeName(final String assigneeName) {
-        this.assigneeName = assigneeName;
     }
 
     public void setSelf(final URI self) {

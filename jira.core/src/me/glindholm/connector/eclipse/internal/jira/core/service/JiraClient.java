@@ -45,8 +45,10 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.filter.FilterDefi
 import me.glindholm.connector.eclipse.internal.jira.core.model.filter.IssueCollector;
 import me.glindholm.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
 import me.glindholm.jira.rest.client.api.RestClientException;
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.Session;
+import me.glindholm.jira.rest.client.api.domain.User;
 
 /**
  * JIRA server implementation that caches information that is unlikely to change
@@ -152,6 +154,13 @@ public class JiraClient {
     private JiraRestClientAdapter getRestClient() {
         if (restClient == null) {
             restClient = createRestClient(location, cache);
+            try {
+                final User currentUser = restClient.getCurrentUser();
+                final int i = 0;
+            } catch (final JiraException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         return restClient;
@@ -177,6 +186,7 @@ public class JiraClient {
         }
 
         return new JiraRestClientAdapter(baseUrl, username, password, proxy, cache, localConfiguration.getFollowRedirects());
+
     }
 
     // public void addCommentToIssue(String issueKey, Comment comment,
@@ -834,7 +844,7 @@ public class JiraClient {
     public String getAssigneeParam(final JiraIssue issue, final int assigneeType, final String user) {
         switch (assigneeType) {
         case JiraClient.ASSIGNEE_CURRENT:
-            return issue.getAssignee();
+            return issue.getAssignee().getDisplayName();
         case JiraClient.ASSIGNEE_DEFAULT:
             return "-1"; //$NON-NLS-1$
         case JiraClient.ASSIGNEE_NONE:
@@ -856,4 +866,11 @@ public class JiraClient {
         return JiraRestClientAdapter.getDateFormat();
     }
 
+    public List<User> getProjectAssignables(final String issueKey) throws JiraException {
+        return getRestClient().getProjectAssignables(issueKey);
+    }
+
+    public BasicUser getCurrentUser() throws JiraException {
+        return getRestClient().getCurrentUser();
+    }
 }

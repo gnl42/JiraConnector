@@ -13,10 +13,24 @@ package me.glindholm.connector.eclipse.internal.jira.core;
 
 import java.util.Map;
 
+import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
+
+import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
 
 public interface ITaskAttributeMapper2 {
 
-    public Map<String, String> getRepositoryOptions(TaskAttribute attribute);
+    Map<String, String> getRepositoryOptions(TaskAttribute attribute);
+
+    BasicUser getRepositoryUser(TaskAttribute attribute);
+
+    void setRepositoryUser(TaskAttribute attribute, BasicUser user);
+
+    JiraClient getClient();
+
+    IRepositoryPerson createPerson(BasicUser user);
+
+    BasicUser lookupExternalId(TaskAttribute attribute, String externalId);
 
 }

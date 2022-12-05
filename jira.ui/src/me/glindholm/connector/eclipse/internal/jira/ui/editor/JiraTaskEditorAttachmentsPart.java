@@ -14,6 +14,9 @@ package me.glindholm.connector.eclipse.internal.jira.ui.editor;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -72,9 +75,9 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 
     private static final String ID_POPUP_MENU = "org.eclipse.mylyn.tasks.ui.editor.menu.attachments"; //$NON-NLS-1$
 
-    private final String[] attachmentsColumns = { Messages.TaskEditorAttachmentPart_Name,
-            Messages.TaskEditorAttachmentPart_Description, /*"Type", */Messages.TaskEditorAttachmentPart_Size,
-            Messages.TaskEditorAttachmentPart_Creator, Messages.TaskEditorAttachmentPart_Created };
+    private final String[] attachmentsColumns = { Messages.TaskEditorAttachmentPart_Name, Messages.TaskEditorAttachmentPart_Description,
+            /* "Type", */Messages.TaskEditorAttachmentPart_Size, Messages.TaskEditorAttachmentPart_Creator, Messages.TaskEditorAttachmentPart_Created };
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ssZ").withZone(ZoneId.systemDefault());
 
     private final int[] attachmentsColumnWidths = { 130, 150, /* 100, */70, 100, 250 }; // Not used
 
@@ -105,11 +108,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachmentsTable.setLinesVisible(true);
         attachmentsTable.setHeaderVisible(true);
         attachmentsTable.setLayout(new GridLayout());
-        GridDataFactory.fillDefaults()
-        .align(SWT.FILL, SWT.FILL)
-        .grab(true, false)
-        .hint(500, SWT.DEFAULT)
-        .applyTo(attachmentsTable);
+        GridDataFactory.fillDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).hint(500, SWT.DEFAULT).applyTo(attachmentsTable);
         attachmentsTable.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TREE_BORDER);
 
         for (int i = 0, columnIndex = 0; i < attachmentsColumns.length; i++) {
@@ -155,8 +154,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 
         final List<ITaskAttachment> attachmentList = new ArrayList<>(attachments.size());
         for (final TaskAttribute attribute : attachments) {
-            final TaskAttachment taskAttachment = new TaskAttachment(getModel().getTaskRepository(), getModel().getTask(),
-                    attribute);
+            final TaskAttachment taskAttachment = new TaskAttachment(getModel().getTaskRepository(), getModel().getTask(), attribute);
             getTaskData().getAttributeMapper().updateTaskAttachment(taskAttachment, attribute);
             attachmentList.add(taskAttachment);
         }
@@ -176,10 +174,10 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
                     text = humanReadableByteCountSI(element.getLength());
                     break;
                 case 2:
-                    text = element.getAuthor().getPersonId();
+                    text = element.getAuthor().getName();
                     break;
                 case 3:
-                    text = element.getCreationDate().toLocaleString();
+                    text = dateFormat.format(element.getCreationDate().toInstant().atOffset(ZoneOffset.UTC));
                     break;
                 default:
                     text = "Unexpected column: " + columnIndex;
@@ -239,8 +237,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         attachmentControlsComposite.setLayout(new GridLayout(3, false));
         attachmentControlsComposite.setLayoutData(new GridData(GridData.BEGINNING));
 
-        final Button attachFileButton = toolkit.createButton(attachmentControlsComposite,
-                Messages.TaskEditorAttachmentPart_Attach_, SWT.PUSH);
+        final Button attachFileButton = toolkit.createButton(attachmentControlsComposite, Messages.TaskEditorAttachmentPart_Attach_, SWT.PUSH);
         attachFileButton.setImage(CommonImages.getImage(CommonImages.FILE_PLAIN));
         attachFileButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -250,8 +247,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         });
         getTaskEditorPage().registerDefaultDropListener(attachFileButton);
 
-        final Button attachScreenshotButton = toolkit.createButton(attachmentControlsComposite,
-                Messages.TaskEditorAttachmentPart_Attach__Screenshot, SWT.PUSH);
+        final Button attachScreenshotButton = toolkit.createButton(attachmentControlsComposite, Messages.TaskEditorAttachmentPart_Attach__Screenshot, SWT.PUSH);
         attachScreenshotButton.setImage(CommonImages.getImage(CommonImages.IMAGE_CAPTURE));
         attachScreenshotButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -320,8 +316,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
     }
 
     private void initialize() {
-        attachments = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(),
-                TaskAttribute.TYPE_ATTACHMENT);
+        attachments = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(), TaskAttribute.TYPE_ATTACHMENT);
         for (final TaskAttribute attachmentAttribute : attachments) {
             if (getModel().hasIncomingChanges(attachmentAttribute)) {
                 hasIncoming = true;

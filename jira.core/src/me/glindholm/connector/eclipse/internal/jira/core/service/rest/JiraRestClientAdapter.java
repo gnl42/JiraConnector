@@ -71,7 +71,6 @@ import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
-import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.CimIssueType;
 import me.glindholm.jira.rest.client.api.domain.CimProject;
@@ -80,6 +79,7 @@ import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.api.domain.Session;
+import me.glindholm.jira.rest.client.api.domain.User;
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
@@ -170,7 +170,6 @@ public class JiraRestClientAdapter {
             } else {
                 restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password, httpOptions);
             }
-
         } catch (final URISyntaxException e) {
             // we should never get here as Mylyn constructs URI first and fails if it is
             // incorrect
@@ -390,6 +389,19 @@ public class JiraRestClientAdapter {
         });
     }
 
+    public User getCurrentUser() throws JiraException {
+        return call(new Callable<User>() {
+            @Override
+            public User call() throws JiraException {
+                try {
+                    return restClient.getUserClient().getCurrentUser().get();
+                } catch (RestClientException | InterruptedException | ExecutionException | URISyntaxException e) {
+                    throw new JiraException(e);
+                }
+            }
+        });
+    }
+
     public List<JiraAction> getTransitions(final String issueKey) throws JiraException {
 
         try {
@@ -499,7 +511,7 @@ public class JiraRestClientAdapter {
         final Issue issue = getIssue(issueKey);
 
         final IssueInput fields = IssueInput
-                .createWithFields(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, user)));
+                .createWithFields(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(cache.getServerInfo().getAccountTag(), user)));
         try {
             restClient.getIssueClient().updateIssue(issue.getKey(), fields).claim();
         } catch (final URISyntaxException e) {
@@ -550,7 +562,7 @@ public class JiraRestClientAdapter {
 
         // Mylyn sets -1 as a value of empty assignee
         if (issue.getAssignee() != null && !"-1".equals(issue.getAssignee())) { //$NON-NLS-1$
-            issueInputBuilder.setAssignee(new BasicUser(null, issue.getAssignee(), null));
+            issueInputBuilder.setAssignee(issue.getAssignee());
         }
 
         if (issue.getDue() != null) {
@@ -727,8 +739,8 @@ public class JiraRestClientAdapter {
         }
 
         if (editableFields.contains(new JiraIssueField(JiraRestFields.ASSIGNEE, null))) {
-            final String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee(); //$NON-NLS-1$//$NON-NLS-2$
-            final String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getName() : ""; //$NON-NLS-1$
+            final String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee().getId(); //$NON-NLS-1$//$NON-NLS-2$
+            final String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getId() : ""; //$NON-NLS-1$
 
             if (!assigne.equals(prevAssigne)) {
                 updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, assigne)));
@@ -879,4 +891,11 @@ public class JiraRestClientAdapter {
         });
     }
 
+    public List<User> getProjectAssignables(final String projectKey) throws JiraException {
+        try {
+            return restClient.getUserClient().findAssignableUsersForProject(projectKey, null, null, true, false).get();
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
+            throw new JiraException(e);
+        }
+    }
 }

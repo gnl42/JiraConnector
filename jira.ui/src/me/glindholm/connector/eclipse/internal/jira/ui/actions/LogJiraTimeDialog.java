@@ -69,8 +69,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
     public static final int SKIP_LOGGING = 1;
 
-    private final static String[] buttons = { Messages.LogJiraTimeDialog_Stop_And_Log,
-            Messages.LogJiraTimeDialog_Stop_Only, IDialogConstants.CANCEL_LABEL };
+    private final static String[] buttons = { Messages.LogJiraTimeDialog_Stop_And_Log, Messages.LogJiraTimeDialog_Stop_Only, IDialogConstants.CANCEL_LABEL };
 
     private JiraWorkLog workLog;
 
@@ -101,8 +100,7 @@ public class LogJiraTimeDialog extends MessageDialog {
                 buttons, 0);
         this.taskData = taskData;
         workDoneAmountInSeconds = seconds;
-        repository = TasksUi.getRepositoryManager().getRepository(iTask.getConnectorKind(),
-                iTask.getRepositoryUrl());
+        repository = TasksUi.getRepositoryManager().getRepository(iTask.getConnectorKind(), iTask.getRepositoryUrl());
 
         adjustEstimate = JiraUiUtil.getAdjustEstimateOption(repository);
     }
@@ -156,7 +154,7 @@ public class LogJiraTimeDialog extends MessageDialog {
         final Composite dateTimeComposite = new Composite(c1, SWT.NONE);
         final GridLayout dateTimeLayout = new GridLayout(2, false);
         dateTimeLayout.horizontalSpacing = 0;
-        //		dateTimeLayout.verticalSpacing = 0;
+        // dateTimeLayout.verticalSpacing = 0;
         dateTimeLayout.marginWidth = 0;
         dateTimeLayout.marginHeight = 0;
         dateTimeComposite.setLayout(dateTimeLayout);
@@ -167,7 +165,7 @@ public class LogJiraTimeDialog extends MessageDialog {
         dateWidget.setYear(now.get(Calendar.YEAR));
         dateWidget.setMonth(now.get(Calendar.MONTH));
         dateWidget.setDay(now.get(Calendar.DAY_OF_MONTH));
-        //		GridDataFactory.fillDefaults().applyTo(dateWidget);
+        // GridDataFactory.fillDefaults().applyTo(dateWidget);
 
         timeWidget = new DateTime(dateTimeComposite, SWT.TIME | SWT.BORDER);
         timeWidget.setHours(now.get(Calendar.HOUR_OF_DAY));
@@ -335,9 +333,8 @@ public class LogJiraTimeDialog extends MessageDialog {
                 JiraEditorUtil.showTimeSpentDecorator(reduceRemainigEstimateText, repository, true);
                 ok = false;
             } else if (remainingEstimateInSeconds < 0) {
-                JiraEditorUtil.showTimeSpentDecorator(reduceRemainigEstimateText, repository, NLS.bind(
-                        Messages.LogJiraTimeDialog_cant_reduce_estimate_below_zero, formatter.format(estimateLong)),
-                        true);
+                JiraEditorUtil.showTimeSpentDecorator(reduceRemainigEstimateText, repository,
+                        NLS.bind(Messages.LogJiraTimeDialog_cant_reduce_estimate_below_zero, formatter.format(estimateLong)), true);
                 ok = false;
             }
         }
@@ -347,7 +344,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
     private void collectWorkLog() {
         final JiraWorkLog tempworkLog = new JiraWorkLog();
-        tempworkLog.setAuthor(repository.getUserName());
+        tempworkLog.setAuthor(null); // TODO Check this
         tempworkLog.setComment(descriptionText.getText());
         tempworkLog.setStartDate(LocalDateTime
                 .of(dateWidget.getYear(), dateWidget.getMonth(), dateWidget.getDay(), timeWidget.getHours(), timeWidget.getMinutes(), timeWidget.getSeconds())
@@ -371,8 +368,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
                 final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
-                final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell,
-                        TasksUiPreferencePage.ID, null, null);
+                final PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell, TasksUiPreferencePage.ID, null, null);
                 if (prefDialog != null) {
                     prefDialog.open();
                 } else {
@@ -389,8 +385,8 @@ public class LogJiraTimeDialog extends MessageDialog {
     }
 
     private String getTimeSpentTooltipText() {
-        final String timeSpendTooltip = NLS.bind(Messages.WorkLogPart_Time_Spent_Explanation_Tooltip,
-                JiraUtil.getWorkDaysPerWeek(repository), JiraUtil.getWorkHoursPerDay(repository));
+        final String timeSpendTooltip = NLS.bind(Messages.WorkLogPart_Time_Spent_Explanation_Tooltip, JiraUtil.getWorkDaysPerWeek(repository),
+                JiraUtil.getWorkHoursPerDay(repository));
 
         return timeSpendTooltip;
     }

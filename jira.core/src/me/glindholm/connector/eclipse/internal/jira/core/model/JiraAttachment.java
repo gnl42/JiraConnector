@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.net.URI;
 import java.time.Instant;
 
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
+
 /**
  * @author Steffen Pingel
  */
@@ -28,7 +30,7 @@ public class JiraAttachment implements Serializable {
 
     private long size;
 
-    private String author;
+    private BasicUser author;
 
     private Instant created;
 
@@ -39,7 +41,7 @@ public class JiraAttachment implements Serializable {
     public JiraAttachment() {
     }
 
-    public JiraAttachment(final String id, final String name, final long size, final String author, final Instant created) {
+    public JiraAttachment(final String id, final String name, final long size, final BasicUser author, final Instant created) {
         this.id = id;
         this.name = name;
         this.size = size;
@@ -71,11 +73,11 @@ public class JiraAttachment implements Serializable {
         this.size = size;
     }
 
-    public String getAuthor() {
+    public BasicUser getAuthor() {
         return author;
     }
 
-    public void setAuthor(final String author) {
+    public void setAuthor(final BasicUser author) {
         this.author = author;
     }
 
@@ -98,14 +100,6 @@ public class JiraAttachment implements Serializable {
 
     public void setContent(final URI content) {
         this.content = content;
-    }
-
-    public void setAuthorDisplayName(final String authorDisplayName) {
-        this.authorDisplayName = authorDisplayName;
-    }
-
-    public String getAuthorDisplayName() {
-        return authorDisplayName;
     }
 
 }

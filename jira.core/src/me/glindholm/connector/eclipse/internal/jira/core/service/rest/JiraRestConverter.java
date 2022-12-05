@@ -202,13 +202,12 @@ public class JiraRestConverter {
 
         final BasicUser assignee = rawIssue.getAssignee();
         if (assignee != null) {
-            issue.setAssignee(assignee.getName());
-            issue.setAssigneeName(assignee.getDisplayName());
+            issue.setAssignee(assignee);
         }
 
-        if (rawIssue.getReporter() != null) {
-            issue.setReporter(rawIssue.getReporter().getName());
-            issue.setReporterName(rawIssue.getReporter().getDisplayName());
+        final BasicUser reprter = rawIssue.getReporter();
+        if (reprter != null) {
+            issue.setReporter(reprter);
         }
 
         issue.setResolution(rawIssue.getResolution() == null ? null : cache.getResolutionById(rawIssue.getResolution().getId().toString()));
@@ -588,9 +587,8 @@ public class JiraRestConverter {
     private static JiraWorkLog convert(final Worklog worklog) {
         final JiraWorkLog outWorklog = new JiraWorkLog();
 
-        if (worklog.getAuthor() != null) {
-            outWorklog.setAuthor(worklog.getAuthor().getDisplayName());
-        }
+        outWorklog.setAuthor(worklog.getAuthor());
+
         outWorklog.setComment(worklog.getComment());
         outWorklog.setCreated(worklog.getCreationDate().toInstant());
         // outWorklog.setGroupLevel(worklog.get)
@@ -599,9 +597,9 @@ public class JiraRestConverter {
         // outWorklog.setRoleLevelId(worklog.get);
         outWorklog.setStartDate(worklog.getStartDate().toInstant());
         outWorklog.setTimeSpent(worklog.getMinutesSpent() * 60);
-        if (worklog.getUpdateAuthor() != null) {
-            outWorklog.setUpdateAuthor(worklog.getUpdateAuthor().getDisplayName());
-        }
+
+        outWorklog.setUpdateAuthor(worklog.getUpdateAuthor());
+
         outWorklog.setUpdated(worklog.getUpdateDate().toInstant());
 
         return outWorklog;
@@ -625,17 +623,17 @@ public class JiraRestConverter {
 
         final BasicUser author = attachment.getAuthor();
 
-        if (author != null && author.getName() != null) {
-            outAttachment.setAuthor(author.getName());
+        if (author != null) {
+            outAttachment.setAuthor(author);
         } else {
-            outAttachment.setAuthor("unknown"); //$NON-NLS-1$
+            outAttachment.setAuthor(BasicUser.UNASSIGNED_USER); // $NON-NLS-1$
         }
 
-        if (author != null && author.getDisplayName() != null) {
-            outAttachment.setAuthorDisplayName(author.getDisplayName());
-        } else {
-            outAttachment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
-        }
+//        if (author != null && author.getDisplayName() != null) {
+//            outAttachment.setAuthorDisplayName(author.getDisplayName());
+//        } else {
+//            outAttachment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
+//        }
 
         outAttachment.setCreated(attachment.getCreationDate().toInstant());
         outAttachment.setName(attachment.getFilename());
@@ -660,16 +658,10 @@ public class JiraRestConverter {
 
         final BasicUser author = comment.getAuthor();
 
-        if (author != null && author.getName() != null) {
-            outComment.setAuthor(author.getName());
+        if (author != null) {
+            outComment.setAuthor(author);
         } else {
-            outComment.setAuthor("unknown"); //$NON-NLS-1$
-        }
-
-        if (author != null && author.getDisplayName() != null) {
-            outComment.setAuthorDisplayName(author.getDisplayName());
-        } else {
-            outComment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
+            outComment.setAuthor(BasicUser.UNASSIGNED_USER); // $NON-NLS-1$
         }
 
         outComment.setComment(comment.getBody());

@@ -203,7 +203,7 @@ public class JiraProject implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if ((obj == null) || !(obj instanceof JiraProject)) {
+        if (obj == null || !(obj instanceof JiraProject)) {
             return false;
         }
 
@@ -269,8 +269,9 @@ public class JiraProject implements Serializable {
         }
     }
 
-    public void setAssignables(final List<User> assignables) {
+    public Map<String, BasicUser> setAssignables(final List<User> assignables) {
         this.assignables = assignables.stream().collect(Collectors.toConcurrentMap(BasicUser::getId, Function.identity()));
+        return this.assignables;
     }
 
 }

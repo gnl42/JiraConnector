@@ -31,6 +31,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMetaData;
 import me.glindholm.connector.eclipse.internal.jira.core.TaskSchema.TaskField;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog.AdjustEstimateMethod;
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
 
 /**
  * @author Steffen Pingel
@@ -142,8 +143,7 @@ public class WorkLogConverter {
                 final TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
                 if (TaskAttribute.TYPE_DATE.equals(taskField.getType())) {
                     @Nullable
-                    final
-                    Date date = mapper.getDateValue(attribute);
+                    final Date date = mapper.getDateValue(attribute);
                     if (date != null) {
                         value = date.toInstant();
                     }
@@ -168,6 +168,8 @@ public class WorkLogConverter {
                     if (value == null) {
                         value = false;
                     }
+                } else if (TaskAttribute.TYPE_PERSON.equals(taskField.getType())) {
+                    value = ((ITaskAttributeMapper2) attribute.getTaskData().getAttributeMapper()).getRepositoryUser(attribute);
                 } else {
                     value = attribute.getValue();
                 }
@@ -198,6 +200,10 @@ public class WorkLogConverter {
                     mapper.setIntegerValue(attribute, (Integer) value);
                 } else if (TaskAttribute.TYPE_LONG.equals(taskField.getType())) {
                     mapper.setLongValue(attribute, (Long) value);
+                } else if (TaskAttribute.TYPE_PERSON.equals(taskField.getType())) {
+                    final BasicUser user = (BasicUser) value;
+                    final ITaskAttributeMapper2 jiraMapper = (ITaskAttributeMapper2) attribute.getTaskData().getAttributeMapper();
+                    jiraMapper.setRepositoryUser(attribute, user);
                 } else {
                     attribute.setValue(value.toString());
                 }
@@ -218,7 +224,8 @@ public class WorkLogConverter {
         metaData.setReadOnly(field.isReadOnly());
         metaData.setKind(field.getKind());
         // options
-        final Map<String, String> options = ((ITaskAttributeMapper2) parent.getTaskData().getAttributeMapper()).getRepositoryOptions(attribute);
+        final ITaskAttributeMapper2 mapper2 = (ITaskAttributeMapper2) parent.getTaskData().getAttributeMapper();
+        final Map<String, String> options = mapper2.getRepositoryOptions(attribute);
         if (options != null) {
             for (final Entry<String, String> option : options.entrySet()) {
                 attribute.putOption(option.getKey(), option.getValue());

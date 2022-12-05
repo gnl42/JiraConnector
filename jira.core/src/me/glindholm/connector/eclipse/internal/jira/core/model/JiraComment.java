@@ -15,6 +15,8 @@ package me.glindholm.connector.eclipse.internal.jira.core.model;
 import java.io.Serializable;
 import java.time.Instant;
 
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
+
 /**
  * @author Brock Janiczak
  */
@@ -26,15 +28,13 @@ public final class JiraComment implements Serializable {
 
     private String comment;
 
-    private String author;
+    private BasicUser author;
 
     private Instant created;
 
     private boolean markupDetected;
 
-    private String authorDisplayName;
-
-    public JiraComment(final String comment, final String author, final String roleLvel, final Instant created) {
+    public JiraComment(final String comment, final BasicUser author, final String roleLvel, final Instant created) {
         this.comment = comment;
         this.author = author;
         roleLevel = roleLvel;
@@ -44,7 +44,7 @@ public final class JiraComment implements Serializable {
     public JiraComment() {
     }
 
-    public String getAuthor() {
+    public BasicUser getAuthor() {
         return author;
     }
 
@@ -64,7 +64,7 @@ public final class JiraComment implements Serializable {
         return markupDetected;
     }
 
-    public void setAuthor(final String author) {
+    public void setAuthor(final BasicUser author) {
         this.author = author;
     }
 
@@ -87,13 +87,5 @@ public final class JiraComment implements Serializable {
     @Override
     public String toString() {
         return author + ": " + comment; //$NON-NLS-1$
-    }
-
-    public void setAuthorDisplayName(final String displayName) {
-        authorDisplayName = displayName;
-    }
-
-    public String getAuthorDisplayName() {
-        return authorDisplayName;
     }
 }

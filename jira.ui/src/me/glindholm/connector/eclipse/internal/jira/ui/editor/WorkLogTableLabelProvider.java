@@ -38,7 +38,7 @@ public class WorkLogTableLabelProvider extends ColumnLabelProvider {
         final JiraWorkLog attachment = (JiraWorkLog) element;
         switch (columnIndex) {
         case 0:
-            return attachment.getAuthor();
+            return attachment.getAuthor().getExternalId();
         case 1:
             // XXX use EditorUtil
             if (attachment.getStartDate() != null) {

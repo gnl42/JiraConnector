@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
+
 /**
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
@@ -49,7 +51,7 @@ public class JiraWorkLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String author;
+    private BasicUser author;
 
     private String comment;
 
@@ -65,7 +67,7 @@ public class JiraWorkLog implements Serializable {
 
     private long timeSpent;
 
-    private String updateAuthor;
+    private BasicUser updateAuthor;
 
     private Instant updated;
 
@@ -80,7 +82,7 @@ public class JiraWorkLog implements Serializable {
         return adjustEstimate;
     }
 
-    public String getAuthor() {
+    public BasicUser getAuthor() {
         return author;
     }
 
@@ -115,7 +117,7 @@ public class JiraWorkLog implements Serializable {
         return timeSpent;
     }
 
-    public String getUpdateAuthor() {
+    public BasicUser getUpdateAuthor() {
         return updateAuthor;
     }
 
@@ -127,8 +129,8 @@ public class JiraWorkLog implements Serializable {
         adjustEstimate = method;
     }
 
-    public void setAuthor(final String author) {
-        this.author = author;
+    public void setAuthor(final BasicUser basicUser) {
+        author = basicUser;
     }
 
     public void setComment(final String comment) {
@@ -156,15 +158,14 @@ public class JiraWorkLog implements Serializable {
     }
 
     /**
-     * @param timeSpent
-     *            seconds
+     * @param timeSpent seconds
      */
     public void setTimeSpent(final long timeSpent) {
         this.timeSpent = timeSpent;
     }
 
-    public void setUpdateAuthor(final String updateAuthor) {
-        this.updateAuthor = updateAuthor;
+    public void setUpdateAuthor(final BasicUser basicUser) {
+        updateAuthor = basicUser;
     }
 
     public void setUpdated(final Instant updated) {
@@ -182,7 +183,7 @@ public class JiraWorkLog implements Serializable {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final JiraWorkLog other = (JiraWorkLog) obj;

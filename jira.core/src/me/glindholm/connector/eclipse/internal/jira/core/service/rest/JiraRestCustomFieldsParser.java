@@ -42,7 +42,7 @@ public class JiraRestCustomFieldsParser {
     public static @Nonnull List<String> parseMultiUserPicker(final IssueField field) throws JSONException, URISyntaxException {
         final List<String> users = new ArrayList<>();
         for (final User user : usersParser.parse((JSONArray) field.getValue())) {
-            users.add(user.getName());
+            users.add(user.getExternalId());
         }
 
         return users;
@@ -50,7 +50,7 @@ public class JiraRestCustomFieldsParser {
 
     public static String parseUserPicker(final IssueField field) throws JSONException, URISyntaxException {
         final User user = userParser.parse((JSONObject) field.getValue());
-        return user.getName();
+        return user.getExternalId();
     }
 
     public static String parseSelect(final IssueField field) throws JSONException, URISyntaxException {

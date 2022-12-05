@@ -11,6 +11,8 @@
 
 package me.glindholm.connector.eclipse.internal.jira.core;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -20,16 +22,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.commons.workbench.WorkbenchUtil;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskAttributeMapper;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.PlatformUI;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssueType;
@@ -38,14 +36,22 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
+import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
+import me.glindholm.jira.rest.client.api.domain.User;
 
 /**
  * @author Steffen Pingel
  */
 public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAttributeMapper2 {
 
+    private static final String PERSON_DISPLAY_NAME = "displayName";
+    private static final String PERSON_SELF = "self";
+    private static final String PERSON_ACCOUNT_ID = "accountId";
+    private static final String PERSON_NAME = "name";
+    private static final String PERSON_EXTERNAL_ID = "externalId";
+    private static final String PERSON_EMAIL = "email";
     private final JiraClient client;
 
     public JiraAttributeMapper(final TaskRepository taskRepository, final JiraClient client) {
@@ -114,32 +120,114 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
     }
 
     @Override
+    public BasicUser getRepositoryUser(final TaskAttribute attribute) {
+        final String id = attribute.getValue();
+        URI self = null;
+        final TaskAttribute attrValue = attribute.getAttribute(PERSON_SELF);
+        if (attrValue != null && attrValue.getValue() != null) {
+            try {
+                self = new URI(attrValue.getValue());
+            } catch (final URISyntaxException e) {
+            }
+        }
+        final BasicUser user = new BasicUser(self, getNullableValue(attribute.getAttribute(PERSON_NAME)),
+                getNullableValue(attribute.getAttribute(PERSON_DISPLAY_NAME)), getNullableValue(attribute.getAttribute(PERSON_ACCOUNT_ID)),
+                getNullableValue(attribute.getAttribute(PERSON_EMAIL)), true);
+        return user;
+    }
+
+    @Override
+    public IRepositoryPerson createPerson(final BasicUser user) {
+        final IRepositoryPerson person = getTaskRepository().createPerson(user.getExternalId());
+        person.setName(user.getDisplayName());
+        person.setAttribute(PERSON_EMAIL, user.getEmailAddress());
+        person.setAttribute(PERSON_ACCOUNT_ID, user.getAccountId());
+        person.setAttribute(PERSON_NAME, user.getName());
+
+        return person;
+    }
+
+    private static String getNullableValue(@Nullable final TaskAttribute attribute) {
+        if (attribute != null) {
+            return attribute.getValue();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setRepositoryUser(@NonNull final TaskAttribute taskAttribute, @NonNull final BasicUser user) {
+        setValue(taskAttribute, user.getId());
+
+        setValue(taskAttribute, TaskAttribute.PERSON_NAME, user.getDisplayName());
+        setValue(taskAttribute, PERSON_DISPLAY_NAME, user.getDisplayName());
+        setValue(taskAttribute, PERSON_EMAIL, user.getEmailAddress());
+        setValue(taskAttribute, PERSON_NAME, user.getName());
+        setValue(taskAttribute, PERSON_ACCOUNT_ID, user.getAccountId());
+        setValue(taskAttribute, PERSON_SELF, user.getSelf());
+    }
+
+    public void setValue(@NonNull final TaskAttribute parent, @NonNull final String attributeName, @Nullable final String value) {
+        if (value != null) {
+            parent.createAttribute(attributeName).setValue(value);
+        }
+    }
+
+    public void setValue(@NonNull final TaskAttribute parent, @NonNull final String attributeName, @Nullable final URI value) {
+        if (value != null) {
+            parent.createAttribute(attributeName).setValue(value.toString());
+        }
+    }
+
+    @Override
+    public IRepositoryPerson getRepositoryPerson(@NonNull final TaskAttribute taskAttribute) {
+        return super.getRepositoryPerson(taskAttribute);
+    }
+
+    @Override
+    public void setRepositoryPerson(@NonNull final TaskAttribute taskAttribute, @NonNull final IRepositoryPerson person) {
+        super.setRepositoryPerson(taskAttribute, person);
+    }
+
+    @Override
     public Map<String, String> getOptions(final TaskAttribute attribute) {
         Map<String, String> options = null;
         if (client.getCache().hasDetails()) {
             if (JiraAttribute.USER_ASSIGNED.id().equals(attribute.getId())) {
-                final TaskAttribute projectAttribute = attribute.getTaskData().getRoot().getMappedAttribute(JiraAttribute.PROJECT.id());
-                final JiraProject project = client.getCache().getProjectById(projectAttribute.getValue());
-                final Map<String, BasicUser> users = project.getAssignables();
-                if (users == null) {
-                    final String msg = NLS.bind("Project with key {0} needs refreshing. Please refresh repository configuration.", //$NON-NLS-1$
-                            project.getKey());
-                    PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            MessageDialog.openError(WorkbenchUtil.getShell(), "JiraConnector JIRA Connector", msg);
-                            StatusHandler.log(new Status(IStatus.ERROR, "me.glindholm.connector.eclipse.jira.ui", msg));
-                        }
-                    });
-                    return Collections.EMPTY_MAP;
-                } else {
+                final JiraProject project = findProject(attribute);
+
+                Map<String, BasicUser> users = project.getAssignables();
+                if (users == null || users.isEmpty()) {
+                    try {
+                        users = project.setAssignables(client.getProjectAssignables(project.getKey()));
+                    } catch (final JiraException e) {
+                        return Collections.EMPTY_MAP;
+                    }
+                }
+//                    final String msg = NLS.bind("Project with key {0} needs refreshing. Please refresh repository configuration.", //$NON-NLS-1$
+//                            project.getKey());
+//                    PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            MessageDialog.openError(WorkbenchUtil.getShell(), "JiraConnector JIRA Connector", msg);
+//                            StatusHandler.log(new Status(IStatus.ERROR, "me.glindholm.connector.eclipse.jira.ui", msg));
+//                        }
+//                    });
+//                    return Collections.EMPTY_MAP;
+
+                try {
+                    final List<User> currentUsers = client.getProjectAssignables(project.getKey());
                     options = new LinkedHashMap<>();
+                    project.addAssignables(currentUsers);
                     for (final BasicUser user : users.values()) {
-                        options.put(user.getId(), user.getDisplayName());
+                        options.put(user.getExternalId(), "");
                     }
 
                     return options;
+                } catch (final JiraException e) {
+                    return Collections.EMPTY_MAP;
                 }
+
             } else {
                 options = getRepositoryOptions(attribute);
             }
@@ -147,6 +235,23 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
         }
         return options != null ? options : super.getOptions(attribute);
 
+    }
+
+    private JiraProject findProject(final TaskAttribute attribute) {
+        final TaskAttribute projectAttribute = attribute.getTaskData().getRoot().getMappedAttribute(JiraAttribute.PROJECT.id());
+        final JiraProject project = client.getCache().getProjectById(projectAttribute.getValue());
+        return project;
+    }
+
+    @Override
+    public BasicUser lookupExternalId(final TaskAttribute attribute, final String externalId) {
+        final JiraProject project = findProject(attribute);
+        for (final BasicUser user : project.getAssignables().values()) {
+            if (user.getExternalId().equals(externalId)) {
+                return user;
+            }
+        }
+        return BasicUser.UNASSIGNED_USER;
     }
 
     @Override
@@ -213,6 +318,11 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
             }
         }
         return null;
+    }
+
+    @Override
+    public JiraClient getClient() {
+        return client;
     }
 
 }
