@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Automatic-Module-Name: %Bundle-Name
 Bundle-SymbolicName: me.glindholm.connector.eclipse.jira.core;singleton:=true
-Bundle-Version: 4.1.9.qualifier
+Bundle-Version: 4.2.0.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.apache.commons.io,
@@ -18,7 +18,7 @@ Require-Bundle: org.apache.commons.io,
  org.eclipse.swt,
  org.eclipse.mylyn.commons.workbench,
  org.eclipse.jface,
- org.eclipse.jdt.annotation;bundle-version="2.2.700"
+ org.eclipse.jdt.annotation
 Bundle-ActivationPolicy: lazy
 Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core;x-friends:="me.glindholm.connector.eclipse.jira.ui",
