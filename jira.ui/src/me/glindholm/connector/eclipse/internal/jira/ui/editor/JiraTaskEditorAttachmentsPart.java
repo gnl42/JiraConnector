@@ -12,8 +12,6 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.editor;
 
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -41,6 +39,7 @@ import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.commons.ui.CommonImages;
 import org.eclipse.mylyn.commons.workbench.forms.CommonFormUtil;
 import org.eclipse.mylyn.internal.tasks.core.TaskAttachment;
+import org.eclipse.mylyn.internal.tasks.ui.editors.AttachmentSizeFormatter;
 import org.eclipse.mylyn.internal.tasks.ui.editors.EditorUtil;
 import org.eclipse.mylyn.internal.tasks.ui.editors.Messages;
 import org.eclipse.mylyn.internal.tasks.ui.util.TasksUiMenus;
@@ -79,9 +78,11 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
             /* "Type", */Messages.TaskEditorAttachmentPart_Size, Messages.TaskEditorAttachmentPart_Creator, Messages.TaskEditorAttachmentPart_Created };
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ssZ").withZone(ZoneId.systemDefault());
 
-    private final int[] attachmentsColumnWidths = { 130, 150, /* 100, */70, 100, 250 }; // Not used
+    private final AttachmentSizeFormatter sizeFormatter = AttachmentSizeFormatter.getInstance();
 
-    private final int[] attachmentsColumnWidthsNoDescription = { 270, 0, 100, 180, 250 };
+    private final int[] attachmentsColumnWidths = { 130, 150, 70, 100, 250 }; // Not used
+
+    private final int[] attachmentsColumnWidthsNoDescription = { 270, 0, 100, 400, 300 };
 
     private List<TaskAttribute> attachments;
 
@@ -171,10 +172,11 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
                     text = element.getFileName();
                     break;
                 case 1:
-                    text = humanReadableByteCountSI(element.getLength());
+                    final long length = element.getLength();
+                    text = sizeFormatter.format(length);
                     break;
                 case 2:
-                    text = element.getAuthor().getName();
+                    text = element.getAuthor().getPersonId();
                     break;
                 case 3:
                     text = dateFormat.format(element.getCreationDate().toInstant().atOffset(ZoneOffset.UTC));
@@ -210,26 +212,6 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
         getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, true);
         final Menu menu = menuManager.createContextMenu(attachmentsTable);
         attachmentsTable.setMenu(menu);
-    }
-
-    /**
-     * @author Andreas Lundblad
-     * @see <a href=
-     *      "https://programming.guide/java/formatting-byte-size-to-human-readable-format.html">Formatting
-     *      byte size to human readable format</a>
-     * @param bytes
-     * @return
-     */
-    private static String humanReadableByteCountSI(long bytes) {
-        if (-1000 < bytes && bytes < 1000) {
-            return bytes + " B";
-        }
-        final CharacterIterator ci = new StringCharacterIterator("kMGTPE");
-        while (bytes <= -999_950 || bytes >= 999_950) {
-            bytes /= 1000;
-            ci.next();
-        }
-        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
     }
 
     private void createButtons(final Composite attachmentsComposite, final FormToolkit toolkit) {
