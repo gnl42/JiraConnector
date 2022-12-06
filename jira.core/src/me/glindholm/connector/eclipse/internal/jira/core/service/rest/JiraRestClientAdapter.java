@@ -743,7 +743,7 @@ public class JiraRestClientAdapter {
             final String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getId() : ""; //$NON-NLS-1$
 
             if (!assigne.equals(prevAssigne)) {
-                updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, assigne)));
+                updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(cache.getServerInfo().getAccountTag(), assigne)));
             }
         }
 

@@ -13,7 +13,6 @@
 package me.glindholm.connector.eclipse.internal.jira.core.service;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
@@ -29,7 +28,6 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerVersion;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraStatus;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraUser;
-import me.glindholm.jira.rest.client.api.domain.User;
 
 /**
  * @author Steffen Pingel
@@ -134,10 +132,10 @@ public class JiraClientCache {
         return data.projectRoles;
     }
 
-    public List<User> assignable(final String issueKey) {
-        jiraClient.assignable(issueKey);
-    }
-
+//    public List<User> assignable(final String issueKey) {
+//        jiraClient.assignable(issueKey);
+//    }
+//
     private void initializePriorities(final JiraClientData data, IProgressMonitor monitor) throws JiraException {
         monitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_priorities, 1);
 
