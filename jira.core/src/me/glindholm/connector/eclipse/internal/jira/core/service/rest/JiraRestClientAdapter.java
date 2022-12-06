@@ -893,7 +893,7 @@ public class JiraRestClientAdapter {
 
     public List<User> getProjectAssignables(final String projectKey) throws JiraException {
         try {
-            return restClient.getUserClient().findAssignableUsersForProject(projectKey, null, null, true, false).get();
+            return restClient.getUserClient().findAssignableUsersForProject(projectKey, null, 1000, true, false).get();
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
