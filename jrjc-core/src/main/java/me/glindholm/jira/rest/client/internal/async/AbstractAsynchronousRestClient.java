@@ -27,13 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.impl.EnglishReasonPhraseCatalog;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.api.DefaultResponseTransformation;
 import com.atlassian.httpclient.api.EntityBuilder;

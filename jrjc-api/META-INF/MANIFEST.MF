@@ -7,13 +7,11 @@ Bundle-Version: 6.0.5.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: .,
  target/lib/atlassian-httpclient-api.jar,
- target/lib/atlassian-util-concurrent.jar,
- target/lib/jsr305.jar
+ target/lib/atlassian-util-concurrent.jar
 Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
 Export-Package: com.atlassian.httpclient.api,
  io.atlassian.util.concurrent,
- javax.annotation,
  me.glindholm.jira.rest.client.api,
  me.glindholm.jira.rest.client.api.domain,
  me.glindholm.jira.rest.client.api.domain.input,

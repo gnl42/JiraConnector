@@ -2,7 +2,7 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Represents a value that has changed in object related to Audit Record.
@@ -52,9 +52,7 @@ public class AuditChangedValue {
     public boolean equals(final Object o) {
         if (o instanceof AuditChangedValue) {
             final AuditChangedValue that = (AuditChangedValue) o;
-            return Objects.equals(this.fieldName, that.fieldName)
-                    && Objects.equals(this.changedFrom, that.changedFrom)
-                    && Objects.equals(this.changedTo, that.changedTo);
+            return Objects.equals(fieldName, that.fieldName) && Objects.equals(changedFrom, that.changedFrom) && Objects.equals(changedTo, that.changedTo);
         }
         return false;
     }

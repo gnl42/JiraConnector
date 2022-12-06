@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.ExpandableResource;
 

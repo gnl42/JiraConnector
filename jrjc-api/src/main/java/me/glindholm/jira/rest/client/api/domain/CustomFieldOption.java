@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Represents Custom Field Option

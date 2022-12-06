@@ -21,7 +21,7 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 
@@ -44,7 +44,8 @@ public class Attachment implements Serializable, AddressableEntity {
     @Nullable
     private final URI thumbnailUri;
 
-    public Attachment(URI self, String filename, BasicUser author, OffsetDateTime creationDate, int size, String mimeType, URI contentUri, URI thumbnailUri) {
+    public Attachment(final URI self, final String filename, final BasicUser author, final OffsetDateTime creationDate, final int size, final String mimeType,
+            final URI contentUri, final URI thumbnailUri) {
         this.self = self;
         this.filename = filename;
         this.author = author;
@@ -100,17 +101,12 @@ public class Attachment implements Serializable, AddressableEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof Attachment) {
-            Attachment that = (Attachment) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.filename, that.filename)
-                    && Objects.equals(this.author, that.author)
-                    && this.creationDate.isEqual(that.creationDate)
-                    && Objects.equals(this.size, that.size)
-                    && Objects.equals(this.mimeType, that.mimeType)
-                    && Objects.equals(this.contentUri, that.contentUri)
-                    && Objects.equals(this.thumbnailUri, that.thumbnailUri);
+            final Attachment that = (Attachment) obj;
+            return Objects.equals(self, that.self) && Objects.equals(filename, that.filename) && Objects.equals(author, that.author)
+                    && creationDate.isEqual(that.creationDate) && Objects.equals(size, that.size) && Objects.equals(mimeType, that.mimeType)
+                    && Objects.equals(contentUri, that.contentUri) && Objects.equals(thumbnailUri, that.thumbnailUri);
         }
         return false;
     }

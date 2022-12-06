@@ -19,9 +19,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.apache.hc.core5.net.URIBuilder;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.api.HttpClient;
 
@@ -60,9 +59,9 @@ public class AsynchronousGroupRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<List<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
-            throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(GROUPS_URI_PREFIX).appendPath(PICKER_URI_PREFIX);
+    public Promise<List<Group>> findGroups(@Nullable final String query, @Nullable final String exclude, @Nullable final Integer maxResults,
+            @Nullable final String userName) throws URISyntaxException {
+        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(GROUPS_URI_PREFIX).appendPath(PICKER_URI_PREFIX);
 
         addOptionalQueryParam(uriBuilder, QUERY_ATTRIBUTE, query);
         addOptionalQueryParam(uriBuilder, EXCLUDE_ATTRIBUTE, exclude);

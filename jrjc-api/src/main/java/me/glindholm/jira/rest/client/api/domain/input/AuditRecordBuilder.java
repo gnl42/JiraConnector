@@ -2,8 +2,8 @@ package me.glindholm.jira.rest.client.api.domain.input;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.domain.AuditAssociatedItem;
 import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;
@@ -32,7 +32,7 @@ public class AuditRecordBuilder {
     }
 
     public AuditRecordBuilder setObject(@Nullable final String id, final String name, final String typeName) {
-        this.objectItem = new AuditAssociatedItem(id, name, typeName, null, null);
+        objectItem = new AuditAssociatedItem(id, name, typeName, null, null);
         return this;
     }
 
@@ -46,7 +46,7 @@ public class AuditRecordBuilder {
         return this;
     }
 
-    @Nonnull
+    @NonNull
     public AuditRecordInput build() {
         return new AuditRecordInput(category, summary, objectItem, associatedItems, values);
     }

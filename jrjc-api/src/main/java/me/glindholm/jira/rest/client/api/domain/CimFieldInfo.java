@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import me.glindholm.jira.rest.client.api.IdentifiableEntity;

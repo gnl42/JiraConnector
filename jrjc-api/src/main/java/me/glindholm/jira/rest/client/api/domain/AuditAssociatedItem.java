@@ -2,12 +2,12 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * Item that can be associated with Audit Record.
- * Represents additional information about item related to record like user, group or schema.
+ * Item that can be associated with Audit Record. Represents additional
+ * information about item related to record like user, group or schema.
  *
  * @since v2.0
  */
@@ -44,12 +44,12 @@ public class AuditAssociatedItem {
         return id;
     }
 
-    @Nonnull
+    @NonNull
     public String getName() {
         return name;
     }
 
-    @Nonnull
+    @NonNull
     public String getTypeName() {
         return typeName;
     }
@@ -72,11 +72,8 @@ public class AuditAssociatedItem {
     public boolean equals(final Object o) {
         if (o instanceof AuditAssociatedItem) {
             final AuditAssociatedItem that = (AuditAssociatedItem) o;
-            return Objects.equals(this.id, that.id)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.parentId, that.parentId)
-                    && Objects.equals(this.parentName, that.parentName)
-                    && Objects.equals(this.typeName, that.typeName);
+            return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(parentId, that.parentId)
+                    && Objects.equals(parentName, that.parentName) && Objects.equals(typeName, that.typeName);
         }
         return false;
     }

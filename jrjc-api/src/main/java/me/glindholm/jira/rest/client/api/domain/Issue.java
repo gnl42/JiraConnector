@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.ExpandableResource;
 import me.glindholm.jira.rest.client.api.IssueRestClient.Expandos;

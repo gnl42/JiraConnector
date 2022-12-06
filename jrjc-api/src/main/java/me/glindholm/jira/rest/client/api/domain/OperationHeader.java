@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Represents operations header

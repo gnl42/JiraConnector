@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.api;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.Component;

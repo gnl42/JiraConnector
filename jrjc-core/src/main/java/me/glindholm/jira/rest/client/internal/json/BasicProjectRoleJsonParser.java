@@ -19,10 +19,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.annotation.Nullable;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 
@@ -33,20 +32,19 @@ public class BasicProjectRoleJsonParser implements JsonObjectParser<List<BasicPr
         if (json == null) {
             return List.of();
         } else {
-            Iterable<String> it = () -> JsonParseUtil.getStringKeys(json);
+            final Iterable<String> it = () -> JsonParseUtil.getStringKeys(json);
             try {
-                return StreamSupport.stream(it.spliterator(), false).map(key -> extracted(json, key))
-                        .collect(Collectors.toUnmodifiableList());
-            } catch (Exception e) {
+                return StreamSupport.stream(it.spliterator(), false).map(key -> extracted(json, key)).collect(Collectors.toUnmodifiableList());
+            } catch (final Exception e) {
                 throw new JSONException(e);
             }
         }
     }
 
-    private static BasicProjectRole extracted(final JSONObject json, String key) throws RuntimeException {
+    private static BasicProjectRole extracted(final JSONObject json, final String key) throws RuntimeException {
         try {
             return new BasicProjectRole(JsonParseUtil.parseURI(json.getString(key)), key);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             throw new RuntimeException(e);
         }
     }

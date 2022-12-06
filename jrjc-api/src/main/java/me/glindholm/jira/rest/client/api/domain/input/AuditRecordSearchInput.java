@@ -2,7 +2,7 @@ package me.glindholm.jira.rest.client.api.domain.input;
 
 import java.time.OffsetDateTime;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Input data for searching audit records

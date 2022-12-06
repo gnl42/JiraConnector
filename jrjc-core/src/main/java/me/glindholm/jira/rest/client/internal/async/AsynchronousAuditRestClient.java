@@ -3,9 +3,8 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.annotation.Nonnull;
-
 import org.apache.hc.core5.net.URIBuilder;
+import org.eclipse.jdt.annotation.NonNull;
 
 import com.atlassian.httpclient.api.HttpClient;
 
@@ -17,6 +16,7 @@ import me.glindholm.jira.rest.client.api.domain.input.AuditRecordSearchInput;
 import me.glindholm.jira.rest.client.internal.json.AuditRecordsJsonParser;
 import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
 import me.glindholm.jira.rest.client.internal.json.gen.AuditRecordInputJsonGenerator;
+
 /**
  * @since v2.0
  */
@@ -32,8 +32,7 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public Promise<AuditRecordsData> getAuditRecords(final AuditRecordSearchInput input) throws URISyntaxException {
-        return getAndParse(createSearchPathFromInput(
-                input == null ? new AuditRecordSearchInput(null, null, null, null, null) : input), auditRecordsParser);
+        return getAndParse(createSearchPathFromInput(input == null ? new AuditRecordSearchInput(null, null, null, null, null) : input), auditRecordsParser);
     }
 
     protected URIBuilder createPathBuilder() {
@@ -43,7 +42,7 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public void addAuditRecord(@Nonnull final AuditRecordInput record) throws URISyntaxException {
+    public void addAuditRecord(@NonNull final AuditRecordInput record) throws URISyntaxException {
         post(createPathBuilder().build(), record, new AuditRecordInputJsonGenerator()).claim();
     }
 
@@ -73,7 +72,7 @@ public class AsynchronousAuditRestClient extends AbstractAsynchronousRestClient 
 
         try {
             return uriBuilder.build();
-        } catch (RuntimeException x) {
+        } catch (final RuntimeException x) {
             throw x;
         }
     }

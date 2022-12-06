@@ -28,7 +28,8 @@ Require-Bundle: jira-rest-java-client-api,
  org.apache.commons.codec,
  com.google.guava;bundle-version="30.1.0",
  org.slf4j.api,
- org.apache.commons.logging;bundle-version="1.2.0"
+ org.apache.commons.logging;bundle-version="1.2.0",
+ org.eclipse.jdt.annotation;bundle-version="2.2.700"
 Export-Package: com.atlassian.httpclient.api.factory,
  com.atlassian.sal.api.executor,
  io.atlassian.fugue,

@@ -20,20 +20,23 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.Worklog;
 
 /**
- * Builder class for WorklogInput. Allows to create new worklogInput instance by using convenient setters.
- * Especially useful are methods to set estimate adjustment options:
- * {@link WorklogInputBuilder#setAdjustEstimateAuto()}, {@link WorklogInputBuilder#setAdjustEstimateLeave()},
- * {@link WorklogInputBuilder#setAdjustEstimateManual(String)} and {@link WorklogInputBuilder#setAdjustEstimateNew(String)}.
+ * Builder class for WorklogInput. Allows to create new worklogInput instance by
+ * using convenient setters. Especially useful are methods to set estimate
+ * adjustment options: {@link WorklogInputBuilder#setAdjustEstimateAuto()},
+ * {@link WorklogInputBuilder#setAdjustEstimateLeave()},
+ * {@link WorklogInputBuilder#setAdjustEstimateManual(String)} and
+ * {@link WorklogInputBuilder#setAdjustEstimateNew(String)}.
  * <p>
  * If you want ot create new WorklogInput from existing Worklog entity then use
- * {@link WorklogInputBuilder#copyFromWorklog(me.glindholm.jira.rest.client.api.domain.Worklog)} method.
+ * {@link WorklogInputBuilder#copyFromWorklog(me.glindholm.jira.rest.client.api.domain.Worklog)}
+ * method.
  */
 public class WorklogInputBuilder {
     public static final String ESTIMATE_UNIT_MINUTES = "m";
@@ -48,28 +51,21 @@ public class WorklogInputBuilder {
     private WorklogInput.AdjustEstimate adjustEstimate = WorklogInput.AdjustEstimate.AUTO;
     private String adjustEstimateValue;
 
-    public WorklogInputBuilder(@Nonnull URI issueUri) {
+    public WorklogInputBuilder(@NonNull final URI issueUri) {
         Objects.requireNonNull(issueUri, "The issueUri cannot be null");
         this.issueUri = issueUri;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public WorklogInputBuilder copyFromWorklog(Worklog worklog) {
-        return this
-                .setSelf(worklog.getSelf())
-                .setIssueUri(worklog.getIssueUri())
-                .setAuthor(worklog.getAuthor())
-                .setUpdateAuthor(worklog.getUpdateAuthor())
-                .setComment(worklog.getComment())
-                .setStartDate(worklog.getStartDate())
-                .setMinutesSpent(worklog.getMinutesSpent())
+    public WorklogInputBuilder copyFromWorklog(final Worklog worklog) {
+        return setSelf(worklog.getSelf()).setIssueUri(worklog.getIssueUri()).setAuthor(worklog.getAuthor()).setUpdateAuthor(worklog.getUpdateAuthor())
+                .setComment(worklog.getComment()).setStartDate(worklog.getStartDate()).setMinutesSpent(worklog.getMinutesSpent())
                 .setVisibility(worklog.getVisibility());
     }
 
-
-    private WorklogInputBuilder setAdjustEstimate(WorklogInput.AdjustEstimate adjustEstimate, String estimateValue) {
+    private WorklogInputBuilder setAdjustEstimate(final WorklogInput.AdjustEstimate adjustEstimate, final String estimateValue) {
         this.adjustEstimate = adjustEstimate;
-        this.adjustEstimateValue = estimateValue;
+        adjustEstimateValue = estimateValue;
         return this;
     }
 
@@ -77,12 +73,13 @@ public class WorklogInputBuilder {
      * Sets AdjustEstimate to NEW - sets estimate to specified value.
      *
      * @param newEstimate new estimate value to set.<br>
-     *                    You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or Xm,
-     *                    to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br>
+     *                    You can specify a time unit after a time value 'X', such
+     *                    as Xw, Xd, Xh or Xm, to represent weeks (w), days (d),
+     *                    hours (h) and minutes (m), respectively.<br>
      *                    If you do not specify a time unit, minute will be assumed.
      * @return this worklog input builder object
      */
-    public WorklogInputBuilder setAdjustEstimateNew(String newEstimate) {
+    public WorklogInputBuilder setAdjustEstimateNew(final String newEstimate) {
         return setAdjustEstimate(WorklogInput.AdjustEstimate.NEW, newEstimate);
     }
 
@@ -92,7 +89,7 @@ public class WorklogInputBuilder {
      * @param newEstimateMinutes new estimate value to set, in minutes.
      * @return this worklog input builder object
      */
-    public WorklogInputBuilder setAdjustEstimateNew(int newEstimateMinutes) {
+    public WorklogInputBuilder setAdjustEstimateNew(final int newEstimateMinutes) {
         return setAdjustEstimate(WorklogInput.AdjustEstimate.NEW, newEstimateMinutes + ESTIMATE_UNIT_MINUTES);
     }
 
@@ -109,28 +106,32 @@ public class WorklogInputBuilder {
      * Sets AdjustEstimate to MANUAL - reduces remaining estimate by given value.
      *
      * @param reduceEstimateBy the amount to reduce the remaining estimate by<br>
-     *                         You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or Xm,
-     *                         to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br>
-     *                         If you do not specify a time unit, minute will be assumed.
+     *                         You can specify a time unit after a time value 'X',
+     *                         such as Xw, Xd, Xh or Xm, to represent weeks (w),
+     *                         days (d), hours (h) and minutes (m),
+     *                         respectively.<br>
+     *                         If you do not specify a time unit, minute will be
+     *                         assumed.
      * @return this worklog input builder object
      */
-    public WorklogInputBuilder setAdjustEstimateManual(String reduceEstimateBy) {
+    public WorklogInputBuilder setAdjustEstimateManual(final String reduceEstimateBy) {
         return setAdjustEstimate(WorklogInput.AdjustEstimate.MANUAL, reduceEstimateBy);
     }
 
     /**
      * Sets AdjustEstimate to MANUAL - reduces remaining estimate by given value.
      *
-     * @param reduceEstimateByMinutes the amount to reduce the remaining estimate by, in minutes.
+     * @param reduceEstimateByMinutes the amount to reduce the remaining estimate
+     *                                by, in minutes.
      * @return this worklog input builder object
      */
-    public WorklogInputBuilder setAdjustEstimateManual(int reduceEstimateByMinutes) {
+    public WorklogInputBuilder setAdjustEstimateManual(final int reduceEstimateByMinutes) {
         return setAdjustEstimate(WorklogInput.AdjustEstimate.MANUAL, reduceEstimateByMinutes + ESTIMATE_UNIT_MINUTES);
     }
 
     /**
-     * Sets AdjustEstimate to AUTO - will automatically adjust the value
-     * based on the minutes spend specified on the worklog input.
+     * Sets AdjustEstimate to AUTO - will automatically adjust the value based on
+     * the minutes spend specified on the worklog input.
      * <p>
      * This is the default option.
      *
@@ -141,42 +142,42 @@ public class WorklogInputBuilder {
         return setAdjustEstimate(WorklogInput.AdjustEstimate.AUTO, null);
     }
 
-    public WorklogInputBuilder setSelf(URI self) {
+    public WorklogInputBuilder setSelf(final URI self) {
         this.self = self;
         return this;
     }
 
-    public WorklogInputBuilder setIssueUri(URI issueUri) {
+    public WorklogInputBuilder setIssueUri(final URI issueUri) {
         this.issueUri = issueUri;
         return this;
     }
 
-    public WorklogInputBuilder setAuthor(BasicUser author) {
+    public WorklogInputBuilder setAuthor(final BasicUser author) {
         this.author = author;
         return this;
     }
 
-    public WorklogInputBuilder setUpdateAuthor(BasicUser updateAuthor) {
+    public WorklogInputBuilder setUpdateAuthor(final BasicUser updateAuthor) {
         this.updateAuthor = updateAuthor;
         return this;
     }
 
-    public WorklogInputBuilder setComment(String comment) {
+    public WorklogInputBuilder setComment(final String comment) {
         this.comment = comment;
         return this;
     }
 
-    public WorklogInputBuilder setStartDate(OffsetDateTime startDate) {
+    public WorklogInputBuilder setStartDate(final OffsetDateTime startDate) {
         this.startDate = startDate;
         return this;
     }
 
-    public WorklogInputBuilder setMinutesSpent(int minutesSpent) {
+    public WorklogInputBuilder setMinutesSpent(final int minutesSpent) {
         this.minutesSpent = minutesSpent;
         return this;
     }
 
-    public WorklogInputBuilder setVisibility(Visibility visibility) {
+    public WorklogInputBuilder setVisibility(final Visibility visibility) {
         this.visibility = visibility;
         return this;
     }

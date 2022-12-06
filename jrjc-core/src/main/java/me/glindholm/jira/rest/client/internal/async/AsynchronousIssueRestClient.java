@@ -33,14 +33,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.apache.hc.core5.net.URIBuilder;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.apache.httpcomponents.MultiPartEntityBuilder;
 import com.atlassian.httpclient.api.HttpClient;
@@ -142,14 +141,14 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<BulkOperationResult<BasicIssue>> createIssues(List<IssueInput> issues) throws URISyntaxException {
+    public Promise<BulkOperationResult<BasicIssue>> createIssues(final List<IssueInput> issues) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/bulk");
 
         return postAndParse(uriBuilder.build(), issues, new IssuesInputJsonGenerator(), new BasicIssuesJsonParser());
     }
 
     @Override
-    public Promise<List<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options) throws URISyntaxException {
+    public Promise<List<CimProject>> getCreateIssueMetadata(@Nullable final GetCreateIssueMetadataOptions options) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/createmeta");
 
         if (options != null) {
@@ -182,7 +181,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull final String projectIdOrKey, @Nullable final Long startAt,
+    public Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@NonNull final String projectIdOrKey, @Nullable final Long startAt,
             @Nullable final Integer maxResults) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/createmeta/" + projectIdOrKey + "/issuetypes");
         addPagingParameters(uriBuilder, startAt, maxResults);
@@ -191,7 +190,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@Nonnull final String projectIdOrKey, @Nonnull final String issueTypeId,
+    public Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@NonNull final String projectIdOrKey, @NonNull final String issueTypeId,
             @Nullable final Long startAt, @Nullable final Integer maxResults) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/createmeta/" + projectIdOrKey + "/issuetypes/" + issueTypeId);
         addPagingParameters(uriBuilder, startAt, maxResults);
@@ -208,14 +207,14 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     public Promise<Issue> getIssue(final String issueKey, final List<Expandos> expand) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(baseUri);
         final List<Expandos> expands = Stream.of(DEFAULT_EXPANDS, expand).collect(ArrayList::new, List::addAll, List::addAll);
-        //        Lists.concat(DEFAULT_EXPANDS, expand);
+        // Lists.concat(DEFAULT_EXPANDS, expand);
         uriBuilder.appendPath("issue").appendPath(issueKey).addParameter("expand",
                 StreamSupport.stream(expands.spliterator(), false).map(EXPANDO_TO_PARAM).collect(Collectors.joining(",")));
         return getAndParse(uriBuilder.build(), issueParser);
     }
 
     @Override
-    public Promise<Void> deleteIssue(String issueKey, boolean deleteSubtasks) throws URISyntaxException {
+    public Promise<Void> deleteIssue(final String issueKey, final boolean deleteSubtasks) throws URISyntaxException {
         return delete(new URIBuilder(baseUri).appendPath("issue").appendPath(issueKey).addParameter("deleteSubtasks", String.valueOf(deleteSubtasks)).build());
     }
 
@@ -247,7 +246,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
                         transitions.add(transition);
                     } catch (URISyntaxException | JSONException e) {
                         throw new RestClientException(e);
-                    } catch (NumberFormatException e) {
+                    } catch (final NumberFormatException e) {
                         throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
                     }
                 }
@@ -270,7 +269,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     public Promise<Void> transition(final URI transitionsUri, final TransitionInput transitionInput) throws URISyntaxException {
         final int buildNumber = getVersionInfo().getBuildNumber();
         try {
-            JSONObject jsonObject = new JSONObject();
+            final JSONObject jsonObject = new JSONObject();
             if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
                 jsonObject.put("transition", new JSONObject().put("id", transitionInput.getId()));
             } else {
@@ -293,7 +292,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
                 jsonObject.put("fields", fieldsJs);
             }
             return post(transitionsUri, jsonObject);
-        } catch (JSONException ex) {
+        } catch (final JSONException ex) {
             throw new RestClientException(ex);
         }
     }
@@ -382,12 +381,12 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<InputStream> getAttachment(URI attachmentUri) {
+    public Promise<InputStream> getAttachment(final URI attachmentUri) {
         return callAndParse(client().newRequest(attachmentUri).get(), Message::getEntityStream);
     }
 
     @Override
-    public Promise<Void> addWorklog(URI worklogUri, WorklogInput worklogInput) throws URISyntaxException {
+    public Promise<Void> addWorklog(final URI worklogUri, final WorklogInput worklogInput) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(worklogUri).addParameter("adjustEstimate", worklogInput.getAdjustEstimate().restValue);
 
         switch (worklogInput.getAdjustEstimate()) {
@@ -412,7 +411,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         return value == null ? "" : value;
     }
 
-    private void addPagingParameters(URIBuilder uriBuilder, @Nullable Long startAt, @Nullable Integer maxResults) {
+    private void addPagingParameters(final URIBuilder uriBuilder, @Nullable final Long startAt, @Nullable final Integer maxResults) {
         if (startAt != null) {
             uriBuilder.addParameter("startAt", String.valueOf(startAt));
         }

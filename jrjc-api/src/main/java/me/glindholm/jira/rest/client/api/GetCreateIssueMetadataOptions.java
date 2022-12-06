@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.api;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Set of optional parameters for {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}.

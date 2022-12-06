@@ -19,9 +19,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.apache.hc.core5.net.URIBuilder;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.api.HttpClient;
 

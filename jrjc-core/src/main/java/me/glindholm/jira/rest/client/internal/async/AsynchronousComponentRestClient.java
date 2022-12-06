@@ -18,11 +18,10 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.annotation.Nullable;
-
 import org.apache.hc.core5.net.URIBuilder;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.api.HttpClient;
 
@@ -62,13 +61,13 @@ public class AsynchronousComponentRestClient extends AbstractAsynchronousRestCli
     }
 
     @Override
-    public Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput) {
+    public Promise<Component> updateComponent(final URI componentUri, final ComponentInput componentInput) {
         final ComponentInputWithProjectKey helper = new ComponentInputWithProjectKey(null, componentInput);
         return putAndParse(componentUri, helper, new ComponentInputWithProjectKeyJsonGenerator(), componentJsonParser);
     }
 
     @Override
-    public Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri) throws URISyntaxException {
+    public Promise<Void> removeComponent(final URI componentUri, @Nullable final URI moveIssueToComponentUri) throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(componentUri);
         if (moveIssueToComponentUri != null) {
             uriBuilder.addParameter("moveIssuesTo", String.valueOf(moveIssueToComponentUri));
@@ -77,11 +76,11 @@ public class AsynchronousComponentRestClient extends AbstractAsynchronousRestCli
     }
 
     @Override
-    public Promise<Integer> getComponentRelatedIssuesCount(URI componentUri) throws URISyntaxException {
+    public Promise<Integer> getComponentRelatedIssuesCount(final URI componentUri) throws URISyntaxException {
         final URI relatedIssueCountsUri = new URIBuilder(componentUri).appendPath("relatedIssueCounts").build();
         return getAndParse(relatedIssueCountsUri, new JsonObjectParser<Integer>() {
             @Override
-            public Integer parse(JSONObject json) throws JSONException {
+            public Integer parse(final JSONObject json) throws JSONException {
                 return json.getInt("issueCount");
             }
         });

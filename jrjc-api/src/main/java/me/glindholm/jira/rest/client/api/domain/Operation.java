@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.api.domain;
 
 import java.util.Optional;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 public interface Operation {
     /**

@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 import me.glindholm.jira.rest.client.api.NamedEntity;

@@ -32,11 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.ExpandableProperty;
 import me.glindholm.jira.rest.client.api.RestClientException;

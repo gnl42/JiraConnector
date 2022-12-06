@@ -18,11 +18,10 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.annotation.Nullable;
-
 import org.apache.hc.core5.net.URIBuilder;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.api.HttpClient;
 
@@ -48,7 +47,7 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
 
     private final URI versionRootUri;
 
-    public AsynchronousVersionRestClient(URI baseUri, final HttpClient client) throws URISyntaxException {
+    public AsynchronousVersionRestClient(final URI baseUri, final HttpClient client) throws URISyntaxException {
         super(client);
         versionRootUri = new URIBuilder(baseUri).appendPath("version").build();
     }
@@ -69,8 +68,8 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
     }
 
     @Override
-    public Promise<Void> removeVersion(final URI versionUri, final @Nullable URI moveFixIssuesToVersionUri,
-            final @Nullable URI moveAffectedIssuesToVersionUri) throws URISyntaxException {
+    public Promise<Void> removeVersion(final URI versionUri, final @Nullable URI moveFixIssuesToVersionUri, final @Nullable URI moveAffectedIssuesToVersionUri)
+            throws URISyntaxException {
         final URIBuilder uriBuilder = new URIBuilder(versionUri);
         if (moveFixIssuesToVersionUri != null) {
             uriBuilder.addParameter("moveFixIssuesTo", String.valueOf(moveFixIssuesToVersionUri));
@@ -92,7 +91,7 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
         final URI unresolvedIssueCountUri = new URIBuilder(versionUri).appendPath("unresolvedIssueCount").build();
         return getAndParse(unresolvedIssueCountUri, new JsonObjectParser<Integer>() {
             @Override
-            public Integer parse(JSONObject json) throws JSONException {
+            public Integer parse(final JSONObject json) throws JSONException {
                 return json.getInt("issuesUnresolvedCount");
             }
         });
@@ -118,7 +117,7 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
         return postAndParse(moveUri, versionPosition, new VersionPositionInputGenerator(), new VersionJsonParser());
     }
 
-    private URI getMoveVersionUri(URI versionUri) throws URISyntaxException {
+    private URI getMoveVersionUri(final URI versionUri) throws URISyntaxException {
         return new URIBuilder(versionUri).appendPath("move").build();
     }
 

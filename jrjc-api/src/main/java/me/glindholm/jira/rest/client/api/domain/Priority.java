@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.api.domain;
 import java.net.URI;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Complete information about a JIRA issue priority
