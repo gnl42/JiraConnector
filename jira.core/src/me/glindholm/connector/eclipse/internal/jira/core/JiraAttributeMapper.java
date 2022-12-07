@@ -204,23 +204,13 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
                         return Collections.EMPTY_MAP;
                     }
                 }
-//                    final String msg = NLS.bind("Project with key {0} needs refreshing. Please refresh repository configuration.", //$NON-NLS-1$
-//                            project.getKey());
-//                    PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            MessageDialog.openError(WorkbenchUtil.getShell(), "JiraConnector JIRA Connector", msg);
-//                            StatusHandler.log(new Status(IStatus.ERROR, "me.glindholm.connector.eclipse.jira.ui", msg));
-//                        }
-//                    });
-//                    return Collections.EMPTY_MAP;
 
                 try {
                     final List<User> currentUsers = client.getProjectAssignables(project.getKey());
                     options = new LinkedHashMap<>();
                     project.addAssignables(currentUsers);
                     for (final BasicUser user : users.values()) {
-                        options.put(user.getExternalId(), "");
+                        options.put(user.getExternalId(), user.getDisplayName());
                     }
 
                     return options;

@@ -26,8 +26,11 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.commons.workbench.WorkbenchUtil;
+import org.eclipse.ui.PlatformUI;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
@@ -89,8 +92,15 @@ public class JiraClientManager {
                     clientDataByUrl.put(url, data);
                 }
             } catch (final Throwable e) {
-                StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN,
-                        "Reset JIRA repository configuration cache due to format change")); //$NON-NLS-1$
+                final String msg = "Update JIRA repository(ies) configuration due to format change";
+                PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        MessageDialog.openError(WorkbenchUtil.getShell(), "JiraConnector JIRA Connector", msg);
+                    }
+                });
+
+                StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN, msg)); // $NON-NLS-1$
             } finally {
                 if (in != null) {
                     try {
@@ -118,8 +128,7 @@ public class JiraClientManager {
                 out.writeObject(clientDataByUrl.get(url));
             }
         } catch (final Throwable e) {
-            StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
-                    "Error writing JIRA repository configuration cache", e)); //$NON-NLS-1$
+            StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error writing JIRA repository configuration cache", e)); //$NON-NLS-1$
         }
     }
 
@@ -137,8 +146,8 @@ public class JiraClientManager {
      *                                         password were incorrect
      * @throws JiraServiceUnavailableException URL was not valid
      */
-    public JiraServerInfo validateConnection(final AbstractWebLocation location, final JiraLocalConfiguration configuration,
-            final IProgressMonitor monitor) throws JiraException {
+    public JiraServerInfo validateConnection(final AbstractWebLocation location, final JiraLocalConfiguration configuration, final IProgressMonitor monitor)
+            throws JiraException {
         final JiraClient client = createClient(location, configuration);
 
         client.getSession(monitor);
@@ -155,9 +164,9 @@ public class JiraClientManager {
     }
 
     private JiraClient createClient(final AbstractWebLocation location, final JiraLocalConfiguration configuration) {
-        //		if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
-        //			baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-        //		}
+        // if (baseUrl.charAt(baseUrl.length() - 1) == '/') {
+        // baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        // }
         return new JiraClient(location, configuration);
     }
 
