@@ -21,17 +21,17 @@ import me.glindholm.connector.eclipse.internal.jira.ui.wizards.JiraTaskRepositor
 @SuppressWarnings("restriction")
 public class JiraTaskRepositoryLocationUi extends TaskRepositoryLocationUi {
 
-	private final JiraTaskRepositoryLocation jiraTaskRepositoryLocation;
+    private final JiraTaskRepositoryLocation jiraTaskRepositoryLocation;
 
-	public JiraTaskRepositoryLocationUi(TaskRepository taskRepository) {
-		super(taskRepository);
+    public JiraTaskRepositoryLocationUi(final TaskRepository taskRepository) {
+        super(taskRepository);
 
-		jiraTaskRepositoryLocation = new JiraTaskRepositoryLocation(taskRepository);
-	}
+        jiraTaskRepositoryLocation = new JiraTaskRepositoryLocation(taskRepository);
+    }
 
-	@Override
-	public Proxy getProxyForHost(String host, String proxyType) {
-		return jiraTaskRepositoryLocation.getProxyForHost(host, proxyType);
-	}
+    @Override
+    public Proxy getProxyForHost(final String host, final String proxyType) {
+        return jiraTaskRepositoryLocation.getProxyForHost(host, proxyType);
+    }
 
 }

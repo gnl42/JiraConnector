@@ -18,10 +18,10 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
  */
 public class JiraInsufficientPermissionException extends JiraException {
 
-	private static final long serialVersionUID = 8122623908757665154L;
+    private static final long serialVersionUID = 8122623908757665154L;
 
-	public JiraInsufficientPermissionException(String message) {
-		super(message == null ? "Insufficient permissions" : message); //$NON-NLS-1$
-	}
+    public JiraInsufficientPermissionException(final String message) {
+        super(message == null ? "Insufficient permissions" : message); //$NON-NLS-1$
+    }
 
 }

@@ -110,13 +110,13 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public boolean canCreateTaskFromKey(TaskRepository repository) {
+    public boolean canCreateTaskFromKey(final TaskRepository repository) {
         return true;
     }
 
     @Override
-    public IStatus performQuery(TaskRepository repository, IRepositoryQuery repositoryQuery,
-            TaskDataCollector resultCollector, ISynchronizationSession session, IProgressMonitor monitor) {
+    public IStatus performQuery(final TaskRepository repository, final IRepositoryQuery repositoryQuery,
+            final TaskDataCollector resultCollector, final ISynchronizationSession session, IProgressMonitor monitor) {
         monitor = Policy.monitorFor(monitor);
         try {
             if (repository.isOffline()) {
@@ -124,7 +124,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
                         NLS.bind(Messages.JiraRepositoryConnector_Disabled, repository.getRepositoryLabel()));
             }
             monitor.beginTask(Messages.JiraRepositoryConnector_Query_Repository, IProgressMonitor.UNKNOWN);
-            JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+            final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
             JiraFilter filter;
             try {
                 if (!client.getCache().hasDetails()) {
@@ -139,12 +139,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
                 return JiraCorePlugin.toStatus(repository, e);
             }
             try {
-                QueryHitCollector collector = new QueryHitCollector(repository, client, resultCollector, session,
+                final QueryHitCollector collector = new QueryHitCollector(repository, client, resultCollector, session,
                         monitor);
                 client.search(filter, collector, monitor);
                 return collector.getStatus();
-            } catch (JiraException e) {
-                IStatus status = JiraCorePlugin.toStatus(repository, e);
+            } catch (final JiraException e) {
+                final IStatus status = JiraCorePlugin.toStatus(repository, e);
                 trace(status);
                 return status;
             }
@@ -154,7 +154,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public void preSynchronization(ISynchronizationSession session, IProgressMonitor monitor) throws CoreException {
+    public void preSynchronization(final ISynchronizationSession session, final IProgressMonitor monitor) throws CoreException {
         //		monitor = Policy.monitorFor(monitor);
         //		try {
         //			monitor.beginTask(Messages.JiraRepositoryConnector_Getting_changed_tasks, IProgressMonitor.UNKNOWN);
@@ -250,32 +250,32 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public void postSynchronization(ISynchronizationSession event, IProgressMonitor monitor) throws CoreException {
+    public void postSynchronization(final ISynchronizationSession event, final IProgressMonitor monitor) throws CoreException {
         // ignore
     }
 
     /* Public for testing. */
-    public FilterDefinition getSynchronizationFilter(ISynchronizationSession session, Instant now) {
-        Set<ITask> tasks = session.getTasks();
+    public FilterDefinition getSynchronizationFilter(final ISynchronizationSession session, final Instant now) {
+        final Set<ITask> tasks = session.getTasks();
         // there are no JIRA tasks in the task list, skip contacting the repository
         if (tasks.isEmpty()) {
             return null;
         }
 
-        TaskRepository repository = session.getTaskRepository();
+        final TaskRepository repository = session.getTaskRepository();
         Instant lastSyncDate = JiraUtil.stringToDate(repository.getSynchronizationTimeStamp());
 
         // repository was never synchronized, update all tasks
         if (lastSyncDate == null) {
-            for (ITask task : tasks) {
+            for (final ITask task : tasks) {
                 session.markStale(task);
             }
             return null;
         }
 
         // use local time to determine time difference to last sync
-        long nowTime = now.getEpochSecond();
-        long lastSyncTime = lastSyncDate.getEpochSecond();
+        final long nowTime = now.getEpochSecond();
+        final long lastSyncTime = lastSyncDate.getEpochSecond();
 
         // check if time stamp is skewed
         if (lastSyncTime >= nowTime) {
@@ -285,8 +285,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
             // use the time stamp on the task that was modified last
             lastSyncDate = null;
-            for (ITask task : tasks) {
-                Instant date = task.getModificationDate().toInstant();
+            for (final ITask task : tasks) {
+                final Instant date = task.getModificationDate().toInstant();
                 if (lastSyncDate == null || date != null && date.isAfter(lastSyncDate)) {
                     lastSyncDate = date;
                 }
@@ -298,17 +298,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
             }
 
             // get all tasks that were changed after the last known task modification
-            FilterDefinition changedFilter = new FilterDefinition();
+            final FilterDefinition changedFilter = new FilterDefinition();
             changedFilter.setUpdatedDateFilter(new DateRangeFilter(lastSyncDate, null, null, null));
             // make sure it's sorted so the most recent changes are returned in case the query maximum is hit
             changedFilter.setOrdering(new Order[] { new Order(JiraFields.UPDATED, false) });
             return changedFilter;
         }
 
-        FilterDefinition changedFilter = new FilterDefinition();
+        final FilterDefinition changedFilter = new FilterDefinition();
         // need to use RelativeDateRangeFilter since the granularity of DateRangeFilter is days
         // whereas this allows us to use minutes
-        long minutes = (now.getEpochSecond() - lastSyncDate.getEpochSecond()) / (60 * 1000) + 1;
+        final long minutes = (now.getEpochSecond() - lastSyncDate.getEpochSecond()) / (60 * 1000) + 1;
         changedFilter.setUpdatedDateFilter(new RelativeDateRangeFilter(RangeType.MINUTE, -minutes));
         // make sure it's sorted so the most recent changes are returned in case the query maximum is hit
         changedFilter.setOrdering(new Order[] { new Order(JiraFields.UPDATED, false) });
@@ -316,30 +316,30 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public boolean canCreateNewTask(TaskRepository repository) {
+    public boolean canCreateNewTask(final TaskRepository repository) {
         return true;
     }
 
     @Override
-    public String getRepositoryUrlFromTaskUrl(String url) {
+    public String getRepositoryUrlFromTaskUrl(final String url) {
         if (url == null) {
             return null;
         }
-        int index = url.indexOf(ISSUE_URL_PREFIX);
+        final int index = url.indexOf(ISSUE_URL_PREFIX);
         return index != -1 ? url.substring(0, index) : null;
     }
 
     @Override
-    public String getTaskIdFromTaskUrl(String url) {
+    public String getTaskIdFromTaskUrl(final String url) {
         if (url == null) {
             return null;
         }
-        int index = url.indexOf(ISSUE_URL_PREFIX);
+        final int index = url.indexOf(ISSUE_URL_PREFIX);
         if (index != -1) {
             String taskId = url.substring(index + ISSUE_URL_PREFIX.length());
 
             // strip query string
-            int index2 = taskId.indexOf("?"); //$NON-NLS-1$
+            final int index2 = taskId.indexOf("?"); //$NON-NLS-1$
             if (index2 != -1) {
                 taskId = taskId.substring(0, index2);
             }
@@ -352,28 +352,28 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public String getTaskUrl(String repositoryUrl, String taskId) {
+    public String getTaskUrl(final String repositoryUrl, final String taskId) {
         return repositoryUrl + ISSUE_URL_PREFIX + taskId;
     }
 
     @Override
-    public String[] getTaskIdsFromComment(TaskRepository repository, String comment) {
-        JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-        JiraProject[] projects = client.getCache().getProjects();
+    public String[] getTaskIdsFromComment(final TaskRepository repository, final String comment) {
+        final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+        final JiraProject[] projects = client.getCache().getProjects();
         if (projects != null && projects.length > 0) {
             // (?:(MNGECLIPSE-\d+?)|(SPR-\d+?))\D
-            StringBuilder sb = new StringBuilder("("); //$NON-NLS-1$
+            final StringBuilder sb = new StringBuilder("("); //$NON-NLS-1$
             String sep = ""; //$NON-NLS-1$
-            for (JiraProject project : projects) {
+            for (final JiraProject project : projects) {
                 sb.append(sep).append("(?:" + project.getKey() + "\\-\\d+?)"); //$NON-NLS-1$ //$NON-NLS-2$
                 sep = "|"; //$NON-NLS-1$
             }
             sb.append(")(?:\\D|\\z)"); //$NON-NLS-1$
 
-            Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-            Matcher m = p.matcher(comment);
+            final Pattern p = Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+            final Matcher m = p.matcher(comment);
             if (m.find()) {
-                HashSet<String> ids = new HashSet<>();
+                final HashSet<String> ids = new HashSet<>();
                 do {
                     ids.add(m.group(1));
                 } while (m.find());
@@ -384,28 +384,28 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
         return super.getTaskIdsFromComment(repository, comment);
     }
 
-    public static String getTaskUrlFromKey(String repositoryUrl, String key) {
+    public static String getTaskUrlFromKey(final String repositoryUrl, final String key) {
         return repositoryUrl + JiraRepositoryConnector.ISSUE_URL_PREFIX + key;
     }
 
-    public static boolean isCompleted(TaskData taskData) {
-        TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.RESOLUTION.id());
+    public static boolean isCompleted(final TaskData taskData) {
+        final TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.RESOLUTION.id());
         final boolean isResolved = attribute != null && attribute.getValue().length() > 0;
         if (isResolved) {
             return true;
         }
         // for backward compatibility we are also checking the status
-        TaskAttribute status = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id());
+        final TaskAttribute status = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id());
         return status != null
                 && (ID_STATUS_RESOLVED.equals(status.getValue()) || ID_STATUS_CLOSED.equals(status.getValue()));
     }
 
-    public static boolean isClosed(JiraIssue issue) {
+    public static boolean isClosed(final JiraIssue issue) {
         // TODO find a more robust way to determine if a status is closed
         return issue.getStatus() != null && ID_STATUS_CLOSED.equals(issue.getStatus().getId());
     }
 
-    static PriorityLevel getPriorityLevel(String priorityId) {
+    static PriorityLevel getPriorityLevel(final String priorityId) {
         if (JiraPriority.BLOCKER_ID.equals(priorityId)) {
             return PriorityLevel.P1;
         } else if (JiraPriority.CRITICAL_ID.equals(priorityId)) {
@@ -426,27 +426,27 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public void updateRepositoryConfiguration(TaskRepository repository, IProgressMonitor monitor) throws CoreException {
+    public void updateRepositoryConfiguration(final TaskRepository repository, final IProgressMonitor monitor) throws CoreException {
         try {
-            JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+            final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
             client.getCache().refreshDetails(monitor);
-        } catch (JiraException e) {
-            IStatus status = JiraCorePlugin.toStatus(repository, e);
+        } catch (final JiraException e) {
+            final IStatus status = JiraCorePlugin.toStatus(repository, e);
             trace(status);
             throw new CoreException(status);
         }
     }
 
     @Override
-    public void updateRepositoryConfiguration(TaskRepository taskRepository, ITask task, IProgressMonitor monitor)
+    public void updateRepositoryConfiguration(final TaskRepository taskRepository, final ITask task, final IProgressMonitor monitor)
             throws CoreException {
         final String projectId = task == null ? null : task.getAttribute(JiraAttribute.PROJECT.id());
         if (projectId != null && !"".equals(projectId)) { //$NON-NLS-1$
             try {
-                JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
+                final JiraClient client = JiraClientFactory.getDefault().getJiraClient(taskRepository);
                 client.getCache().refreshProjectDetails(projectId, monitor);
-            } catch (JiraException e) {
-                IStatus status = JiraCorePlugin.toStatus(taskRepository, e);
+            } catch (final JiraException e) {
+                final IStatus status = JiraCorePlugin.toStatus(taskRepository, e);
                 trace(status);
                 throw new CoreException(status);
             }
@@ -460,18 +460,18 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
         return "issue"; //$NON-NLS-1$
     }
 
-    public static String getAssigneeFromAttribute(String assignee) {
+    public static String getAssigneeFromAttribute(final String assignee) {
         return "".equals(assignee) ? UNASSIGNED_USER : assignee; //$NON-NLS-1$
     }
 
-    private void trace(IStatus status) {
+    private void trace(final IStatus status) {
         if (TRACE_ENABLED) {
             StatusHandler.log(status);
         }
     }
 
     @Override
-    public boolean isRepositoryConfigurationStale(TaskRepository repository, IProgressMonitor monitor)
+    public boolean isRepositoryConfigurationStale(final TaskRepository repository, final IProgressMonitor monitor)
             throws CoreException {
         return JiraUtil.getAutoRefreshConfiguration(repository)
                 && super.isRepositoryConfigurationStale(repository, monitor);
@@ -483,8 +483,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public boolean hasTaskChanged(TaskRepository taskRepository, ITask task, TaskData taskData) {
-        TaskMapper scheme = getTaskMapping(taskData);
+    public boolean hasTaskChanged(final TaskRepository taskRepository, final ITask task, final TaskData taskData) {
+        final TaskMapper scheme = getTaskMapping(taskData);
         final Instant repositoryDate = scheme.getModificationDate().toInstant();
         final Instant localDate = task.getModificationDate() == null ? null : task.getModificationDate().toInstant();
         if (repositoryDate != null && repositoryDate.equals(localDate)) {
@@ -493,9 +493,9 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
         return true;
     }
 
-    private boolean hasChanged(ITask task, JiraIssue issue) {
-        Instant repositoryDate = issue.getUpdated();
-        Instant localDate = task.getModificationDate().toInstant();
+    private boolean hasChanged(final ITask task, final JiraIssue issue) {
+        final Instant repositoryDate = issue.getUpdated();
+        final Instant localDate = task.getModificationDate().toInstant();
         if (repositoryDate != null && repositoryDate.equals(localDate)) {
             return false;
         }
@@ -503,24 +503,24 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public TaskData getTaskData(TaskRepository taskRepository, String taskId, IProgressMonitor monitor)
+    public TaskData getTaskData(final TaskRepository taskRepository, final String taskId, final IProgressMonitor monitor)
             throws CoreException {
         return taskDataHandler.getTaskData(taskRepository, taskId, monitor);
     }
 
     @Override
-    public void updateTaskFromTaskData(TaskRepository repository, ITask task, TaskData taskData) {
+    public void updateTaskFromTaskData(final TaskRepository repository, final ITask task, final TaskData taskData) {
         final Date modificationDate = task.getModificationDate();
         final Instant originalModificationDate = modificationDate == null ? null : modificationDate.toInstant();
 
-        TaskMapper scheme = getTaskMapping(taskData);
+        final TaskMapper scheme = getTaskMapping(taskData);
         scheme.applyTo(task);
         task.setCompletionDate(scheme.getCompletionDate());
 
         // flag subtasks to disable creation of sub-subtasks
         TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.TYPE.id());
         if (attribute != null) {
-            boolean isSubTask = Boolean.parseBoolean(attribute.getMetaData()
+            final boolean isSubTask = Boolean.parseBoolean(attribute.getMetaData()
                     .getValue(JiraConstants.META_SUB_TASK_TYPE));
             task.setAttribute(JiraConstants.META_SUB_TASK_TYPE, Boolean.toString(isSubTask));
         } else {
@@ -553,23 +553,23 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public JiraTaskMapper getTaskMapping(TaskData taskData) {
+    public JiraTaskMapper getTaskMapping(final TaskData taskData) {
         return new JiraTaskMapper(taskData);
     }
 
     @Override
-    public Collection<TaskRelation> getTaskRelations(TaskData taskData) {
-        List<TaskRelation> relations = new ArrayList<>();
+    public Collection<TaskRelation> getTaskRelations(final TaskData taskData) {
+        final List<TaskRelation> relations = new ArrayList<>();
         TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.SUBTASK_IDS.id());
         if (attribute != null) {
-            for (String taskId : attribute.getValues()) {
+            for (final String taskId : attribute.getValues()) {
                 relations.add(TaskRelation.subtask(taskId));
             }
         }
         if (JiraUtil.getLinkedTasksAsSubtasks(taskData.getAttributeMapper().getTaskRepository())) {
             attribute = taskData.getRoot().getAttribute(JiraAttribute.LINKED_IDS.id());
             if (attribute != null) {
-                for (String taskId : attribute.getValues()) {
+                for (final String taskId : attribute.getValues()) {
                     relations.add(TaskRelation.subtask(taskId));
                 }
             }
@@ -578,7 +578,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public boolean hasRepositoryDueDate(TaskRepository taskRepository, ITask task, TaskData taskData) {
+    public boolean hasRepositoryDueDate(final TaskRepository taskRepository, final ITask task, final TaskData taskData) {
         return taskData.getRoot().getMappedAttribute(JiraAttribute.DUE_DATE.id()) != null;
     }
 
@@ -596,17 +596,17 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
         private List<IStatus> statuses;
 
-        public QueryHitCollector(TaskRepository repository, JiraClient client, TaskDataCollector collector,
-                ISynchronizationSession session, IProgressMonitor monitor) {
+        public QueryHitCollector(final TaskRepository repository, final JiraClient client, final TaskDataCollector collector,
+                final ISynchronizationSession session, final IProgressMonitor monitor) {
             this.repository = repository;
             this.client = client;
             this.collector = collector;
             this.monitor = monitor;
-            this.maxHits = JiraUtil.getMaxSearchResults(repository);
+            maxHits = JiraUtil.getMaxSearchResults(repository);
         }
 
         @Override
-        public void collectIssue(JiraIssue issue) {
+        public void collectIssue(final JiraIssue issue) {
             if (issue.getProject() == null) {
                 addStatus(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0, ERROR_REPOSITORY_CONFIGURATION, null));
                 return;
@@ -616,12 +616,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
             try {
                 taskData = taskDataHandler.createTaskData(repository, client, issue, null, true, monitor);
                 collector.accept(taskData);
-            } catch (JiraException e) {
+            } catch (final JiraException e) {
                 addStatus(JiraCorePlugin.toStatus(repository, e));
             }
         }
 
-        private void addStatus(IStatus status) {
+        private void addStatus(final IStatus status) {
             if (statuses == null) {
                 statuses = new ArrayList<>();
             }

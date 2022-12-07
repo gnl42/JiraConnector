@@ -7,15 +7,11 @@
     <parent>
         <groupId>me.glindholm.connector.eclipse</groupId>
         <artifactId>JiraConnector</artifactId>
-        <version>4.1.9-SNAPSHOT</version>
+        <version>4.2.0-SNAPSHOT</version>
     </parent>
     <artifactId>me.glindholm.connector.eclipse.jira.core</artifactId>
     <packaging>eclipse-plugin</packaging>
-
-    <properties>
-        <version.jersey>1.8</version.jersey>
-    </properties>
-
+ <!--
     <build>
         <plugins>
             <plugin>
@@ -29,7 +25,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds></includeArtifactIds>
+                           <includeArtifactIds></includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
                             <overWriteReleases>true</overWriteReleases>
@@ -41,6 +37,7 @@
 
         </plugins>
     </build>
+    -->
     <dependencies>
     </dependencies>
 </project>

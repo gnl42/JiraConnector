@@ -29,34 +29,34 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
  */
 public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
-	@Override
-	public boolean canCreatePageFor(TaskEditorInput input) {
-		if (input.getTask().getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
-			return true;
-		} else if (TasksUiUtil.isOutgoingNewTask(input.getTask(), JiraCorePlugin.CONNECTOR_KIND)) {
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean canCreatePageFor(final TaskEditorInput input) {
+        if (JiraCorePlugin.CONNECTOR_KIND.equals(input.getTask().getConnectorKind())) {
+            return true;
+        } else if (TasksUiUtil.isOutgoingNewTask(input.getTask(), JiraCorePlugin.CONNECTOR_KIND)) {
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public IFormPage createPage(TaskEditor parentEditor) {
-		return new JiraTaskEditorPage(parentEditor);
-	}
+    @Override
+    public IFormPage createPage(final TaskEditor parentEditor) {
+        return new JiraTaskEditorPage(parentEditor);
+    }
 
-	@Override
-	public Image getPageImage() {
-		return CommonImages.getImage(TasksUiImages.REPOSITORY_SMALL);
-	}
+    @Override
+    public Image getPageImage() {
+        return CommonImages.getImage(TasksUiImages.REPOSITORY_SMALL);
+    }
 
-	@Override
-	public String getPageText() {
-		return "JIRA"; //$NON-NLS-1$
-	}
+    @Override
+    public String getPageText() {
+        return "JIRA"; //$NON-NLS-1$
+    }
 
-	@Override
-	public int getPriority() {
-		return PRIORITY_TASK;
-	}
+    @Override
+    public int getPriority() {
+        return PRIORITY_TASK;
+    }
 
 }

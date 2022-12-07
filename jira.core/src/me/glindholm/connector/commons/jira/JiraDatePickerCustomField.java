@@ -25,7 +25,7 @@ public class JiraDatePickerCustomField extends JiraCustomFieldImpl {
     private static final String OUTPUT_FORMAT = "dd/MMM/yy";
     private static final String INPUT_FORMAT = "W, d M y H:m:s z";
 
-    public JiraDatePickerCustomField(Builder builder) {
+    public JiraDatePickerCustomField(final Builder builder) {
         super(builder);
     }
 
@@ -36,7 +36,7 @@ public class JiraDatePickerCustomField extends JiraCustomFieldImpl {
         if (values.size() > 0) {
             formattedText = JiraTimeFormatter.formatDateFromJiraTimeString(values.get(0), Locale.US);
         }
-        
+
         return formattedText;
     }
 }

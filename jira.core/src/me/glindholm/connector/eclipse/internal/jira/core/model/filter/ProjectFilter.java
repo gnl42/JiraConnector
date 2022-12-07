@@ -21,37 +21,37 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
 /**
  * Filter to restrict returned issues to a specific project. If a project filter is used you can add project specific
  * filters such as {@link ComponentFilter}, {@link ReportedInVersionFilter} and {@link FixForVersionFilter}
- * 
+ *
  * @see com.gbst.jira.core.model.filter.ComponentFilter
  * @see com.gbst.jira.core.model.filter.ReportedInVersionFilter
  * @see com.gbst.jira.core.model.filter.FixForVersionFilter
- * 
+ *
  * @author Brock Janiczak
  * @author Thomas Ehrnhoefer (multiple projects selection)
  */
 public class ProjectFilter implements Filter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final JiraProject[] projects;
+    private final JiraProject[] projects;
 
-	public ProjectFilter(JiraProject[] projects) {
-		Assert.isNotNull(projects);
-		Assert.isTrue(projects.length > 0);
-		for (JiraProject project : projects) {
-			Assert.isNotNull(project);
-		}
-		this.projects = projects;
-	}
+    public ProjectFilter(final JiraProject[] projects) {
+        Assert.isNotNull(projects);
+        Assert.isTrue(projects.length > 0);
+        for (final JiraProject project : projects) {
+            Assert.isNotNull(project);
+        }
+        this.projects = projects;
+    }
 
-	public ProjectFilter(JiraProject project) {
-		this(new JiraProject[] { project });
-	}
+    public ProjectFilter(final JiraProject project) {
+        this(new JiraProject[] { project });
+    }
 
-	public JiraProject[] getProjects() {
-		return this.projects;
-	}
+    public JiraProject[] getProjects() {
+        return projects;
+    }
 
-	ProjectFilter copy() {
-		return new ProjectFilter(this.projects);
-	}
+    ProjectFilter copy() {
+        return new ProjectFilter(projects);
+    }
 }

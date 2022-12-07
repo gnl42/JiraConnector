@@ -14,8 +14,7 @@ package me.glindholm.connector.eclipse.internal.jira.core;
 import java.util.Date;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.mylyn.tasks.core.ITask.PriorityLevel;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskData;
@@ -26,13 +25,13 @@ import org.eclipse.mylyn.tasks.core.data.TaskMapper;
  */
 public class JiraTaskMapper extends TaskMapper {
 
-    public JiraTaskMapper(TaskData taskData) {
+    public JiraTaskMapper(final TaskData taskData) {
         super(taskData);
     }
 
     @Override
     public PriorityLevel getPriorityLevel() {
-        TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.PRIORITY.id());
+        final TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.PRIORITY.id());
         if (attribute != null) {
             return JiraRepositoryConnector.getPriorityLevel(attribute.getValue());
         }
@@ -49,15 +48,15 @@ public class JiraTaskMapper extends TaskMapper {
     }
 
     @Override
-    public void setCompletionDate(Date dateCompleted) {
+    public void setCompletionDate(final Date dateCompleted) {
         // ignore
     }
 
     @Override
-    public void setComponent(String component) {
-        TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.COMPONENTS.id());
+    public void setComponent(final String component) {
+        final TaskAttribute attribute = getTaskData().getRoot().getAttribute(JiraAttribute.COMPONENTS.id());
         if (attribute != null && !attribute.getMetaData().isReadOnly()) {
-            for (Map.Entry<String, String> entry : attribute.getOptions().entrySet()) {
+            for (final Map.Entry<String, String> entry : attribute.getOptions().entrySet()) {
                 if (entry.getValue().equals(component)) {
                     attribute.setValue(entry.getKey());
                 }
@@ -66,7 +65,7 @@ public class JiraTaskMapper extends TaskMapper {
     }
 
     @Override
-    public void setProduct(String product) {
+    public void setProduct(final String product) {
         // ignore, set during task data initialization
     }
 

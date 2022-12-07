@@ -19,27 +19,32 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue;
  */
 public final class SingleIssueCollector implements IssueCollector {
 
-	private JiraIssue matchingIssue;
+    private JiraIssue matchingIssue;
 
-	public JiraIssue getIssue() {
-		return matchingIssue;
-	}
+    public JiraIssue getIssue() {
+        return matchingIssue;
+    }
 
-	public void done() {
-	}
+    @Override
+    public void done() {
+    }
 
-	public boolean isCancelled() {
-		return false;
-	}
+    @Override
+    public boolean isCancelled() {
+        return false;
+    }
 
-	public void collectIssue(JiraIssue issue) {
-		matchingIssue = issue;
-	}
+    @Override
+    public void collectIssue(final JiraIssue issue) {
+        matchingIssue = issue;
+    }
 
-	public void start() {
-	}
+    @Override
+    public void start() {
+    }
 
-	public int getMaxHits() {
-		return 1;
-	}
+    @Override
+    public int getMaxHits() {
+        return 1;
+    }
 }

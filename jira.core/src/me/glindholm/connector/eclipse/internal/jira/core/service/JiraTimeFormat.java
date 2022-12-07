@@ -38,7 +38,7 @@ public class JiraTimeFormat extends Format {
         this(JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK, JiraLocalConfiguration.DEFAULT_WORK_HOURS_PER_DAY);
     }
 
-    public JiraTimeFormat(int workDaysPerWeek, int workHoursPerDay) {
+    public JiraTimeFormat(final int workDaysPerWeek, final int workHoursPerDay) {
         Assert.isTrue(1 <= workDaysPerWeek && workDaysPerWeek <= 7);
         Assert.isTrue(1 <= workHoursPerDay && workHoursPerDay <= 24);
         this.workDaysPerWeek = workDaysPerWeek;
@@ -52,7 +52,7 @@ public class JiraTimeFormat extends Format {
      *            Long seconds value to format
      */
     @Override
-    public StringBuffer format(Object obj, StringBuffer sb, FieldPosition pos) {
+    public StringBuffer format(final Object obj, final StringBuffer sb, final FieldPosition pos) {
         if (obj instanceof Long) {
             format(sb, (Long) obj);
         } else if (obj instanceof Integer) {
@@ -61,26 +61,26 @@ public class JiraTimeFormat extends Format {
         return sb;
     }
 
-    private void format(StringBuffer sb, long seconds) {
-        long weeks = seconds / (workDaysPerWeek * workHoursPerDay * 60 * 60);
+    private void format(final StringBuffer sb, final long seconds) {
+        final long weeks = seconds / (workDaysPerWeek * workHoursPerDay * 60 * 60);
         if (weeks > 0) {
             sb.append(Long.toString(weeks)).append('w');
         }
-        long days = seconds % (workDaysPerWeek * workHoursPerDay * 60 * 60) / (workHoursPerDay * 60 * 60);
+        final long days = seconds % (workDaysPerWeek * workHoursPerDay * 60 * 60) / (workHoursPerDay * 60 * 60);
         if (days > 0) {
             if (sb.length() > 0) {
                 sb.append(' ');
             }
             sb.append(Long.toString(days)).append('d');
         }
-        long hours = seconds % (workHoursPerDay * 60 * 60) / (60 * 60);
+        final long hours = seconds % (workHoursPerDay * 60 * 60) / (60 * 60);
         if (hours > 0) {
             if (sb.length() > 0) {
                 sb.append(' ');
             }
             sb.append(Long.toString(hours)).append('h');
         }
-        long minutes = seconds % (60 * 60) / 60;
+        final long minutes = seconds % (60 * 60) / 60;
         if (minutes > 0) {
             if (sb.length() > 0) {
                 sb.append(' ');
@@ -99,9 +99,9 @@ public class JiraTimeFormat extends Format {
      * @throws ParseException
      *             if the string could not be parsed.
      */
-    public long parse(String source) throws ParseException {
+    public long parse(final String source) throws ParseException {
         Assert.isNotNull(source);
-        Object parsedObject = parseObject(source, new ParsePosition(0));
+        final Object parsedObject = parseObject(source, new ParsePosition(0));
         if (parsedObject == null) {
             throw new ParseException("Invalid string", 0); //$NON-NLS-1$
         }
@@ -109,25 +109,25 @@ public class JiraTimeFormat extends Format {
     }
 
     @Override
-    public Object parseObject(String source, ParsePosition pos) {
+    public Object parseObject(final String source, final ParsePosition pos) {
         // special case 0 where no letter is needed after a digit
-        if (source.trim().equals("0")) { //$NON-NLS-1$
+        if ("0".equals(source.trim())) { //$NON-NLS-1$
             pos.setIndex(source.length() + 1);
             return Long.valueOf(0);
         }
 
-        StringBuilder buffer = new StringBuilder(source.length());
-        char[] charArray = source.toCharArray();
+        final StringBuilder buffer = new StringBuilder(source.length());
+        final char[] charArray = source.toCharArray();
         long value = 0;
         boolean processed = false;
         for (int i = 0; i < charArray.length; i++) {
-            char c = charArray[i];
+            final char c = charArray[i];
 
             if (Character.isDigit(c)) {
                 buffer.append(c);
             } else if (buffer.length() != 0) {
                 // if not a digit but digits in buffer, non digit has to be either w,d,h,m
-                int count = Integer.parseInt(buffer.toString());
+                final int count = Integer.parseInt(buffer.toString());
                 if (c == 'w') {
                     value += count * 60 * 60 * workHoursPerDay * workDaysPerWeek;
                 } else if (c == 'd') {

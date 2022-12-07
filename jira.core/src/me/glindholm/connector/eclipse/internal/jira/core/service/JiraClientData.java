@@ -13,6 +13,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraGroup;
@@ -32,7 +33,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraUser;
  */
 public class JiraClientData implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2259866721234344593L;
 
     JiraGroup[] groups = {};
 
@@ -68,11 +69,9 @@ public class JiraClientData implements Serializable {
 
     Map<String, JiraStatus> statusesByName = new HashMap<>();
 
-    // not used
-    JiraUser[] users = {};
-
     Map<String, JiraUser> usersByName = new HashMap<>();
 
+    List<Integer> spaceHolder;
     long lastUpdate;
 
     // JiraConfiguration configuration;

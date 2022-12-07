@@ -113,7 +113,7 @@ public class JiraClientCache {
 
     public JiraProject getProjectById(final String id, final IProgressMonitor monitor) throws JiraException {
         JiraProject project = data.projectsById.get(id);
-        if (project == null || project.getfieldMetadata() == null) {
+        if (project == null) {
             refreshProjectDetails(id, monitor);
             project = data.projectsById.get(id);
         }
@@ -132,6 +132,10 @@ public class JiraClientCache {
         return data.projectRoles;
     }
 
+//    public List<User> assignable(final String issueKey) {
+//        jiraClient.assignable(issueKey);
+//    }
+//
     private void initializePriorities(final JiraClientData data, IProgressMonitor monitor) throws JiraException {
         monitor = SubMonitor.convert(monitor, Messages.JiraClientCache_getting_priorities, 1);
 

@@ -20,82 +20,78 @@ import org.eclipse.core.runtime.Assert;
  */
 public class JiraStatus implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private String description;
+    private String description;
 
-	private String icon;
+    private String icon;
 
-	public JiraStatus(String id) {
-		Assert.isNotNull(id);
-		this.id = id;
-	}
+    public JiraStatus(final String id) {
+        Assert.isNotNull(id);
+        this.id = id;
+    }
 
-	public JiraStatus(String id, String name, String description, String icon) {
-		this(id);
-		this.name = name;
-		this.description = description;
-		this.icon = icon;
-	}
+    public JiraStatus(final String id, final String name, final String description, final String icon) {
+        this(id);
+        this.name = name;
+        this.description = description;
+        this.icon = icon;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public String getIcon() {
-		return this.icon;
-	}
+    public String getIcon() {
+        return icon;
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public void setIcon(final String icon) {
+        this.icon = icon;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(final String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object obj) {
+        if ((obj == null) || !(obj instanceof JiraStatus)) {
+            return false;
+        }
 
-		if (!(obj instanceof JiraStatus)) {
-			return false;
-		}
+        final JiraStatus that = (JiraStatus) obj;
 
-		JiraStatus that = (JiraStatus) obj;
+        return id.equals(that.id);
+    }
 
-		return this.id.equals(that.id);
-	}
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    @Override
+    public String toString() {
+        return name;
+    }
 }

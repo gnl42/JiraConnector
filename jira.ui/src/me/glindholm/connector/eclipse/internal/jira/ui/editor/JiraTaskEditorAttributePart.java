@@ -31,10 +31,10 @@ public class JiraTaskEditorAttributePart extends JiraAbstractTaskEditorAttribute
 
     @Override
     protected Collection<TaskAttribute> getAttributes() {
-        Map<String, TaskAttribute> allAttributes = getTaskData().getRoot().getAttributes();
-        List<TaskAttribute> attributes = new ArrayList<>(allAttributes.size());
-        for (TaskAttribute attribute : allAttributes.values()) {
-            TaskAttributeMetaData properties = attribute.getMetaData();
+        final Map<String, TaskAttribute> allAttributes = getTaskData().getRoot().getAttributes();
+        final List<TaskAttribute> attributes = new ArrayList<>(allAttributes.size());
+        for (final TaskAttribute attribute : allAttributes.values()) {
+            final TaskAttributeMetaData properties = attribute.getMetaData();
             if (TaskAttribute.KIND_DEFAULT.equals(properties.getKind())) {
                 attributes.add(attribute);
             }
@@ -44,12 +44,12 @@ public class JiraTaskEditorAttributePart extends JiraAbstractTaskEditorAttribute
 
     @Override
     protected List<TaskAttribute> getOverlayAttributes() {
-        TaskAttribute product = getModel().getTaskData().getRoot().getMappedAttribute(TaskAttribute.PRODUCT);
-        List<TaskAttribute> attributes = new ArrayList<>(2);
+        final TaskAttribute product = getModel().getTaskData().getRoot().getMappedAttribute(TaskAttribute.PRODUCT);
+        final List<TaskAttribute> attributes = new ArrayList<>(2);
         if (product != null) {
             attributes.add(product);
         }
-        TaskAttribute component = getModel().getTaskData().getRoot().getMappedAttribute(TaskAttribute.COMPONENT);
+        final TaskAttribute component = getModel().getTaskData().getRoot().getMappedAttribute(TaskAttribute.COMPONENT);
         if (component != null) {
             attributes.add(component);
         }

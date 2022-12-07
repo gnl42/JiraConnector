@@ -26,31 +26,31 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 @SuppressWarnings("restriction")
 public class JiraTaskRepositoryLocation extends TaskRepositoryLocation {
 
-	public JiraTaskRepositoryLocation(TaskRepository taskRepository) {
-		super(taskRepository);
-	}
+    public JiraTaskRepositoryLocation(final TaskRepository taskRepository) {
+        super(taskRepository);
+    }
 
-	@Override
-	public Proxy getProxyForHost(String host, String proxyType) {
-		if (!taskRepository.isDefaultProxyEnabled()) {
-			String proxyHost = taskRepository.getProperty(TaskRepository.PROXY_HOSTNAME);
-			String proxyPort = taskRepository.getProperty(TaskRepository.PROXY_PORT);
-			if (proxyHost != null && proxyHost.length() > 0 && proxyPort != null) {
-				try {
-					int proxyPortNum = Integer.parseInt(proxyPort);
-					AuthenticationCredentials credentials = taskRepository.getCredentials(AuthenticationType.PROXY);
-					return WebUtil.createProxy(proxyHost, proxyPortNum, credentials);
-				} catch (NumberFormatException e) {
-					StatusHandler.log(new RepositoryStatus(taskRepository, IStatus.ERROR,
-							ITasksCoreConstants.ID_PLUGIN, 0, "Error occured while configuring proxy. Invalid port \"" //$NON-NLS-1$
-									+ proxyPort + "\" specified.", e)); //$NON-NLS-1$
-				}
-			}
-		} else {
-			return WebUtil.getProxy(host, proxyType);
-		}
+    @Override
+    public Proxy getProxyForHost(final String host, final String proxyType) {
+        if (!taskRepository.isDefaultProxyEnabled()) {
+            final String proxyHost = taskRepository.getProperty(TaskRepository.PROXY_HOSTNAME);
+            final String proxyPort = taskRepository.getProperty(TaskRepository.PROXY_PORT);
+            if (proxyHost != null && proxyHost.length() > 0 && proxyPort != null) {
+                try {
+                    final int proxyPortNum = Integer.parseInt(proxyPort);
+                    final AuthenticationCredentials credentials = taskRepository.getCredentials(AuthenticationType.PROXY);
+                    return WebUtil.createProxy(proxyHost, proxyPortNum, credentials);
+                } catch (final NumberFormatException e) {
+                    StatusHandler.log(new RepositoryStatus(taskRepository, IStatus.ERROR,
+                            ITasksCoreConstants.ID_PLUGIN, 0, "Error occured while configuring proxy. Invalid port \"" //$NON-NLS-1$
+                            + proxyPort + "\" specified.", e)); //$NON-NLS-1$
+                }
+            }
+        } else {
+            return WebUtil.getProxy(host, proxyType);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
 }

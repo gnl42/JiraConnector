@@ -14,8 +14,8 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
 @SuppressWarnings("serial")
 public class JiraCaptchaRequiredException extends JiraAuthenticationException {
 
-	public JiraCaptchaRequiredException(String message) {
-		super(message == null ? "You've been locked out of remote API due to multiple failed login attemps" : message); //$NON-NLS-1$
-	}
+    public JiraCaptchaRequiredException(final String message) {
+        super(message == null ? "You've been locked out of remote API due to multiple failed login attemps" : message); //$NON-NLS-1$
+    }
 
 }

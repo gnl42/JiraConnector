@@ -16,27 +16,27 @@ import java.io.Serializable;
 
 /**
  * TODO merge with IssueLink?
- * 
+ *
  * @author Eugene Kuleshov
  */
 public class JiraSubtask implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String issueId;
+    private final String issueId;
 
-	private final String issueKey;
+    private final String issueKey;
 
-	public JiraSubtask(String issueId, String issueKey) {
-		this.issueId = issueId;
-		this.issueKey = issueKey;
-	}
+    public JiraSubtask(final String issueId, final String issueKey) {
+        this.issueId = issueId;
+        this.issueKey = issueKey;
+    }
 
-	public String getIssueId() {
-		return issueId;
-	}
+    public String getIssueId() {
+        return issueId;
+    }
 
-	public String getIssueKey() {
-		return this.issueKey;
-	}
+    public String getIssueKey() {
+        return issueKey;
+    }
 
 }

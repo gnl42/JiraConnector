@@ -33,16 +33,16 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
 public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
 
     @Override
-    protected Composite createHeaderLayout(Composite parent, FormToolkit toolkit) {
-        Composite composite = super.createHeaderLayout(parent, toolkit);
+    protected Composite createHeaderLayout(final Composite parent, final FormToolkit toolkit) {
+        final Composite composite = super.createHeaderLayout(parent, toolkit);
 
-        TaskAttribute attribute = getTaskData().getRoot().getMappedAttribute(JiraAttribute.VOTES.id());
+        final TaskAttribute attribute = getTaskData().getRoot().getMappedAttribute(JiraAttribute.VOTES.id());
         if (attribute != null) {
             addAttribute(composite, toolkit, attribute, true);
 
-            Layout layout = composite.getLayout();
+            final Layout layout = composite.getLayout();
             if (layout instanceof GridLayout) {
-                GridLayout gl = (GridLayout) layout;
+                final GridLayout gl = (GridLayout) layout;
                 gl.numColumns = composite.getChildren().length;
 
                 if (gl.numColumns == 0) {
@@ -52,11 +52,11 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
             }
         }
 
-        Layout layout = composite.getLayout();
+        final Layout layout = composite.getLayout();
         if (layout instanceof GridLayout) {
-            GridLayout gLayout = (GridLayout) layout;
+            final GridLayout gLayout = (GridLayout) layout;
 
-            Composite secondLineComposite = new Composite(composite, SWT.NONE);
+            final Composite secondLineComposite = new Composite(composite, SWT.NONE);
             final RowLayout rowLayout = new RowLayout();
             rowLayout.center = true;
             rowLayout.marginLeft = 0;
@@ -82,9 +82,9 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
         return composite;
     }
 
-    private void addAttribute(Composite composite, FormToolkit toolkit, TaskAttribute attribute,
-            boolean shouldInitializeGridData) {
-        AbstractAttributeEditor editor = createAttributeEditor(attribute);
+    private void addAttribute(final Composite composite, final FormToolkit toolkit, final TaskAttribute attribute,
+            final boolean shouldInitializeGridData) {
+        final AbstractAttributeEditor editor = createAttributeEditor(attribute);
         if (editor != null) {
             editor.setReadOnly(true);
             editor.setDecorationEnabled(false);

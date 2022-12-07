@@ -37,13 +37,13 @@ public class DateTimeAttributeEditor extends AbstractAttributeEditor {
 
     private final DateFormat format;
 
-    public DateTimeAttributeEditor(TaskDataModel model, TaskAttribute taskAttribute, boolean includeTime) {
+    public DateTimeAttributeEditor(final TaskDataModel model, final TaskAttribute taskAttribute, final boolean includeTime) {
         super(model, taskAttribute);
-        JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(model.getTaskRepository());
+        final JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(model.getTaskRepository());
         if (includeTime) {
-            this.format = configuration.getDateTimeFormat();
+            format = configuration.getDateTimeFormat();
         } else {
-            this.format = configuration.getDateFormat();
+            format = configuration.getDateFormat();
         }
     }
 
@@ -52,7 +52,7 @@ public class DateTimeAttributeEditor extends AbstractAttributeEditor {
     }
 
     @Override
-    public void createControl(Composite parent, FormToolkit toolkit) {
+    public void createControl(final Composite parent, final FormToolkit toolkit) {
         if (isReadOnly()) {
             text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
             text.setFont(JFaceResources.getDefaultFont());
@@ -63,7 +63,7 @@ public class DateTimeAttributeEditor extends AbstractAttributeEditor {
             text.setFont(JFaceResources.getDefaultFont());
             text.addModifyListener(new ModifyListener() {
                 @Override
-                public void modifyText(ModifyEvent e) {
+                public void modifyText(final ModifyEvent e) {
                     setValue(text.getText());
                     //EditorUtil.ensureVisible(text);
                 }
@@ -77,10 +77,10 @@ public class DateTimeAttributeEditor extends AbstractAttributeEditor {
         return format.format(getAttributeMapper().getDateValue(getTaskAttribute()));
     }
 
-    public void setValue(String text) {
+    public void setValue(final String text) {
         try {
             getAttributeMapper().setDateValue(getTaskAttribute(), format.parse(text));
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             // XXX ignore
         }
         attributeChanged();

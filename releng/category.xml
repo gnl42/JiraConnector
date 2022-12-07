@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="me.glindholm.connector.eclipse_4.1.9.qualifier.jar" id="me.glindholm.connector.eclipse" version="4.1.9.qualifier">
+   <feature url="me.glindholm.connector.eclipse_4.2.0.qualifier.jar" id="me.glindholm.connector.eclipse" version="4.2.0.qualifier">
       <category name="Connector"/>
    </feature>
    <category-def name="Connector" label="JiraConnector">

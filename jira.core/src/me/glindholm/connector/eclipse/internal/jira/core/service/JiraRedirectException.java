@@ -15,37 +15,37 @@ import java.text.MessageFormat;
 
 /**
  * Indicates an unexpected redirect during repository access.
- * 
+ *
  * @author Steffen Pingel
  */
 public class JiraRedirectException extends JiraException {
 
-	private static final long serialVersionUID = 5414408704994061726L;
+    private static final long serialVersionUID = 5414408704994061726L;
 
-	private final String location;
+    private final String location;
 
-	public JiraRedirectException(String message, String location, Throwable cause) {
-		super(message, cause);
-		this.location = location;
-	}
+    public JiraRedirectException(final String message, final String location, final Throwable cause) {
+        super(message, cause);
+        this.location = location;
+    }
 
-	public JiraRedirectException(String message, String location) {
-		super(message);
-		this.location = location;
-	}
+    public JiraRedirectException(final String message, final String location) {
+        super(message);
+        this.location = location;
+    }
 
-	public JiraRedirectException(String location) {
-		super(MessageFormat.format("Server redirected to unexpected location: {0}", location)); //$NON-NLS-1$
-		this.location = location;
-	}
+    public JiraRedirectException(final String location) {
+        super(MessageFormat.format("Server redirected to unexpected location: {0}", location)); //$NON-NLS-1$
+        this.location = location;
+    }
 
-	public JiraRedirectException() {
-		super("Invalid server response, missing redirect location"); //$NON-NLS-1$
-		this.location = null;
-	}
+    public JiraRedirectException() {
+        super("Invalid server response, missing redirect location"); //$NON-NLS-1$
+        location = null;
+    }
 
-	public String getLocation() {
-		return location;
-	}
+    public String getLocation() {
+        return location;
+    }
 
 }

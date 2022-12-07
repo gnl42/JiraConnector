@@ -15,6 +15,8 @@ import java.io.Serializable;
 import java.net.URI;
 import java.time.Instant;
 
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
+
 /**
  * @author Steffen Pingel
  */
@@ -28,7 +30,7 @@ public class JiraAttachment implements Serializable {
 
     private long size;
 
-    private String author;
+    private BasicUser author;
 
     private Instant created;
 
@@ -39,7 +41,7 @@ public class JiraAttachment implements Serializable {
     public JiraAttachment() {
     }
 
-    public JiraAttachment(String id, String name, long size, String author, Instant created) {
+    public JiraAttachment(final String id, final String name, final long size, final BasicUser author, final Instant created) {
         this.id = id;
         this.name = name;
         this.size = size;
@@ -48,18 +50,18 @@ public class JiraAttachment implements Serializable {
     }
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -67,15 +69,15 @@ public class JiraAttachment implements Serializable {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(final long size) {
         this.size = size;
     }
 
-    public String getAuthor() {
+    public BasicUser getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(final BasicUser author) {
         this.author = author;
     }
 
@@ -83,29 +85,21 @@ public class JiraAttachment implements Serializable {
         return created;
     }
 
-    public void setCreated(Instant created) {
+    public void setCreated(final Instant created) {
         this.created = created;
     }
 
     @Override
     public String toString() {
-        return this.name;
+        return name;
     }
 
     public URI getContent() {
         return content;
     }
 
-    public void setContent(URI content) {
+    public void setContent(final URI content) {
         this.content = content;
-    }
-
-    public void setAuthorDisplayName(String authorDisplayName) {
-        this.authorDisplayName = authorDisplayName;
-    }
-
-    public String getAuthorDisplayName() {
-        return authorDisplayName;
     }
 
 }

@@ -22,113 +22,109 @@ import org.eclipse.core.runtime.Assert;
  */
 public class JiraPriority implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public static final String BLOCKER_ID = "1"; //$NON-NLS-1$
+    public static final String BLOCKER_ID = "1"; //$NON-NLS-1$
 
-	public static final String CRITICAL_ID = "2"; //$NON-NLS-1$
+    public static final String CRITICAL_ID = "2"; //$NON-NLS-1$
 
-	public static final String MAJOR_ID = "3"; //$NON-NLS-1$
+    public static final String MAJOR_ID = "3"; //$NON-NLS-1$
 
-	public static final String MINOR_ID = "4"; //$NON-NLS-1$
+    public static final String MINOR_ID = "4"; //$NON-NLS-1$
 
-	public static final String TRIVIAL_ID = "5"; //$NON-NLS-1$
+    public static final String TRIVIAL_ID = "5"; //$NON-NLS-1$
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private String description;
+    private String description;
 
-	private String icon;
+    private String icon;
 
-	private String colour;
+    private String colour;
 
-	private URI self;
+    private URI self;
 
-	public JiraPriority(String id) {
-		Assert.isNotNull(id);
-		this.id = id;
-	}
+    public JiraPriority(final String id) {
+        Assert.isNotNull(id);
+        this.id = id;
+    }
 
-	public JiraPriority(String id, String name, String description, String icon, String colour) {
-		this(id);
-		this.name = name;
-		this.description = description;
-		this.icon = icon;
-		this.colour = colour;
-	}
+    public JiraPriority(final String id, final String name, final String description, final String icon, final String colour) {
+        this(id);
+        this.name = name;
+        this.description = description;
+        this.icon = icon;
+        this.colour = colour;
+    }
 
-	public String getColour() {
-		return this.colour;
-	}
+    public String getColour() {
+        return colour;
+    }
 
-	public URI getSelf() {
-		return self;
-	}
+    public URI getSelf() {
+        return self;
+    }
 
-	public void setColour(String colour) {
-		this.colour = colour;
-	}
+    public void setColour(final String colour) {
+        this.colour = colour;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public String getIcon() {
-		return this.icon;
-	}
+    public String getIcon() {
+        return icon;
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public void setIcon(final String icon) {
+        this.icon = icon;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(final String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object obj) {
+        if ((obj == null) || !(obj instanceof JiraPriority)) {
+            return false;
+        }
 
-		if (!(obj instanceof JiraPriority)) {
-			return false;
-		}
+        final JiraPriority that = (JiraPriority) obj;
 
-		JiraPriority that = (JiraPriority) obj;
+        return id.equals(that.id);
+    }
 
-		return this.id.equals(that.id);
-	}
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
+    @Override
+    public String toString() {
+        return name;
+    }
 
-	@Override
-	public String toString() {
-		return this.name;
-	}
-
-	public void setSelf(URI self) {
-		this.self = self;
-	}
+    public void setSelf(final URI self) {
+        this.self = self;
+    }
 }

@@ -22,60 +22,60 @@ import java.io.Serializable;
  */
 public class JiraLinkType implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private String style;
+    private String style;
 
-	private String inwardsDescription;
+    private String inwardsDescription;
 
-	private String outwardsDescription;
+    private String outwardsDescription;
 
-//	private boolean isSubTaskLinkType;
-//
-//	private boolean isSystemLinkType;
+    //	private boolean isSubTaskLinkType;
+    //
+    //	private boolean isSystemLinkType;
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(final String id) {
+        this.id = id;
+    }
 
-	public String getInwardsDescription() {
-		return this.inwardsDescription;
-	}
+    public String getInwardsDescription() {
+        return inwardsDescription;
+    }
 
-	public void setInwardsDescription(String inwardsDescription) {
-		this.inwardsDescription = inwardsDescription;
-	}
+    public void setInwardsDescription(final String inwardsDescription) {
+        this.inwardsDescription = inwardsDescription;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public String getOutwardsDescription() {
-		return this.outwardsDescription;
-	}
+    public String getOutwardsDescription() {
+        return outwardsDescription;
+    }
 
-	public void setOutwardsDescription(String outwardsDescription) {
-		this.outwardsDescription = outwardsDescription;
-	}
+    public void setOutwardsDescription(final String outwardsDescription) {
+        this.outwardsDescription = outwardsDescription;
+    }
 
-	public String getStyle() {
-		return this.style;
-	}
+    public String getStyle() {
+        return style;
+    }
 
-	public void setStyle(String style) {
-		this.style = style;
-	}
+    public void setStyle(final String style) {
+        this.style = style;
+    }
 
 }

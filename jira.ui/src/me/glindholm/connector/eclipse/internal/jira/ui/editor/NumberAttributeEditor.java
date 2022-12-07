@@ -21,16 +21,16 @@ import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 @SuppressWarnings("restriction")
 public class NumberAttributeEditor extends TextAttributeEditor {
 
-    public NumberAttributeEditor(TaskDataModel manager, TaskAttribute taskAttribute) {
+    public NumberAttributeEditor(final TaskDataModel manager, final TaskAttribute taskAttribute) {
         super(manager, taskAttribute);
     }
 
     @Override
     public String getValue() {
-        String sNumber = super.getValue();
+        final String sNumber = super.getValue();
 
         try {
-            Double dNumber = Double.valueOf(sNumber);
+            final Double dNumber = Double.valueOf(sNumber);
 
             // check if there is a fraction part
             if (dNumber != Math.floor(dNumber)) {
@@ -40,7 +40,7 @@ public class NumberAttributeEditor extends TextAttributeEditor {
             // cut fraction part if equals to 0
             return Long.toString(dNumber.longValue());
 
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return sNumber;
         }
     }

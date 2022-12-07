@@ -19,24 +19,24 @@ import java.util.regex.Pattern;
  */
 public class WdhmUtil {
 
-	private static final String REGEX = "^\\s*-?\\s*(\\d+[wW])?\\s*(\\d+[dD])?\\s*(\\d+[hH])?\\s*(\\d+[mM])?\\s*$"; //$NON-NLS-1$
+    private static final String REGEX = "^\\s*-?\\s*(\\d+[wW])?\\s*(\\d+[dD])?\\s*(\\d+[hH])?\\s*(\\d+[mM])?\\s*$"; //$NON-NLS-1$
 
-	private static final Pattern p = Pattern.compile(REGEX);
+    private static final Pattern p = Pattern.compile(REGEX);
 
-	/**
-	 * Validates text against w*d*h*m* pattern. It accepts also nulls and empty strings.
-	 * 
-	 * @param text
-	 * @return
-	 * @deprecated Use Mylyn JiraUtil.getTimeFormat(repo)
-	 */
-	@Deprecated
-	public static boolean isValid(String text) {
-		return text == null || text.length() == 0 || isCorrect(text);
-	}
+    /**
+     * Validates text against w*d*h*m* pattern. It accepts also nulls and empty strings.
+     *
+     * @param text
+     * @return
+     * @deprecated Use Mylyn JiraUtil.getTimeFormat(repo)
+     */
+    @Deprecated
+    public static boolean isValid(final String text) {
+        return text == null || text.length() == 0 || isCorrect(text);
+    }
 
-	private static boolean isCorrect(String text) {
-		Matcher m = p.matcher(text);
-		return m.matches();
-	}
+    private static boolean isCorrect(final String text) {
+        final Matcher m = p.matcher(text);
+        return m.matches();
+    }
 }

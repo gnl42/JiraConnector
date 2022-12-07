@@ -58,7 +58,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
     private boolean disposed = false;
 
-    public JiraTaskEditorPage(TaskEditor editor) {
+    public JiraTaskEditorPage(final TaskEditor editor) {
         super(editor, JiraCorePlugin.CONNECTOR_KIND);
         setNeedsPrivateSection(false);
         setNeedsSubmitButton(true);
@@ -66,7 +66,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
     @Override
     protected Set<TaskEditorPartDescriptor> createPartDescriptors() {
-        Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
+        final Set<TaskEditorPartDescriptor> parts = super.createPartDescriptors();
 
         if (removePart(parts, ID_PART_ATTACHMENTS)) {
             parts.add(new TaskEditorPartDescriptor(ID_PART_ATTACHMENTS) {
@@ -83,8 +83,8 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
         // replace summary part
         Iterator<TaskEditorPartDescriptor> iter = parts.iterator();
         while (iter.hasNext()) {
-            TaskEditorPartDescriptor part = iter.next();
-            if (part.getId().equals(ID_PART_SUMMARY)) {
+            final TaskEditorPartDescriptor part = iter.next();
+            if (ID_PART_SUMMARY.equals(part.getId())) {
                 parts.remove(part);
 
                 // add JIRA specific summary part (with votes number)
@@ -102,8 +102,8 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
         // remove comments part
         iter = parts.iterator();
         while (iter.hasNext()) {
-            TaskEditorPartDescriptor part = iter.next();
-            if (part.getId().equals(ID_PART_COMMENTS)) {
+            final TaskEditorPartDescriptor part = iter.next();
+            if (ID_PART_COMMENTS.equals(part.getId())) {
                 parts.remove(part);
 
                 // add JIRA specific comments part (with visibility restriction info for each comment)
@@ -141,7 +141,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
         parts.add(new TaskEditorPartDescriptor(ID_PART_DESCRIPTION) {
             @Override
             public AbstractTaskEditorPart createPart() {
-                TaskEditorDescriptionPart part = new TaskEditorDescriptionPart();
+                final TaskEditorDescriptionPart part = new TaskEditorDescriptionPart();
                 part.setExpandVertically(true);
                 part.setSectionStyle(ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
                 return part;
@@ -168,11 +168,8 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
         return parts;
     }
 
-    private boolean removePart(Set<TaskEditorPartDescriptor> parts, String partId) {
-        Iterator<TaskEditorPartDescriptor> iter;
-        iter = parts.iterator();
-        while (iter.hasNext()) {
-            TaskEditorPartDescriptor part = iter.next();
+    private boolean removePart(final Set<TaskEditorPartDescriptor> parts, final String partId) {
+        for (final TaskEditorPartDescriptor part : parts) {
             if (part.getId().equals(partId)) {
                 parts.remove(part);
                 return true;
@@ -187,7 +184,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
     }
 
     @Override
-    public void fillToolBar(IToolBarManager toolBarManager) {
+    public void fillToolBar(final IToolBarManager toolBarManager) {
         super.fillToolBar(toolBarManager);
 
         if (getModel() != null && getModel().getTaskData() != null && !getModel().getTaskData().isNew()) {
@@ -199,13 +196,13 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
     @Override
     public void dispose() {
-        this.disposed = true;
+        disposed = true;
         TasksUiPlugin.getTaskDataManager().removeListener(updateStartWorkActionListener);
         super.dispose();
     }
 
     @Override
-    public void init(IEditorSite site, IEditorInput input) {
+    public void init(final IEditorSite site, final IEditorInput input) {
         super.init(site, input);
 
         TasksUiPlugin.getTaskDataManager().addListener(updateStartWorkActionListener);
@@ -214,12 +211,12 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
     private final ITaskDataManagerListener updateStartWorkActionListener = new ITaskDataManagerListener() {
 
         @Override
-        public void taskDataUpdated(TaskDataManagerEvent event) {
+        public void taskDataUpdated(final TaskDataManagerEvent event) {
             update(event);
         }
 
         @Override
-        public void editsDiscarded(TaskDataManagerEvent event) {
+        public void editsDiscarded(final TaskDataManagerEvent event) {
             update(event);
         }
 
@@ -245,11 +242,11 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
     @Override
     public void doSubmit() {
 
-        TaskAttribute attribute = getModel().getTaskData()
+        final TaskAttribute attribute = getModel().getTaskData()
                 .getRoot()
                 .getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
         if (attribute != null) {
-            TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
+            final TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
             //if flag is set and true, submit worklog will happen
             if (submitFlagAttribute != null && submitFlagAttribute.getValue().equals(String.valueOf(true))) {
                 isWorkLogSubmit = true;
@@ -260,19 +257,19 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
     }
 
     @Override
-    protected void handleTaskSubmitted(SubmitJobEvent event) {
+    protected void handleTaskSubmitted(final SubmitJobEvent event) {
 
         if (isWorkLogSubmit) {
             isWorkLogSubmit = false;
 
-            IStatus status = event.getJob().getStatus();
+            final IStatus status = event.getJob().getStatus();
             if (status == null || status.getSeverity() == IStatus.OK) {
                 // remember submitted time
                 JiraUiUtil.setLoggedActivityTime(getModel().getTask());
             }
         }
 
-        IStatus status = event.getJob().getStatus();
+        final IStatus status = event.getJob().getStatus();
         if (status != null
                 && status.getSeverity() != IStatus.CANCEL
                 && status.getCode() == RepositoryStatus.ERROR_IO
@@ -285,11 +282,11 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
         }
     }
 
-    private void handleSubmitErrorCopy(SubmitJob job) {
-        if (!this.disposed) {
+    private void handleSubmitErrorCopy(final SubmitJob job) {
+        if (!disposed) {
             final IStatus status = job.getStatus();
-            String message = Messages.JiraTaskEditorPage_Submit_Failed_Please_Refresh;
-            String detailedMessage = message + "\n\n" + status.getMessage(); //$NON-NLS-1$
+            final String message = Messages.JiraTaskEditorPage_Submit_Failed_Please_Refresh;
+            final String detailedMessage = message + "\n\n" + status.getMessage(); //$NON-NLS-1$
 
             final IStatus newStatus;
 
@@ -302,7 +299,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
             getTaskEditor().setMessage(message, IMessageProvider.ERROR, new HyperlinkAdapter() {
                 @Override
-                public void linkActivated(HyperlinkEvent e) {
+                public void linkActivated(final HyperlinkEvent e) {
                     TasksUiInternal.displayStatus(
                             org.eclipse.mylyn.internal.tasks.ui.editors.Messages.AbstractTaskEditorPage_Submit_failed,
                             newStatus);

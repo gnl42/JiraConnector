@@ -2,7 +2,7 @@
 <feature
       id="me.glindholm.connector.eclipse.commons"
       label="%featureName"
-      version="4.1.9.qualifier"
+      version="4.2.0.qualifier"
       provider-name="%providerName"
       plugin="me.glindholm.connector.eclipse.branding.ui">
 

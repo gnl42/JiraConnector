@@ -109,8 +109,8 @@ public enum JiraAttribute {
 
     WATCHERS(JiraConstants.ATTRIBUTE_WATCHERS, JiraFieldType.TEXTAREA, Messages.JiraAttribute_Watchers, true, true);
 
-    public static JiraAttribute valueById(String id) {
-        for (JiraAttribute attribute : values()) {
+    public static JiraAttribute valueById(final String id) {
+        for (final JiraAttribute attribute : values()) {
             if (id.equals(attribute.id())) {
                 return attribute;
             }
@@ -130,26 +130,26 @@ public enum JiraAttribute {
 
     private final JiraFieldType type;
 
-    private JiraAttribute(String id, JiraFieldType type, String name) {
+    private JiraAttribute(final String id, final JiraFieldType type, final String name) {
         this.id = id;
         this.type = type;
         this.name = name;
-        this.isHidden = true;
-        this.isReadOnly = true;
-        this.paramName = null;
+        isHidden = true;
+        isReadOnly = true;
+        paramName = null;
     }
 
-    private JiraAttribute(String id, JiraFieldType type, String name, boolean isHidden, boolean isReadOnly) {
+    private JiraAttribute(final String id, final JiraFieldType type, final String name, final boolean isHidden, final boolean isReadOnly) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.isHidden = isHidden;
         this.isReadOnly = isReadOnly;
-        this.paramName = null;
+        paramName = null;
     }
 
-    private JiraAttribute(String id, JiraFieldType type, String name, boolean isHidden, boolean isReadOnly,
-            String paramName) {
+    private JiraAttribute(final String id, final JiraFieldType type, final String name, final boolean isHidden, final boolean isReadOnly,
+            final String paramName) {
         this.id = id;
         this.type = type;
         this.name = name;

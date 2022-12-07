@@ -15,11 +15,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osgi.util.NLS;
 
 import me.glindholm.jira.rest.client.api.domain.CustomFieldOption;
@@ -39,10 +38,10 @@ public class JiraRestCustomFieldsParser {
         throw new Exception("Utility class"); //$NON-NLS-1$
     }
 
-    public static @Nonnull List<String> parseMultiUserPicker(final IssueField field) throws JSONException, URISyntaxException {
+    public static @NonNull List<String> parseMultiUserPicker(final IssueField field) throws JSONException, URISyntaxException {
         final List<String> users = new ArrayList<>();
         for (final User user : usersParser.parse((JSONArray) field.getValue())) {
-            users.add(user.getName());
+            users.add(user.getExternalId());
         }
 
         return users;
@@ -50,7 +49,7 @@ public class JiraRestCustomFieldsParser {
 
     public static String parseUserPicker(final IssueField field) throws JSONException, URISyntaxException {
         final User user = userParser.parse((JSONObject) field.getValue());
-        return user.getName();
+        return user.getExternalId();
     }
 
     public static String parseSelect(final IssueField field) throws JSONException, URISyntaxException {

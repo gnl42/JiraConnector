@@ -17,6 +17,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+import me.glindholm.connector.eclipse.internal.jira.core.service.rest.JiraRestFields;
+
 /**
  * @author Brock Janiczak
  * @author Jacek Jaroczynski
@@ -116,6 +118,14 @@ public class JiraServerInfo implements Serializable {
             statistics = new JiraStatistics();
         }
         return statistics;
+    }
+
+    public String getAccountTag() {
+        if (version.isGreaterThanOrEquals(JiraServerVersion.JIRA_9_0)) {
+            return JiraRestFields.ACCOUNT_ID;
+        } else {
+            return JiraRestFields.NAME;
+        }
     }
 
     @Override

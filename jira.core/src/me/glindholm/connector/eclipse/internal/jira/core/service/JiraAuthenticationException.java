@@ -18,10 +18,10 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
  */
 public class JiraAuthenticationException extends JiraException {
 
-	private static final long serialVersionUID = 8723151254362915272L;
+    private static final long serialVersionUID = 8723151254362915272L;
 
-	public JiraAuthenticationException(String message) {
-		super(message == null ? "Invalid user name or password" : message); //$NON-NLS-1$
-	}
+    public JiraAuthenticationException(final String message) {
+        super(message == null ? "Invalid user name or password" : message); //$NON-NLS-1$
+    }
 
 }

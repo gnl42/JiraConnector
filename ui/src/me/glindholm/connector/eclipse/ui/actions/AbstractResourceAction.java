@@ -11,9 +11,11 @@
 
 package me.glindholm.connector.eclipse.ui.actions;
 
-import me.glindholm.connector.eclipse.ui.commons.JiraConnectorUiUtil;
-import me.glindholm.connector.eclipse.ui.commons.IEditorResource;
-import me.glindholm.connector.eclipse.ui.commons.ResourceEditorBean;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -30,128 +32,129 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import me.glindholm.connector.eclipse.ui.commons.IEditorResource;
+import me.glindholm.connector.eclipse.ui.commons.JiraConnectorUiUtil;
+import me.glindholm.connector.eclipse.ui.commons.ResourceEditorBean;
 
 public abstract class AbstractResourceAction extends BaseSelectionListenerAction implements IActionDelegate {
 
-	private IWorkbenchWindow workbenchWindow;
+    private IWorkbenchWindow workbenchWindow;
 
-	private List<ResourceEditorBean> selectionData;
+    private List<ResourceEditorBean> selectionData;
 
-	protected AbstractResourceAction(String text) {
-		super(text);
-	}
+    protected AbstractResourceAction(final String text) {
+        super(text);
+    }
 
-	protected List<ResourceEditorBean> getSelectionData() {
-		return selectionData;
-	}
+    protected List<ResourceEditorBean> getSelectionData() {
+        return selectionData;
+    }
 
-	public void dispose() {
-	}
+    public void dispose() {
+    }
 
-	public void init(IWorkbenchWindow window) {
-		this.workbenchWindow = window;
-	}
+    public void init(final IWorkbenchWindow window) {
+        workbenchWindow = window;
+    }
 
-	public void run(IAction action) {
-		if (selectionData != null && selectionData.get(0) != null) {
-			processResources(selectionData, WorkbenchUtil.getShell());
-		}
-	}
+    @Override
+    public void run(final IAction action) {
+        if (selectionData != null && selectionData.get(0) != null) {
+            processResources(selectionData, WorkbenchUtil.getShell());
+        }
+    }
 
-	private List<ResourceEditorBean> getData(ISelection selection) {
-		List<ResourceEditorBean> ret = new ArrayList<ResourceEditorBean>();
-		if (selection instanceof IStructuredSelection) {
-			final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+    private List<ResourceEditorBean> getData(final ISelection selection) {
+        final List<ResourceEditorBean> ret = new ArrayList<>();
+        if (selection instanceof IStructuredSelection) {
+            final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
-			Object[] selectedObjects = structuredSelection.toArray();
+            final Object[] selectedObjects = structuredSelection.toArray();
 
-			for (Object selectedObject : selectedObjects) {
+            for (final Object selectedObject : selectedObjects) {
 
-				if (selectedObject instanceof IEditorResource) {
-					IEditorResource a = (IEditorResource) selectedObject;
-					ret.add(new ResourceEditorBean(a.getResource(), a.getLineRange()));
+                if (selectedObject instanceof IEditorResource) {
+                    final IEditorResource a = (IEditorResource) selectedObject;
+                    ret.add(new ResourceEditorBean(a.getResource(), a.getLineRange()));
 
-				} else if (structuredSelection.getFirstElement() instanceof IAdaptable) {
-					IResource resource = null;
-					LineRange lineRange = null;
-					resource = (IResource) ((IAdaptable) structuredSelection.getFirstElement()).getAdapter(IResource.class);
-					lineRange = getJavaEditorSelection(structuredSelection);
-					ret.add(new ResourceEditorBean(resource, lineRange));
-				}
-			}
-		} else {
-			IEditorPart activeEditor = getActiveEditor();
-			if (activeEditor != null) {
-				IEditorInput editorInput = getEditorInputFromSelection(selection);
-				if (editorInput != null) {
-					IResource resource = null;
-					LineRange lineRange = null;
-					resource = (IResource) editorInput.getAdapter(IResource.class);
-					// such call:
-					//				lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
-					//						- textSelection.getStartLine());
-					// does not work (i.e. it returns previously selected text region rather than selected now ?!?
-					lineRange = JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(activeEditor,
-							activeEditor.getEditorInput());
-					ret.add(new ResourceEditorBean(resource, lineRange));
-				}
-			}
-		}
-		return ret;
-	}
+                } else if (structuredSelection.getFirstElement() instanceof IAdaptable) {
+                    IResource resource = null;
+                    LineRange lineRange = null;
+                    resource = ((IAdaptable) structuredSelection.getFirstElement()).getAdapter(IResource.class);
+                    lineRange = getJavaEditorSelection(structuredSelection);
+                    ret.add(new ResourceEditorBean(resource, lineRange));
+                }
+            }
+        } else {
+            final IEditorPart activeEditor = getActiveEditor();
+            if (activeEditor != null) {
+                final IEditorInput editorInput = getEditorInputFromSelection(selection);
+                if (editorInput != null) {
+                    IResource resource = null;
+                    LineRange lineRange = null;
+                    resource = editorInput.getAdapter(IResource.class);
+                    // such call:
+                    // lineRange = new LineRange(textSelection.getStartLine(),
+                    // textSelection.getEndLine()
+                    // - textSelection.getStartLine());
+                    // does not work (i.e. it returns previously selected text region rather than
+                    // selected now ?!?
+                    lineRange = JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(activeEditor, activeEditor.getEditorInput());
+                    ret.add(new ResourceEditorBean(resource, lineRange));
+                }
+            }
+        }
+        return ret;
+    }
 
-	@Override
-	protected boolean updateSelection(IStructuredSelection selection) {
-		selectionData = getData(selection);
-		return super.updateSelection(selection);
-	}
+    @Override
+    protected boolean updateSelection(final IStructuredSelection selection) {
+        selectionData = getData(selection);
+        return super.updateSelection(selection);
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			selectionChanged((IStructuredSelection) selection);
-		} else {
-			selectionChanged(StructuredSelection.EMPTY);
-		}
-		action.setEnabled(isEnabled());
-	}
+    @Override
+    public void selectionChanged(final IAction action, final ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            selectionChanged((IStructuredSelection) selection);
+        } else {
+            selectionChanged(StructuredSelection.EMPTY);
+        }
+        action.setEnabled(isEnabled());
+    }
 
-	private IEditorPart getActiveEditor() {
-		IWorkbenchWindow window = workbenchWindow;
-		if (window == null) {
-			window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		}
-		if (window != null && window.getActivePage() != null) {
-			return window.getActivePage().getActiveEditor();
-		}
-		return null;
-	}
+    private IEditorPart getActiveEditor() {
+        IWorkbenchWindow window = workbenchWindow;
+        if (window == null) {
+            window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        }
+        if (window != null && window.getActivePage() != null) {
+            return window.getActivePage().getActiveEditor();
+        }
+        return null;
+    }
 
-	private IEditorInput getEditorInputFromSelection(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = ((IStructuredSelection) selection);
-			if (structuredSelection.getFirstElement() instanceof IEditorInput) {
-				return (IEditorInput) structuredSelection.getFirstElement();
-			}
-		}
-		return null;
-	}
+    private IEditorInput getEditorInputFromSelection(final ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            if (structuredSelection.getFirstElement() instanceof IEditorInput) {
+                return (IEditorInput) structuredSelection.getFirstElement();
+            }
+        }
+        return null;
+    }
 
-	@Nullable
-	private LineRange getJavaEditorSelection(ISelection selection) {
-		IEditorPart editorPart = getActiveEditor();
-		IEditorInput editorInput = getEditorInputFromSelection(selection);
-		if (editorInput != null && editorPart != null) {
-			return JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
-		}
-		return null;
-	}
+    @Nullable
+    private LineRange getJavaEditorSelection(final ISelection selection) {
+        final IEditorPart editorPart = getActiveEditor();
+        final IEditorInput editorInput = getEditorInputFromSelection(selection);
+        if (editorInput != null && editorPart != null) {
+            return JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
+        }
+        return null;
+    }
 
-	protected abstract void processResources(@Nonnull
-	List<ResourceEditorBean> selection, final Shell shell);
+    protected abstract void processResources(@Nonnull List<ResourceEditorBean> selection, final Shell shell);
 
 }

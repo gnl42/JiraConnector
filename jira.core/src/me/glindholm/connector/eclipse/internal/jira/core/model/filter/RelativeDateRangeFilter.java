@@ -16,119 +16,119 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
  * @author Brock Janiczak
  */
 public class RelativeDateRangeFilter extends DateFilter {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final RangeType previousRangeType;
+    private final RangeType previousRangeType;
 
-	private final long previousCount;
+    private final long previousCount;
 
-	private final RangeType nextRangeType;
+    private final RangeType nextRangeType;
 
-	private final long nextCount;
+    private final long nextCount;
 
-	/**
-	 * Creates a date range from now back to the specified range
-	 * 
-	 * @param rangeType
-	 *            Unit of measure
-	 * @param count
-	 *            Number of units
-	 */
-	public RelativeDateRangeFilter(RangeType rangeType, long count) {
-		this(rangeType, count, RangeType.NONE, 0);
-	}
+    /**
+     * Creates a date range from now back to the specified range
+     *
+     * @param rangeType
+     *            Unit of measure
+     * @param count
+     *            Number of units
+     */
+    public RelativeDateRangeFilter(final RangeType rangeType, final long count) {
+        this(rangeType, count, RangeType.NONE, 0);
+    }
 
-	public RelativeDateRangeFilter(RangeType previousRangeType, long previousCount, RangeType nextRangeType,
-			long nextCount) {
-		this.previousRangeType = previousRangeType;
-		this.previousCount = previousCount;
-		this.nextRangeType = nextRangeType;
-		this.nextCount = nextCount;
-	}
+    public RelativeDateRangeFilter(final RangeType previousRangeType, final long previousCount, final RangeType nextRangeType,
+            final long nextCount) {
+        this.previousRangeType = previousRangeType;
+        this.previousCount = previousCount;
+        this.nextRangeType = nextRangeType;
+        this.nextCount = nextCount;
+    }
 
-	public long previousMilliseconds() {
-		return Math.abs(this.previousRangeType.getMultiplier() * previousCount);
-	}
+    public long previousMilliseconds() {
+        return Math.abs(previousRangeType.getMultiplier() * previousCount);
+    }
 
-	public long nextMilliseconds() {
-		return Math.abs(this.nextRangeType.getMultiplier() * nextCount);
-	}
+    public long nextMilliseconds() {
+        return Math.abs(nextRangeType.getMultiplier() * nextCount);
+    }
 
-	public long getNextCount() {
-		return this.nextCount;
-	}
+    public long getNextCount() {
+        return nextCount;
+    }
 
-	public RangeType getNextRangeType() {
-		return this.nextRangeType;
-	}
+    public RangeType getNextRangeType() {
+        return nextRangeType;
+    }
 
-	public long getPreviousCount() {
-		return this.previousCount;
-	}
+    public long getPreviousCount() {
+        return previousCount;
+    }
 
-	public RangeType getPreviousRangeType() {
-		return this.previousRangeType;
-	}
+    public RangeType getPreviousRangeType() {
+        return previousRangeType;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("from "); //$NON-NLS-1$
-		if (RangeType.NONE == this.previousRangeType) {
-			sb.append("whenever"); //$NON-NLS-1$
-		} else {
-			sb.append(this.previousCount).append(this.previousRangeType);
-		}
-		sb.append(" to "); //$NON-NLS-1$
-		if (RangeType.NONE == this.nextRangeType) {
-			sb.append("whenever"); //$NON-NLS-1$
-		} else {
-			sb.append(this.nextCount).append(this.nextRangeType);
-		}
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("from "); //$NON-NLS-1$
+        if (RangeType.NONE == previousRangeType) {
+            sb.append("whenever"); //$NON-NLS-1$
+        } else {
+            sb.append(previousCount).append(previousRangeType);
+        }
+        sb.append(" to "); //$NON-NLS-1$
+        if (RangeType.NONE == nextRangeType) {
+            sb.append("whenever"); //$NON-NLS-1$
+        } else {
+            sb.append(nextCount).append(nextRangeType);
+        }
+        return sb.toString();
+    }
 
-	@Override
-	DateFilter copy() {
-		return new RelativeDateRangeFilter(this.previousRangeType, previousCount, nextRangeType, nextCount);
-	}
+    @Override
+    DateFilter copy() {
+        return new RelativeDateRangeFilter(previousRangeType, previousCount, nextRangeType, nextCount);
+    }
 
-	public static class RangeType {
-		public static final RangeType NONE = new RangeType(0);
+    public static class RangeType {
+        public static final RangeType NONE = new RangeType(0);
 
-		public static final RangeType MINUTE = new RangeType(1000 * 60);
+        public static final RangeType MINUTE = new RangeType(1000 * 60);
 
-		public static final RangeType HOUR = new RangeType(1000 * 60 * 60);
+        public static final RangeType HOUR = new RangeType(1000 * 60 * 60);
 
-		public static final RangeType DAY = new RangeType(1000 * 60 * 60 * 24);
+        public static final RangeType DAY = new RangeType(1000 * 60 * 60 * 24);
 
-		public static final RangeType WEEK = new RangeType(1000 * 60 * 60 * 24 * 7);
+        public static final RangeType WEEK = new RangeType(1000 * 60 * 60 * 24 * 7);
 
-		private final long multiplier;
+        private final long multiplier;
 
-		private RangeType(long multiplier) {
-			this.multiplier = multiplier;
-		}
+        private RangeType(final long multiplier) {
+            this.multiplier = multiplier;
+        }
 
-		public long getMultiplier() {
-			return this.multiplier;
-		}
+        public long getMultiplier() {
+            return multiplier;
+        }
 
-		@Override
-		public String toString() {
-			if (HOUR.equals(this)) {
-				return "h"; //$NON-NLS-1$
-			} else if (DAY.equals(this)) {
-				return "d"; //$NON-NLS-1$
-			} else if (WEEK.equals(this)) {
-				return "w"; //$NON-NLS-1$
-			} else if (MINUTE.equals(this)) {
-				return "m"; //$NON-NLS-1$
-			} else {
-				return "none"; //$NON-NLS-1$
-			}
-		}
+        @Override
+        public String toString() {
+            if (this.equals(HOUR)) {
+                return "h"; //$NON-NLS-1$
+            } else if (this.equals(DAY)) {
+                return "d"; //$NON-NLS-1$
+            } else if (this.equals(WEEK)) {
+                return "w"; //$NON-NLS-1$
+            } else if (this.equals(MINUTE)) {
+                return "m"; //$NON-NLS-1$
+            } else {
+                return "none"; //$NON-NLS-1$
+            }
+        }
 
-	}
+    }
 
 }

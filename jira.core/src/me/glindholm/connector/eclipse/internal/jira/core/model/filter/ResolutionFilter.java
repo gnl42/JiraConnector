@@ -19,29 +19,29 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
 /**
  * Filter for restricting issues by their resolution. If you are looking for unresolved issues, don't specify and
  * resolutions. If you want all issues regardless of their resolution omit this filter.
- * 
+ *
  * @author Brock Janiczak
  */
 public class ResolutionFilter implements Filter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final JiraResolution[] resolutions;
+    private final JiraResolution[] resolutions;
 
-	public ResolutionFilter(JiraResolution[] resolutions) {
-		assert (resolutions != null);
+    public ResolutionFilter(final JiraResolution[] resolutions) {
+        assert resolutions != null;
 
-		this.resolutions = resolutions;
-	}
+        this.resolutions = resolutions;
+    }
 
-	public JiraResolution[] getResolutions() {
-		return this.resolutions;
-	}
+    public JiraResolution[] getResolutions() {
+        return resolutions;
+    }
 
-	public boolean isUnresolved() {
-		return resolutions.length == 0;
-	}
+    public boolean isUnresolved() {
+        return resolutions.length == 0;
+    }
 
-	ResolutionFilter copy() {
-		return new ResolutionFilter(this.resolutions);
-	}
+    ResolutionFilter copy() {
+        return new ResolutionFilter(resolutions);
+    }
 }

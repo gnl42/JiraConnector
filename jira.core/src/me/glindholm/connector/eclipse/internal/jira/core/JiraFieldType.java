@@ -121,9 +121,9 @@ public enum JiraFieldType {
 
     SPRINT("com.pyxis.greenhopper.jira:gh-sprint");
 
-    public static JiraFieldType fromKey(String key) {
+    public static JiraFieldType fromKey(final String key) {
         if (key != null) {
-            for (JiraFieldType type : values()) {
+            for (final JiraFieldType type : values()) {
                 if (key.equals(type.getKey())) {
                     return type;
                 }
@@ -136,12 +136,12 @@ public enum JiraFieldType {
 
     private final String taskType;
 
-    private JiraFieldType(String key) {
+    private JiraFieldType(final String key) {
         this.key = key;
-        this.taskType = null;
+        taskType = null;
     }
 
-    private JiraFieldType(String key, String taskType) {
+    private JiraFieldType(final String key, final String taskType) {
         this.key = key;
         this.taskType = taskType;
     }

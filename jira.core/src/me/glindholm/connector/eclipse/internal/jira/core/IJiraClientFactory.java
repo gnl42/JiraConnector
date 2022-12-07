@@ -20,6 +20,6 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClient;
  */
 public interface IJiraClientFactory {
 
-	public JiraClient getJiraClient(TaskRepository repository);
+    public JiraClient getJiraClient(TaskRepository repository);
 
 }

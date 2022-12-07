@@ -18,35 +18,35 @@ import java.io.Serializable;
  */
 public class JiraProjectRole implements Serializable {
 
-	private static final long serialVersionUID = 3175313417545219235L;
+    private static final long serialVersionUID = 3175313417545219235L;
 
-	private String description;
+    private String description;
 
-	private Long id;
+    private Long id;
 
-	private String name;
+    private String name;
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 }

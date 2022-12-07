@@ -18,14 +18,14 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
  */
 public class JiraServiceUnavailableException extends JiraException {
 
-	private static final long serialVersionUID = -6648244599873827934L;
+    private static final long serialVersionUID = -6648244599873827934L;
 
-	public JiraServiceUnavailableException(String message) {
-		super(message == null ? "Service unavailable" : message); //$NON-NLS-1$
-	}
+    public JiraServiceUnavailableException(final String message) {
+        super(message == null ? "Service unavailable" : message); //$NON-NLS-1$
+    }
 
-	public JiraServiceUnavailableException(Throwable cause) {
-		super(cause);
-	}
+    public JiraServiceUnavailableException(final Throwable cause) {
+        super(cause);
+    }
 
 }

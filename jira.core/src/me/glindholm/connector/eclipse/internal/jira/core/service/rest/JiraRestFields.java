@@ -16,7 +16,9 @@ public class JiraRestFields {
         throw new Exception("Utility class"); //$NON-NLS-1$
     }
 
-    static final String NAME = "name"; //$NON-NLS-1$
+    public static final String NAME = "name"; //$NON-NLS-1$ JiraServer < 9
+
+    public static final String ACCOUNT_ID = "accountId"; //$NON-NLS-1$ JiraServer >= 9
 
     static final String VALUE = "value"; //$NON-NLS-1$
 

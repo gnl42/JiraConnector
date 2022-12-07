@@ -127,7 +127,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     final static class ComponentLabelProvider implements ILabelProvider {
 
         @Override
-        public void addListener(ILabelProviderListener listener) {
+        public void addListener(final ILabelProviderListener listener) {
         }
 
         @Override
@@ -135,12 +135,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         @Override
-        public Image getImage(Object element) {
+        public Image getImage(final Object element) {
             return null;
         }
 
         @Override
-        public String getText(Object element) {
+        public String getText(final Object element) {
             if (element instanceof Placeholder) {
                 return ((Placeholder) element).getText();
             }
@@ -148,12 +148,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         @Override
-        public boolean isLabelProperty(Object element, String property) {
+        public boolean isLabelProperty(final Object element, final String property) {
             return false;
         }
 
         @Override
-        public void removeListener(ILabelProviderListener listener) {
+        public void removeListener(final ILabelProviderListener listener) {
         }
 
     }
@@ -161,19 +161,19 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     private static final class Placeholder {
         private final String text;
 
-        public Placeholder(String text) {
+        public Placeholder(final String text) {
             this.text = text;
         }
 
         public String getText() {
-            return this.text;
+            return text;
         }
     }
 
     final static class VersionLabelProvider implements ILabelProvider, IColorProvider {
 
         @Override
-        public void addListener(ILabelProviderListener listener) {
+        public void addListener(final ILabelProviderListener listener) {
 
         }
 
@@ -182,7 +182,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         @Override
-        public Color getBackground(Object element) {
+        public Color getBackground(final Object element) {
             if (element instanceof Placeholder) {
                 return Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND);
             }
@@ -190,17 +190,17 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         @Override
-        public Color getForeground(Object element) {
+        public Color getForeground(final Object element) {
             return null;
         }
 
         @Override
-        public Image getImage(Object element) {
+        public Image getImage(final Object element) {
             return null;
         }
 
         @Override
-        public String getText(Object element) {
+        public String getText(final Object element) {
             if (element instanceof Placeholder) {
                 return ((Placeholder) element).getText();
             }
@@ -208,12 +208,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         @Override
-        public boolean isLabelProperty(Object element, String property) {
+        public boolean isLabelProperty(final Object element, final String property) {
             return false;
         }
 
         @Override
-        public void removeListener(ILabelProviderListener listener) {
+        public void removeListener(final ILabelProviderListener listener) {
         }
 
     }
@@ -222,7 +222,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
     private static final String SEARCH_URL_ID = PAGE_NAME + ".SEARCHURL"; //$NON-NLS-1$
 
-    private static final JiraProject[] NO_PROJECTS = new JiraProject[0];
+    private static final JiraProject[] NO_PROJECTS = {};
 
     private static final int HEIGHT_HINT = 50;
 
@@ -350,41 +350,41 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
     private boolean isPageComplete = true;
 
-    public JiraFilterDefinitionPage(TaskRepository repository) {
+    public JiraFilterDefinitionPage(final TaskRepository repository) {
         this(repository, null);
     }
 
-    public JiraFilterDefinitionPage(TaskRepository repository, IRepositoryQuery query) {
+    public JiraFilterDefinitionPage(final TaskRepository repository, final IRepositoryQuery query) {
         super(Messages.JiraFilterDefinitionPage_JIRA_Query, repository, query);
-        this.client = JiraClientFactory.getDefault().getJiraClient(repository);
+        client = JiraClientFactory.getDefault().getJiraClient(repository);
         if (query != null) {
-            this.workingCopy = (FilterDefinition) JiraUtil.getQuery(repository, client, query, false);
+            workingCopy = (FilterDefinition) JiraUtil.getQuery(repository, client, query, false);
         } else {
-            this.workingCopy = new FilterDefinition();
+            workingCopy = new FilterDefinition();
         }
         setDescription(Messages.JiraFilterDefinitionPage_Add_search_filters_to_define_query);
         setPageComplete(false);
     }
 
     void applyChanges() {
-        if (this.queryString.getText().length() > 0 || this.searchSummary.getSelection()
-                || this.searchDescription.getSelection() || this.searchEnvironment.getSelection()
-                || this.searchComments.getSelection()) {
-            workingCopy.setContentFilter(new ContentFilter(this.queryString.getText(),
-                    this.searchSummary.getSelection(), this.searchDescription.getSelection(),
-                    this.searchEnvironment.getSelection(), this.searchComments.getSelection()));
+        if (queryString.getText().length() > 0 || searchSummary.getSelection()
+                || searchDescription.getSelection() || searchEnvironment.getSelection()
+                || searchComments.getSelection()) {
+            workingCopy.setContentFilter(new ContentFilter(queryString.getText(),
+                    searchSummary.getSelection(), searchDescription.getSelection(),
+                    searchEnvironment.getSelection(), searchComments.getSelection()));
         } else {
             workingCopy.setContentFilter(null);
         }
 
-        IStructuredSelection projectSelection = (IStructuredSelection) this.project.getSelection();
+        final IStructuredSelection projectSelection = (IStructuredSelection) project.getSelection();
         if (projectSelection.isEmpty()) {
             workingCopy.setProjectFilter(null);
         } else {
             boolean selectionContainsAll = false;
             boolean selectionContainsNone = false;
-            List<JiraProject> selectedProjects = new ArrayList<>();
-            for (Object selection : projectSelection) {
+            final List<JiraProject> selectedProjects = new ArrayList<>();
+            for (final Object selection : projectSelection) {
                 if (ALL_PROJECTS.equals(selection)) {
                     selectionContainsAll = true;
                 } else if (NO_PROJECT.equals(selection)) {
@@ -405,7 +405,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
         }
 
-        IStructuredSelection reportedInSelection = (IStructuredSelection) reportedIn.getSelection();
+        final IStructuredSelection reportedInSelection = (IStructuredSelection) reportedIn.getSelection();
         if (reportedInSelection.isEmpty()) {
             workingCopy.setReportedInVersionFilter(null);
         } else {
@@ -414,9 +414,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             boolean selectionContainsAll = false;
             boolean selectionContainsNone = false;
 
-            List<JiraVersion> selectedVersions = new ArrayList<>();
+            final List<JiraVersion> selectedVersions = new ArrayList<>();
 
-            for (Object selection : reportedInSelection) {
+            for (final Object selection : reportedInSelection) {
                 if (ANY_REPORTED_VERSION.equals(selection)) {
                     selectionContainsAll = true;
                 } else if (NO_REPORTED_VERSION.equals(selection)) {
@@ -439,7 +439,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
         }
 
-        IStructuredSelection fixForSelection = (IStructuredSelection) fixFor.getSelection();
+        final IStructuredSelection fixForSelection = (IStructuredSelection) fixFor.getSelection();
         if (fixForSelection.isEmpty()) {
             workingCopy.setFixForVersionFilter(null);
         } else {
@@ -448,9 +448,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             boolean selectionContainsAll = false;
             boolean selectionContainsNone = false;
 
-            List<JiraVersion> selectedVersions = new ArrayList<>();
+            final List<JiraVersion> selectedVersions = new ArrayList<>();
 
-            for (Object selection : fixForSelection) {
+            for (final Object selection : fixForSelection) {
                 if (ANY_FIX_VERSION.equals(selection)) {
                     selectionContainsAll = true;
                 } else if (NO_FIX_VERSION.equals(selection)) {
@@ -473,16 +473,16 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
         }
 
-        IStructuredSelection componentsSelection = (IStructuredSelection) components.getSelection();
+        final IStructuredSelection componentsSelection = (IStructuredSelection) components.getSelection();
         if (componentsSelection.isEmpty()) {
             workingCopy.setComponentFilter(null);
         } else {
 
             boolean selectionContainsAll = false;
             boolean selectionContainsNone = false;
-            List<JiraComponent> selectedComponents = new ArrayList<>();
+            final List<JiraComponent> selectedComponents = new ArrayList<>();
 
-            for (Object selection : componentsSelection) {
+            for (final Object selection : componentsSelection) {
                 if (ANY_COMPONENT.equals(selection)) {
                     selectionContainsAll = true;
                 } else if (NO_COMPONENT.equals(selection)) {
@@ -503,15 +503,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         // attributes
 
         // TODO support standard and subtask issue types
-        IStructuredSelection issueTypeSelection = (IStructuredSelection) issueType.getSelection();
+        final IStructuredSelection issueTypeSelection = (IStructuredSelection) issueType.getSelection();
         if (issueTypeSelection.isEmpty()) {
             workingCopy.setIssueTypeFilter(null);
         } else {
             boolean isAnyIssueTypeSelected = false;
 
-            List<JiraIssueType> selectedIssueTypes = new ArrayList<>();
+            final List<JiraIssueType> selectedIssueTypes = new ArrayList<>();
 
-            for (Object selection : issueTypeSelection) {
+            for (final Object selection : issueTypeSelection) {
                 if (ANY_ISSUE_TYPE.equals(selection)) {
                     isAnyIssueTypeSelected = true;
                 } else if (selection instanceof JiraIssueType) {
@@ -527,7 +527,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
         }
 
-        IStructuredSelection reporterSelection = (IStructuredSelection) reporterType.getSelection();
+        final IStructuredSelection reporterSelection = (IStructuredSelection) reporterType.getSelection();
         if (reporterSelection.isEmpty()) {
             workingCopy.setReportedByFilter(null);
         } else {
@@ -546,7 +546,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
         }
 
-        IStructuredSelection assigneeSelection = (IStructuredSelection) assigneeType.getSelection();
+        final IStructuredSelection assigneeSelection = (IStructuredSelection) assigneeType.getSelection();
         if (assigneeSelection.isEmpty()) {
             workingCopy.setAssignedToFilter(null);
         } else {
@@ -565,15 +565,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
         }
 
-        IStructuredSelection statusSelection = (IStructuredSelection) status.getSelection();
+        final IStructuredSelection statusSelection = (IStructuredSelection) status.getSelection();
         if (statusSelection.isEmpty()) {
             workingCopy.setStatusFilter(null);
         } else {
             boolean isAnyStatusSelected = false;
 
-            List<JiraStatus> selectedStatuses = new ArrayList<>();
+            final List<JiraStatus> selectedStatuses = new ArrayList<>();
 
-            for (Object selection : statusSelection) {
+            for (final Object selection : statusSelection) {
                 if (ANY_STATUS.equals(selection)) {
                     isAnyStatusSelected = true;
                 } else if (selection instanceof JiraStatus) {
@@ -589,15 +589,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
         }
 
-        IStructuredSelection resolutionSelection = (IStructuredSelection) resolution.getSelection();
+        final IStructuredSelection resolutionSelection = (IStructuredSelection) resolution.getSelection();
         if (resolutionSelection.isEmpty()) {
             workingCopy.setResolutionFilter(null);
         } else {
             boolean isAnyResolutionSelected = false;
 
-            List<JiraResolution> selectedResolutions = new ArrayList<>();
+            final List<JiraResolution> selectedResolutions = new ArrayList<>();
 
-            for (Object selection : resolutionSelection) {
+            for (final Object selection : resolutionSelection) {
                 if (ANY_RESOLUTION.equals(selection)) {
                     isAnyResolutionSelected = true;
                 } else if (selection instanceof JiraResolution) {
@@ -613,15 +613,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
         }
 
-        IStructuredSelection prioritySelection = (IStructuredSelection) priority.getSelection();
+        final IStructuredSelection prioritySelection = (IStructuredSelection) priority.getSelection();
         if (prioritySelection.isEmpty()) {
             workingCopy.setPriorityFilter(null);
         } else {
             boolean isAnyPrioritiesSelected = false;
 
-            List<JiraPriority> selectedPriorities = new ArrayList<>();
+            final List<JiraPriority> selectedPriorities = new ArrayList<>();
 
-            for (Object selection : prioritySelection) {
+            for (final Object selection : prioritySelection) {
                 if (ANY_PRIORITY.equals(selection)) {
                     isAnyPrioritiesSelected = true;
                 } else if (selection instanceof JiraPriority) {
@@ -645,7 +645,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     }
 
     @Override
-    public void applyTo(IRepositoryQuery query) {
+    public void applyTo(final IRepositoryQuery query) {
         applyChanges();
         if (titleText != null) {
             query.setSummary(titleText.getText());
@@ -653,9 +653,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         JiraUtil.setQuery(getTaskRepository(), query, workingCopy);
     }
 
-    private void createComponentsViewer(Composite c) {
+    private void createComponentsViewer(final Composite c) {
         components = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = HEIGHT_HINT;
         gridData.widthHint = WIDTH_HINT;
         components.getControl().setLayoutData(gridData);
@@ -668,20 +668,20 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public Object[] getElements(Object inputElement) {
+            public Object[] getElements(final Object inputElement) {
                 return currentElements;
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                JiraProject[] projects = (JiraProject[]) newInput;
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+                final JiraProject[] projects = (JiraProject[]) newInput;
                 if (projects == null || projects.length == 0 || projects.length > 1) {
                     currentElements = new Object[] { ANY_COMPONENT };
                 } else {
-                    Set<Object> elements = new LinkedHashSet<>();
+                    final Set<Object> elements = new LinkedHashSet<>();
                     elements.add(ANY_COMPONENT);
                     elements.add(NO_COMPONENT);
-                    for (JiraProject project : projects) {
+                    for (final JiraProject project : projects) {
                         if (project != null && project.hasDetails()) {
                             elements.addAll(Arrays.asList(project.getComponents()));
                         }
@@ -704,7 +704,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         if (!inSearchContainer()) {
             GridDataFactory.fillDefaults().hint(800, SWT.DEFAULT).minSize(800, SWT.DEFAULT).grab(true, true).applyTo(c);
 
-            Label lblName = new Label(c, SWT.NONE);
+            final Label lblName = new Label(c, SWT.NONE);
             final GridData gridData = new GridData();
             lblName.setLayoutData(gridData);
             lblName.setText(Messages.JiraFilterDefinitionPage_Query_Title);
@@ -713,7 +713,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             titleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
             titleText.addModifyListener(new ModifyListener() {
                 @Override
-                public void modifyText(ModifyEvent e) {
+                public void modifyText(final ModifyEvent e) {
                     //					validatePage();
                     setPageComplete(isPageComplete());
                 }
@@ -723,7 +723,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         {
-            Composite cc = new Composite(c, SWT.NONE);
+            final Composite cc = new Composite(c, SWT.NONE);
             GridDataFactory.fillDefaults()
             .align(SWT.FILL, SWT.FILL)
             .grab(true, true)
@@ -733,12 +733,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             GridLayoutFactory.fillDefaults().numColumns(2).applyTo(cc);
 
             {
-                Label label = new Label(cc, SWT.NONE);
+                final Label label = new Label(cc, SWT.NONE);
                 label.setText(Messages.JiraFilterDefinitionPage_Project);
             }
 
             {
-                Label typeLabel = new Label(cc, SWT.NONE);
+                final Label typeLabel = new Label(cc, SWT.NONE);
                 typeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
                 typeLabel.setText(Messages.JiraFilterDefinitionPage_Type);
             }
@@ -749,15 +749,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
         createUpdateButton(c);
 
-        ExpandableComposite textSection = createExpandableComposite(c, "Text Search", false);
-        Composite textComposite = new Composite(textSection, SWT.NONE);
+        final ExpandableComposite textSection = createExpandableComposite(c, "Text Search", false);
+        final Composite textComposite = new Composite(textSection, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).applyTo(textComposite);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(textComposite);
         textSection.setClient(textComposite);
         createTextSearchContents(textComposite);
         textSection.setExpanded(inSearchContainer());
 
-        ExpandableComposite issueDetailsSection = createExpandableComposite(c, "Issue Details", true);
+        final ExpandableComposite issueDetailsSection = createExpandableComposite(c, "Issue Details", true);
 
         final Composite detailsComposite = new Composite(issueDetailsSection, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).applyTo(detailsComposite);
@@ -766,11 +766,11 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         createIssueDetailsContents(detailsComposite);
         issueDetailsSection.setExpanded(!inSearchContainer());
 
-        ExpandableComposite projectDetailsSection = createExpandableComposite(c, "Components / Versions", true);
+        final ExpandableComposite projectDetailsSection = createExpandableComposite(c, "Components / Versions", true);
         createProjectDetailsContents(projectDetailsSection);
         projectDetailsSection.setExpanded(!inSearchContainer());
 
-        ExpandableComposite datesSection = createExpandableComposite(c, "Dates and Times", false);
+        final ExpandableComposite datesSection = createExpandableComposite(c, "Dates and Times", false);
         final Composite datesComposite = new Composite(datesSection, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(3).margins(0, 5).applyTo(datesComposite);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(datesComposite);
@@ -781,12 +781,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         Dialog.applyDialogFont(parent);
     }
 
-    private void createProjectDetailsContents(ExpandableComposite projectDetailsComposite) {
-        SashForm cc = new SashForm(projectDetailsComposite, SWT.HORIZONTAL);
+    private void createProjectDetailsContents(final ExpandableComposite projectDetailsComposite) {
+        final SashForm cc = new SashForm(projectDetailsComposite, SWT.HORIZONTAL);
         GridDataFactory.fillDefaults().span(3, 1).grab(true, true).applyTo(cc);
         {
-            Composite comp = new Composite(cc, SWT.NONE);
-            GridLayout gridLayout = new GridLayout(1, false);
+            final Composite comp = new Composite(cc, SWT.NONE);
+            final GridLayout gridLayout = new GridLayout(1, false);
             gridLayout.marginWidth = 0;
             comp.setLayout(gridLayout);
 
@@ -795,8 +795,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         {
-            Composite comp = new Composite(cc, SWT.NONE);
-            GridLayout gridLayout = new GridLayout(1, false);
+            final Composite comp = new Composite(cc, SWT.NONE);
+            final GridLayout gridLayout = new GridLayout(1, false);
             gridLayout.marginWidth = 0;
             comp.setLayout(gridLayout);
 
@@ -805,22 +805,22 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         {
-            Composite comp = new Composite(cc, SWT.NONE);
-            GridLayout gridLayout = new GridLayout(1, false);
+            final Composite comp = new Composite(cc, SWT.NONE);
+            final GridLayout gridLayout = new GridLayout(1, false);
             gridLayout.marginWidth = 0;
             comp.setLayout(gridLayout);
 
-            Label label = new Label(comp, SWT.NONE);
+            final Label label = new Label(comp, SWT.NONE);
             label.setText(Messages.JiraFilterDefinitionPage_Reported_In);
             createReportedInViewer(comp);
         }
 
-        cc.setWeights(new int[] { 1, 1, 1 });
+        cc.setWeights(1, 1, 1);
         projectDetailsComposite.setClient(cc);
     }
 
-    private void createTextSearchContents(Composite c) {
-        Label lblQuery = new Label(c, SWT.NONE);
+    private void createTextSearchContents(final Composite c) {
+        final Label lblQuery = new Label(c, SWT.NONE);
         final GridData gd_lblQuery = new GridData();
         gd_lblQuery.verticalIndent = 7;
         lblQuery.setLayoutData(gd_lblQuery);
@@ -834,24 +834,24 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
         queryString.addModifyListener(new ModifyListener() {
             @Override
-            public void modifyText(ModifyEvent e) {
+            public void modifyText(final ModifyEvent e) {
                 // validatePage();
             }
         });
 
-        Label lblFields = new Label(c, SWT.NONE);
+        final Label lblFields = new Label(c, SWT.NONE);
         lblFields.setText(Messages.JiraFilterDefinitionPage_FILEDS);
         lblFields.setLayoutData(new GridData());
 
         {
-            SelectionAdapter selectionAdapter = new SelectionAdapter() {
+            final SelectionAdapter selectionAdapter = new SelectionAdapter() {
                 @Override
-                public void widgetSelected(SelectionEvent e) {
+                public void widgetSelected(final SelectionEvent e) {
                     // validatePage();
                 }
             };
 
-            Composite comp = new Composite(c, SWT.NONE);
+            final Composite comp = new Composite(c, SWT.NONE);
             comp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
             comp.setLayout(new FillLayout());
 
@@ -873,13 +873,13 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
     }
 
-    private void createIssueDetailsContents(Composite c) {
+    private void createIssueDetailsContents(final Composite c) {
         {
-            Label reportedByLabel = new Label(c, SWT.NONE);
+            final Label reportedByLabel = new Label(c, SWT.NONE);
             reportedByLabel.setText(Messages.JiraFilterDefinitionPage_Reported_By);
 
             reporterType = new ComboViewer(c, SWT.BORDER | SWT.READ_ONLY);
-            GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, false, false);
+            final GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, false, false);
             gridData_1.widthHint = 133;
             reporterType.getControl().setLayoutData(gridData_1);
 
@@ -890,28 +890,28 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
                 }
 
                 @Override
-                public Object[] getElements(Object inputElement) {
+                public Object[] getElements(final Object inputElement) {
                     return new Object[] { ANY_REPORTER, NO_REPORTER, CURRENT_USER_REPORTER, SPECIFIC_USER_REPORTER,
                             SPECIFIC_GROUP_REPORTER };
                 }
 
                 @Override
-                public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
                 }
 
             });
 
             reporterType.setLabelProvider(new LabelProvider() {
                 @Override
-                public String getText(Object element) {
+                public String getText(final Object element) {
                     return ((Placeholder) element).getText();
                 }
             });
 
             reporterType.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
-                public void selectionChanged(SelectionChangedEvent event) {
-                    Object selection = ((IStructuredSelection) event.getSelection()).getFirstElement();
+                public void selectionChanged(final SelectionChangedEvent event) {
+                    final Object selection = ((IStructuredSelection) event.getSelection()).getFirstElement();
                     if (SPECIFIC_USER_REPORTER.equals(selection) || SPECIFIC_GROUP_REPORTER.equals(selection)) {
                         reporter.setEnabled(true);
                     } else {
@@ -930,18 +930,18 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
             reporter.addModifyListener(new ModifyListener() {
                 @Override
-                public void modifyText(ModifyEvent e) {
+                public void modifyText(final ModifyEvent e) {
                     // validatePage();
                 }
             });
         }
 
         {
-            Label assignedToLabel = new Label(c, SWT.NONE);
+            final Label assignedToLabel = new Label(c, SWT.NONE);
             assignedToLabel.setText(Messages.JiraFilterDefinitionPage_Assigned_To);
 
             assigneeType = new ComboViewer(c, SWT.BORDER | SWT.READ_ONLY);
-            GridData gridData_2 = new GridData(SWT.FILL, SWT.CENTER, false, false);
+            final GridData gridData_2 = new GridData(SWT.FILL, SWT.CENTER, false, false);
             gridData_2.widthHint = 133;
             assigneeType.getCombo().setLayoutData(gridData_2);
 
@@ -952,13 +952,13 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
                 }
 
                 @Override
-                public Object[] getElements(Object inputElement) {
+                public Object[] getElements(final Object inputElement) {
                     return new Object[] { ANY_ASSIGNEE, UNASSIGNED, CURRENT_USER_ASSIGNEE, SPECIFIC_USER_ASSIGNEE,
                             SPECIFIC_GROUP_ASSIGNEE };
                 }
 
                 @Override
-                public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+                public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
                 }
 
             });
@@ -966,7 +966,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             assigneeType.setLabelProvider(new LabelProvider() {
 
                 @Override
-                public String getText(Object element) {
+                public String getText(final Object element) {
                     return ((Placeholder) element).getText();
                 }
 
@@ -974,8 +974,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
             assigneeType.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
-                public void selectionChanged(SelectionChangedEvent event) {
-                    Object selection = ((IStructuredSelection) event.getSelection()).getFirstElement();
+                public void selectionChanged(final SelectionChangedEvent event) {
+                    final Object selection = ((IStructuredSelection) event.getSelection()).getFirstElement();
                     if (SPECIFIC_USER_ASSIGNEE.equals(selection) || SPECIFIC_GROUP_ASSIGNEE.equals(selection)) {
                         assignee.setEnabled(true);
                     } else {
@@ -993,29 +993,29 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             assignee.setEnabled(false);
             assignee.addModifyListener(new ModifyListener() {
                 @Override
-                public void modifyText(ModifyEvent e) {
+                public void modifyText(final ModifyEvent e) {
                     // validatePage();
                 }
             });
         }
 
         {
-            SashForm cc = new SashForm(c, SWT.NONE);
+            final SashForm cc = new SashForm(c, SWT.NONE);
             GridDataFactory.fillDefaults().span(3, 1).grab(true, true).applyTo(cc);
 
             {
-                Composite comp = new Composite(cc, SWT.NONE);
-                GridLayout gridLayout = new GridLayout();
+                final Composite comp = new Composite(cc, SWT.NONE);
+                final GridLayout gridLayout = new GridLayout();
                 gridLayout.marginHeight = 0;
                 gridLayout.marginWidth = 0;
                 comp.setLayout(gridLayout);
 
-                Label statusLabel = new Label(comp, SWT.NONE);
+                final Label statusLabel = new Label(comp, SWT.NONE);
                 statusLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
                 statusLabel.setText(Messages.JiraFilterDefinitionPage_Status);
 
                 status = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-                GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+                final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
                 gridData.heightHint = HEIGHT_HINT;
                 gridData.widthHint = WIDTH_HINT;
                 status.getList().setLayoutData(gridData);
@@ -1023,7 +1023,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
                 status.setLabelProvider(new LabelProvider() {
 
                     @Override
-                    public String getText(Object element) {
+                    public String getText(final Object element) {
                         if (element instanceof Placeholder) {
                             return ((Placeholder) element).getText();
                         }
@@ -1035,18 +1035,18 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             {
-                Composite comp = new Composite(cc, SWT.NONE);
-                GridLayout gridLayout = new GridLayout();
+                final Composite comp = new Composite(cc, SWT.NONE);
+                final GridLayout gridLayout = new GridLayout();
                 gridLayout.marginHeight = 0;
                 gridLayout.marginWidth = 0;
                 comp.setLayout(gridLayout);
 
-                Label resolutionLabel = new Label(comp, SWT.NONE);
+                final Label resolutionLabel = new Label(comp, SWT.NONE);
                 resolutionLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
                 resolutionLabel.setText(Messages.JiraFilterDefinitionPage_Resolution);
 
                 resolution = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-                GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+                final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
                 gridData.heightHint = HEIGHT_HINT;
                 gridData.widthHint = WIDTH_HINT;
                 resolution.getList().setLayoutData(gridData);
@@ -1054,7 +1054,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
                 resolution.setLabelProvider(new LabelProvider() {
 
                     @Override
-                    public String getText(Object element) {
+                    public String getText(final Object element) {
                         if (element instanceof Placeholder) {
                             return ((Placeholder) element).getText();
                         }
@@ -1066,18 +1066,18 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             {
-                Composite comp = new Composite(cc, SWT.NONE);
-                GridLayout gridLayout = new GridLayout();
+                final Composite comp = new Composite(cc, SWT.NONE);
+                final GridLayout gridLayout = new GridLayout();
                 gridLayout.marginHeight = 0;
                 gridLayout.marginWidth = 0;
                 comp.setLayout(gridLayout);
 
-                Label priorityLabel = new Label(comp, SWT.NONE);
+                final Label priorityLabel = new Label(comp, SWT.NONE);
                 priorityLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
                 priorityLabel.setText(Messages.JiraFilterDefinitionPage_Priority);
 
                 priority = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-                GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+                final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
                 gridData.heightHint = HEIGHT_HINT;
                 gridData.widthHint = WIDTH_HINT;
                 priority.getList().setLayoutData(gridData);
@@ -1085,7 +1085,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
                 priority.setLabelProvider(new LabelProvider() {
 
                     @Override
-                    public String getText(Object element) {
+                    public String getText(final Object element) {
                         if (element instanceof Placeholder) {
                             return ((Placeholder) element).getText();
                         }
@@ -1096,14 +1096,14 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
                 });
             }
 
-            cc.setWeights(new int[] { 1, 1, 1 });
+            cc.setWeights(1, 1, 1);
         }
     }
 
-    private void createDatesContent(Composite c) {
-        ModifyListener wdhmLocalListener = new ModifyListener() {
+    private void createDatesContent(final Composite c) {
+        final ModifyListener wdhmLocalListener = new ModifyListener() {
             @Override
-            public void modifyText(ModifyEvent e) {
+            public void modifyText(final ModifyEvent e) {
                 validatePage();
             }
         };
@@ -1111,15 +1111,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         final DateFormat currentJiraDateTimeFormat = client.getLocalConfiguration().getDateTimeFormat();
 
         {
-            Label createdLabel = new Label(c, SWT.NONE);
+            final Label createdLabel = new Label(c, SWT.NONE);
             createdLabel.setText(Messages.JiraFilterDefinitionPage_Created + ":"); //$NON-NLS-1$
 
-            Composite composite = new Composite(c, SWT.NONE);
-            GridLayout layout = new GridLayout(2, true);
+            final Composite composite = new Composite(c, SWT.NONE);
+            final GridLayout layout = new GridLayout(2, true);
             layout.marginWidth = 0;
             layout.marginHeight = 0;
             composite.setLayout(layout);
-            GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, false, false, 2, 2);
+            final GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, false, false, 2, 2);
             layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
             composite.setLayoutData(layoutData);
 
@@ -1137,27 +1137,27 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
             new Label(c, SWT.NONE);
 
-            Composite c1 = new Composite(composite, SWT.NONE);
+            final Composite c1 = new Composite(composite, SWT.NONE);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c1);
-            GridLayout gl = new GridLayout(2, false);
+            final GridLayout gl = new GridLayout(2, false);
             gl.marginHeight = 0;
             gl.marginWidth = 0;
             c1.setLayout(gl);
 
-            Label from = new Label(c1, SWT.NONE);
+            final Label from = new Label(c1, SWT.NONE);
             from.setText(Messages.JiraFilterDefinitionPage_From + ":"); //$NON-NLS-1$
             createdFrom = new Text(c1, SWT.BORDER);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(createdFrom);
             createdFrom.addModifyListener(wdhmLocalListener);
 
-            Composite c2 = new Composite(composite, SWT.NONE);
+            final Composite c2 = new Composite(composite, SWT.NONE);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c2);
-            GridLayout g2 = new GridLayout(2, false);
+            final GridLayout g2 = new GridLayout(2, false);
             g2.marginHeight = 0;
             g2.marginWidth = 0;
             c2.setLayout(g2);
 
-            Label to = new Label(c2, SWT.NONE);
+            final Label to = new Label(c2, SWT.NONE);
             to.setText(Messages.JiraFilterDefinitionPage_To + ":"); //$NON-NLS-1$
             createdTo = new Text(c2, SWT.BORDER);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(createdTo);
@@ -1165,15 +1165,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         {
-            Label updatedLabel = new Label(c, SWT.NONE);
+            final Label updatedLabel = new Label(c, SWT.NONE);
             updatedLabel.setText(Messages.JiraFilterDefinitionPage_Updated + ":"); //$NON-NLS-1$
 
-            Composite composite = new Composite(c, SWT.NONE);
-            GridLayout layout = new GridLayout(2, true);
+            final Composite composite = new Composite(c, SWT.NONE);
+            final GridLayout layout = new GridLayout(2, true);
             layout.marginWidth = 0;
             layout.marginHeight = 0;
             composite.setLayout(layout);
-            GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 2);
+            final GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 2);
             layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
             composite.setLayoutData(layoutData);
 
@@ -1191,27 +1191,27 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
             new Label(c, SWT.NONE);
 
-            Composite c1 = new Composite(composite, SWT.NONE);
+            final Composite c1 = new Composite(composite, SWT.NONE);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c1);
-            GridLayout gl = new GridLayout(2, false);
+            final GridLayout gl = new GridLayout(2, false);
             gl.marginHeight = 0;
             gl.marginWidth = 0;
             c1.setLayout(gl);
 
-            Label from = new Label(c1, SWT.NONE);
+            final Label from = new Label(c1, SWT.NONE);
             from.setText(Messages.JiraFilterDefinitionPage_From + ":"); //$NON-NLS-1$
             updatedFrom = new Text(c1, SWT.BORDER);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(updatedFrom);
             updatedFrom.addModifyListener(wdhmLocalListener);
 
-            Composite c2 = new Composite(composite, SWT.NONE);
+            final Composite c2 = new Composite(composite, SWT.NONE);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c2);
-            GridLayout g2 = new GridLayout(2, false);
+            final GridLayout g2 = new GridLayout(2, false);
             g2.marginHeight = 0;
             g2.marginWidth = 0;
             c2.setLayout(g2);
 
-            Label to = new Label(c2, SWT.NONE);
+            final Label to = new Label(c2, SWT.NONE);
             to.setText(Messages.JiraFilterDefinitionPage_To + ":"); //$NON-NLS-1$
             updatedTo = new Text(c2, SWT.BORDER);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(updatedTo);
@@ -1219,15 +1219,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         {
-            Label dueDateLabel = new Label(c, SWT.NONE);
+            final Label dueDateLabel = new Label(c, SWT.NONE);
             dueDateLabel.setText(Messages.JiraFilterDefinitionPage_Due_Date + ":"); //$NON-NLS-1$
 
-            Composite composite = new Composite(c, SWT.NONE);
-            GridLayout layout = new GridLayout(2, true);
+            final Composite composite = new Composite(c, SWT.NONE);
+            final GridLayout layout = new GridLayout(2, true);
             layout.marginWidth = 0;
             layout.marginHeight = 0;
             composite.setLayout(layout);
-            GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 2);
+            final GridData layoutData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 2);
             layoutData.widthHint = DATE_CONTROL_WIDTH_HINT;
             composite.setLayoutData(layoutData);
 
@@ -1242,27 +1242,27 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
             new Label(c, SWT.NONE);
 
-            Composite c1 = new Composite(composite, SWT.NONE);
+            final Composite c1 = new Composite(composite, SWT.NONE);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c1);
-            GridLayout gl = new GridLayout(2, false);
+            final GridLayout gl = new GridLayout(2, false);
             gl.marginHeight = 0;
             gl.marginWidth = 0;
             c1.setLayout(gl);
 
-            Label from = new Label(c1, SWT.NONE);
+            final Label from = new Label(c1, SWT.NONE);
             from.setText(Messages.JiraFilterDefinitionPage_From + ":"); //$NON-NLS-1$
             dueDateFrom = new Text(c1, SWT.BORDER);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dueDateFrom);
             dueDateFrom.addModifyListener(wdhmLocalListener);
 
-            Composite c2 = new Composite(composite, SWT.NONE);
+            final Composite c2 = new Composite(composite, SWT.NONE);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(c2);
-            GridLayout g2 = new GridLayout(2, false);
+            final GridLayout g2 = new GridLayout(2, false);
             g2.marginHeight = 0;
             g2.marginWidth = 0;
             c2.setLayout(g2);
 
-            Label to = new Label(c2, SWT.NONE);
+            final Label to = new Label(c2, SWT.NONE);
             to.setText(Messages.JiraFilterDefinitionPage_To + ":"); //$NON-NLS-1$
             dueDateTo = new Text(c2, SWT.BORDER);
             GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(dueDateTo);
@@ -1272,21 +1272,21 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         {
             new Label(c, SWT.NONE);
 
-            Composite cc = new Composite(c, SWT.NONE);
-            GridLayout gl = new GridLayout();
+            final Composite cc = new Composite(c, SWT.NONE);
+            final GridLayout gl = new GridLayout();
             gl.marginWidth = 0;
             gl.marginHeight = 20;
             cc.setLayout(gl);
             GridDataFactory.fillDefaults().span(2, 1).applyTo(cc);
 
-            Label explanation = new Label(cc, SWT.NONE);
+            final Label explanation = new Label(cc, SWT.NONE);
             explanation.setText(NLS.bind(Messages.JiraWdhmExplanation, "'" + Messages.JiraFilterDefinitionPage_From //$NON-NLS-1$
                     + "' " + Messages.JiraFilterDefinitionPage_And + " '" + Messages.JiraFilterDefinitionPage_To + "'")); //$NON-NLS-1$
 
         }
     }
 
-    private void adjustLayoutData(Control control, boolean shouldGrabVertical) {
+    private void adjustLayoutData(final Control control, final boolean shouldGrabVertical) {
         GridDataFactory.fillDefaults()
         .indent(0, 5)
         .grab(true, shouldGrabVertical)
@@ -1294,13 +1294,13 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         .applyTo(control);
     }
 
-    private ExpandableComposite createExpandableComposite(final Composite parentControl, String title,
+    private ExpandableComposite createExpandableComposite(final Composite parentControl, final String title,
             final boolean shouldGrabVertical) {
         final ExpandableComposite section = new ExpandableComposite(parentControl, ExpandableComposite.TWISTIE
                 | ExpandableComposite.CLIENT_INDENT | ExpandableComposite.COMPACT) {
 
             @Override
-            public void setExpanded(boolean expanded) {
+            public void setExpanded(final boolean expanded) {
                 adjustLayoutData(this, expanded && shouldGrabVertical);
                 super.setExpanded(expanded);
             }
@@ -1311,7 +1311,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         section.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
         section.addExpansionListener(new ExpansionAdapter() {
             @Override
-            public void expansionStateChanged(ExpansionEvent e) {
+            public void expansionStateChanged(final ExpansionEvent e) {
                 if (shouldGrabVertical) {
                     adjustLayoutData(section, e.getState());
                 }
@@ -1324,9 +1324,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         return section;
     }
 
-    private void createIssueTypesViewer(Composite comp) {
+    private void createIssueTypesViewer(final Composite comp) {
         issueType = new ListViewer(comp, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = HEIGHT_HINT;
         gridData.widthHint = WIDTH_HINT;
         issueType.getList().setLayoutData(gridData);
@@ -1335,12 +1335,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             private Object[] currentElements;
 
             @Override
-            public Object[] getElements(Object inputElement) {
+            public Object[] getElements(final Object inputElement) {
                 return currentElements;
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
                 final JiraProject[] projects = (JiraProject[]) newInput;
                 JiraIssueType[] types = null;
 
@@ -1351,7 +1351,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
                 }
 
                 if (types != null) {
-                    Object[] elements = new Object[types.length + 1];
+                    final Object[] elements = new Object[types.length + 1];
                     System.arraycopy(types, 0, elements, 1, types.length);
                     elements[0] = ANY_ISSUE_TYPE;
                     currentElements = elements;
@@ -1366,7 +1366,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         issueType.setLabelProvider(new LabelProvider() {
 
             @Override
-            public String getText(Object element) {
+            public String getText(final Object element) {
                 if (element instanceof Placeholder) {
                     return ((Placeholder) element).getText();
                 }
@@ -1400,9 +1400,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     //		}
     //	}
 
-    private void createFixForViewer(Composite c) {
+    private void createFixForViewer(final Composite c) {
         fixFor = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = HEIGHT_HINT;
         gridData.widthHint = WIDTH_HINT;
         fixFor.getControl().setLayoutData(gridData);
@@ -1415,23 +1415,23 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public Object[] getElements(Object inputElement) {
+            public Object[] getElements(final Object inputElement) {
                 return currentElements;
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                JiraProject[] projects = (JiraProject[]) newInput;
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+                final JiraProject[] projects = (JiraProject[]) newInput;
                 if (projects == null || projects.length == 0 || projects.length > 1) {
                     currentElements = new Object[] { ANY_FIX_VERSION };
                 } else {
-                    List<Object> elements = new ArrayList<>();
+                    final List<Object> elements = new ArrayList<>();
                     elements.add(ANY_FIX_VERSION);
                     elements.add(NO_FIX_VERSION);
 
-                    Set<JiraVersion> releasedVersions = new LinkedHashSet<>();
-                    Set<JiraVersion> unreleasedVersions = new LinkedHashSet<>();
-                    for (JiraProject project : projects) {
+                    final Set<JiraVersion> releasedVersions = new LinkedHashSet<>();
+                    final Set<JiraVersion> unreleasedVersions = new LinkedHashSet<>();
+                    for (final JiraProject project : projects) {
                         if (project != null && project.hasDetails()) {
                             releasedVersions.addAll(Arrays.asList(project.getReleasedVersions(false)));
                             unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions(false)));
@@ -1451,16 +1451,16 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         fixFor.setInput(NO_PROJECTS);
     }
 
-    private void createProjectsViewer(Composite c) {
+    private void createProjectsViewer(final Composite c) {
         project = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = HEIGHT_HINT;
         gridData.widthHint = WIDTH_HINT;
         project.getControl().setLayoutData(gridData);
 
         project.setLabelProvider(new LabelProvider() {
             @Override
-            public String getText(Object element) {
+            public String getText(final Object element) {
                 if (element instanceof Placeholder) {
                     return ((Placeholder) element).getText();
                 }
@@ -1470,11 +1470,11 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
         project.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                List<JiraProject> selectedProjects = new ArrayList<>();
+            public void selectionChanged(final SelectionChangedEvent event) {
+                final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                final List<JiraProject> selectedProjects = new ArrayList<>();
                 if (!selection.isEmpty()) {
-                    for (Object sel : selection) {
+                    for (final Object sel : selection) {
                         if (!(sel instanceof Placeholder)) {
                             selectedProjects.add((JiraProject) sel);
                         }
@@ -1486,9 +1486,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         });
     }
 
-    private void createReportedInViewer(Composite c) {
+    private void createReportedInViewer(final Composite c) {
         reportedIn = new ListViewer(c, SWT.V_SCROLL | SWT.MULTI | SWT.BORDER | SWT.H_SCROLL);
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.heightHint = HEIGHT_HINT;
         gridData.widthHint = WIDTH_HINT;
         reportedIn.getControl().setLayoutData(gridData);
@@ -1501,24 +1501,24 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public Object[] getElements(Object inputElement) {
+            public Object[] getElements(final Object inputElement) {
                 return currentElements;
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                JiraProject[] projects = (JiraProject[]) newInput;
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+                final JiraProject[] projects = (JiraProject[]) newInput;
                 if (projects == null || projects.length == 0 || projects.length > 1) {
                     currentElements = new Object[] { ANY_REPORTED_VERSION };
                 } else {
-                    List<Object> elements = new ArrayList<>();
+                    final List<Object> elements = new ArrayList<>();
                     elements.add(ANY_REPORTED_VERSION);
                     elements.add(NO_REPORTED_VERSION);
 
-                    Set<Object> releasedVersions = new LinkedHashSet<>();
-                    Set<Object> unreleasedVersions = new LinkedHashSet<>();
+                    final Set<Object> releasedVersions = new LinkedHashSet<>();
+                    final Set<Object> unreleasedVersions = new LinkedHashSet<>();
 
-                    for (JiraProject project : projects) {
+                    for (final JiraProject project : projects) {
                         if (project != null && project.hasDetails()) {
                             releasedVersions.addAll(Arrays.asList(project.getReleasedVersions(false)));
                             unreleasedVersions.addAll(Arrays.asList(project.getUnreleasedVersions(false)));
@@ -1540,12 +1540,12 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     }
 
     protected void createUpdateButton(final Composite control) {
-        Button updateButton = new Button(control, SWT.PUSH);
+        final Button updateButton = new Button(control, SWT.PUSH);
         updateButton.setText(Messages.JiraFilterDefinitionPage_Update_Attributes_from_Repository);
         updateButton.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, false, false, 3, 1));
         updateButton.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 applyChanges();
                 updateAttributesFromRepository(true);
                 loadFromWorkingCopy();
@@ -1555,7 +1555,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
     @Override
     public IDialogSettings getDialogSettings() {
-        IDialogSettings settings = JiraUiPlugin.getDefault().getDialogSettings();
+        final IDialogSettings settings = JiraUiPlugin.getDefault().getDialogSettings();
         IDialogSettings dialogSettings = settings.getSection(PAGE_NAME);
         if (dialogSettings == null) {
             dialogSettings = settings.addNewSection(PAGE_NAME);
@@ -1568,10 +1568,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         return titleText != null ? titleText.getText() : ""; //$NON-NLS-1$
     }
 
-    private DateRangeFilter getRangeFilter(DatePicker startDatePicker, DatePicker endDatePicker, Text fromField,
-            Text toField) {
-        Calendar startDate = startDatePicker.getDate();
-        Calendar endDate = endDatePicker.getDate();
+    private DateRangeFilter getRangeFilter(final DatePicker startDatePicker, final DatePicker endDatePicker, final Text fromField,
+            final Text toField) {
+        final Calendar startDate = startDatePicker.getDate();
+        final Calendar endDate = endDatePicker.getDate();
         return new DateRangeFilter(startDate == null || startDate.getTime() == null ? null : startDate.getTime().toInstant(),
                 endDate == null || endDate.getTime() == null ? null : endDate.getTime().toInstant(),
                         fromField.getText(), toField.getText());
@@ -1585,9 +1585,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public Object[] getElements(Object inputElement) {
-                JiraClient server = (JiraClient) inputElement;
-                Object[] elements = new Object[server.getCache().getProjects().length + 1];
+            public Object[] getElements(final Object inputElement) {
+                final JiraClient server = (JiraClient) inputElement;
+                final Object[] elements = new Object[server.getCache().getProjects().length + 1];
                 elements[0] = ALL_PROJECTS;
                 System.arraycopy(server.getCache().getProjects(), 0, elements, 1,
                         server.getCache().getProjects().length);
@@ -1595,7 +1595,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
             }
 
         });
@@ -1608,9 +1608,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public Object[] getElements(Object inputElement) {
-                JiraClient server = (JiraClient) inputElement;
-                Object[] elements = new Object[server.getCache().getStatuses().length + 1];
+            public Object[] getElements(final Object inputElement) {
+                final JiraClient server = (JiraClient) inputElement;
+                final Object[] elements = new Object[server.getCache().getStatuses().length + 1];
                 elements[0] = ANY_STATUS;
                 System.arraycopy(server.getCache().getStatuses(), 0, elements, 1,
                         server.getCache().getStatuses().length);
@@ -1619,7 +1619,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
             }
         });
         status.setInput(client);
@@ -1631,9 +1631,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public Object[] getElements(Object inputElement) {
-                JiraClient server = (JiraClient) inputElement;
-                Object[] elements = new Object[server.getCache().getResolutions().length + 2];
+            public Object[] getElements(final Object inputElement) {
+                final JiraClient server = (JiraClient) inputElement;
+                final Object[] elements = new Object[server.getCache().getResolutions().length + 2];
                 elements[0] = ANY_RESOLUTION;
                 elements[1] = UNRESOLVED;
                 System.arraycopy(server.getCache().getResolutions(), 0, elements, 2,
@@ -1643,7 +1643,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
             }
         });
         resolution.setInput(client);
@@ -1655,9 +1655,9 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public Object[] getElements(Object inputElement) {
-                JiraClient client = (JiraClient) inputElement;
-                Object[] elements = new Object[client.getCache().getPriorities().length + 1];
+            public Object[] getElements(final Object inputElement) {
+                final JiraClient client = (JiraClient) inputElement;
+                final Object[] elements = new Object[client.getCache().getPriorities().length + 1];
                 elements[0] = ANY_PRIORITY;
                 System.arraycopy(client.getCache().getPriorities(), 0, elements, 1,
                         client.getCache().getPriorities().length);
@@ -1666,7 +1666,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
             }
         });
         priority.setInput(client);
@@ -1712,7 +1712,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
         if (workingCopy.getFixForVersionFilter() != null) {
 
-            List<Object> versions = new ArrayList<>();
+            final List<Object> versions = new ArrayList<>();
 
             if (workingCopy.getFixForVersionFilter().hasNoVersion()) {
                 versions.add(NO_FIX_VERSION);
@@ -1734,7 +1734,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
         if (workingCopy.getReportedInVersionFilter() != null) {
 
-            List<Object> versions = new ArrayList<>();
+            final List<Object> versions = new ArrayList<>();
 
             if (workingCopy.getReportedInVersionFilter().hasNoVersion()) {
                 versions.add(NO_REPORTED_VERSION);
@@ -1757,15 +1757,15 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         if (workingCopy.getContentFilter() != null) {
-            this.queryString.setText(workingCopy.getContentFilter().getQueryString());
-            this.searchComments.setSelection(workingCopy.getContentFilter().isSearchingComments());
-            this.searchDescription.setSelection(workingCopy.getContentFilter().isSearchingDescription());
-            this.searchEnvironment.setSelection(workingCopy.getContentFilter().isSearchingEnvironment());
-            this.searchSummary.setSelection(workingCopy.getContentFilter().isSearchingSummary());
+            queryString.setText(workingCopy.getContentFilter().getQueryString());
+            searchComments.setSelection(workingCopy.getContentFilter().isSearchingComments());
+            searchDescription.setSelection(workingCopy.getContentFilter().isSearchingDescription());
+            searchEnvironment.setSelection(workingCopy.getContentFilter().isSearchingEnvironment());
+            searchSummary.setSelection(workingCopy.getContentFilter().isSearchingSummary());
         }
 
         if (workingCopy.getComponentFilter() != null) {
-            List<Object> components = new ArrayList<>();
+            final List<Object> components = new ArrayList<>();
             if (workingCopy.getComponentFilter().hasNoComponent()) {
                 components.add(NO_COMPONENT);
             }
@@ -1789,7 +1789,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         if (workingCopy.getReportedByFilter() != null) {
-            UserFilter reportedByFilter = workingCopy.getReportedByFilter();
+            final UserFilter reportedByFilter = workingCopy.getReportedByFilter();
             if (reportedByFilter instanceof NobodyFilter) {
                 reporterType.setSelection(new StructuredSelection(NO_REPORTER));
             } else if (reportedByFilter instanceof CurrentUserFilter) {
@@ -1806,7 +1806,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         if (workingCopy.getAssignedToFilter() != null) {
-            UserFilter assignedToFilter = workingCopy.getAssignedToFilter();
+            final UserFilter assignedToFilter = workingCopy.getAssignedToFilter();
             if (assignedToFilter instanceof NobodyFilter) {
                 assigneeType.setSelection(new StructuredSelection(UNASSIGNED));
             } else if (assignedToFilter instanceof CurrentUserFilter) {
@@ -1829,7 +1829,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
 
         if (workingCopy.getResolutionFilter() != null) {
-            JiraResolution[] resolutions = workingCopy.getResolutionFilter().getResolutions();
+            final JiraResolution[] resolutions = workingCopy.getResolutionFilter().getResolutions();
             if (resolutions.length == 0) {
                 resolution.setSelection(new StructuredSelection(UNRESOLVED), true);
             } else {
@@ -1848,7 +1848,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         setDateRange(workingCopy.getCreatedDateFilter(), createdStartDatePicker, createdEndDatePicker);
 
         if (workingCopy.getCreatedDateFilter() != null && workingCopy.getCreatedDateFilter() instanceof DateRangeFilter) {
-            DateRangeFilter range = (DateRangeFilter) workingCopy.getCreatedDateFilter();
+            final DateRangeFilter range = (DateRangeFilter) workingCopy.getCreatedDateFilter();
             createdFrom.setText(range.getFrom() == null ? "" : range.getFrom()); //$NON-NLS-1$
             createdTo.setText(range.getTo() == null ? "" : range.getTo()); //$NON-NLS-1$
         } else {
@@ -1859,7 +1859,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         setDateRange(workingCopy.getUpdatedDateFilter(), updatedStartDatePicker, updatedEndDatePicker);
 
         if (workingCopy.getUpdatedDateFilter() != null && workingCopy.getUpdatedDateFilter() instanceof DateRangeFilter) {
-            DateRangeFilter range = (DateRangeFilter) workingCopy.getUpdatedDateFilter();
+            final DateRangeFilter range = (DateRangeFilter) workingCopy.getUpdatedDateFilter();
             updatedFrom.setText(range.getFrom() == null ? "" : range.getFrom()); //$NON-NLS-1$
             updatedTo.setText(range.getTo() == null ? "" : range.getTo()); //$NON-NLS-1$
         } else {
@@ -1870,7 +1870,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         setDateRange(workingCopy.getDueDateFilter(), dueStartDatePicker, dueEndDatePicker);
 
         if (workingCopy.getDueDateFilter() != null && workingCopy.getDueDateFilter() instanceof DateRangeFilter) {
-            DateRangeFilter range = (DateRangeFilter) workingCopy.getDueDateFilter();
+            final DateRangeFilter range = (DateRangeFilter) workingCopy.getDueDateFilter();
             dueDateFrom.setText(range.getFrom() == null ? "" : range.getFrom()); //$NON-NLS-1$
             dueDateTo.setText(range.getTo() == null ? "" : range.getTo()); //$NON-NLS-1$
         } else {
@@ -1888,30 +1888,30 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     }
 
     private boolean restoreWidgetValues() {
-        IDialogSettings settings = getDialogSettings();
-        String searchUrl = settings.get(SEARCH_URL_ID + "." + getTaskRepository().getRepositoryUrl()); //$NON-NLS-1$
+        final IDialogSettings settings = getDialogSettings();
+        final String searchUrl = settings.get(SEARCH_URL_ID + "." + getTaskRepository().getRepositoryUrl()); //$NON-NLS-1$
         if (searchUrl == null) {
             return false;
         }
-        FilterDefinitionConverter converter = new FilterDefinitionConverter(getTaskRepository().getCharacterEncoding(),
+        final FilterDefinitionConverter converter = new FilterDefinitionConverter(getTaskRepository().getCharacterEncoding(),
                 client.getLocalConfiguration().getDateTimeFormat());
-        this.workingCopy = converter.toFilter(client, searchUrl, false);
+        workingCopy = converter.toFilter(client, searchUrl, false);
         return true;
     }
 
     @Override
     public void saveState() {
-        String repoId = "." + getTaskRepository().getRepositoryUrl(); //$NON-NLS-1$
-        IDialogSettings settings = getDialogSettings();
+        final String repoId = "." + getTaskRepository().getRepositoryUrl(); //$NON-NLS-1$
+        final IDialogSettings settings = getDialogSettings();
         settings.put(SEARCH_URL_ID + repoId, createQuery().getUrl());
     }
 
-    private void setDateRange(DateFilter dateFilter, DatePicker startDatePicker, DatePicker endDatePicker) {
+    private void setDateRange(final DateFilter dateFilter, final DatePicker startDatePicker, final DatePicker endDatePicker) {
         if (dateFilter instanceof DateRangeFilter) {
-            DateRangeFilter rangeFilter = (DateRangeFilter) dateFilter;
+            final DateRangeFilter rangeFilter = (DateRangeFilter) dateFilter;
 
             if (rangeFilter.getFromDate() != null) {
-                Calendar c1 = Calendar.getInstance();
+                final Calendar c1 = Calendar.getInstance();
                 c1.setTime(Date.from(rangeFilter.getFromDate()));
                 startDatePicker.setDate(c1);
             } else {
@@ -1919,7 +1919,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             }
 
             if (rangeFilter.getToDate() != null) {
-                Calendar c2 = Calendar.getInstance();
+                final Calendar c2 = Calendar.getInstance();
                 c2.setTime(Date.from(rangeFilter.getToDate()));
                 endDatePicker.setDate(c2);
             } else {
@@ -1929,7 +1929,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     }
 
     @Override
-    public void setVisible(boolean visible) {
+    public void setVisible(final boolean visible) {
         super.setVisible(visible);
 
         if (getSearchContainer() != null) {
@@ -1959,8 +1959,8 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
 
     private void updateAttributesFromRepository(final boolean force) {
         if (!client.getCache().hasDetails() || force) {
-            JiraProject[] projects = new JiraProject[0];
-            IStructuredSelection selection = (IStructuredSelection) project.getSelection();
+            JiraProject[] projects = {};
+            final IStructuredSelection selection = (IStructuredSelection) project.getSelection();
             if (selection.getFirstElement() instanceof JiraProject) {
                 projects = new JiraProject[] { (JiraProject) selection.getFirstElement() };
             }
@@ -1971,17 +1971,17 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     }
 
     private void internalUpdate(final boolean updateProjectList, final JiraProject[] projects) {
-        ICoreRunnable runnable = new ICoreRunnable() {
+        final ICoreRunnable runnable = new ICoreRunnable() {
             @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
+            public void run(final IProgressMonitor monitor) throws CoreException {
                 int size = projects.length;
                 if (updateProjectList) {
                     size++;
                 }
-                SubMonitor submonitor = SubMonitor.convert(monitor,
+                final SubMonitor submonitor = SubMonitor.convert(monitor,
                         Messages.JiraFilterDefinitionPage_Update_Attributes_from_Repository, size);
                 try {
-                    JiraClient client = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
+                    final JiraClient client = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
                     if (updateProjectList) {
                         client.getCache().refreshDetails(submonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
                     }
@@ -1989,7 +1989,7 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
                         client.getCache().refreshProjectDetails(project.getId(),
                                 submonitor.newChild(1, SubMonitor.SUPPRESS_NONE));
                     }
-                } catch (JiraException e) {
+                } catch (final JiraException e) {
                     throw new CoreException(JiraCorePlugin.toStatus(getTaskRepository(), e));
                 }
             }
@@ -2004,10 +2004,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         }
         try {
             CommonUiUtil.run(context, runnable);
-        } catch (CoreException e) {
+        } catch (final CoreException e) {
             setErrorMessage(NLS.bind( //
                     Messages.JiraFilterDefinitionPage_Error_updating_attributes_X, e.getMessage()));
-        } catch (OperationCanceledException e) {
+        } catch (final OperationCanceledException e) {
             // ignore
         }
     }
@@ -2026,25 +2026,25 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
             internalUpdate(false, staleProjects.toArray(new JiraProject[0]));
         }
 
-        this.fixFor.setInput(projects);
-        this.components.setInput(projects);
-        this.reportedIn.setInput(projects);
-        this.issueType.setInput(projects);
+        fixFor.setInput(projects);
+        components.setInput(projects);
+        reportedIn.setInput(projects);
+        issueType.setInput(projects);
     }
 
-    private void setQueryName(String queryName) {
+    private void setQueryName(final String queryName) {
         if (titleText == null) {
-            this.title = queryName;
+            title = queryName;
         } else {
             titleText.setText(queryName);
         }
     }
 
     public void setCreatedRecently() {
-        this.workingCopy = new FilterDefinition();
+        workingCopy = new FilterDefinition();
 
         setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_added_recently);
-        this.workingCopy.setCreatedDateFilter(new DateRangeFilter(null, null, "-1w", "")); //$NON-NLS-1$//$NON-NLS-2$
+        workingCopy.setCreatedDateFilter(new DateRangeFilter(null, null, "-1w", "")); //$NON-NLS-1$//$NON-NLS-2$
 
         if (!firstTime) {
             loadFromWorkingCopy();
@@ -2053,10 +2053,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
     }
 
     public void setUpdatedRecently() {
-        this.workingCopy = new FilterDefinition();
+        workingCopy = new FilterDefinition();
 
         setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_updated_recently);
-        this.workingCopy.setUpdatedDateFilter(new DateRangeFilter(null, null, "-1w", "")); //$NON-NLS-1$//$NON-NLS-2$
+        workingCopy.setUpdatedDateFilter(new DateRangeFilter(null, null, "-1w", "")); //$NON-NLS-1$//$NON-NLS-2$
 
         if (!firstTime) {
             loadFromWorkingCopy();
@@ -2069,10 +2069,10 @@ public class JiraFilterDefinitionPage extends AbstractRepositoryQueryPage {
         setQueryName(Messages.JiraNamedFilterPage_Predefined_filter_resolved_recently);
         workingCopy.setUpdatedDateFilter(new DateRangeFilter(null, null, "-1w", "")); //$NON-NLS-1$//$NON-NLS-2$
 
-        List<JiraStatus> statuses = new ArrayList<>();
+        final List<JiraStatus> statuses = new ArrayList<>();
 
-        for (JiraStatus status : client.getCache().getStatuses()) {
-            if (status.getId().equals(JIRA_STATUS_RESOLVED) || status.getId().equals(JIRA_STATUS_CLOSED)) {
+        for (final JiraStatus status : client.getCache().getStatuses()) {
+            if (JIRA_STATUS_RESOLVED.equals(status.getId()) || JIRA_STATUS_CLOSED.equals(status.getId())) {
                 statuses.add(status);
             }
         }

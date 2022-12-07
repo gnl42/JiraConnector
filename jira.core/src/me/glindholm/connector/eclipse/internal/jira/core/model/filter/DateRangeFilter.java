@@ -29,11 +29,11 @@ public class DateRangeFilter extends DateFilter {
 
     private final String to;
 
-    public DateRangeFilter(Instant fromDate, Instant toDate) {
+    public DateRangeFilter(final Instant fromDate, final Instant toDate) {
         this(fromDate, toDate, null, null);
     }
 
-    public DateRangeFilter(Instant fromDate, Instant toDate, String from, String to) {
+    public DateRangeFilter(final Instant fromDate, final Instant toDate, final String from, final String to) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.from = from;
@@ -41,11 +41,11 @@ public class DateRangeFilter extends DateFilter {
     }
 
     public Instant getFromDate() {
-        return this.fromDate;
+        return fromDate;
     }
 
     public Instant getToDate() {
-        return this.toDate;
+        return toDate;
     }
 
     public String getFrom() {

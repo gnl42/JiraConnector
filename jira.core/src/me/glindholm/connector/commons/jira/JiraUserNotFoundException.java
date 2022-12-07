@@ -23,7 +23,7 @@ package me.glindholm.connector.commons.jira;
 public class JiraUserNotFoundException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public JiraUserNotFoundException(String message) {
+    public JiraUserNotFoundException(final String message) {
         super(message);
     }
 }

@@ -15,21 +15,21 @@ public final class JiraTimeFormatter {
     private JiraTimeFormatter() {
     }
 
-    public static String formatShortTimeFromJiraTimeString(String dateString, Locale locale) {
+    public static String formatShortTimeFromJiraTimeString(final String dateString, final Locale locale) {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", locale);
-        DateFormat ds = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+        final DateFormat ds = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
         String t;
         if (dateString == null) {
             return "";
         }
         try {
             t = ds.format(df.parse(dateString));
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             // maybe it is JIRA 4.1 EAP format? try it
             df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", locale);
             try {
                 t = ds.format(df.parse(dateString));
-            } catch (ParseException e2) {
+            } catch (final ParseException e2) {
                 t = "Invalid";
             }
         }
@@ -37,18 +37,18 @@ public final class JiraTimeFormatter {
         return t;
     }
 
-    public static String formatDateTimeFromJiraTimeString(String dateString, Locale locale) {
+    public static String formatDateTimeFromJiraTimeString(final String dateString, final Locale locale) {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", locale);
-        DateFormat ds = new SimpleDateFormat("dd/MMM/yy HH:mm");
+        final DateFormat ds = new SimpleDateFormat("dd/MMM/yy HH:mm");
         String t;
         try {
             t = ds.format(df.parse(dateString));
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             // maybe it is JIRA 4.1 EAP format? try it
             df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", locale);
             try {
                 t = ds.format(df.parse(dateString));
-            } catch (ParseException e2) {
+            } catch (final ParseException e2) {
                 t = "Invalid";
             }
         }
@@ -56,22 +56,22 @@ public final class JiraTimeFormatter {
         return t;
     }
 
-    public static String formatDateFromJiraTimeString(String dateString, Locale locale) {
+    public static String formatDateFromJiraTimeString(final String dateString, final Locale locale) {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z (z)", locale);
-        DateFormat ds = new SimpleDateFormat("dd/MMM/yy", locale);
+        final DateFormat ds = new SimpleDateFormat("dd/MMM/yy", locale);
         String t;
         try {
             t = ds.format(df.parse(dateString));
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             // maybe it is JIRA 4.1 EAP format? try it
             df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", locale);
             try {
                 t = ds.format(df.parse(dateString));
-            } catch (ParseException e2) {
+            } catch (final ParseException e2) {
                 df = new SimpleDateFormat("yyyy-MM-dd", locale);
                 try {
                     t = ds.format(df.parse(dateString));
-                } catch (ParseException e3) {
+                } catch (final ParseException e3) {
                     t = "Invalid";
                 }
             }

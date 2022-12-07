@@ -14,34 +14,34 @@ package me.glindholm.connector.eclipse.internal.jira.ui;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.jira.ui.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.jira.ui.messages"; //$NON-NLS-1$
 
-	static {
-		// load message values from bundle file
-		reloadMessages();
-	}
+    static {
+        // load message values from bundle file
+        reloadMessages();
+    }
 
-	public static void reloadMessages() {
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    public static void reloadMessages() {
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	public static String JiraConnectorUi_Bug;
+    public static String JiraConnectorUi_Bug;
 
-	public static String JiraConnectorUi_Story;
+    public static String JiraConnectorUi_Story;
 
-	public static String JiraConnectorUi_Feature;
+    public static String JiraConnectorUi_Feature;
 
-	public static String JiraConnectorUi_Improvement;
+    public static String JiraConnectorUi_Improvement;
 
-	public static String JiraConnectorUi_In_reply_to_X;
+    public static String JiraConnectorUi_In_reply_to_X;
 
-	public static String JiraConnectorUi_In_reply_to_comment_X;
+    public static String JiraConnectorUi_In_reply_to_comment_X;
 
-	public static String JiraConnectorUi_In_reply_to_X_comment_X;
+    public static String JiraConnectorUi_In_reply_to_X_comment_X;
 
-	public static String JiraConnectorUi_Issue;
+    public static String JiraConnectorUi_Issue;
 
-	public static String JiraConnectorUi_Subtask;
+    public static String JiraConnectorUi_Subtask;
 
-	public static String JiraConnectorUi_Task;
+    public static String JiraConnectorUi_Task;
 }

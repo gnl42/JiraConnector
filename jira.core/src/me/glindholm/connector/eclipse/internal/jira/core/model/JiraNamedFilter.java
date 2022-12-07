@@ -18,76 +18,76 @@ import java.io.Serializable;
  * @author Brock Janiczak
  */
 public class JiraNamedFilter implements JiraFilter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
+    private String id;
 
-	private String name;
+    private String name;
 
-	private String description;
+    private String description;
 
-	private String author;
+    private String author;
 
-	private String jql;
+    private String jql;
 
-	private String viewUrl;
+    private String viewUrl;
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(final String description) {
+        this.description = description;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(final String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public String getAuthor() {
-		return this.author;
-	}
+    public String getAuthor() {
+        return author;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+    public void setAuthor(final String author) {
+        this.author = author;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return this.name;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return name;
+    }
 
-	public void setJql(String jql) {
-		this.jql = jql;
-	}
+    public void setJql(final String jql) {
+        this.jql = jql;
+    }
 
-	public String getJql() {
-		return jql;
-	}
+    public String getJql() {
+        return jql;
+    }
 
-	public void setViewUrl(String url) {
-		this.viewUrl = url;
-	}
+    public void setViewUrl(final String url) {
+        viewUrl = url;
+    }
 
-	public String getViewUrl() {
-		return viewUrl;
-	}
+    public String getViewUrl() {
+        return viewUrl;
+    }
 
 }

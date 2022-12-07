@@ -71,8 +71,6 @@ import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
-import me.glindholm.jira.rest.client.api.domain.BasicUser;
-import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.CimIssueType;
 import me.glindholm.jira.rest.client.api.domain.CimProject;
@@ -81,7 +79,7 @@ import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.api.domain.Session;
-import me.glindholm.jira.rest.client.api.domain.Watchers;
+import me.glindholm.jira.rest.client.api.domain.User;
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
@@ -172,7 +170,6 @@ public class JiraRestClientAdapter {
             } else {
                 restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password, httpOptions);
             }
-
         } catch (final URISyntaxException e) {
             // we should never get here as Mylyn constructs URI first and fails if it is
             // incorrect
@@ -199,9 +196,6 @@ public class JiraRestClientAdapter {
                 try {
                     final Issue issue = restClient.getIssueClient()
                             .getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA, IssueRestClient.Expandos.EDITMETA)).get();
-                    final BasicWatchers watched = issue.getWatched();
-                    final Watchers watchers = restClient.getIssueClient().getWatchers(watched.getSelf()).get();
-                    issue.setWatchers(watchers);
                     return issue;
                 } catch (InterruptedException | ExecutionException | URISyntaxException e) {
                     throw new JiraException(e);
@@ -270,7 +264,7 @@ public class JiraRestClientAdapter {
     }
 
     public JiraIssue getIssueByKeyOrId(final String issueKeyOrId, final IProgressMonitor monitor) throws JiraException {
-        return JiraRestConverter.convertIssue(getIssue(issueKeyOrId), cache, url, monitor);
+        return JiraRestConverter.convertIssue(restClient, getIssue(issueKeyOrId), cache, url, monitor);
     }
 
     public JiraStatus[] getStatuses() throws JiraException {
@@ -314,7 +308,7 @@ public class JiraRestClientAdapter {
 
                 final List<JiraIssue> fullIssues = new ArrayList<>();
                 for (final Issue issue : issuesFromServer) {
-                    fullIssues.add(JiraRestConverter.convertIssue(issue, cache, url, progress));
+                    fullIssues.add(JiraRestConverter.convertIssue(restClient, issue, cache, url, progress));
                     progress.split(1);
                 }
                 progress.done();
@@ -352,8 +346,6 @@ public class JiraRestClientAdapter {
                     projectMetadata.put(issueType.getId(), issueType.getFields());
                 }
             }
-            project.setfieldMetadata(projectMetadata);
-
             project.setComponents(JiraRestConverter.convertComponents(projectWithDetails.getComponents()));
             project.setVersions(JiraRestConverter.convertVersions(projectWithDetails.getVersions()));
             project.setIssueTypes(JiraRestConverter.convertIssueTypes(projectWithDetails.getIssueTypes()));
@@ -397,6 +389,19 @@ public class JiraRestClientAdapter {
         });
     }
 
+    public User getCurrentUser() throws JiraException {
+        return call(new Callable<User>() {
+            @Override
+            public User call() throws JiraException {
+                try {
+                    return restClient.getUserClient().getCurrentUser().get();
+                } catch (RestClientException | InterruptedException | ExecutionException | URISyntaxException e) {
+                    throw new JiraException(e);
+                }
+            }
+        });
+    }
+
     public List<JiraAction> getTransitions(final String issueKey) throws JiraException {
 
         try {
@@ -425,12 +430,12 @@ public class JiraRestClientAdapter {
                 final String[] values = issue.getFieldValues(transitionField.getName());
 
                 if (values != null && values.length > 0) {
-                    if (transitionField.getName().equals(JiraRestFields.SUMMARY) || transitionField.getName().equals(JiraRestFields.DESCRIPTION)
-                            || transitionField.getName().equals(JiraRestFields.ENVIRONMENT)) {
+                    if (JiraRestFields.SUMMARY.equals(transitionField.getName()) || JiraRestFields.DESCRIPTION.equals(transitionField.getName())
+                            || JiraRestFields.ENVIRONMENT.equals(transitionField.getName())) {
 
                         fields.add(new FieldInput(transitionField.getName(), values[0]));
 
-                    } else if (transitionField.getName().equals(JiraRestFields.DUEDATE)) {
+                    } else if (JiraRestFields.DUEDATE.equals(transitionField.getName())) {
 
                         String date = DateTimeFormatter.ofPattern(JiraRestFields.DATE_FORMAT).format(issue.getDue());
                         if (values[0] == null) {
@@ -438,16 +443,16 @@ public class JiraRestClientAdapter {
                         }
                         fields.add(new FieldInput(JiraRestFields.DUEDATE, date));
 
-                    } else if (transitionField.getName().equals(JiraRestFields.LABELS)) {
+                    } else if (JiraRestFields.LABELS.equals(transitionField.getName())) {
 
                         fields.add(new FieldInput(transitionField.getName(), Arrays.asList(values)));
 
-                    } else if (transitionField.getName().equals(JiraRestFields.RESOLUTION) || transitionField.getName().equals(JiraRestFields.ISSUETYPE)
-                            || transitionField.getName().equals(JiraRestFields.PRIORITY) || transitionField.getName().equals(JiraRestFields.SECURITY)) {
+                    } else if (JiraRestFields.RESOLUTION.equals(transitionField.getName()) || JiraRestFields.ISSUETYPE.equals(transitionField.getName())
+                            || JiraRestFields.PRIORITY.equals(transitionField.getName()) || JiraRestFields.SECURITY.equals(transitionField.getName())) {
 
                         fields.add(new FieldInput(transitionField.getId(), ComplexIssueInputFieldValue.with(JiraRestFields.ID, values[0])));
 
-                    } else if (transitionField.getType() != null && transitionField.getType().equals("array") //$NON-NLS-1$
+                    } else if (transitionField.getType() != null && "array".equals(transitionField.getType()) //$NON-NLS-1$
                             && !transitionField.getName().startsWith("customfield_")) { //$NON-NLS-1$
 
                         final List<ComplexIssueInputFieldValue> array = new ArrayList<>();
@@ -506,7 +511,7 @@ public class JiraRestClientAdapter {
         final Issue issue = getIssue(issueKey);
 
         final IssueInput fields = IssueInput
-                .createWithFields(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, user)));
+                .createWithFields(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(cache.getServerInfo().getAccountTag(), user)));
         try {
             restClient.getIssueClient().updateIssue(issue.getKey(), fields).claim();
         } catch (final URISyntaxException e) {
@@ -556,8 +561,8 @@ public class JiraRestClientAdapter {
         }
 
         // Mylyn sets -1 as a value of empty assignee
-        if (issue.getAssignee() != null && !issue.getAssignee().equals("-1")) { //$NON-NLS-1$
-            issueInputBuilder.setAssignee(new BasicUser(null, issue.getAssignee(), null));
+        if (issue.getAssignee() != null && !"-1".equals(issue.getAssignee())) { //$NON-NLS-1$
+            issueInputBuilder.setAssignee(issue.getAssignee());
         }
 
         if (issue.getDue() != null) {
@@ -734,11 +739,11 @@ public class JiraRestClientAdapter {
         }
 
         if (editableFields.contains(new JiraIssueField(JiraRestFields.ASSIGNEE, null))) {
-            final String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee(); //$NON-NLS-1$//$NON-NLS-2$
-            final String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getName() : ""; //$NON-NLS-1$
+            final String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee().getId(); //$NON-NLS-1$//$NON-NLS-2$
+            final String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getId() : ""; //$NON-NLS-1$
 
             if (!assigne.equals(prevAssigne)) {
-                updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(JiraRestFields.NAME, assigne)));
+                updateFields.add(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(cache.getServerInfo().getAccountTag(), assigne)));
             }
         }
 
@@ -886,4 +891,11 @@ public class JiraRestClientAdapter {
         });
     }
 
+    public List<User> getProjectAssignables(final String projectKey) throws JiraException {
+        try {
+            return restClient.getUserClient().findAssignableUsersForProject(projectKey, null, 1000, true, false).get();
+        } catch (InterruptedException | ExecutionException | URISyntaxException e) {
+            throw new JiraException(e);
+        }
+    }
 }

@@ -16,10 +16,10 @@ package me.glindholm.connector.eclipse.internal.jira.core;
  */
 public class InvalidJiraQueryException extends RuntimeException {
 
-	private static final long serialVersionUID = -9151805689314153246L;
+    private static final long serialVersionUID = -9151805689314153246L;
 
-	public InvalidJiraQueryException(String string) {
-		super(string);
-	}
+    public InvalidJiraQueryException(final String string) {
+        super(string);
+    }
 
 }

@@ -20,5 +20,5 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public abstract class DateFilter implements Filter, Serializable {
 
-	abstract DateFilter copy();
+    abstract DateFilter copy();
 }

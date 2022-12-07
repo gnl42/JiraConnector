@@ -15,42 +15,42 @@ import org.eclipse.swt.widgets.Label;
  */
 public class HttpAuthExtensionSettingsContribution extends AbstractTaskRepositoryPageContribution {
 
-	public HttpAuthExtensionSettingsContribution() {
-		super(org.eclipse.mylyn.internal.tasks.ui.wizards.Messages.AbstractRepositorySettingsPage_Http_Authentication,
-				"");
-	}
+    public HttpAuthExtensionSettingsContribution() {
+        super(org.eclipse.mylyn.internal.tasks.ui.wizards.Messages.AbstractRepositorySettingsPage_Http_Authentication,
+                "");
+    }
 
-	@Override
-	public Control createControl(Composite parentControl) {
-		Composite parent = new Composite(parentControl, SWT.NONE);
-		GridLayout layout = new GridLayout(1, true);
-		layout.marginWidth = 0;
-		parent.setLayout(layout);
+    @Override
+    public Control createControl(final Composite parentControl) {
+        final Composite parent = new Composite(parentControl, SWT.NONE);
+        final GridLayout layout = new GridLayout(1, true);
+        layout.marginWidth = 0;
+        parent.setLayout(layout);
 
-		Label label = new Label(parent, SWT.WRAP);
-		GridDataFactory.fillDefaults().grab(true, true).hint(500, SWT.DEFAULT).applyTo(label);
-		label.setText(Messages.HttpAuthExtensionSettingsContribution_help_message);
+        final Label label = new Label(parent, SWT.WRAP);
+        GridDataFactory.fillDefaults().grab(true, true).hint(500, SWT.DEFAULT).applyTo(label);
+        label.setText(Messages.HttpAuthExtensionSettingsContribution_help_message);
 
-		return parent;
-	}
+        return parent;
+    }
 
-	@Override
-	public boolean isPageComplete() {
-		return true;
-	}
+    @Override
+    public boolean isPageComplete() {
+        return true;
+    }
 
-	@Override
-	public boolean canFlipToNextPage() {
-		return true;
-	}
+    @Override
+    public boolean canFlipToNextPage() {
+        return true;
+    }
 
-	@Override
-	public IStatus validate() {
-		return null;
-	}
+    @Override
+    public IStatus validate() {
+        return null;
+    }
 
-	@Override
-	public void applyTo(TaskRepository repository) {
-	}
+    @Override
+    public void applyTo(final TaskRepository repository) {
+    }
 
 }

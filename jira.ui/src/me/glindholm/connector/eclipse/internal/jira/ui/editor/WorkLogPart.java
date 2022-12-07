@@ -421,7 +421,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
      */
     private boolean updateNewWorkLog() {
         final JiraWorkLog tempworkLog = new JiraWorkLog();
-        tempworkLog.setAuthor(getTaskEditorPage().getTaskRepository().getUserName());
+        tempworkLog.setAuthor(null); // TODO Check this
         tempworkLog.setComment(newWorkDoneDescription);
         tempworkLog.setStartDate(newWorkDoneDate.getTime().toInstant());
         tempworkLog.setTimeSpent(newWorkDoneAmount);

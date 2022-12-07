@@ -32,55 +32,56 @@ import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
  */
 public class TimeSpanAttributeEditor extends AbstractAttributeEditor {
 
-	private Text text;
+    private Text text;
 
-	private final JiraTimeFormat format;
+    private final JiraTimeFormat format;
 
-	public TimeSpanAttributeEditor(TaskDataModel model, TaskAttribute taskAttribute) {
-		super(model, taskAttribute);
-		this.format = JiraUtil.getTimeFormat(model.getTaskRepository());
-	}
+    public TimeSpanAttributeEditor(final TaskDataModel model, final TaskAttribute taskAttribute) {
+        super(model, taskAttribute);
+        format = JiraUtil.getTimeFormat(model.getTaskRepository());
+    }
 
-	protected Text getText() {
-		return text;
-	}
+    protected Text getText() {
+        return text;
+    }
 
-	@Override
-	public void createControl(Composite parent, FormToolkit toolkit) {
-		if (isReadOnly()) {
-			text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
-			text.setFont(JFaceResources.getDefaultFont());
-			text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
-			text.setText(getValue());
-		} else {
-			text = toolkit.createText(parent, getValue(), SWT.FLAT);
-			text.setFont(JFaceResources.getDefaultFont());
-			text.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					setValue(text.getText());
-					//EditorUtil.ensureVisible(text);
-				}
-			});
-		}
-		toolkit.adapt(text, false, false);
-		setControl(text);
-	}
+    @Override
+    public void createControl(final Composite parent, final FormToolkit toolkit) {
+        if (isReadOnly()) {
+            text = new Text(parent, SWT.FLAT | SWT.READ_ONLY);
+            text.setFont(JFaceResources.getDefaultFont());
+            text.setData(FormToolkit.KEY_DRAW_BORDER, Boolean.FALSE);
+            text.setText(getValue());
+        } else {
+            text = toolkit.createText(parent, getValue(), SWT.FLAT);
+            text.setFont(JFaceResources.getDefaultFont());
+            text.addModifyListener(new ModifyListener() {
+                @Override
+                public void modifyText(final ModifyEvent e) {
+                    setValue(text.getText());
+                    //EditorUtil.ensureVisible(text);
+                }
+            });
+        }
+        toolkit.adapt(text, false, false);
+        setControl(text);
+    }
 
-	public String getValue() {
-		return format.format(getAttributeMapper().getLongValue(getTaskAttribute()));
-	}
+    public String getValue() {
+        return format.format(getAttributeMapper().getLongValue(getTaskAttribute()));
+    }
 
-	public void setValue(String text) {
-		try {
-			if (text != null && text.length() > 0) {
-				getAttributeMapper().setLongValue(getTaskAttribute(), format.parse(text));
-			} else {
-				getAttributeMapper().setLongValue(getTaskAttribute(), null);
-			}
-			attributeChanged();
-		} catch (ParseException e) {
-			//ignore
-		}
-		JiraEditorUtil.setTimeSpentDecorator(this.text, true, getModel().getTaskRepository(), true);
-	}
+    public void setValue(final String text) {
+        try {
+            if (text != null && text.length() > 0) {
+                getAttributeMapper().setLongValue(getTaskAttribute(), format.parse(text));
+            } else {
+                getAttributeMapper().setLongValue(getTaskAttribute(), null);
+            }
+            attributeChanged();
+        } catch (final ParseException e) {
+            //ignore
+        }
+        JiraEditorUtil.setTimeSpentDecorator(this.text, true, getModel().getTaskRepository(), true);
+    }
 }

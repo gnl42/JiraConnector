@@ -43,8 +43,8 @@ public class JiraPeoplePart extends TaskEditorPeoplePart {
 
     @Override
     protected Collection<TaskAttribute> getAttributes() {
-        Map<String, TaskAttribute> allAttributes = getTaskData().getRoot().getAttributes();
-        List<TaskAttribute> attributes = new ArrayList<>(allAttributes.size());
+        final Map<String, TaskAttribute> allAttributes = getTaskData().getRoot().getAttributes();
+        final List<TaskAttribute> attributes = new ArrayList<>(allAttributes.size());
         attributes.add(getTaskData().getRoot().getMappedAttribute(TaskAttribute.USER_ASSIGNED));
 
         final TaskAttribute reporter = getTaskData().getRoot().getMappedAttribute(TaskAttribute.USER_REPORTER);
@@ -56,9 +56,9 @@ public class JiraPeoplePart extends TaskEditorPeoplePart {
     }
 
     @Override
-    protected GridDataFactory createLayoutData(AbstractAttributeEditor editor) {
-        LayoutHint layoutHint = editor.getLayoutHint();
-        GridDataFactory gridDataFactory = GridDataFactory.fillDefaults().indent(3, 0);// prevent clipping of decorators on Mac
+    protected GridDataFactory createLayoutData(final AbstractAttributeEditor editor) {
+        final LayoutHint layoutHint = editor.getLayoutHint();
+        final GridDataFactory gridDataFactory = GridDataFactory.fillDefaults().indent(3, 0);// prevent clipping of decorators on Mac
         if (layoutHint != null && layoutHint.rowSpan == RowSpan.MULTIPLE) {
             gridDataFactory.grab(true, true).align(SWT.FILL, SWT.FILL).hint(130, 95);
         } else {

@@ -31,77 +31,77 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
 
 class JiraAttributeEditorFactory extends AttributeEditorFactory {
-	private final TaskDataModel model;
+    private final TaskDataModel model;
 
-	public JiraAttributeEditorFactory(TaskDataModel model, TaskRepository taskRepository, IServiceLocator serviceLocator) {
-		super(model, taskRepository, serviceLocator);
-		this.model = model;
-	}
+    public JiraAttributeEditorFactory(final TaskDataModel model, final TaskRepository taskRepository, final IServiceLocator serviceLocator) {
+        super(model, taskRepository, serviceLocator);
+        this.model = model;
+    }
 
-	@Override
-	public AbstractAttributeEditor createEditor(String type, TaskAttribute taskAttribute) {
-		if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
-			return new TimeSpanAttributeEditor(model, taskAttribute);
-		}
-//		if (JiraUtil.isCustomDateTimeAttribute(taskAttribute)) {
-//			String metaType = taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE);
-//			if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
-//				return new DateTimeAttributeEditor(model, taskAttribute, true);
-//			} else if (JiraFieldType.DATE.getKey().equals(metaType)) {
-//				return new DateTimeAttributeEditor(model, taskAttribute, false);
-//			}
-//		}
-		if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
-			CheckboxMultiSelectAttributeEditor attributeEditor = new CheckboxMultiSelectAttributeEditor(model,
-					taskAttribute);
-			attributeEditor.setLayoutHint(new LayoutHint(RowSpan.SINGLE, ColumnSpan.SINGLE));
-			return attributeEditor;
-		}
-		if (JiraConstants.TYPE_NUMBER.equals(type)) {
-			return new NumberAttributeEditor(model, taskAttribute);
-		}
+    @Override
+    public AbstractAttributeEditor createEditor(final String type, final TaskAttribute taskAttribute) {
+        if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
+            return new TimeSpanAttributeEditor(model, taskAttribute);
+        }
+        //		if (JiraUtil.isCustomDateTimeAttribute(taskAttribute)) {
+        //			String metaType = taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE);
+        //			if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
+        //				return new DateTimeAttributeEditor(model, taskAttribute, true);
+        //			} else if (JiraFieldType.DATE.getKey().equals(metaType)) {
+        //				return new DateTimeAttributeEditor(model, taskAttribute, false);
+        //			}
+        //		}
+        if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
+            final CheckboxMultiSelectAttributeEditor attributeEditor = new CheckboxMultiSelectAttributeEditor(model,
+                    taskAttribute);
+            attributeEditor.setLayoutHint(new LayoutHint(RowSpan.SINGLE, ColumnSpan.SINGLE));
+            return attributeEditor;
+        }
+        if (JiraConstants.TYPE_NUMBER.equals(type)) {
+            return new NumberAttributeEditor(model, taskAttribute);
+        }
 
-		if (TaskAttribute.TYPE_PERSON.equals(type)) {
-			return new PersonAttributeEditor(model, taskAttribute) {
-				@Override
-				public String getValue() {
-					if (isReadOnly()) {
-						IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(
-								getTaskAttribute());
-						if (repositoryPerson != null) {
-							final String name = repositoryPerson.getName();
-							if (name != null) {
-								return name;
-							} else {
-								return repositoryPerson.getPersonId();
-							}
-						}
-					}
+        if (TaskAttribute.TYPE_PERSON.equals(type)) {
+            return new PersonAttributeEditor(model, taskAttribute) {
+                @Override
+                public String getValue() {
+                    if (isReadOnly()) {
+                        final IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(
+                                getTaskAttribute());
+                        if (repositoryPerson != null) {
+                            final String name = repositoryPerson.getName();
+                            if (name != null) {
+                                return name;
+                            } else {
+                                return repositoryPerson.getPersonId();
+                            }
+                        }
+                    }
 
-					return super.getValue();
-				}
+                    return super.getValue();
+                }
 
-				@Override
-				public void createControl(Composite parent, FormToolkit toolkit) {
-					super.createControl(parent, toolkit);
-					IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(getTaskAttribute());
-					if (repositoryPerson != null) {
-						if (isReadOnly()) {
-							if (!StringUtils.isBlank(repositoryPerson.getPersonId())) {
-								getControl().setToolTipText(repositoryPerson.getPersonId());
-							}
-						} else {
-							// add tooltip with user display name for editbox in which we just display user id
-							if (!StringUtils.isBlank(repositoryPerson.getName())) {
-								if (getText() != null) {
-									getText().setToolTipText(repositoryPerson.getName());
-								}
-							}
-						}
-					}
-				}
-			};
-		}
-		return super.createEditor(type, taskAttribute);
-	}
+                @Override
+                public void createControl(final Composite parent, final FormToolkit toolkit) {
+                    super.createControl(parent, toolkit);
+                    final IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(getTaskAttribute());
+                    if (repositoryPerson != null) {
+                        if (isReadOnly()) {
+                            if (!StringUtils.isBlank(repositoryPerson.getPersonId())) {
+                                getControl().setToolTipText(repositoryPerson.getPersonId());
+                            }
+                        } else {
+                            // add tooltip with user display name for editbox in which we just display user id
+                            if (!StringUtils.isBlank(repositoryPerson.getName())) {
+                                if (getText() != null) {
+                                    getText().setToolTipText(repositoryPerson.getName());
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+        return super.createEditor(type, taskAttribute);
+    }
 }

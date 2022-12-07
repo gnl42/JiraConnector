@@ -19,9 +19,9 @@ import java.io.Serializable;
  * @author Brock Janiczak
  */
 public class CustomFieldFilter implements Filter, Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-//	private String customField;
-//
-//	private String[] values;
+    //	private String customField;
+    //
+    //	private String[] values;
 }

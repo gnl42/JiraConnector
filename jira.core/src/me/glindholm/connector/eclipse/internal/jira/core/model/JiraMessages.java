@@ -15,15 +15,15 @@ import org.eclipse.osgi.util.NLS;
 
 public class JiraMessages extends NLS {
 
-	private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.jira.core.model.messages"; //$NON-NLS-1$
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, JiraMessages.class);
-	}
+    private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.jira.core.model.messages"; //$NON-NLS-1$
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, JiraMessages.class);
+    }
 
-	public static String SecurityLevel_None;
+    public static String SecurityLevel_None;
 
-	private JiraMessages() {
-	}
+    private JiraMessages() {
+    }
 
 }

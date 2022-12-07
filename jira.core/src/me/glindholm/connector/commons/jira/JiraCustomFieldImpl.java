@@ -30,16 +30,16 @@ import me.glindholm.jira.rest.client.api.domain.IssueField;
  */
 public class JiraCustomFieldImpl implements JiraCustomField {
 
-    private String id;
+    private final String id;
     protected List<String> values = new ArrayList<>();
     private BasicKeyType typeKey = BasicKeyType.UNSUPPORTED;
-    private String name;
+    private final String name;
 
-    protected JiraCustomFieldImpl(Builder builder) {
+    protected JiraCustomFieldImpl(final Builder builder) {
         this(builder.id, builder.name, builder.values, builder.typeKey);
     }
 
-    protected JiraCustomFieldImpl(String id, String name, List<String> values, BasicKeyType typeKey) {
+    protected JiraCustomFieldImpl(final String id, final String name, final List<String> values, final BasicKeyType typeKey) {
         this.id = id;
         if (values != null) {
             this.values.addAll(values);
@@ -93,7 +93,7 @@ public class JiraCustomFieldImpl implements JiraCustomField {
 
         private final String keyValue;
 
-        BasicKeyType(String key) {
+        BasicKeyType(final String key) {
             keyValue = key;
         }
 
@@ -101,8 +101,8 @@ public class JiraCustomFieldImpl implements JiraCustomField {
             return keyValue;
         }
 
-        public static BasicKeyType getValueOf(String key) {
-            for (BasicKeyType type : BasicKeyType.values()) {
+        public static BasicKeyType getValueOf(final String key) {
+            for (final BasicKeyType type : BasicKeyType.values()) {
                 if (type.getKeyValue().equalsIgnoreCase(key)) {
                     return type;
                 }
@@ -113,16 +113,16 @@ public class JiraCustomFieldImpl implements JiraCustomField {
     }
 
     public static class Builder {
-        private BasicKeyType typeKey;
-        private String id;
-        private String name;
+        private final BasicKeyType typeKey;
+        private final String id;
+        private final String name;
         private List<String> values = new ArrayList<>();
 
-        public Builder(JSONObject meta, IssueField field) throws JSONException {
-            JSONObject schema = meta.getJSONObject("schema");
+        public Builder(final JSONObject meta, final IssueField field) throws JSONException {
+            final JSONObject schema = meta.getJSONObject("schema");
             typeKey = BasicKeyType.getValueOf(schema.getString("custom"));
             name = meta.getString("name");
-            String type = schema.getString("type");
+            final String type = schema.getString("type");
             id = field.getId();
             values = new ArrayList<>();
             if ("array".equals(type)) {
@@ -135,7 +135,7 @@ public class JiraCustomFieldImpl implements JiraCustomField {
                 if (typeKey == BasicKeyType.UNSUPPORTED) {
                     values.add("[Custom field not supported]");
                 } else {
-                    Object value = field.getValue();
+                    final Object value = field.getValue();
                     if (value != null) {
                         values.add(value.toString());
                     }

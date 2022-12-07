@@ -16,25 +16,25 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
  * @author Brock Janiczak
  */
 public class SpecificUserFilter extends UserFilter {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String user;
+    private final String user;
 
-	public SpecificUserFilter(String user) {
-		this.user = user;
-	}
+    public SpecificUserFilter(final String user) {
+        this.user = user;
+    }
 
-	public String getUser() {
-		return user;
-	}
+    public String getUser() {
+        return user;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gbst.jira.core.model.filter.UserFilter#copy()
-	 */
-	@Override
-	UserFilter copy() {
-		return new SpecificUserFilter(user);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.gbst.jira.core.model.filter.UserFilter#copy()
+     */
+    @Override
+    UserFilter copy() {
+        return new SpecificUserFilter(user);
+    }
 }

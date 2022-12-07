@@ -21,41 +21,45 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
  */
 public class JiraTaskAdapterFactory implements IAdapterFactory {
 
-	private static final class JiraTask implements IJiraTask {
-		private final ITask task;
+    private static final class JiraTask implements IJiraTask {
+        private final ITask task;
 
-		public JiraTask(ITask task) {
-			this.task = task;
-		}
+        public JiraTask(final ITask task) {
+            this.task = task;
+        }
 
-		public ITask getTask() {
-			return task;
-		}
+        @Override
+        public ITask getTask() {
+            return task;
+        }
 
-		public Object getAdapter(Class adapter) {
-			if (!ITask.class.equals(adapter)) {
-				return null;
-			}
-			return task;
-		}
-	}
+        @Override
+        public Object getAdapter(final Class adapter) {
+            if (!ITask.class.equals(adapter)) {
+                return null;
+            }
+            return task;
+        }
+    }
 
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+    @Override
+    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
 
-		if (!adapterType.equals(IJiraTask.class)) {
-			return null;
-		}
+        if (!adapterType.equals(IJiraTask.class)) {
+            return null;
+        }
 
-		if (adaptableObject instanceof ITask) {
-			ITask task = (ITask) adaptableObject;
-			if (task.getConnectorKind().equals(JiraCorePlugin.CONNECTOR_KIND)) {
-				return new JiraTask((ITask) adaptableObject);
-			}
-		}
-		return null;
-	}
+        if (adaptableObject instanceof ITask) {
+            final ITask task = (ITask) adaptableObject;
+            if (JiraCorePlugin.CONNECTOR_KIND.equals(task.getConnectorKind())) {
+                return new JiraTask((ITask) adaptableObject);
+            }
+        }
+        return null;
+    }
 
-	public Class[] getAdapterList() {
-		return new Class[] { IJiraTask.class };
-	}
+    @Override
+    public Class[] getAdapterList() {
+        return new Class[] { IJiraTask.class };
+    }
 }
