@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.api.domain.input;
 
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Implement this interface if you want to provide your own value transformer to ValueTransformerManager.

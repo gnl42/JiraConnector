@@ -27,13 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.impl.EnglishReasonPhraseCatalog;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.api.DefaultResponseTransformation;
 import com.atlassian.httpclient.api.EntityBuilder;
@@ -62,7 +61,7 @@ public abstract class AbstractAsynchronousRestClient {
 
     private final HttpClient client;
 
-    protected AbstractAsynchronousRestClient(HttpClient client) {
+    protected AbstractAsynchronousRestClient(final HttpClient client) {
         this.client = client;
     }
 
@@ -74,7 +73,7 @@ public abstract class AbstractAsynchronousRestClient {
         return callAndParse(client.newRequest(uri).setAccept("application/json").get(), parser);
     }
 
-    protected final <I, T> Promise<T> postAndParse(final URI uri, I entity, final JsonGenerator<I> jsonGenerator, final JsonObjectParser<T> parser) {
+    protected final <I, T> Promise<T> postAndParse(final URI uri, final I entity, final JsonGenerator<I> jsonGenerator, final JsonObjectParser<T> parser) {
         final ResponsePromise responsePromise = client.newRequest(uri).setEntity(toEntity(jsonGenerator, entity)).post();
         return callAndParse(responsePromise, parser);
     }
@@ -102,7 +101,7 @@ public abstract class AbstractAsynchronousRestClient {
         return post(uri, StringUtils.EMPTY);
     }
 
-    protected final <I, T> Promise<T> putAndParse(final URI uri, I entity, final JsonGenerator<I> jsonGenerator, final JsonObjectParser<T> parser) {
+    protected final <I, T> Promise<T> putAndParse(final URI uri, final I entity, final JsonGenerator<I> jsonGenerator, final JsonObjectParser<T> parser) {
         final ResponsePromise responsePromise = client.newRequest(uri).setEntity(toEntity(jsonGenerator, entity)).put();
         return callAndParse(responsePromise, parser);
     }
@@ -128,7 +127,7 @@ public abstract class AbstractAsynchronousRestClient {
     protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final JsonParser<?, T> parser) {
         final ResponseHandler<T> responseHandler = new ResponseHandler<>() {
             @Override
-            public T handle(Response response) throws JSONException, IOException, URISyntaxException {
+            public T handle(final Response response) throws JSONException, IOException, URISyntaxException {
                 final String body = response.getEntity();
                 return parser instanceof JsonObjectParser ? ((JsonObjectParser<T>) parser).parse(new JSONObject(body))
                         : ((JsonArrayParser<T>) parser).parse(new JSONArray(body));
@@ -150,12 +149,12 @@ public abstract class AbstractAsynchronousRestClient {
     private static <T> Function<Response, T> errorFunction() {
         return new Function<>() {
             @Override
-            public T apply(Response response) {
+            public T apply(final Response response) {
                 try {
                     final String body = response.getEntity();
                     final List<ErrorCollection> errorMessages = extractErrors(response.getStatusCode(), body);
                     throw new RestClientException(errorMessages, response.getStatusCode());
-                } catch (JSONException e) {
+                } catch (final JSONException e) {
                     throw new RestClientException(e, response.getStatusCode());
                 }
             }
@@ -165,7 +164,7 @@ public abstract class AbstractAsynchronousRestClient {
     private static <T> Function<Response, T> toFunction(final ResponseHandler<T> responseHandler) {
         return new Function<>() {
             @Override
-            public T apply(@Nullable Response input) {
+            public T apply(@Nullable final Response input) {
                 try {
                     return responseHandler.handle(input);
                 } catch (JSONException | IOException | URISyntaxException e) {
@@ -178,7 +177,7 @@ public abstract class AbstractAsynchronousRestClient {
     private static <T> Function<Response, T> constant(final T value) {
         return new Function<>() {
             @Override
-            public T apply(Response input) {
+            public T apply(final Response input) {
                 return value;
             }
         };
@@ -191,8 +190,8 @@ public abstract class AbstractAsynchronousRestClient {
         final List<ErrorCollection> results = new ArrayList<>();
 
         if (!body.startsWith("{")) {
-            List<String> msgs = new ArrayList<>(1);
-            String httpMsg = EnglishReasonPhraseCatalog.INSTANCE.getReason(status, null);
+            final List<String> msgs = new ArrayList<>(1);
+            final String httpMsg = EnglishReasonPhraseCatalog.INSTANCE.getReason(status, null);
             if (httpMsg != null) {
                 msgs.add(httpMsg);
             }
@@ -249,7 +248,7 @@ public abstract class AbstractAsynchronousRestClient {
                     public InputStream getInputStream() {
                         try {
                             return new ByteArrayInputStream(generator.generate(bean).toString().getBytes(Charset.forName("UTF-8")));
-                        } catch (JSONException e) {
+                        } catch (final JSONException e) {
                             throw new RestClientException(e);
                         }
                     }
@@ -257,4 +256,5 @@ public abstract class AbstractAsynchronousRestClient {
             }
         };
     }
+
 }

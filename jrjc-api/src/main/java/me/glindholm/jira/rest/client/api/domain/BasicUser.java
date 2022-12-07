@@ -72,7 +72,10 @@ public class BasicUser extends AddressableNamedEntity {
 
     public String getExternalId() {
         final StringBuilder id = new StringBuilder(64);
-        id.append(displayName).append(" <").append(emailAddress != null && !emailAddress.isEmpty() ? emailAddress : getId()).append(">");
+        id.append(displayName);
+        if (!UNASSIGNED_USER.equals(this)) {
+            id.append(" <").append(emailAddress != null && !emailAddress.isEmpty() ? emailAddress : getId()).append(">");
+        }
         return id.toString();
     }
 

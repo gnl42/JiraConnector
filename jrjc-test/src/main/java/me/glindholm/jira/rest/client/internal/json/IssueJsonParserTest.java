@@ -23,7 +23,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -44,7 +43,6 @@ import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
-import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
 import me.glindholm.jira.rest.client.api.domain.ChangelogGroup;
 import me.glindholm.jira.rest.client.api.domain.ChangelogItem;
 import me.glindholm.jira.rest.client.api.domain.Comment;
@@ -101,11 +99,11 @@ public class IssueJsonParserTest {
                                 new IssueLinkType("Duplicate", "is duplicated by", IssueLinkType.Direction.INBOUND))));
 
         // watchers
-        final BasicWatchers watchers = issue.getWatchers();
-        assertNotNull(watchers);
-        assertFalse(watchers.isWatching());
-        assertEquals(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-2/watchers"), watchers.getSelf());
-        assertEquals(1, watchers.getNumWatchers());
+//        final BasicWatchers watchers = issue.getWatchers();
+//        assertNotNull(watchers);
+//        assertFalse(watchers.isWatching());
+//        assertEquals(toUri("http://localhost:8090/jira/rest/api/2/issue/TST-2/watchers"), watchers.getSelf());
+//        assertEquals(1, watchers.getNumWatchers());
 
         // time tracking
         assertEquals(new TimeTracking(0, 0, 145), issue.getTimeTracking());
@@ -130,7 +128,7 @@ public class IssueJsonParserTest {
                 toOffsetDateTime("2010-08-17T16:38:00.013+02:00"), toOffsetDateTime("2010-08-17T16:38:24.948+02:00"),
                 toOffsetDateTime("2010-08-17T16:37:00.000+02:00"), 15, Visibility.role("Developers"));
         final Worklog worklog1 = worklogs.get(1);
-        Worklog a = worklogs.get(1);
+        final Worklog a = worklogs.get(1);
         assertEquals(expectedWorklog1, worklog1);
 
         final Worklog worklog2 = worklogs.get(2);
@@ -175,12 +173,12 @@ public class IssueJsonParserTest {
 
     }
 
-    @Test
-    public void testParseIssueWhenWatchersAndVotersAreSwitchedOff() throws JSONException, URISyntaxException {
-        final Issue issue = parseIssue("/json/issue/valid-no-votes-no-watchers.json");
-        assertNull(issue.getWatchers());
-        assertNull(issue.getVotes());
-    }
+//    @Test
+//    public void testParseIssueWhenWatchersAndVotersAreSwitchedOff() throws JSONException, URISyntaxException {
+//        final Issue issue = parseIssue("/json/issue/valid-no-votes-no-watchers.json");
+//        assertNull(issue.getWatchers());
+//        assertNull(issue.getVotes());
+//    }
 
     @Test
     public void testParseUnassignedIssue() throws JSONException, URISyntaxException {
@@ -251,8 +249,8 @@ public class IssueJsonParserTest {
         assertEquals(1.457, issue.getField("customfield_10000").getValue());
         assertThat(issue.getComponents().stream().map(entity -> entity.getId()).collect(Collectors.toList()), containsInAnyOrder("Component A", "Component B"));
         assertEquals(2, issue.getWorklogs().size());
-        assertEquals(1, issue.getWatchers().getNumWatchers());
-        assertFalse(issue.getWatchers().isWatching());
+//        assertEquals(1, issue.getWatchers().getNumWatchers());
+//        assertFalse(issue.getWatchers().isWatching());
         assertEquals(new TimeTracking(2700, 2220, 180), issue.getTimeTracking());
 
         assertEquals(Visibility.role("Developers"), issue.getWorklogs().iterator().next().getVisibility());
@@ -271,7 +269,7 @@ public class IssueJsonParserTest {
         assertEquals(
                 "Pivotal Tracker provides time tracking information on the project level.\n"
                         + "JIRA stores time tracking information on issue level, so this issue has been created to store imported time tracking information.",
-                        issue.getDescription());
+                issue.getDescription());
         assertEquals("TIMETRACKING", issue.getProject().getKey());
         assertNull(issue.getDueDate());
         assertEquals(0, issue.getAttachments().size());
@@ -279,9 +277,9 @@ public class IssueJsonParserTest {
         assertNull(issue.getField("customfield_10000").getValue());
         assertEquals(issue.getComponents(), Collections.emptyList());
         assertEquals(2, issue.getWorklogs().size());
-        assertNotNull(issue.getWatchers());
-        assertEquals(0, issue.getWatchers().getNumWatchers());
-        assertFalse(issue.getWatchers().isWatching());
+//        assertNotNull(issue.getWatchers());
+//        assertEquals(0, issue.getWatchers().getNumWatchers());
+//        assertFalse(issue.getWatchers().isWatching());
         assertEquals(new TimeTracking(null, null, 840), issue.getTimeTracking());
 
         assertNull(issue.getWorklogs().iterator().next().getVisibility());
@@ -315,9 +313,9 @@ public class IssueJsonParserTest {
     @Test
     public void issueWithSubtasks() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/subtasks-5.json");
-        List<Subtask> subtasks = issue.getSubtasks();
+        final List<Subtask> subtasks = issue.getSubtasks();
         assertEquals(1, subtasks.size());
-        Subtask subtask = subtasks.iterator().next();
+        final Subtask subtask = subtasks.iterator().next();
         assertNotNull(subtask);
         assertEquals("SAM-2", subtask.getIssueKey());
         assertEquals("Open", subtask.getStatus().getName());
@@ -360,7 +358,8 @@ public class IssueJsonParserTest {
                 List.of(new ChangelogItem(FieldType.JIRA, "assignee", "user1", "User One", "user2", "User Two")));
     }
 
-    private static void verifyChangelog(ChangelogGroup changelogGroup, String createdDate, BasicUser author, List<ChangelogItem> expectedItems) {
+    private static void verifyChangelog(final ChangelogGroup changelogGroup, final String createdDate, final BasicUser author,
+            final List<ChangelogItem> expectedItems) {
         assertEquals(toOffsetDateTime(createdDate), changelogGroup.getCreated());
         assertEquals(author, changelogGroup.getAuthor());
         assertEquals(expectedItems, changelogGroup.getItems());

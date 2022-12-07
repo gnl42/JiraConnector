@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 import me.glindholm.jira.rest.client.api.NamedEntity;
@@ -40,7 +40,7 @@ public class BasicComponent implements Serializable, AddressableEntity, NamedEnt
     @Nullable
     private final String description;
 
-    public BasicComponent(URI self, @Nullable Long id, String name, @Nullable String description) {
+    public BasicComponent(final URI self, @Nullable final Long id, final String name, @Nullable final String description) {
         this.self = self;
         this.id = id;
         this.name = name;
@@ -63,7 +63,8 @@ public class BasicComponent implements Serializable, AddressableEntity, NamedEnt
     }
 
     /**
-     * @return optional description for this project (as defined by the project admin)
+     * @return optional description for this project (as defined by the project
+     *         admin)
      */
     @Nullable
     public String getDescription() {
@@ -76,13 +77,11 @@ public class BasicComponent implements Serializable, AddressableEntity, NamedEnt
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof BasicComponent) {
-            BasicComponent that = (BasicComponent) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.description, that.description);
+            final BasicComponent that = (BasicComponent) obj;
+            return Objects.equals(self, that.self) && Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                    && Objects.equals(description, that.description);
         }
         return false;
     }

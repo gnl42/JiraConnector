@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.api.domain.input;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.domain.Comment;
 

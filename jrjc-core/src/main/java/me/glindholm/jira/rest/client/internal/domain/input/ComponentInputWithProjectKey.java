@@ -16,7 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.domain.input;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.domain.AssigneeType;
 import me.glindholm.jira.rest.client.api.domain.input.ComponentInput;
@@ -28,14 +28,14 @@ import me.glindholm.jira.rest.client.api.domain.input.ComponentInput;
 public class ComponentInputWithProjectKey extends ComponentInput {
     private final String projectKey;
 
-    public ComponentInputWithProjectKey(@Nullable String projectKey, String name, String description, String leadUsername, AssigneeType assigneeType) {
+    public ComponentInputWithProjectKey(@Nullable final String projectKey, final String name, final String description, final String leadUsername,
+            final AssigneeType assigneeType) {
         super(name, description, leadUsername, assigneeType);
         this.projectKey = projectKey;
     }
 
-    public ComponentInputWithProjectKey(@Nullable String projectKey, ComponentInput componentInput) {
-        this(projectKey, componentInput.getName(), componentInput.getDescription(), componentInput.getLeadUsername(),
-                componentInput.getAssigneeType());
+    public ComponentInputWithProjectKey(@Nullable final String projectKey, final ComponentInput componentInput) {
+        this(projectKey, componentInput.getName(), componentInput.getDescription(), componentInput.getLeadUsername(), componentInput.getAssigneeType());
     }
 
     public String getProjectKey() {

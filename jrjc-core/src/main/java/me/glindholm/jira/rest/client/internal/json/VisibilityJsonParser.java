@@ -18,17 +18,16 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.domain.Visibility;
-
-import javax.annotation.Nullable;
 
 public class VisibilityJsonParser implements JsonObjectParser<Visibility> {
     private static final String ROLE_TYPE = "ROLE";
     private static final String GROUP_TYPE = "GROUP";
 
     @Override
-    public Visibility parse(JSONObject json) throws JSONException {
+    public Visibility parse(final JSONObject json) throws JSONException {
         final String type = json.getString("type");
         final Visibility.Type visibilityType;
         if (ROLE_TYPE.equalsIgnoreCase(type)) {
@@ -36,15 +35,14 @@ public class VisibilityJsonParser implements JsonObjectParser<Visibility> {
         } else if (GROUP_TYPE.equalsIgnoreCase(type)) {
             visibilityType = Visibility.Type.GROUP;
         } else {
-            throw new JSONException("[" + type + "] does not represent a valid visibility type. Expected ["
-                    + ROLE_TYPE + "] or [" + GROUP_TYPE + "].");
+            throw new JSONException("[" + type + "] does not represent a valid visibility type. Expected [" + ROLE_TYPE + "] or [" + GROUP_TYPE + "].");
         }
         final String value = json.getString("value");
         return new Visibility(visibilityType, value);
     }
 
     @Nullable
-    public Visibility parseVisibility(JSONObject parentObject) throws JSONException {
+    public Visibility parseVisibility(final JSONObject parentObject) throws JSONException {
         if (parentObject.has(CommentJsonParser.VISIBILITY_KEY)) { // JIRA 4.3-rc1 and newer
             return parse(parentObject.getJSONObject(CommentJsonParser.VISIBILITY_KEY));
         }

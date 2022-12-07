@@ -30,8 +30,7 @@ import java.util.Optional;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import javax.annotation.Nonnull;
-
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,22 +56,22 @@ public class AsynchronousHttpClientFactory {
     private static Instant libraryDate = Instant.now();
 
     static {
-        URL url = Thread.currentThread().getContextClassLoader().getResource("META-INF/MANIFEST.MF");
+        final URL url = Thread.currentThread().getContextClassLoader().getResource("META-INF/MANIFEST.MF");
         try {
             try (InputStream is = url.openStream()) {
-                Manifest mf = new Manifest(is);
-                Attributes attrs = mf.getMainAttributes();
-                String versionStr = attrs.getValue("Bundle-Version");
-                String[] parts = versionStr.split("\\.");
+                final Manifest mf = new Manifest(is);
+                final Attributes attrs = mf.getMainAttributes();
+                final String versionStr = attrs.getValue("Bundle-Version");
+                final String[] parts = versionStr.split("\\.");
                 libraryVersion = parts[0] + "." + parts[1] + "." + parts[2];
-                DateTimeFormatter parse = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
+                final DateTimeFormatter parse = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
                 if (parts[3].equals("qualifier")) {
                     libraryDate = Instant.now();
                 } else {
                     libraryDate = LocalDateTime.parse(parts[4], parse).atOffset(ZoneOffset.UTC).toInstant();
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.debug("", e);
         }
     }
@@ -81,22 +80,22 @@ public class AsynchronousHttpClientFactory {
         return createClient(serverUri, authenticationHandler, new HttpClientOptions());
     }
 
-    public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler, HttpClientOptions options) {
+    public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler, final HttpClientOptions options) {
         final DefaultHttpClientFactory defaultHttpClientFactory = new DefaultHttpClientFactory(new NoOpEventPublisher(),
                 new RestClientApplicationProperties(serverUri), new ThreadLocalContextManager<Object>() {
-            @Override
-            public Object getThreadLocalContext() {
-                return null;
-            }
+                    @Override
+                    public Object getThreadLocalContext() {
+                        return null;
+                    }
 
-            @Override
-            public void setThreadLocalContext(Object context) {
-            }
+                    @Override
+                    public void setThreadLocalContext(final Object context) {
+                    }
 
-            @Override
-            public void clearThreadLocalContext() {
-            }
-        });
+                    @Override
+                    public void clearThreadLocalContext() {
+                    }
+                });
 
         final HttpClient httpClient = defaultHttpClientFactory.create(options);
 
@@ -124,15 +123,15 @@ public class AsynchronousHttpClientFactory {
 
     private static class NoOpEventPublisher implements EventPublisher {
         @Override
-        public void publish(Object o) {
+        public void publish(final Object o) {
         }
 
         @Override
-        public void register(Object o) {
+        public void register(final Object o) {
         }
 
         @Override
-        public void unregister(Object o) {
+        public void unregister(final Object o) {
         }
 
         @Override
@@ -148,8 +147,8 @@ public class AsynchronousHttpClientFactory {
 
         private final String baseUrl;
 
-        private RestClientApplicationProperties(URI jiraURI) {
-            this.baseUrl = jiraURI.getPath();
+        private RestClientApplicationProperties(final URI jiraURI) {
+            baseUrl = jiraURI.getPath();
         }
 
         @Override
@@ -160,37 +159,37 @@ public class AsynchronousHttpClientFactory {
         /**
          * We'll always have an absolute URL as a client.
          */
-        @Nonnull
+        @NonNull
         @Override
-        public String getBaseUrl(UrlMode urlMode) {
+        public String getBaseUrl(final UrlMode urlMode) {
             return baseUrl;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getDisplayName() {
             return "JIRA Rest Java Client";
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getPlatformId() {
             return ApplicationProperties.PLATFORM_JIRA;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getVersion() {
             return libraryVersion;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Date getBuildDate() {
             return Date.from(libraryDate);
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getBuildNumber() {
             // TODO implement using MavenUtils, JRJC-123
@@ -207,19 +206,19 @@ public class AsynchronousHttpClientFactory {
             throw new UnsupportedOperationException("Not implemented");
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getApplicationFileEncoding() {
             return StandardCharsets.UTF_8.name();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<Path> getLocalHomeDirectory() {
             return Optional.of(getHomeDirectory().toPath());
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public Optional<Path> getSharedHomeDirectory() {
             return getLocalHomeDirectory();

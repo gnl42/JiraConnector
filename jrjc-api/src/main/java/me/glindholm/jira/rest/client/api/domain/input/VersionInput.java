@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.api.domain.input;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import java.time.OffsetDateTime;
 

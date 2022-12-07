@@ -22,8 +22,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
@@ -105,10 +105,10 @@ public interface IssueRestClient {
 
     Promise<BulkOperationResult<BasicIssue>> createIssues(List<IssueInput> issues) throws URISyntaxException;
 
-    Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@Nonnull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults)
+    Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@NonNull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults)
             throws URISyntaxException;
 
-    Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@Nonnull String projectIdOrKey, @Nonnull String issueTypeId, @Nullable Long startAt,
+    Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@NonNull String projectIdOrKey, @NonNull String issueTypeId, @Nullable Long startAt,
             @Nullable Integer maxResults) throws URISyntaxException;
 
     /**

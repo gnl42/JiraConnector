@@ -20,7 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.User;
@@ -32,6 +32,14 @@ import me.glindholm.jira.rest.client.api.domain.input.UserInput;
  * @since v0.1
  */
 public interface UserRestClient {
+
+    /**
+     * Retrieve current user
+     *
+     * @return user
+     * @throws URISyntaxException
+     */
+    Promise<User> getCurrentUser() throws URISyntaxException;
 
     /**
      * Retrieves detailed information about selected user. Try to use

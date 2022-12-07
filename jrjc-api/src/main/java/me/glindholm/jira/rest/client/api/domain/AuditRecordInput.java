@@ -3,7 +3,7 @@ package me.glindholm.jira.rest.client.api.domain;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Represents record from JIRA Audit Log.
@@ -31,10 +31,8 @@ public class AuditRecordInput {
     @Nullable
     private final List<AuditChangedValue> changedValues;
 
-    public AuditRecordInput(final String category, final String summary,
-            @Nullable final AuditAssociatedItem objectItem,
-            @Nullable final List<AuditAssociatedItem> associatedItem,
-            @Nullable final List<AuditChangedValue> changedValues) {
+    public AuditRecordInput(final String category, final String summary, @Nullable final AuditAssociatedItem objectItem,
+            @Nullable final List<AuditAssociatedItem> associatedItem, @Nullable final List<AuditChangedValue> changedValues) {
         this.summary = summary;
         this.category = category;
         this.objectItem = objectItem;
@@ -70,11 +68,8 @@ public class AuditRecordInput {
     public boolean equals(final Object o) {
         if (o instanceof AuditRecordInput) {
             final AuditRecordInput that = (AuditRecordInput) o;
-            return Objects.equals(this.summary, that.summary)
-                    && Objects.equals(this.category, that.category)
-                    && Objects.equals(this.objectItem, that.objectItem)
-                    && Objects.equals(this.associatedItem, that.associatedItem)
-                    && Objects.equals(this.changedValues, that.changedValues);
+            return Objects.equals(summary, that.summary) && Objects.equals(category, that.category) && Objects.equals(objectItem, that.objectItem)
+                    && Objects.equals(associatedItem, that.associatedItem) && Objects.equals(changedValues, that.changedValues);
         }
         return false;
     }

@@ -2,7 +2,7 @@ package me.glindholm.jira.rest.client.api;
 
 import java.net.URISyntaxException;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.AuditRecordInput;
@@ -18,6 +18,6 @@ public interface AuditRestClient {
 
     Promise<AuditRecordsData> getAuditRecords(AuditRecordSearchInput input) throws URISyntaxException;
 
-    void addAuditRecord(@Nonnull AuditRecordInput record) throws URISyntaxException;
+    void addAuditRecord(@NonNull AuditRecordInput record) throws URISyntaxException;
 
 }

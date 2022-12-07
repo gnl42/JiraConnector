@@ -20,7 +20,7 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Basic information about JIRA server

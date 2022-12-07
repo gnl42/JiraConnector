@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.api;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Represents a resource which can be expandable - that is REST API is capable of sending just the number

@@ -27,7 +27,6 @@ import org.codehaus.jettison.json.JSONException;
 import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
-import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.SearchResult;
@@ -48,7 +47,7 @@ public class Example1 {
     private static URI jiraServerUri = URI.create("http://localhost:2990/jira");
     private static boolean quiet = false;
 
-    public static void main(String[] args) throws URISyntaxException, JSONException, IOException {
+    public static void main(final String[] args) throws URISyntaxException, JSONException, IOException {
         parseArgs(args);
 
         final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
@@ -59,7 +58,7 @@ public class Example1 {
             // first let's get and print all visible projects (only jira4.3+)
             if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
                 final List<BasicProject> allProjects = restClient.getProjectClient().getAllProjects().claim();
-                for (BasicProject project : allProjects) {
+                for (final BasicProject project : allProjects) {
                     println(project);
                 }
             }
@@ -67,7 +66,7 @@ public class Example1 {
             // let's now print all issues matching a JQL string (here: all assigned issues)
             if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
                 final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY").claim();
-                for (BasicIssue issue : searchResult.getIssues()) {
+                for (final BasicIssue issue : searchResult.getIssues()) {
                     println(issue.getKey());
                 }
             }
@@ -79,17 +78,16 @@ public class Example1 {
             // now let's vote for it
             restClient.getIssueClient().vote(issue.getVotesUri()).claim();
 
-            // now let's watch it
-            final BasicWatchers watchers = issue.getWatchers();
-            if (watchers != null) {
-                restClient.getIssueClient().watch(watchers.getSelf()).claim();
-            }
+//            // now let's watch it
+//            final BasicWatchers watchers = issue.getWatchers();
+//            if (watchers != null) {
+//                restClient.getIssueClient().watch(watchers.getSelf()).claim();
+//            }
 
             // now let's start progress on this issue
             final List<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
             final Transition startProgressTransition = getTransitionByName(transitions, "Start Progress");
-            restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId()))
-            .claim();
+            restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId())).claim();
 
             // and now let's resolve it as Incomplete
             final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
@@ -101,19 +99,18 @@ public class Example1 {
             } else {
                 fieldInputs = Arrays.asList(new FieldInput("resolution", "Incomplete"));
             }
-            final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment
-                    .valueOf("My comment"));
+            final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment.valueOf("My comment"));
             restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput).claim();
         }
     }
 
-    private static void println(Object o) {
+    private static void println(final Object o) {
         if (!quiet) {
             System.out.println(o);
         }
     }
 
-    private static void parseArgs(String[] argsArray) throws URISyntaxException {
+    private static void parseArgs(final String[] argsArray) throws URISyntaxException {
         final List<String> args = Arrays.asList(argsArray);
         if (args.contains("-q")) {
             quiet = true;
@@ -125,8 +122,8 @@ public class Example1 {
         }
     }
 
-    private static Transition getTransitionByName(List<Transition> transitions, String transitionName) {
-        for (Transition transition : transitions) {
+    private static Transition getTransitionByName(final List<Transition> transitions, final String transitionName) {
+        for (final Transition transition : transitions) {
             if (transition.getName().equals(transitionName)) {
                 return transition;
             }

@@ -19,9 +19,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.apache.hc.core5.net.URIBuilder;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.api.HttpClient;
 
@@ -60,6 +59,12 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     public AsynchronousUserRestClient(final URI baseUri, final HttpClient client) {
         super(client);
         this.baseUri = baseUri;
+    }
+
+    @Override
+    public Promise<User> getCurrentUser() throws URISyntaxException {
+        final URI userUri = new URIBuilder(baseUri).appendPath("myself").build();
+        return getUser(userUri);
     }
 
     @Override

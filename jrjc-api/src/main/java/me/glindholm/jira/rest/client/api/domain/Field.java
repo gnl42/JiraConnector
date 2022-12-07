@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.api.domain;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.IdentifiableEntity;
 import me.glindholm.jira.rest.client.api.NamedEntity;
