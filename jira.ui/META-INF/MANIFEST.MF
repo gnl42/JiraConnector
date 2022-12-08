@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Automatic-Module-Name: %Bundle-Name
 Bundle-SymbolicName: me.glindholm.connector.eclipse.jira.ui;singleton:=true
-Bundle-Version: 4.2.0.qualifier
+Bundle-Version: 4.3.0.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.ui.JiraUiPlugin
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: me.glindholm.connector.eclipse.jira.core,
@@ -28,7 +28,7 @@ Require-Bundle: me.glindholm.connector.eclipse.jira.core,
  org.eclipse.mylyn.commons.workbench;bundle-version="[3.24.0,4.0.0)",
  me.glindholm.connector.eclipse.commons.ui,
  org.eclipse.jdt.annotation,
- jira-rest-java-client-api;bundle-version="6.0.5"
+ jira-rest-java-client-api;bundle-version="6.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: me.glindholm.connector.eclipse.internal.jira.ui;x-friends:="me.glindholm.connector.eclipse.jira.tests",
