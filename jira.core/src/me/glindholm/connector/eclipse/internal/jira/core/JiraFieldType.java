@@ -38,11 +38,9 @@ public enum JiraFieldType {
     LABELS("com.atlassian.jira.plugin.labels:labels", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
     LABELSS("com.atlassian.jira.plugin.system.customfieldtypes:labels", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
-    MULTICHECKBOXES(
-            "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
+    MULTICHECKBOXES("com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
 
-    MULTIGROUPPICKER(
-            "com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
+    MULTIGROUPPICKER("com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker", TaskAttribute.TYPE_SHORT_TEXT), //$NON-NLS-1$
 
     MULTISELECT("com.atlassian.jira.plugin.system.customfieldtypes:multiselect", TaskAttribute.TYPE_MULTI_SELECT), //$NON-NLS-1$
 
@@ -119,7 +117,10 @@ public enum JiraFieldType {
 
     STORY_POINTS("com.atlassian.jpo:jpo-custom-field-original-story-points"),
 
-    SPRINT("com.pyxis.greenhopper.jira:gh-sprint");
+    SPRINT("com.pyxis.greenhopper.jira:gh-sprint"),
+
+    REMOTELINK_SOURCE("me.glindholm.jira.remotelink:remotelink", TaskAttribute.TYPE_LABEL),
+    REMOTELINK("me.glindholm.jira.remotelink:remotelink", TaskAttribute.TYPE_URL);
 
     public static JiraFieldType fromKey(final String key) {
         if (key != null) {
@@ -136,12 +137,12 @@ public enum JiraFieldType {
 
     private final String taskType;
 
-    private JiraFieldType(final String key) {
+    JiraFieldType(final String key) {
         this.key = key;
         taskType = null;
     }
 
-    private JiraFieldType(final String key, final String taskType) {
+    JiraFieldType(final String key, final String taskType) {
         this.key = key;
         this.taskType = taskType;
     }

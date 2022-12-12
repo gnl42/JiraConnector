@@ -81,6 +81,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
+import me.glindholm.jira.rest.client.api.domain.Remotelink;
 import me.glindholm.jira.rest.client.api.domain.Watchers;
 
 /**
@@ -339,6 +340,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
         createAttribute(data, JiraAttribute.WATCHERS);
 
+        createAttribute(data, JiraAttribute.REMOTELINKS);
     }
 
     public TaskAttribute createAttribute(final TaskData data, final JiraAttribute key) {
@@ -429,6 +431,10 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
         if (jiraIssue.getWatchers() != null) {
             setAttributeWatchers(data, JiraAttribute.WATCHERS, jiraIssue.getWatchers());
+        }
+
+        if (jiraIssue.getRemotelinks() != null) {
+            setAttributeRemotelinks(data, JiraAttribute.REMOTELINKS, jiraIssue.getRemotelinks());
         }
 
         setAttributeValue(data, JiraAttribute.PROJECT, jiraIssue.getProject().getId());
@@ -830,6 +836,20 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         return attribute;
     }
 
+    private void setAttributeRemotelinks(final TaskData data, final JiraAttribute key, final Map<String, List<Remotelink>> remotelinks) {
+        final TaskAttribute attribute = data.getRoot().getAttribute(JiraAttribute.REMOTELINKS.id());
+        int i = 0;
+        for (final Map.Entry<String, List<Remotelink>> links : remotelinks.entrySet()) {
+            for (final Remotelink link : links.getValue()) {
+                final TaskAttribute child = attribute.createAttribute(JiraAttribute.REMOTELINK.id() + ++i);
+                final TaskAttributeMetaData defaults = child.getMetaData().defaults();
+                defaults.setType(TaskAttribute.TYPE_URL);
+                defaults.setLabel(link.getObject().getTitle());
+                child.setValue(link.getObject().getUrl().toString());
+            }
+        }
+    }
+
     private TaskAttribute setAttributeComponents(final TaskData data, final JiraAttribute key, final JiraComponent[] components) {
         final TaskAttribute attribute = data.getRoot().getAttribute(key.id());
         final List<String> componentsList = new ArrayList<>(components.length);
@@ -854,15 +874,15 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         return false;
     }
 
-    // private void removeAttributes(TaskData data, String keyPrefix) {
-    // List<TaskAttribute> attributes = new
-    // ArrayList<TaskAttribute>(data.getRoot().getAttributes().values());
-    // for (TaskAttribute attribute : attributes) {
-    // if (attribute.getId().startsWith(keyPrefix)) {
-    // removeAttribute(data, attribute.getId());
-    // }
-    // }
-    // }
+// private void removeAttributes(TaskData data, String keyPrefix) {
+// List<TaskAttribute> attributes = new
+// ArrayList<TaskAttribute>(data.getRoot().getAttributes().values());
+// for (TaskAttribute attribute : attributes) {
+// if (attribute.getId().startsWith(keyPrefix)) {
+// removeAttribute(data, attribute.getId());
+// }
+// }
+// }
 
     private void removeAttribute(final TaskData data, final JiraAttribute key) {
         data.getRoot().removeAttribute(key.id());
@@ -872,9 +892,9 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
      * Removes attribute values without removing attribute to preserve order of
      * attributes
      */
-    // private void removeAttributeValues(TaskData data, String attributeId) {
-    // data.getRoot().getAttribute(attributeId).clearValues();
-    // }
+// private void removeAttributeValues(TaskData data, String attributeId) {
+// data.getRoot().getAttribute(attributeId).clearValues();
+// }
     private String capitalize(final String s) {
         if (s.length() > 1) {
             final char c = s.charAt(0);

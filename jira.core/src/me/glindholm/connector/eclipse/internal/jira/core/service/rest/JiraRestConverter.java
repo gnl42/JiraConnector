@@ -23,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -79,6 +80,7 @@ import me.glindholm.jira.rest.client.api.domain.IssueField;
 import me.glindholm.jira.rest.client.api.domain.IssueLink;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Priority;
+import me.glindholm.jira.rest.client.api.domain.Remotelink;
 import me.glindholm.jira.rest.client.api.domain.Resolution;
 import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
@@ -326,6 +328,19 @@ public class JiraRestConverter {
                 throw new JiraException(e);
             }
         }
+
+        try {
+            final List<Remotelink> remotelinks = restClient.getIssueClient().getRemotelinks(rawIssue.getKey()).claim();
+            final Map<String, List<Remotelink>> links = new HashMap<>();
+            for (final Remotelink link : remotelinks) {
+                final List<Remotelink> linkList = links.computeIfAbsent(link.getRelationship(), k -> new ArrayList<>(2));
+                linkList.add(link);
+            }
+            issue.setRemotelinks(links);
+        } catch (final URISyntaxException e) {
+            throw new JiraException(e);
+        }
+
         return issue;
     }
 

@@ -18,9 +18,11 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Issue;
+import me.glindholm.jira.rest.client.api.domain.Remotelink;
 import me.glindholm.jira.rest.client.api.domain.Watchers;
 
 /**
@@ -116,6 +118,8 @@ public class JiraIssue implements Serializable {
     private Issue rawIssue;
 
     private Watchers watchers;
+
+    private Map<String, List<Remotelink>> remotelinks;
 
     public String getId() {
         return id;
@@ -606,5 +610,13 @@ public class JiraIssue implements Serializable {
 
     public Watchers getWatchers() {
         return watchers;
+    }
+
+    public void setRemotelinks(final Map<String, List<Remotelink>> remotelinks) {
+        this.remotelinks = remotelinks;
+    }
+
+    public Map<String, List<Remotelink>> getRemotelinks() {
+        return remotelinks;
     }
 }
