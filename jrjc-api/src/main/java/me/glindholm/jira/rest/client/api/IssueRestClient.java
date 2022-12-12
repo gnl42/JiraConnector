@@ -34,6 +34,7 @@ import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Page;
+import me.glindholm.jira.rest.client.api.domain.Remotelink;
 import me.glindholm.jira.rest.client.api.domain.Transition;
 import me.glindholm.jira.rest.client.api.domain.Votes;
 import me.glindholm.jira.rest.client.api.domain.Watchers;
@@ -135,6 +136,17 @@ public interface IssueRestClient {
      * @since 0.6
      */
     Promise<Issue> getIssue(String issueKey, List<Expandos> expand) throws URISyntaxException;
+
+    /**
+     * Retrieves remotelinks for an issue
+     *
+     * @param issueIdorKey
+     * @return
+     * @throws URISyntaxException
+     *
+     * @since 6.2.0
+     */
+    Promise<List<Remotelink>> getRemotelinks(String issueIdorKey) throws URISyntaxException;
 
     /**
      * Deletes issue with given issueKey. You can set {@code deleteSubtasks} to
