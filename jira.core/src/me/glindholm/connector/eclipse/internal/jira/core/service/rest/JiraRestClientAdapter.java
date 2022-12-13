@@ -37,6 +37,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hc.core5.net.URIBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -297,22 +298,38 @@ public class JiraRestClientAdapter {
 
             @Override
             public List<JiraIssue> call() throws Exception {
-                final Set<String> fields = new TreeSet<>();
-                fields.add("*all");
-                monitor.subTask("Process issues");
-                final SubMonitor progress = SubMonitor.convert(monitor, 100);
-                progress.split(0);
-                progress.setTaskName("Query server");
-                final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, fields).get().getIssues();
-                progress.split(20).setWorkRemaining(issuesFromServer.size());
+                try {
+                    final Set<String> fields = new TreeSet<>();
+                    fields.add("*all");
+                    monitor.subTask("Process issues");
+                    final SubMonitor progress = SubMonitor.convert(monitor, 100);
+                    progress.split(0);
+                    progress.setTaskName("Query server");
+                    final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, fields).get().getIssues();
+                    progress.split(20).setWorkRemaining(issuesFromServer.size());
 
-                final List<JiraIssue> fullIssues = new ArrayList<>();
-                for (final Issue issue : issuesFromServer) {
-                    fullIssues.add(JiraRestConverter.convertIssue(restClient, issue, cache, url, progress));
-                    progress.split(1);
+                    final List<JiraIssue> fullIssues = new ArrayList<>();
+                    for (final Issue issue : issuesFromServer) {
+                        fullIssues.add(JiraRestConverter.convertIssue(restClient, issue, cache, url, progress));
+                        progress.split(1);
+                    }
+                    progress.done();
+                    return fullIssues;
+                } catch (final Exception e) {
+                    final IStatus[] msgs = { new org.eclipse.core.runtime.Status(IStatus.INFO, //
+                            JiraCorePlugin.ID_PLUGIN, //
+                            NLS.bind("using jql [{0}].", //$NON-NLS-1$
+                                    new Object[] { jql })),
+                            new org.eclipse.core.runtime.Status(IStatus.INFO, //
+                                    JiraCorePlugin.ID_PLUGIN, //
+                                    NLS.bind("Server: [{0}].", //$NON-NLS-1$
+                                            new Object[] { cache.getServerInfo().getVersion() })) };
+
+                    final MultiStatus multiMsgs = new MultiStatus(JiraCorePlugin.ID_PLUGIN, IStatus.ERROR, msgs, "Error finding issues", e);
+                    StatusHandler.log(multiMsgs);
+
+                    throw e;
                 }
-                progress.done();
-                return fullIssues;
             }
 
         });
