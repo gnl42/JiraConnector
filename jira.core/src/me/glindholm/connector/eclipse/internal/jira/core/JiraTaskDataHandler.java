@@ -839,13 +839,18 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
     private void setAttributeRemotelinks(final TaskData data, final JiraAttribute key, final Map<String, List<Remotelink>> remotelinks) {
         final TaskAttribute attribute = data.getRoot().getAttribute(JiraAttribute.REMOTELINKS.id());
         int i = 0;
-        for (final Map.Entry<String, List<Remotelink>> links : remotelinks.entrySet()) {
-            for (final Remotelink link : links.getValue()) {
-                final TaskAttribute child = attribute.createAttribute(JiraAttribute.REMOTELINK.id() + ++i);
-                final TaskAttributeMetaData defaults = child.getMetaData().defaults();
-                defaults.setType(TaskAttribute.TYPE_URL);
-                defaults.setLabel(link.getObject().getTitle());
-                child.setValue(link.getObject().getUrl().toString());
+        for (final Map.Entry<String, List<Remotelink>> link : remotelinks.entrySet()) {
+//            final TaskAttribute child = attribute.createAttribute(TaskAttribute.TYPE_LABEL + ++i);
+//            final TaskAttributeMetaData defaults = child.getMetaData().defaults();
+//            defaults.setType(TaskAttribute.TYPE_LABEL);
+//            defaults.setLabel(link.getKey());
+//            child.getMetaData().setKind(TaskAttribute.TYPE_LABEL);
+            for (final Remotelink remotelink : link.getValue()) {
+                final TaskAttribute childAttr = attribute.createAttribute(JiraAttribute.REMOTELINK.id() + ++i);
+                final TaskAttributeMetaData childDefaults = childAttr.getMetaData().defaults();
+                childDefaults.setType(TaskAttribute.TYPE_URL);
+                childDefaults.setLabel(remotelink.getObject().getTitle());
+                childAttr.setValue(remotelink.getObject().getUrl().toString());
             }
         }
     }

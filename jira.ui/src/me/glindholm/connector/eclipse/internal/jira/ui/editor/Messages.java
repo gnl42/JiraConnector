@@ -95,6 +95,8 @@ public class Messages extends NLS {
 
     public static String LogJiraTimeDialog_Unable_to_find_Time_Tracking_preference;
 
+    public static String Remotelinks;
+
     private Messages() {
     }
 }

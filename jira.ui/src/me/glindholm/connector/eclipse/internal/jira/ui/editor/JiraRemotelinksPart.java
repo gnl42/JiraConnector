@@ -43,7 +43,7 @@ public class JiraRemotelinksPart extends AbstractTaskEditorPart {
     private static final int COLUMN_MARGIN = 5;
 
     public JiraRemotelinksPart() {
-        setPartName("Links");
+        setPartName(Messages.Remotelinks);
     }
 
     protected List<TaskAttribute> getAttributes() {
@@ -52,8 +52,10 @@ public class JiraRemotelinksPart extends AbstractTaskEditorPart {
         final List<TaskAttribute> attributes = new ArrayList<>(allAttributes.size());
 
         final TaskAttribute remotelinks = getTaskData().getRoot().getMappedAttribute(JiraAttribute.REMOTELINKS.id());
-        for (final TaskAttribute link : remotelinks.getAttributes().values()) {
-            attributes.add(link);
+        if (remotelinks != null && remotelinks.getAttributes() != null) {
+            for (final TaskAttribute link : remotelinks.getAttributes().values()) {
+                attributes.add(link);
+            }
         }
         return attributes;
     }
@@ -92,7 +94,7 @@ public class JiraRemotelinksPart extends AbstractTaskEditorPart {
         remotelinksComposite.setLayout(layout);
 
         final int links = createAttributeEditors(toolkit, remotelinksComposite);
-        section.setText("Links (" + links + ")");
+        section.setText(Messages.Remotelinks + " (" + links + ")");
 
         toolkit.paintBordersFor(remotelinksComposite);
         section.setClient(remotelinksComposite);

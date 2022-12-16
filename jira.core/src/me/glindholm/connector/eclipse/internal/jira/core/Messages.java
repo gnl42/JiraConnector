@@ -137,7 +137,7 @@ public class Messages extends NLS {
 
     public static String WorkLogConverter_Updated;
 
-    public static String JiraAttribute_Remotelinks;
+    public static String JiraAttribute_Remotelink;
 
     public static String JiraAttribute_RemotelinkSource;
 
