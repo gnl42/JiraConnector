@@ -5,7 +5,6 @@
     <artifactId>JiraConnector</artifactId>
     <version>4.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
     <developers>
         <developer>
             <id>gnl</id>
@@ -16,7 +15,6 @@
             </roles>
         </developer>
     </developers>
-
     <!-- Developers of the original code -->
     <contributors>
         <contributor>
@@ -52,26 +50,22 @@
             <name>Rob Elves</name>
         </contributor>
     </contributors>
-
     <licenses>
         <license>
             <name>Eclipse Public License v1.0</name>
             <url>https://www.eclipse.org/legal/epl-v10.html</url>
         </license>
     </licenses>
-
     <scm>
         <connection>         scm:git:git@github.com:gnl42/JiraConnector.git</connection>
         <url>                scm:git:git@github.com:gnl42/JiraConnector.git</url>
         <developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
-        <tag>4.1.0</tag>
+        <tag>4.3.0</tag>
     </scm>
-
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/gnl42/JiraConnector/issues</url>
     </issueManagement>
-
     <!-- <distributionManagement> -->
     <!-- <repository> -->
     <!-- <id>JiraConnector-update</id> -->
@@ -79,30 +73,25 @@
     <!-- <url>file:///home/thara/testesb/in</url> -->
     <!-- </repository> -->
     <!-- </distributionManagement> -->
-
     <repositories>
         <repository>
             <id>eclipse</id>
             <url>https://download.eclipse.org/releases/latest</url>
             <layout>p2</layout>
         </repository>
-
         <repository>
             <id>mylyn</id>
             <url>http://download.eclipse.org/mylyn/releases/latest</url>
             <layout>p2</layout>
         </repository>
-
         <repository>
             <id>m2e-eclipse-extension</id>
             <url>https://simulation.tudelft.nl/maven</url>
         </repository>
-
         <repository>
             <id>atlassian again</id>
             <url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
         </repository>
-
         <repository>
             <id>atlassian</id>
             <url>https://maven.atlassian.com/content/repositories/atlassian-public/</url>
@@ -113,14 +102,16 @@
             <url>https://maven.atlassian.com/maven-3rdparty/</url>
         </repository>
     </repositories>
-
     <pluginRepositories>
         <pluginRepository>
             <id>release</id>
             <url>https://repo.eclipse.org/content/groups/releases/</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>tycho-snapshots</id>
+            <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
+        </pluginRepository>
     </pluginRepositories>
-
     <properties>
         <!-- Required properties for releasing -->
         <github-update-repo>git@github.com:gnl42/JiraConnector-update.git</github-update-repo>
@@ -129,45 +120,34 @@
         <current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
         <!-- The label for the Composite sites -->
         <site.label>JiraConnector</site.label>
-
-        <tycho.version>3.0.0</tycho.version>
+        <tycho.version>3.0.1</tycho.version>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <modules>
         <module>jrjc</module>
         <module>commons-feature</module>
         <module>commons.core</module>
         <module>commons.ui</module>
-
         <module>eclipse-feature</module>
         <module>core</module>
         <module>ui</module>
-
         <module>dependencies-feature</module>
-
         <module>bamboo-feature</module>
         <module>bamboo.core</module>
         <module>bamboo.ui</module>
-
         <module>branding.ui</module>
-
         <module>help</module>
-
         <!-- <module>me.glindholm.jira.rest.client</module> -->
-
         <module>jira-feature</module>
         <module>jira.core</module>
         <module>jira.ui</module>
-
         <!-- Will have to real life tests for now <module>me.glindholm.connector.commons.tests.dependencies</module>
 			<module>test-feature</module> <module>tests</module> <module>jira.tests</module> -->
         <!-- Unable to launch eclipse instance <module>bamboo.tests</module> -->
         <!-- Unable to resolve swtbot.eclipse.core <module>bamboo.testsUI</module> -->
         <module>releng</module>
     </modules>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -190,7 +170,7 @@
                         </toolchains>
                     </configuration>
                 </plugin>
-<!--
+                <!--
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -232,17 +212,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.3.2</version>
+                    <version>3.4.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.11.0</version>
+                    <version>3.12.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -257,17 +237,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jxr-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
@@ -338,7 +318,6 @@
                     <artifactId>eclipse-jarsigner-plugin</artifactId>
                     <version>1.1.7</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-packaging-plugin</artifactId>
@@ -347,24 +326,21 @@
                         <format>'v'yyyyMMdd'-'HHmm</format>
                     </configuration>
                 </plugin>
-
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.eclipse.tycho.extras</groupId>
                     <artifactId>tycho-eclipserun-plugin</artifactId>
                     <version>${tycho.version}</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.4.2</version>
                 </plugin>
-
             </plugins>
         </pluginManagement>
         <plugins>
@@ -372,7 +348,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-toolchains-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -400,7 +375,6 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-p2-repository-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-source-plugin</artifactId>
@@ -482,10 +456,6 @@
                     <dependencies>
                         <dependency>
                             <type>p2-installable-unit</type>
-                            <artifactId>org.eclipse.equinox.ds</artifactId>
-                        </dependency>
-                        <dependency>
-                            <type>p2-installable-unit</type>
                             <artifactId>org.eclipse.equinox.event</artifactId>
                         </dependency>
                     </dependencies>
@@ -545,7 +515,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <profiles>
         <profile>
             <!-- Activate this profile to perform the release to GitHub Pages -->

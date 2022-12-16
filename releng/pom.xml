@@ -42,8 +42,10 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
+						<version>3.1.0</version>
 						<configuration>
 							<executable>git</executable>
+							<skip>true</skip>
 						</configuration>
 						<executions>
 							<execution>
@@ -138,9 +140,9 @@
 						<configuration>
 							<repositories>
 								<repository>
-									<id>latest</id>
+									<id>eclipse</id>
 									<layout>p2</layout>
-									<url>https://download.eclipse.org/releases/latest</url>
+									<url>https://download.eclipse.org/releases/2022-06</url>
 								</repository>
 							</repositories>
 							<dependencies>
@@ -164,10 +166,6 @@
 									<artifactId>org.eclipse.equinox.p2.extras.feature</artifactId>
 									<type>eclipse-feature</type>
 								</dependency>
-								<dependency>
-									<artifactId>org.eclipse.equinox.ds</artifactId>
-									<type>eclipse-plugin</type>
-								</dependency>
 							</dependencies>
 						</configuration>
 						<executions>
@@ -180,11 +178,13 @@
 								</goals>
 								<configuration>
 									<applicationsArgs>
+                                        <args>-v</args>
 										<args>-application</args>
 										<args>org.eclipse.ant.core.antRunner</args>
 										<args>-buildfile</args>
 										<args>packaging-p2composite.ant</args>
 										<args>p2.composite.add</args>
+										<args>-Djava.security.manager=allow</args>
 										<args>-Dsite.label="${site.label}"</args>
 										<args>-Dcomposite.base.dir=${github-local-clone}</args>
 										<args>-DunqualifiedVersion=${unqualifiedVersion}</args>
