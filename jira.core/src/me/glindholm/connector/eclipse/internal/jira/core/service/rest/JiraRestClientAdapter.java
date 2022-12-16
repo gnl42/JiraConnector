@@ -24,7 +24,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +44,7 @@ import org.eclipse.osgi.util.NLS;
 
 import com.atlassian.httpclient.api.factory.HttpClientOptions;
 
+import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
@@ -65,20 +65,16 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraAuthenticat
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraClientCache;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraServiceUnavailableException;
-import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
-import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptionsBuilder;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
 import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
-import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
-import me.glindholm.jira.rest.client.api.domain.CimIssueType;
-import me.glindholm.jira.rest.client.api.domain.CimProject;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.Project;
+import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
 import me.glindholm.jira.rest.client.api.domain.Session;
 import me.glindholm.jira.rest.client.api.domain.User;
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
@@ -353,16 +349,6 @@ public class JiraRestClientAdapter {
         try {
             final Project projectWithDetails = restClient.getProjectClient().getProject(project.getKey()).get();
 
-            final GetCreateIssueMetadataOptions builder = new GetCreateIssueMetadataOptionsBuilder().withProjectIds(Long.valueOf(project.getId()))
-                    .withExpandedIssueTypesFields().build();
-            final List<CimProject> cimProjectWithDetails = restClient.getIssueClient().getCreateIssueMetadata(builder).get();
-
-            final Map<Long, Map<String, CimFieldInfo>> projectMetadata = new HashMap<>();
-            if (!cimProjectWithDetails.isEmpty()) {
-                for (final CimIssueType issueType : cimProjectWithDetails.get(0).getIssueTypes()) {
-                    projectMetadata.put(issueType.getId(), issueType.getFields());
-                }
-            }
             project.setComponents(JiraRestConverter.convertComponents(projectWithDetails.getComponents()));
             project.setVersions(JiraRestConverter.convertVersions(projectWithDetails.getVersions()));
             project.setIssueTypes(JiraRestConverter.convertIssueTypes(projectWithDetails.getIssueTypes()));
@@ -617,7 +603,7 @@ public class JiraRestClientAdapter {
             issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.TIMETRACKING, new ComplexIssueInputFieldValue(map)));
         }
 
-        if (issue.getSecurityLevel() != null) {
+        if (issue.getSecurityLevel() != null && !JiraAttribute.SECURITY_LEVEL.isReadOnly()) {
             issueInputBuilder.setFieldValue(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, issue.getSecurityLevel().getId()));
         }
 
@@ -849,49 +835,13 @@ public class JiraRestClientAdapter {
     }
 
     public JiraSecurityLevel[] getSecurityLevels(final String projectKey) throws JiraException {
-
-        final GetCreateIssueMetadataOptionsBuilder builder = new GetCreateIssueMetadataOptionsBuilder();
-
-        List<CimProject> createIssueMetadata;
         try {
-            createIssueMetadata = restClient.getIssueClient().getCreateIssueMetadata(builder.withExpandedIssueTypesFields().withProjectKeys(projectKey).build())
-                    .get();
+            final SecurityLevel securityLevel = restClient.getProjectClient().getSecurityLevel(projectKey).get();
+
+            return new JiraSecurityLevel[] { JiraSecurityLevel.convert(securityLevel) };
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
         }
-
-        if (createIssueMetadata.iterator().hasNext()) {
-            final CimProject cimProject = createIssueMetadata.iterator().next();
-
-            // get first issue type (security level is the same for all issue types in the
-            // project)
-            if (cimProject.getIssueTypes().iterator().hasNext()) {
-                final CimIssueType cimIssueType = cimProject.getIssueTypes().iterator().next();
-
-                final CimFieldInfo cimFieldSecurity = cimIssueType.getFields().get(JiraRestFields.SECURITY);
-
-                if (cimFieldSecurity != null) {
-                    final List<Object> allowedValues = cimFieldSecurity.getAllowedValues();
-
-                    final List<JiraSecurityLevel> securityLevels = new ArrayList<>();
-
-                    for (final Object allowedValue : allowedValues) {
-                        if (allowedValue instanceof JiraSecurityLevel) {
-                            final JiraSecurityLevel securityLevel = (JiraSecurityLevel) allowedValue;
-
-                            securityLevels.add(new JiraSecurityLevel(securityLevel.getId().toString(), securityLevel.getName()));
-                        }
-                    }
-
-                    return securityLevels.toArray(new JiraSecurityLevel[securityLevels.size()]);
-                } else {
-                    // (security might not exist if not defined for project)
-                    return new JiraSecurityLevel[0];
-                }
-            }
-        }
-
-        return new JiraSecurityLevel[0];
     }
 
     public void deleteIssue(final String key, final IProgressMonitor monitor) throws JiraException {

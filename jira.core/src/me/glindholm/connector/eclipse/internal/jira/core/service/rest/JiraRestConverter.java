@@ -234,8 +234,9 @@ public class JiraRestConverter {
             try {
                 final String id = json.getString(JiraRestFields.ID);
                 final String name = json.getString(JiraRestFields.NAME);
+                final String description = json.getString(JiraRestFields.DESCRIPTION);
 
-                final JiraSecurityLevel securityLevel = new JiraSecurityLevel(id, name);
+                final JiraSecurityLevel securityLevel = new JiraSecurityLevel(id, name, description);
 
                 issue.setSecurityLevel(securityLevel);
             } catch (final JSONException e) {

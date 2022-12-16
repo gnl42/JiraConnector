@@ -795,8 +795,6 @@ public class JiraClient {
 
     public JiraSecurityLevel[] getAvailableSecurityLevels(final String projectKey, final IProgressMonitor monitor) throws JiraException {
         return getRestClient().getSecurityLevels(projectKey);
-
-        // return soapClient.getAvailableSecurityLevels(projectKey, monitor);
     }
 
     public void addWorkLog(final String issueKey, final JiraWorkLog log, final IProgressMonitor monitor) throws JiraException {

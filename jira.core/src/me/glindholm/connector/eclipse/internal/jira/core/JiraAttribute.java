@@ -60,7 +60,7 @@ public enum JiraAttribute {
 
     RESOLUTION(TaskAttribute.RESOLUTION, JiraFieldType.SELECT, Messages.JiraAttribute_Resolution, true, false, "resolution"), //$NON-NLS-1$
 
-    SECURITY_LEVEL(JiraConstants.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT, Messages.JiraAttribute_Security_Level, false, false),
+    SECURITY_LEVEL(JiraConstants.ATTRIBUTE_SECURITY_LEVEL, JiraFieldType.SELECT, Messages.JiraAttribute_Security_Level, true, true),
 
     STATUS(TaskAttribute.STATUS, JiraFieldType.SELECT, Messages.JiraAttribute_Status),
 
