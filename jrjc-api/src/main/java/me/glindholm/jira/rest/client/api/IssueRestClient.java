@@ -29,7 +29,6 @@ import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
 import me.glindholm.jira.rest.client.api.domain.BulkOperationResult;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
-import me.glindholm.jira.rest.client.api.domain.CimProject;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
@@ -75,22 +74,6 @@ public interface IssueRestClient {
      * @since me.glindholm.jira.rest.client.api 3.0, server 5.0
      */
     Promise<Void> updateIssue(String issueKey, IssueInput issue) throws URISyntaxException;
-
-    /**
-     * Retrieves CreateIssueMetadata with specified filters.
-     *
-     * @param options optional request configuration like filters and expandos. You
-     *                may use {@link GetCreateIssueMetadataOptionsBuilder} to build
-     *                them. Pass <code>null</code> if you don't want to set any
-     *                option.
-     * @return List of {@link CimProject} describing projects, issue types and
-     *         fields.
-     * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
-     * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
-     */
-    Promise<List<CimProject>> getCreateIssueMetadata(@Nullable GetCreateIssueMetadataOptions options) throws URISyntaxException;
 
     /**
      * Creates new issues in batch.

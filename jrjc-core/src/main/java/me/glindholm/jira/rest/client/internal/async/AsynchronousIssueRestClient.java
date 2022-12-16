@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,7 +46,6 @@ import com.atlassian.httpclient.api.Message;
 import com.atlassian.httpclient.api.ResponsePromise;
 
 import io.atlassian.util.concurrent.Promise;
-import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
 import me.glindholm.jira.rest.client.api.MetadataRestClient;
 import me.glindholm.jira.rest.client.api.RestClientException;
@@ -55,7 +53,6 @@ import me.glindholm.jira.rest.client.api.SessionRestClient;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
 import me.glindholm.jira.rest.client.api.domain.BulkOperationResult;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
-import me.glindholm.jira.rest.client.api.domain.CimProject;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
@@ -149,39 +146,6 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/bulk");
 
         return postAndParse(uriBuilder.build(), issues, new IssuesInputJsonGenerator(), new BasicIssuesJsonParser());
-    }
-
-    @Override
-    public Promise<List<CimProject>> getCreateIssueMetadata(@Nullable final GetCreateIssueMetadataOptions options) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/createmeta");
-
-        if (options != null) {
-            if (options.projectIds != null) {
-                uriBuilder.addParameter("projectIds", options.projectIds.stream().map(String::valueOf).collect(Collectors.joining(",")));
-            }
-
-            if (options.projectKeys != null) {
-                uriBuilder.addParameter("projectKeys", options.projectKeys.stream().map(String::valueOf).collect(Collectors.joining(",")));
-            }
-
-            if (options.issueTypeIds != null) {
-                uriBuilder.addParameter("issuetypeIds", options.issueTypeIds.stream().map(String::valueOf).collect(Collectors.joining(",")));
-            }
-
-            final List<String> issueTypeNames = options.issueTypeNames;
-            if (issueTypeNames != null) {
-                for (final String name : issueTypeNames) {
-                    uriBuilder.addParameter("issuetypeNames", name);
-                }
-            }
-
-            final Set<String> expandos = options.expandos;
-            if (expandos != null && expandos.iterator().hasNext()) {
-                uriBuilder.addParameter("expand", String.join(",", expandos));
-            }
-        }
-
-        return getAndParse(uriBuilder.build(), createIssueMetadataJsonParser);
     }
 
     @Override

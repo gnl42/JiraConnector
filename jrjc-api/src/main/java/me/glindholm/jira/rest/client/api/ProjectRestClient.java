@@ -23,6 +23,7 @@ import java.util.List;
 import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.Project;
+import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
 
 /**
  * The me.glindholm.jira.rest.client.api handling project resources.
@@ -42,14 +43,16 @@ public interface ProjectRestClient {
     Promise<Project> getProject(String key) throws URISyntaxException;
 
     /**
-     * Retrieves complete information about given project.
-     * Use this method rather than {@link ProjectRestClient#getProject(String)}
-     * wheever you can, as this method is proof for potential changes of URI scheme used for exposing various
+     * Retrieves complete information about given project. Use this method rather
+     * than {@link ProjectRestClient#getProject(String)} wheever you can, as this
+     * method is proof for potential changes of URI scheme used for exposing various
      * resources by JIRA REST API.
      *
-     * @param projectUri URI to project resource (usually get from <code>self</code> attribute describing component elsewhere
+     * @param projectUri URI to project resource (usually get from <code>self</code>
+     *                   attribute describing component elsewhere
      * @return complete information about given project
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed
+     *                             messages, etc.)
      */
     Promise<Project> getProject(URI projectUri);
 
@@ -63,5 +66,14 @@ public interface ProjectRestClient {
      * @since me.glindholm.jira.rest.client.api: 0.2, server 4.3
      */
     Promise<List<BasicProject>> getAllProjects() throws URISyntaxException;
+
+    /**
+     * Returns the security level for the project
+     *
+     * @param projectKey
+     * @return
+     * @throws URISyntaxException
+     */
+    Promise<SecurityLevel> getSecurityLevel(String projectKey) throws URISyntaxException;
 
 }

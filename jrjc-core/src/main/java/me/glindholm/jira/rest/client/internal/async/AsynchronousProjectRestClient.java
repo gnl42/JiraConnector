@@ -27,8 +27,10 @@ import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.ProjectRestClient;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.Project;
+import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
 import me.glindholm.jira.rest.client.internal.json.BasicProjectsJsonParser;
 import me.glindholm.jira.rest.client.internal.json.ProjectJsonParser;
+import me.glindholm.jira.rest.client.internal.json.SecurityLevelJsonParser;
 
 /**
  * Asynchronous implementation of ProjectRestClient.
@@ -40,6 +42,7 @@ public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClien
     private static final String PROJECT_URI_PREFIX = "project";
     private final ProjectJsonParser projectJsonParser = new ProjectJsonParser();
     private final BasicProjectsJsonParser basicProjectsJsonParser = new BasicProjectsJsonParser();
+    private final SecurityLevelJsonParser securityJsonParser = new SecurityLevelJsonParser();
 
     private final URI baseUri;
 
@@ -63,5 +66,12 @@ public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClien
     public Promise<List<BasicProject>> getAllProjects() throws URISyntaxException {
         final URI uri = new URIBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).build();
         return getAndParse(uri, basicProjectsJsonParser);
+    }
+
+    @Override
+    public Promise<SecurityLevel> getSecurityLevel(final String projectKey) throws URISyntaxException {
+        final URI uri = new URIBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).appendPath(projectKey).appendPath("issuesecuritylevelscheme").build();
+        return getAndParse(uri, securityJsonParser);
+
     }
 }
