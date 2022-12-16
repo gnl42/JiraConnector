@@ -25,10 +25,11 @@
 			<groupId>com.atlassian.httpclient</groupId>
 			<artifactId>atlassian-httpclient-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-		</dependency>
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>31.0.1-jre</version>
+</dependency>
 
 	</dependencies>
 
@@ -50,7 +51,7 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-						<includeArtifactIds>atlassian-util-concurrent,atlassian-httpclient-api,jsr305,
+						<includeArtifactIds>guava,atlassian-util-concurrent,atlassian-httpclient-api
 						</includeArtifactIds>
 							<outputDirectory>target/lib</outputDirectory>
 							<stripVersion>true</stripVersion>
