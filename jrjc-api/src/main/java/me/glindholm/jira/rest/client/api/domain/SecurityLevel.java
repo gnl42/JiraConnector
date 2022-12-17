@@ -50,7 +50,10 @@ public class SecurityLevel extends AddressableNamedEntity implements Serializabl
 
     @Override
     public String toString() {
-        return "SecurityLevel [id=" + id + ", description=" + description + ", " + super.toString() + "]";
+        final StringBuilder builder = new StringBuilder();
+        builder.append("SecurityLevel [id=").append(id).append(", description=").append(description).append(", self=").append(self).append(", name=")
+                .append(name).append("]");
+        return builder.toString();
     }
 
     @Override

@@ -22,5 +22,5 @@ package me.glindholm.jira.rest.client.api.domain;
  * @since v1.0
  */
 public enum StandardOperation {
-    SET, ADD, REMOVE, EDIT
+    SET, ADD, REMOVE, EDIT, COPY
 }
