@@ -81,4 +81,14 @@ public abstract class JiraConstants {
 
     public static final String ATTRIBUTE_WATCHERS = "jira.person.watchers";
 
+    public static final String PREFIX_REMOTELINK_SOURCE = "jira.issue.remotelink.source-";
+    public static final String REMOTELINK_SOURCE = "jira.issue.remotelink.source";
+    public static final String REMOTELINK_SOURCE_TEXT = "jira.issue.remotelink.source.text";
+
+    public static final String REMOTELINKS = "jira.issue.remotelinks";
+
+    public static final String PREFIX_REMOTELINK = "jira.issue.remotelink-";
+    public static final String REMOTELINK = "jira.issue.remotelink";
+    public static final String REMOTELINK_TEXT = "jira.issue.remotelink.text";
+
 }

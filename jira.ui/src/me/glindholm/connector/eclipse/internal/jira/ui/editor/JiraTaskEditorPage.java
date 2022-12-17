@@ -106,12 +106,13 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
             if (ID_PART_COMMENTS.equals(part.getId())) {
                 parts.remove(part);
 
-                // add JIRA specific comments part (with visibility restriction info for each comment)
+                // add JIRA specific comments part (with visibility restriction info for each
+                // comment)
                 parts.add(new TaskEditorPartDescriptor(ID_PART_COMMENTS) {
                     @Override
                     public AbstractTaskEditorPart createPart() {
                         return new JiraCommentPartCopy();
-                        //						return new JiraCommentPart();
+                        // return new JiraCommentPart();
                     }
                 }.setPath(part.getPath()));
 
@@ -145,6 +146,14 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
                 part.setExpandVertically(true);
                 part.setSectionStyle(ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED);
                 return part;
+            }
+        }.setPath(PATH_ATTRIBUTES));
+
+        parts.add(new TaskEditorPartDescriptor("me.glindholm.jira.issue.remotelinks") {
+            @Override
+            public AbstractTaskEditorPart createPart() {
+                return new JiraRemotelinksPart() {
+                };
             }
         }.setPath(PATH_ATTRIBUTES));
 
@@ -189,7 +198,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
 
         if (getModel() != null && getModel().getTaskData() != null && !getModel().getTaskData().isNew()) {
             startWorkAction = new StartWorkEditorToolbarAction(this);
-            //			startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
+            // startWorkAction.selectionChanged(new StructuredSelection(getTaskEditor()));
             toolBarManager.appendToGroup("repository", startWorkAction); //$NON-NLS-1$
         }
     }
@@ -242,12 +251,10 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
     @Override
     public void doSubmit() {
 
-        final TaskAttribute attribute = getModel().getTaskData()
-                .getRoot()
-                .getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
+        final TaskAttribute attribute = getModel().getTaskData().getRoot().getMappedAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW);
         if (attribute != null) {
             final TaskAttribute submitFlagAttribute = attribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
-            //if flag is set and true, submit worklog will happen
+            // if flag is set and true, submit worklog will happen
             if (submitFlagAttribute != null && submitFlagAttribute.getValue().equals(String.valueOf(true))) {
                 isWorkLogSubmit = true;
             }
@@ -270,12 +277,8 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
         }
 
         final IStatus status = event.getJob().getStatus();
-        if (status != null
-                && status.getSeverity() != IStatus.CANCEL
-                && status.getCode() == RepositoryStatus.ERROR_IO
-                && status.getMessage()
-                .contains(
-                        "com.atlassian.jira.rpc.exception.RemoteException: Error occurred when running workflow action")) { //$NON-NLS-1$
+        if (status != null && status.getSeverity() != IStatus.CANCEL && status.getCode() == RepositoryStatus.ERROR_IO
+                && status.getMessage().contains("com.atlassian.jira.rpc.exception.RemoteException: Error occurred when running workflow action")) { //$NON-NLS-1$
             handleSubmitErrorCopy(event.getJob());
         } else {
             super.handleTaskSubmitted(event);
@@ -291,8 +294,8 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
             final IStatus newStatus;
 
             if (status instanceof RepositoryStatus) {
-                newStatus = RepositoryStatus.createStatus(((RepositoryStatus) status).getRepositoryUrl(),
-                        status.getSeverity(), status.getPlugin(), detailedMessage);
+                newStatus = RepositoryStatus.createStatus(((RepositoryStatus) status).getRepositoryUrl(), status.getSeverity(), status.getPlugin(),
+                        detailedMessage);
             } else {
                 newStatus = new Status(status.getSeverity(), status.getPlugin(), detailedMessage);
             }
@@ -300,9 +303,7 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
             getTaskEditor().setMessage(message, IMessageProvider.ERROR, new HyperlinkAdapter() {
                 @Override
                 public void linkActivated(final HyperlinkEvent e) {
-                    TasksUiInternal.displayStatus(
-                            org.eclipse.mylyn.internal.tasks.ui.editors.Messages.AbstractTaskEditorPage_Submit_failed,
-                            newStatus);
+                    TasksUiInternal.displayStatus(org.eclipse.mylyn.internal.tasks.ui.editors.Messages.AbstractTaskEditorPage_Submit_failed, newStatus);
                 }
             });
         }

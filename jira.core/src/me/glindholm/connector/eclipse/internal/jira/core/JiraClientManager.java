@@ -17,7 +17,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -81,9 +80,7 @@ public class JiraClientManager {
                 }
             }
         } else {
-            ObjectInputStream in = null;
-            try {
-                in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+            try (ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))) {
                 in.readInt(); // version
                 final int count = in.readInt();
                 for (int i = 0; i < count; i++) {
@@ -101,13 +98,6 @@ public class JiraClientManager {
                 });
 
                 StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN, msg)); // $NON-NLS-1$
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (final IOException e) {
-                    }
-                }
             }
         }
     }

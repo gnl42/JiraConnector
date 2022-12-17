@@ -270,7 +270,7 @@ public class JiraProject implements Serializable {
     }
 
     public Map<String, BasicUser> setAssignables(final List<User> assignables) {
-        this.assignables = assignables.stream().collect(Collectors.toConcurrentMap(BasicUser::getId, Function.identity()));
+        this.assignables = assignables.stream().collect(Collectors.toConcurrentMap(BasicUser::getId, Function.identity(), (x1, x2) -> x1));
         return this.assignables;
     }
 

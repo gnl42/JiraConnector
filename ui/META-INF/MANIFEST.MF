@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector for Eclipse
 Automatic-Module-Name: JiraConnector for Eclipse
 Bundle-SymbolicName: me.glindholm.connector.eclipse.ui;singleton:=true
-Bundle-Version: 4.2.0.qualifier
+Bundle-Version: 4.3.0.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.ui.JiraConnectorUiPlugin
 Bundle-Vendor: George Lindholm
 Require-Bundle: org.eclipse.ui,

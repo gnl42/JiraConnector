@@ -43,31 +43,32 @@ class JiraAttributeEditorFactory extends AttributeEditorFactory {
         if (JiraTaskDataHandler.isTimeSpanAttribute(taskAttribute)) {
             return new TimeSpanAttributeEditor(model, taskAttribute);
         }
-        //		if (JiraUtil.isCustomDateTimeAttribute(taskAttribute)) {
-        //			String metaType = taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE);
-        //			if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
-        //				return new DateTimeAttributeEditor(model, taskAttribute, true);
-        //			} else if (JiraFieldType.DATE.getKey().equals(metaType)) {
-        //				return new DateTimeAttributeEditor(model, taskAttribute, false);
-        //			}
-        //		}
+        // if (JiraUtil.isCustomDateTimeAttribute(taskAttribute)) {
+        // String metaType =
+        // taskAttribute.getMetaData().getValue(IJiraConstants.META_TYPE);
+        // if (JiraFieldType.DATETIME.getKey().equals(metaType)) {
+        // return new DateTimeAttributeEditor(model, taskAttribute, true);
+        // } else if (JiraFieldType.DATE.getKey().equals(metaType)) {
+        // return new DateTimeAttributeEditor(model, taskAttribute, false);
+        // }
+        // }
         if (TaskAttribute.TYPE_MULTI_SELECT.equals(type)) {
-            final CheckboxMultiSelectAttributeEditor attributeEditor = new CheckboxMultiSelectAttributeEditor(model,
-                    taskAttribute);
+            final CheckboxMultiSelectAttributeEditor attributeEditor = new CheckboxMultiSelectAttributeEditor(model, taskAttribute);
             attributeEditor.setLayoutHint(new LayoutHint(RowSpan.SINGLE, ColumnSpan.SINGLE));
             return attributeEditor;
         }
         if (JiraConstants.TYPE_NUMBER.equals(type)) {
             return new NumberAttributeEditor(model, taskAttribute);
         }
-
+        if (JiraConstants.REMOTELINK_SOURCE.equals(type)) {
+            return new JiraRemotelinkAttributeEditor(model, taskAttribute);
+        }
         if (TaskAttribute.TYPE_PERSON.equals(type)) {
             return new PersonAttributeEditor(model, taskAttribute) {
                 @Override
                 public String getValue() {
                     if (isReadOnly()) {
-                        final IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(
-                                getTaskAttribute());
+                        final IRepositoryPerson repositoryPerson = getAttributeMapper().getRepositoryPerson(getTaskAttribute());
                         if (repositoryPerson != null) {
                             final String name = repositoryPerson.getName();
                             if (name != null) {
@@ -91,7 +92,8 @@ class JiraAttributeEditorFactory extends AttributeEditorFactory {
                                 getControl().setToolTipText(repositoryPerson.getPersonId());
                             }
                         } else {
-                            // add tooltip with user display name for editbox in which we just display user id
+                            // add tooltip with user display name for editbox in which we just display user
+                            // id
                             if (!StringUtils.isBlank(repositoryPerson.getName())) {
                                 if (getText() != null) {
                                     getText().setToolTipText(repositoryPerson.getName());

@@ -121,7 +121,7 @@ public class JiraServerInfo implements Serializable {
     }
 
     public String getAccountTag() {
-        if (version.isGreaterThanOrEquals(JiraServerVersion.JIRA_9_0)) {
+        if (version.isGreaterThanOrEquals(JiraServerVersion.JIRA_10_0)) {
             return JiraRestFields.ACCOUNT_ID;
         } else {
             return JiraRestFields.NAME;
