@@ -1,4 +1,4 @@
-# Java library for interacting with Atlassian Jira Server/Data/Cloud Center 8, 9 and 10
+# Java library for interacting with Atlassian Jira Server/Data Center/Cloud 8, 9 and 10
 
 
 Fork of https://bitbucket.org/atlassian/jira-rest-java-client/src/master/
