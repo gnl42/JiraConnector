@@ -840,7 +840,7 @@ public class JiraRestClientAdapter {
 
             return new JiraSecurityLevel[] { JiraSecurityLevel.convert(securityLevel) };
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
-            throw new JiraException(e);
+            return new JiraSecurityLevel[0]; // FIXME Not available on JiraServer. Add better check
         }
     }
 
