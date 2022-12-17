@@ -16,12 +16,12 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
-
-import java.net.URI;
 
 /**
  * Parses SecurityLevel
@@ -34,7 +34,7 @@ public class SecurityLevelJsonParser implements JsonObjectParser<SecurityLevel> 
     public SecurityLevel parse(final JSONObject json) throws JSONException {
         final URI self = JsonParseUtil.getSelfUri(json);
         final long id = json.getLong("id");
-        final String description = json.getString("description");
+        final String description = json.optString("description", "");
         final String name = json.getString("name");
         return new SecurityLevel(self, id, name, description);
     }
