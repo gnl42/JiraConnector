@@ -20,6 +20,8 @@ Export-Package: me.glindholm.connector.eclipse.internal.bamboo.core;x-friends:="
  me.glindholm.connector.eclipse.internal.core.client;x-friends:="me.glindholm.connector.eclipse.bamboo.core,me.glindholm.connector.eclipse.bamboo.ui,me.glindholm.connector.eclipse.ui",
  me.glindholm.theplugin.commons.bamboo,
  me.glindholm.theplugin.commons.bamboo.api,
+ me.glindholm.theplugin.commons.cfg,
+ me.glindholm.theplugin.commons.remoteapi,
  me.glindholm.theplugin.commons.remoteapi.rest,
  me.glindholm.theplugin.commons.ssl,
  org.codehaus.jettison,
