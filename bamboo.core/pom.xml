@@ -13,7 +13,88 @@
 	<packaging>eclipse-plugin</packaging>
 	<build>
 		<plugins>
-			<plugin>
+	            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                 <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi/src/gen/java/main</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>6.2.1</version>
+                <configuration>
+                    <generatorName>java</generatorName>
+                    <logToStderr>false</logToStderr>
+                    <verbose>false</verbose>
+                    <configOptions>
+                        <openApiNullable>false</openApiNullable>
+                        <asyncNative>true</asyncNative>
+                        <sourceFolder>src/gen/java/main</sourceFolder>
+                        <dateLibrary>java11</dateLibrary>
+                        <developerName>George Lindholm</developerName>
+                        <developerEmail>javadev@glindholm.me</developerEmail>
+                        <developerOrganization>self</developerOrganization>
+                        <serializableModel>false</serializableModel>
+                    </configOptions>
+                    <httpUserAgent>Jira Cloud Java Client ${project.version}</httpUserAgent>
+                    <packageName>me.glindholm.jira.jjc</packageName>
+                    <modelPackage>me.glindholm.jira.jjc.model</modelPackage>
+                    <invokerPackage>me.glindholm.jira.jjc.invoker</invokerPackage>
+                    <library>native</library>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>${project.artifactId}</artifactId>
+                    <artifactVersion>${project.version}</artifactVersion>
+                    <skip>false</skip>
+                    <skipValidateSpec>true</skipValidateSpec>
+                    <withXml>false</withXml>
+                    <generateModelDocumentation>false</generateModelDocumentation>
+                    <addCompileSourceRoot>true</addCompileSourceRoot>
+                    <!-- <typeMappings> -->
+                    <!-- <typeMapping>Date=Instant</typeMapping> -->
+                    <!-- </typeMappings> -->
+                    <!-- <importMappings> -->
+                    <!-- <importMapping>java.util.Date=java.time.Instant</importMapping> -->
+                    <!-- </importMappings> -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>bamboo</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/json/bamboo.json</inputSpec>
+                            <apiPackage>me.glindholm.bamboo.api</apiPackage>
+                            <invokerPackage>me.glindholm.bamboo.invoker</invokerPackage>
+                            <modelPackage>me.glindholm.bamboo.model</modelPackage>
+                            <modelNamePrefix></modelNamePrefix>
+                            <skip>false</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <release>11</release>
+                </configuration>
+            </plugin>
+		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
