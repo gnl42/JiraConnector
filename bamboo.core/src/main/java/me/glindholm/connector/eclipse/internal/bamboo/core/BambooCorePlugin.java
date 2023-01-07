@@ -11,25 +11,25 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
-import me.glindholm.connector.eclipse.internal.bamboo.core.BambooUtil.BuildChangeAction;
-import me.glindholm.connector.eclipse.internal.core.JiraConnectorLogger;
-import me.glindholm.theplugin.commons.bamboo.BambooBuild;
-import me.glindholm.theplugin.commons.bamboo.BuildStatus;
-import me.glindholm.theplugin.commons.util.LoggerImpl;
+import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
-import java.io.File;
+import me.glindholm.connector.eclipse.internal.bamboo.core.BambooUtil.BuildChangeAction;
+import me.glindholm.connector.eclipse.internal.core.JiraConnectorLogger;
+import me.glindholm.theplugin.commons.bamboo.BambooBuild;
+import me.glindholm.theplugin.commons.bamboo.BuildStatus;
+import me.glindholm.theplugin.commons.util.LoggerImpl;
 
 /**
  * The activator class controls the plug-in life cycle.

@@ -16,9 +16,9 @@
 
 package me.glindholm.theplugin.commons;
 
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.IOException;
+
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * @author lguminski

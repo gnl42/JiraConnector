@@ -19,8 +19,8 @@ package me.glindholm.theplugin.commons.bamboo;
 import java.time.Instant;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 
@@ -45,7 +45,7 @@ public interface BambooBuild {
     @Nullable
     String getMasterPlanKey();
 
-    @Nonnull
+    @NonNull
     String getPlanKey();
 
     boolean getEnabled();
@@ -54,13 +54,14 @@ public interface BambooBuild {
 
     /**
      * @return build number
-     * @throws UnsupportedOperationException in case this object represents invalid build
+     * @throws UnsupportedOperationException in case this object represents invalid
+     *                                       build
      */
     int getNumber() throws UnsupportedOperationException;
 
     String getResultUrl();
 
-    @Nonnull
+    @NonNull
     BuildStatus getStatus();
 
     /**
@@ -89,7 +90,8 @@ public interface BambooBuild {
     String getReason();
 
     /**
-     * @return human readable info about the time taken by given build - e.g. "3 minutes"
+     * @return human readable info about the time taken by given build - e.g. "3
+     *         minutes"
      */
     @Nullable
     String getDurationDescription();
@@ -101,9 +103,11 @@ public interface BambooBuild {
     Instant getCompletionDate();
 
     /**
-     * Relative build completion date on Bamboo server. Unfortunately it does not respect calling client timezone,
-     * so in most cases it's useless. Instead it's preferable to use {@link #getCompletionDate()} and then use
-     * some utility method like {@link me.glindholm.theplugin.commons.util.DateUtil#getRelativePastDate(java.util.Date)}
+     * Relative build completion date on Bamboo server. Unfortunately it does not
+     * respect calling client timezone, so in most cases it's useless. Instead it's
+     * preferable to use {@link #getCompletionDate()} and then use some utility
+     * method like
+     * {@link me.glindholm.theplugin.commons.util.DateUtil#getRelativePastDate(java.util.Date)}
      * to transform Date to relative string describing relative date.
      *
      * @return human readable string like "2 months ago"
@@ -114,7 +118,7 @@ public interface BambooBuild {
 
     Set<String> getCommiters();
 
-    @Nonnull
+    @NonNull
     Instant getPollingTime();
 
     @Nullable

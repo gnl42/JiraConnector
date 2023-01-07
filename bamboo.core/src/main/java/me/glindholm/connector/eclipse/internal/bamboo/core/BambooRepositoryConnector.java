@@ -11,6 +11,8 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,8 +26,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskDataCollector;
 import org.eclipse.mylyn.tasks.core.sync.ISynchronizationSession;
 
 import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
-
-import java.io.File;
 
 /**
  * Core integration for Mylyn tasks framework.

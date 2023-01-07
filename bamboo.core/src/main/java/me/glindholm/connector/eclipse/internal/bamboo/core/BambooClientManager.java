@@ -11,6 +11,16 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
+import static me.glindholm.connector.eclipse.internal.core.ServerDataUtil.getServerData;
+
+import java.io.File;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
+
 import me.glindholm.connector.commons.api.BambooServerFacade2;
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
@@ -19,16 +29,6 @@ import me.glindholm.connector.eclipse.internal.core.client.HttpSessionCallbackIm
 import me.glindholm.connector.eclipse.internal.core.client.RepositoryClientManager;
 import me.glindholm.theplugin.commons.bamboo.BambooServerFacadeImpl;
 import me.glindholm.theplugin.commons.util.LoggerImpl;
-
-import org.eclipse.mylyn.commons.net.AbstractWebLocation;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
-
-import static me.glindholm.connector.eclipse.internal.core.ServerDataUtil.getServerData;
-
-import java.io.File;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Class to manage the clients and data on a per-repository basis

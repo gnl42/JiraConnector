@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutionException;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 import me.glindholm.bamboo.api.BuildApi;
 import me.glindholm.bamboo.invoker.ApiClient;
@@ -33,7 +33,6 @@ import me.glindholm.connector.commons.api.BambooServerFacade2;
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.theplugin.commons.ServerType;
 import me.glindholm.theplugin.commons.bamboo.api.AutoRenewBambooSession;
-import me.glindholm.theplugin.commons.bamboo.api.BambooServerVersionNumberConstants;
 import me.glindholm.theplugin.commons.bamboo.api.BambooSession;
 import me.glindholm.theplugin.commons.bamboo.api.BambooSessionImpl;
 import me.glindholm.theplugin.commons.bamboo.api.LoginBambooSession;
@@ -64,7 +63,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
 
     private final HttpSessionCallback callback;
 
-    public BambooServerFacadeImpl(final Logger loger, @Nonnull final BambooSessionFactory factory, @Nonnull final HttpSessionCallback callback) {
+    public BambooServerFacadeImpl(final Logger loger, @NonNull final BambooSessionFactory factory, @NonNull final HttpSessionCallback callback) {
         logger = loger;
         this.callback = callback;
         bambooSessionFactory = factory;
@@ -229,13 +228,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
             final boolean isUseFavourities, final boolean isShowBranches, final boolean myBranchesOnly, final int timezoneOffset)
             throws ServerPasswordNotProvidedException, RemoteApiException {
         final BambooSession session = getSession(connectionCfg);
-        if (session.getBamboBuildNumber() >= BambooServerVersionNumberConstants.BAMBOO_1401_BUILD_NUMBER) {
-            return getSubscribedPlansResultsNew(connectionCfg, plans, isUseFavourities,
-                    isShowBranches && session.getBamboBuildNumber() >= BambooServerVersionNumberConstants.BAMBOO_3600_BUILD_NUMBER, myBranchesOnly,
-                    timezoneOffset);
-        } else {
-            return getSubscribedPlansResultsOld(connectionCfg, plans, isUseFavourities, timezoneOffset);
-        }
+        return getSubscribedPlansResultsNew(connectionCfg, plans, isUseFavourities, isShowBranches && true, myBranchesOnly, timezoneOffset);
     }
 
     /**
@@ -508,7 +501,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
      * @throws RemoteApiException
      */
     @Override
-    public BuildDetails getBuildDetails(final ConnectionCfg bambooServer, @Nonnull final String planKey, final int buildNumber)
+    public BuildDetails getBuildDetails(final ConnectionCfg bambooServer, @NonNull final String planKey, final int buildNumber)
             throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             final BambooSession api = getSession(bambooServer);
@@ -520,7 +513,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
     }
 
     @Override
-    public BambooBuild getBuildForPlanAndNumber(final ConnectionCfg bambooServer, @Nonnull final String planKey, final int buildNumber,
+    public BambooBuild getBuildForPlanAndNumber(final ConnectionCfg bambooServer, @NonNull final String planKey, final int buildNumber,
             final int timezoneOffset) throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             final BambooSession api = getSession(bambooServer);
@@ -541,7 +534,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
      * @throws RemoteApiException
      */
     @Override
-    public void addLabelToBuild(final ConnectionCfg bambooServer, @Nonnull final String planKey, final int buildNumber, final String buildLabel)
+    public void addLabelToBuild(final ConnectionCfg bambooServer, @NonNull final String planKey, final int buildNumber, final String buildLabel)
             throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             final BambooSession api = getSession(bambooServer);
@@ -562,7 +555,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
      * @throws RemoteApiException
      */
     @Override
-    public void addCommentToBuild(final ConnectionCfg bambooServer, @Nonnull final String planKey, final int buildNumber, final String buildComment)
+    public void addCommentToBuild(final ConnectionCfg bambooServer, @NonNull final String planKey, final int buildNumber, final String buildComment)
             throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             final BambooSession api = getSession(bambooServer);
@@ -583,7 +576,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
      * @throws RemoteApiException
      */
     @Override
-    public void executeBuild(final ConnectionCfg bambooServer, @Nonnull final String buildKey) throws ServerPasswordNotProvidedException, RemoteApiException {
+    public void executeBuild(final ConnectionCfg bambooServer, @NonNull final String buildKey) throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             final BambooSession api = getSession(bambooServer);
             api.executeBuild(buildKey);
@@ -594,7 +587,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
     }
 
     @Override
-    public String getBuildLogs(final ConnectionCfg bambooServer, @Nonnull final String planKey, final int buildNumber)
+    public String getBuildLogs(final ConnectionCfg bambooServer, @NonNull final String planKey, final int buildNumber)
             throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             final BambooSession api = getSession(bambooServer);
@@ -606,7 +599,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
     }
 
     @Override
-    public Collection<BuildIssue> getIssuesForBuild(final ConnectionCfg bambooServer, @Nonnull final String planKey, final int buildNumber)
+    public Collection<BuildIssue> getIssuesForBuild(final ConnectionCfg bambooServer, @NonNull final String planKey, final int buildNumber)
             throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             final BambooSession api = getSession(bambooServer);
@@ -652,7 +645,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
         }
     }
 
-    private BambooBuild constructBuildErrorInfo(final ConnectionCfg server, @Nonnull final String planKey, final String planName, final String message,
+    private BambooBuild constructBuildErrorInfo(final ConnectionCfg server, @NonNull final String planKey, final String planName, final String message,
             final Throwable exception) {
         return new BambooBuildInfo.Builder(planKey, null, server, planName, null, BuildStatus.UNKNOWN).errorMessage(message, exception)
                 .pollingTime(Instant.now()).build();

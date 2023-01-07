@@ -11,14 +11,14 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
-import me.glindholm.theplugin.commons.bamboo.BambooBuild;
-import me.glindholm.theplugin.commons.cfg.SubscribedPlan;
-
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringTokenizer;
+
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+
+import me.glindholm.theplugin.commons.bamboo.BambooBuild;
+import me.glindholm.theplugin.commons.cfg.SubscribedPlan;
 
 /**
  * Provides utility methods for Bamboo.

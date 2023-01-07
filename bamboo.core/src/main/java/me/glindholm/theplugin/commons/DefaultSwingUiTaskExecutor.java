@@ -15,7 +15,8 @@
  */
 package me.glindholm.theplugin.commons;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class DefaultSwingUiTaskExecutor implements UiTaskExecutor {
 	public void execute(final UiTask uiTask) {

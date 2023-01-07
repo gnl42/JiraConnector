@@ -11,15 +11,15 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-
-import me.glindholm.theplugin.commons.bamboo.BambooBuild;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+
+import me.glindholm.theplugin.commons.bamboo.BambooBuild;
 
 public class BuildsChangedEvent {
 	private final Map<TaskRepository, Collection<BambooBuild>> changedBuilds;

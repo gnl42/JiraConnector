@@ -11,6 +11,16 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -29,16 +39,6 @@ import me.glindholm.connector.eclipse.internal.bamboo.core.TestResultExternalize
 import me.glindholm.theplugin.commons.bamboo.BambooBuild;
 import me.glindholm.theplugin.commons.bamboo.TestDetails;
 import me.glindholm.theplugin.commons.bamboo.TestResult;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
 
 /**
  * @author Thomas Ehrnhoefer

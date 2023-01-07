@@ -11,6 +11,15 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.core;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,15 +29,6 @@ import me.glindholm.theplugin.commons.bamboo.BambooBuild;
 import me.glindholm.theplugin.commons.bamboo.BuildDetails;
 import me.glindholm.theplugin.commons.bamboo.TestDetails;
 import me.glindholm.theplugin.commons.bamboo.TestResult;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Builds the junit model of the test results and writes it

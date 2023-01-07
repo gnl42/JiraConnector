@@ -54,7 +54,7 @@
                     <configOptions>
                         <generateApiDocumentation>false</generateApiDocumentation>
                         <generateModelDocumentation>false</generateModelDocumentation>
-                        <openApiNullable>true</openApiNullable>
+                        <openApiNullable>false</openApiNullable>
                         <asyncNative>true</asyncNative>
                         <dateLibrary>java11</dateLibrary>
                         <developerName>George Lindholm</developerName>
@@ -105,7 +105,7 @@
                             <includeArtifactIds>jettison,jdom,jaxen,
                                 jackson-core,jackson-databind,jackson-annotations,
                                 jackson-datatype-jsr310,jackson-databind-nullable,
-                                swagger-annotations
+                                swagger-annotations,jsr305
                             </includeArtifactIds>
                             <outputDirectory>target/lib</outputDirectory>
                             <stripVersion>true</stripVersion>

@@ -8432,6 +8432,12 @@
                     "callback": {
                         "$ref": "#/components/schemas/ListWrapperCallbackRestProject"
                     },
+                    "project": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RestProject"
+                        }
+                    },
                     "allElements": {
                         "type": "array",
                         "items": {

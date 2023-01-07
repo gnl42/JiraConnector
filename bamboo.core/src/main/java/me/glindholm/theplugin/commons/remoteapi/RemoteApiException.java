@@ -16,7 +16,7 @@
 
 package me.glindholm.theplugin.commons.remoteapi;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Generic exception related to a remote session.

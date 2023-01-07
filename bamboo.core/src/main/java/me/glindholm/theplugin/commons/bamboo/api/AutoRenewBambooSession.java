@@ -19,9 +19,9 @@ package me.glindholm.theplugin.commons.bamboo.api;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.jdom2.JDOMException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.theplugin.commons.bamboo.BambooBuild;
@@ -43,215 +43,232 @@ public class AutoRenewBambooSession implements BambooSession {
     private String userName;
     private char[] password;
 
-    public AutoRenewBambooSession(ConnectionCfg serverCfg, HttpSessionCallback callback, Logger logger)
-            throws RemoteApiException {
-        Exception e = new JDOMException();
-        this.delegate = new BambooSessionImpl(serverCfg, callback, logger);
+    public AutoRenewBambooSession(final ConnectionCfg serverCfg, final HttpSessionCallback callback, final Logger logger) throws RemoteApiException {
+        final Exception e = new JDOMException();
+        delegate = new BambooSessionImpl(serverCfg, callback, logger);
     }
 
-    AutoRenewBambooSession(BambooSession bambooSession) throws RemoteApiException {
-        this.delegate = bambooSession;
+    AutoRenewBambooSession(final BambooSession bambooSession) throws RemoteApiException {
+        delegate = bambooSession;
     }
 
-    public void addCommentToBuild(@Nonnull String planKey, int buildNumber, String buildComment) throws RemoteApiException {
+    @Override
+    public void addCommentToBuild(@NonNull final String planKey, final int buildNumber, final String buildComment) throws RemoteApiException {
         try {
             delegate.addCommentToBuild(planKey, buildNumber, buildComment);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             delegate.addCommentToBuild(planKey, buildNumber, buildComment);
         }
     }
 
-    public void executeBuild(@Nonnull String buildKey) throws RemoteApiException {
+    @Override
+    public void executeBuild(@NonNull final String buildKey) throws RemoteApiException {
         try {
             delegate.executeBuild(buildKey);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             delegate.executeBuild(buildKey);
         }
     }
 
-    public void addLabelToBuild(@Nonnull String planKey, int buildNumber, String buildLabel) throws RemoteApiException {
+    @Override
+    public void addLabelToBuild(@NonNull final String planKey, final int buildNumber, final String buildLabel) throws RemoteApiException {
         try {
             delegate.addLabelToBuild(planKey, buildNumber, buildLabel);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             delegate.addLabelToBuild(planKey, buildNumber, buildLabel);
         }
     }
 
-    @Nonnull
-    public BuildDetails getBuildResultDetails(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
+    @Override
+    @NonNull
+    public BuildDetails getBuildResultDetails(@NonNull final String planKey, final int buildNumber) throws RemoteApiException {
         try {
             return delegate.getBuildResultDetails(planKey, buildNumber);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getBuildResultDetails(planKey, buildNumber);
         }
     }
 
-    @Nonnull
+    @Override
+    @NonNull
     public List<String> getFavouriteUserPlans() throws RemoteApiException {
         try {
             return delegate.getFavouriteUserPlans();
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getFavouriteUserPlans();
         }
     }
 
-    @Nonnull
-    public BambooBuild getLatestBuildForPlan(@Nonnull final String planKey, final int timezoneOffset)
-            throws RemoteApiException {
+    @Override
+    @NonNull
+    public BambooBuild getLatestBuildForPlan(@NonNull final String planKey, final int timezoneOffset) throws RemoteApiException {
         try {
             return delegate.getLatestBuildForPlan(planKey, timezoneOffset);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getLatestBuildForPlan(planKey, timezoneOffset);
         }
     }
 
-    @Nonnull
-    public BambooBuild getBuildForPlanAndNumber(@Nonnull String planKey, final int buildNumber, final int timezoneOffset)
-            throws RemoteApiException {
+    @Override
+    @NonNull
+    public BambooBuild getBuildForPlanAndNumber(@NonNull final String planKey, final int buildNumber, final int timezoneOffset) throws RemoteApiException {
         try {
             return delegate.getBuildForPlanAndNumber(planKey, buildNumber, timezoneOffset);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getBuildForPlanAndNumber(planKey, buildNumber, timezoneOffset);
         }
     }
 
+    @Override
     public boolean isLoggedIn() throws RemoteApiLoginException {
         return delegate.isLoggedIn();
     }
 
-    public String getBuildLogs(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
+    @Override
+    public String getBuildLogs(@NonNull final String planKey, final int buildNumber) throws RemoteApiException {
         try {
             return delegate.getBuildLogs(planKey, buildNumber);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getBuildLogs(planKey, buildNumber);
         }
     }
 
-    public Collection<BambooBuild> getRecentBuildsForPlan(@Nonnull final String planKey, final int timezoneOffset)
-            throws RemoteApiException {
+    @Override
+    public List<BambooBuild> getRecentBuildsForPlan(@NonNull final String planKey, final int timezoneOffset) throws RemoteApiException {
         try {
             return delegate.getRecentBuildsForPlan(planKey, timezoneOffset);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getRecentBuildsForPlan(planKey, timezoneOffset);
         }
     }
 
-    public Collection<BambooBuild> getRecentBuildsForUser(final int timezoneOffset)
-            throws RemoteApiException {
+    @Override
+    public List<BambooBuild> getRecentBuildsForUser(final int timezoneOffset) throws RemoteApiException {
         try {
             return delegate.getRecentBuildsForUser(timezoneOffset);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getRecentBuildsForUser(timezoneOffset);
         }
     }
 
-    @Nonnull
-    public Collection<BuildIssue> getIssuesForBuild(@Nonnull String planKey, int buildNumber) throws RemoteApiException {
+    @Override
+    @NonNull
+    public List<BuildIssue> getIssuesForBuild(@NonNull final String planKey, final int buildNumber) throws RemoteApiException {
         try {
             return delegate.getIssuesForBuild(planKey, buildNumber);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getIssuesForBuild(planKey, buildNumber);
         }
     }
 
-    @Nonnull
-    public BambooPlan getPlanDetails(@Nonnull final String planKey) throws RemoteApiException {
+    @Override
+    @NonNull
+    public BambooPlan getPlanDetails(@NonNull final String planKey) throws RemoteApiException {
         try {
             return delegate.getPlanDetails(planKey);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getPlanDetails(planKey);
         }
     }
 
-    @Nonnull
-    public BambooBuild getLatestBuildForPlanNew(@Nonnull final String planKey, @Nullable String masterPlanKey, final boolean isPlanEnabled,
+    @Override
+    @NonNull
+    public BambooBuild getLatestBuildForPlanNew(@NonNull final String planKey, @Nullable final String masterPlanKey, final boolean isPlanEnabled,
             final int timezoneOffset) throws RemoteApiException {
         try {
             return delegate.getLatestBuildForPlanNew(planKey, masterPlanKey, isPlanEnabled, timezoneOffset);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getLatestBuildForPlanNew(planKey, masterPlanKey, isPlanEnabled, timezoneOffset);
         }
 
     }
 
-    @Nonnull
-    public Collection<BambooPlan> getPlanList() throws ServerPasswordNotProvidedException, RemoteApiException {
+    @Override
+    @NonNull
+    public List<BambooPlan> getPlanList() throws ServerPasswordNotProvidedException, RemoteApiException {
         try {
             return delegate.getPlanList();
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getPlanList();
         }
     }
 
-    @Nonnull
+    @Override
+    @NonNull
     public List<BambooProject> listProjectNames() throws RemoteApiException {
         try {
             return delegate.listProjectNames();
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.listProjectNames();
         }
     }
 
-    public void login(String name, char[] aPassword) throws RemoteApiLoginException {
-        this.userName = name;
-        this.password = new char[aPassword.length];
+    @Override
+    public void login(final String name, final char[] aPassword) throws RemoteApiLoginException {
+        userName = name;
+        password = new char[aPassword.length];
         System.arraycopy(aPassword, 0, password, 0, aPassword.length);
         delegate.login(name, aPassword);
     }
 
+    @Override
     public void logout() {
         delegate.logout();
     }
 
+    @Override
     public int getBamboBuildNumber() throws RemoteApiException {
         try {
             return delegate.getBamboBuildNumber();
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getBamboBuildNumber();
         }
     }
 
-    @Nonnull
-    public Collection<BambooBuild> getSubscribedPlansResults(Collection<SubscribedPlan> plans, boolean isUseFavourities,
-            int timezoneOffset) throws RemoteApiException {
+    @Override
+    @NonNull
+    public List<BambooBuild> getSubscribedPlansResults(final Collection<SubscribedPlan> plans, final boolean isUseFavourities, final int timezoneOffset)
+            throws RemoteApiException {
         try {
             return delegate.getSubscribedPlansResults(plans, isUseFavourities, timezoneOffset);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getSubscribedPlansResults(plans, isUseFavourities, timezoneOffset);
         }
     }
 
-    public List<BambooJobImpl> getJobsForPlan(String planKey) throws RemoteApiException {
+    @Override
+    public List<BambooJobImpl> getJobsForPlan(final String planKey) throws RemoteApiException {
         try {
             return delegate.getJobsForPlan(planKey);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getJobsForPlan(planKey);
         }
     }
 
-    @Nonnull
-    public Collection<String> getBranchKeys(String planKey, boolean useFavourites, boolean myBranchesOnly) throws RemoteApiException {
+    @Override
+    @NonNull
+    public List<String> getBranchKeys(final String planKey, final boolean useFavourites, final boolean myBranchesOnly) throws RemoteApiException {
         try {
             return delegate.getBranchKeys(planKey, useFavourites, myBranchesOnly);
-        } catch (RemoteApiSessionExpiredException e) {
+        } catch (final RemoteApiSessionExpiredException e) {
             delegate.login(userName, password);
             return delegate.getBranchKeys(planKey, useFavourites, myBranchesOnly);
         }

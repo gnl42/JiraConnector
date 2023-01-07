@@ -16,7 +16,7 @@
 
 package me.glindholm.theplugin.commons;
 
-import java.awt.*;
+import java.awt.Component;
 
 public interface UiTask {
 	/**
