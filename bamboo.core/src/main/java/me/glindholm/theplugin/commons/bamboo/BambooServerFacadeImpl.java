@@ -19,12 +19,13 @@ package me.glindholm.theplugin.commons.bamboo;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
 import me.glindholm.bamboo.api.BuildApi;
-import me.glindholm.bamboo.api.DefaultApi;
 import me.glindholm.bamboo.invoker.ApiClient;
 import me.glindholm.bamboo.invoker.ApiException;
 import me.glindholm.bamboo.model.RestPlans;
@@ -54,6 +55,8 @@ import me.glindholm.theplugin.commons.util.Logger;
  */
 @Deprecated
 public final class BambooServerFacadeImpl implements BambooServerFacade2 {
+    private final Map<String, BambooSession> sessions = new WeakHashMap<>();
+
     private final Logger logger;
 
     private final BambooSessionFactory bambooSessionFactory;
@@ -77,25 +80,35 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
 
     @Override
     public synchronized BambooSession getSession(final ConnectionCfg server) throws RemoteApiException {
-        return bambooSessionFactory.createSession(server, callback);
+        // @todo old server will stay on map - remove them !!!
+        final String username = server.getUsername();
+        final String password = server.getPassword();
+        final String key = username + server.getUrl() + password + server.getId();
+        BambooSession session = sessions.get(key);
+        if (session == null) {
+            session = bambooSessionFactory.createSession(server, callback);
+            sessions.put(key, session);
+        }
+        if (!session.isLoggedIn()) {
+            session.login(username, password.toCharArray());
+        }
+        return session;
     }
 
     /**
      * Test connection to Bamboo server.
      *
-     * @param connectionCfg The configuration for the server that we want to test
-     *                      the connection for
+     * @param httpConnectionCfg The configuration for the server that we want to
+     *                          test the connection for
      * @throws RemoteApiException on failed login
      * @see RemoteApiLoginFailedException
      */
 
     @Override
-    public void testServerConnection(final ConnectionCfg connectionCfg) throws RemoteApiException {
-        try {
-            new DefaultApi(connectionCfg.getApiClient()).getCurrentUser().get();
-        } catch (InterruptedException | ExecutionException | ApiException e) {
-            throw new RemoteApiException(e);
-        }
+    public void testServerConnection(final ConnectionCfg httpConnectionCfg) throws RemoteApiException {
+        final ProductSession apiHandler = bambooSessionFactory.createLoginSession(httpConnectionCfg, callback);
+        apiHandler.login(httpConnectionCfg.getUsername(), httpConnectionCfg.getPassword().toCharArray());
+        apiHandler.logout();
     }
 
     /**
