@@ -8,15 +8,15 @@ Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlug
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.apache.commons.io,
  org.eclipse.core.runtime,
- org.eclipse.mylyn.commons.core;bundle-version="[3.24.0,4.0.0)",
- org.eclipse.mylyn.commons.net;bundle-version="[3.24.0,4.0.0)",
- org.eclipse.mylyn.tasks.core;bundle-version="[3.25.0,4.0.0)",
+ org.eclipse.mylyn.commons.core;bundle-version="3.25.2",
+ org.eclipse.mylyn.commons.net;bundle-version="3.25.2",
+ org.eclipse.mylyn.tasks.core;bundle-version="3.25.2",
  me.glindholm.connector.eclipse.commons.core,
  jira-rest-java-client-api;bundle-version="0.0.0",
  jira-rest-java-client-core;bundle-version="0.0.0",
  org.eclipse.ui.workbench,
  org.eclipse.swt,
- org.eclipse.mylyn.commons.workbench,
+ org.eclipse.mylyn.commons.workbench;bundle-version="3.25.2",
  org.eclipse.jface,
  org.eclipse.jdt.annotation
 Bundle-ActivationPolicy: lazy

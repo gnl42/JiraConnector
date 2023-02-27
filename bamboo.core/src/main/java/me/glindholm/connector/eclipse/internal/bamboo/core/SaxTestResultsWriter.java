@@ -62,7 +62,7 @@ public class SaxTestResultsWriter {
 			transformer.transform(new SAXSource(new TestResultsWriter(), new TestResultsInputSource(testResults, build,
 					failed, success)), new StreamResult(outputStream));
 		} catch (TransformerException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, "could not write repositories", e));
+			StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN, "could not write repositories", e));
 			throw new IOException(e.getMessage());
 		}
 

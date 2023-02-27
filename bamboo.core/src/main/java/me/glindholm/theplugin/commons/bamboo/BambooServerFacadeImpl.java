@@ -25,12 +25,12 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-import me.glindholm.bamboo.api.BuildApi;
-import me.glindholm.bamboo.invoker.ApiClient;
+import me.glindholm.bamboo.api.DefaultApi;
 import me.glindholm.bamboo.invoker.ApiException;
-import me.glindholm.bamboo.model.RestPlans;
+import me.glindholm.bamboo.model.UserBean;
 import me.glindholm.connector.commons.api.BambooServerFacade2;
 import me.glindholm.connector.commons.api.ConnectionCfg;
+import me.glindholm.connector.eclipse.internal.core.client.BambooClientFactory;
 import me.glindholm.theplugin.commons.ServerType;
 import me.glindholm.theplugin.commons.bamboo.api.AutoRenewBambooSession;
 import me.glindholm.theplugin.commons.bamboo.api.BambooSession;
@@ -67,6 +67,7 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
         logger = loger;
         this.callback = callback;
         bambooSessionFactory = factory;
+        BambooClientFactory.getDefault().getBambooClient(null);
     }
 
     public BambooServerFacadeImpl(final Logger loger, final HttpSessionCallback callback) {
@@ -105,10 +106,12 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
      */
 
     @Override
-    public void testServerConnection(final ConnectionCfg httpConnectionCfg) throws RemoteApiException {
-        final ProductSession apiHandler = bambooSessionFactory.createLoginSession(httpConnectionCfg, callback);
-        apiHandler.login(httpConnectionCfg.getUsername(), httpConnectionCfg.getPassword().toCharArray());
-        apiHandler.logout();
+    public void testServerConnection(final ConnectionCfg connectionCfg) throws RemoteApiException {
+        try {
+            final UserBean myself = new DefaultApi(connectionCfg.getApiClient()).getCurrentUser().get();
+        } catch (InterruptedException | ExecutionException | ApiException e) {
+            throw new RemoteApiException(e);
+        }
     }
 
     /**
@@ -134,18 +137,6 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
      *
      * @param bambooServer Bamboo server information
      * @return list of plans
-     * @throws me.glindholm.theplugin.commons.exception.ServerPasswordNotProvidedException when
-     *                                                                                     invoked
-     *                                                                                     for
-     *                                                                                     Server
-     *                                                                                     that
-     *                                                                                     has
-     *                                                                                     not
-     *                                                                                     had
-     *                                                                                     the
-     *                                                                                     password
-     *                                                                                     set
-     *                                                                                     yet
      */
     @Override
     public Collection<BambooPlan> getPlanList(final ConnectionCfg bambooServer) throws ServerPasswordNotProvidedException, RemoteApiException {
@@ -296,15 +287,6 @@ public final class BambooServerFacadeImpl implements BambooServerFacade2 {
         } catch (final RemoteApiException e) {
             // can go further, no disabled info will be available
             logger.warn("Cannot fetch plan list from Bamboo server [" + bambooServer.getUrl() + "]");
-        }
-        final int i = 1;
-        final ApiClient apiClient = bambooServer.getApiClient();
-        final BuildApi build = new BuildApi(apiClient);
-        RestPlans plansForServer2 = null;
-        try {
-            plansForServer2 = build.getAllPlanList("plans", null, 5000).get();
-        } catch (InterruptedException | ExecutionException | ApiException e1) {
-            e1.printStackTrace();
         }
         if (isUseFavourities) {
             if (plansForServer != null) {

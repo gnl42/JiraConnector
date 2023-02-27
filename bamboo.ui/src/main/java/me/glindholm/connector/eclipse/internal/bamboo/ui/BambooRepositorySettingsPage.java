@@ -11,21 +11,19 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.ui;
 
-import me.glindholm.connector.eclipse.internal.bamboo.core.BambooClientManager;
-import me.glindholm.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import me.glindholm.connector.eclipse.internal.bamboo.core.BambooUtil;
-import me.glindholm.connector.eclipse.internal.bamboo.core.PlanBranches;
-import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
-import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClientData;
-import me.glindholm.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
-import me.glindholm.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
-import me.glindholm.theplugin.commons.bamboo.BambooPlan;
-import me.glindholm.theplugin.commons.cfg.SubscribedPlan;
-import me.glindholm.theplugin.commons.remoteapi.CaptchaRequiredException;
+import static me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin.PLUGIN_ID;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -34,15 +32,18 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.mylyn.commons.core.ICoreRunnable;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
-import org.eclipse.mylyn.commons.net.Policy;
 import org.eclipse.mylyn.commons.ui.CommonUiUtil;
 import org.eclipse.mylyn.commons.workbench.WorkbenchUtil;
 import org.eclipse.mylyn.internal.tasks.core.IRepositoryConstants;
+import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.RepositoryTemplate;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -57,321 +58,350 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import me.glindholm.bamboo.model.RestInfo;
+import me.glindholm.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
+import me.glindholm.connector.eclipse.internal.bamboo.core.BambooUtil;
+import me.glindholm.connector.eclipse.internal.bamboo.core.PlanBranches;
+import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
+import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClientData;
+import me.glindholm.connector.eclipse.internal.bamboo.core.service.BambooLocalConfiguration;
+import me.glindholm.connector.eclipse.internal.bamboo.ui.wizards.BambooTaskRepositoryLocation;
+import me.glindholm.connector.eclipse.internal.commons.ui.MigrateToSecureStorageJob;
+import me.glindholm.connector.eclipse.internal.commons.ui.dialogs.RemoteApiLockedDialog;
+import me.glindholm.connector.eclipse.internal.core.client.BambooClientFactory;
+import me.glindholm.theplugin.commons.bamboo.BambooPlan;
+import me.glindholm.theplugin.commons.cfg.SubscribedPlan;
+import me.glindholm.theplugin.commons.remoteapi.CaptchaRequiredException;
+import me.glindholm.theplugin.commons.remoteapi.RemoteApiException;
 
 /**
  * Wizard page for configuring a Bamboo repository.
- * 
+ *
  * @author Shawn Minto
  * @author thomas
  * @author Jacek Jaroczynski
  */
 public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
-	private class BambooValidator extends Validator {
+    private class BambooValidator extends Validator {
 
-		private final TaskRepository taskRepository;
+        private final TaskRepository repository;
 
-		public BambooValidator(TaskRepository taskRepository) {
-			this.taskRepository = taskRepository;
-		}
+        private RestInfo serverInfo;
 
-		@Override
-		public void run(IProgressMonitor monitor) throws CoreException {
-			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-			BambooClient client = null;
-			try {
-				client = clientManager.createTempClient(taskRepository, new BambooClientData());
+        public RestInfo getServerInfo() {
+            return serverInfo;
+        }
 
-				monitor = Policy.backgroundMonitorFor(monitor);
-				client.validate(monitor, taskRepository);
-			} catch (CoreException e) {
-				if (e.getCause() != null && e.getCause() instanceof CaptchaRequiredException) {
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							new RemoteApiLockedDialog(WorkbenchUtil.getShell(), taskRepository.getRepositoryUrl()).open();
-						}
-					});
-					setStatus(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-							"Wrong credentials or you've been locked out from remote API."));
-				} else if (e.getMessage().contains("Server returned malformed response")) {
-					setStatus(new Status(e.getStatus().getSeverity(), e.getStatus().getPlugin(), e.getStatus()
-							.getMessage() + ". Server behind proxy?"));
-				} else {
-					setStatus(e.getStatus());
-				}
-			} finally {
-				if (client != null) {
-					clientManager.deleteTempClient(client.getServerData());
-				}
-			}
-		}
-	}
+        public String getRepositoryUrl() {
+            return repository.getRepositoryUrl();
+        }
 
-	private class BuildPlanContentProvider implements ITreeContentProvider {
+        public BambooValidator(final TaskRepository taskRepository) {
+            repository = taskRepository;
+        }
 
-		public void dispose() {
-		}
+        @Override
+        public void run(final IProgressMonitor monitor) throws CoreException {
+            try {
+                new URL(repository.getRepositoryUrl());
+            } catch (final MalformedURLException ex) {
+                throw new CoreException(new Status(IStatus.ERROR, BambooUiPlugin.ID_PLUGIN, IStatus.OK, "Invalid URL", null));
+            }
 
-		public Object[] getChildren(Object parentElement) {
-			return new Object[0];
-		}
+            final AbstractWebLocation location = new BambooTaskRepositoryLocation(repository);
+            final BambooLocalConfiguration configuration = BambooUtil.getLocalConfiguration(repository);
+            try {
+                serverInfo = BambooClientFactory.getDefault().validateConnection(location, configuration, monitor);
+            } catch (final CaptchaRequiredException e) {
+                Display.getDefault().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open();
+                    }
+                });
+                throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR, BambooUiPlugin.ID_PLUGIN,
+                        "Wrong credentials or you have been locked out"));
+            } catch (final Exception e) {
+                StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.ID_PLUGIN, e.getMessage(), e));
+                throw new CoreException(BambooCorePlugin.toStatus(repository, e));
+            }
 
-		public Object[] getElements(Object inputElement) {
-			return ((Collection<?>) inputElement).toArray();
-		}
+            final MultiStatus status = new MultiStatus(BambooUiPlugin.ID_PLUGIN, 0, NLS.bind("Validation results for {0}", //$NON-NLS-1$
+                    repository.getRepositoryLabel()), null);
+            // status.addAll(serverInfo.getStatistics().getStatus());
+            status.add(new Status(IStatus.INFO, BambooUiPlugin.ID_PLUGIN, NLS.bind("Web base: {0}", repository.getRepositoryUrl()))); //$NON-NLS-1$
+            // status.add(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, NLS.bind(
+            // "Character encoding: {0}", serverInfo.getCharacterEncoding())));
+            // //$NON-NLS-1$
+            status.add(new Status(IStatus.INFO, BambooUiPlugin.ID_PLUGIN, NLS.bind("Version: {0}", serverInfo.toString()))); //$NON-NLS-1$
+            StatusHandler.log(status);
 
-		public Object getParent(Object element) {
-			return null;
-		}
+        }
+    }
 
-		public boolean hasChildren(Object element) {
-			return false;
-		}
+    private class BuildPlanContentProvider implements ITreeContentProvider {
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
+        @Override
+        public void dispose() {
+        }
 
-	}
+        @Override
+        public Object[] getChildren(final Object parentElement) {
+            return new Object[0];
+        }
 
-	private static final int BUILD_PLAN_VIEWER_HEIGHT = 100;
+        @Override
+        public Object[] getElements(final Object inputElement) {
+            return ((Collection<?>) inputElement).toArray();
+        }
 
-	private CheckboxTreeViewer planViewer;
+        @Override
+        public Object getParent(final Object element) {
+            return null;
+        }
 
-	private boolean validSettings;
+        @Override
+        public boolean hasChildren(final Object element) {
+            return false;
+        }
 
-	private boolean initialized;
+        @Override
+        public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+        }
 
-	private Button btnUseFavourites;
+    }
 
-	private Button selectAllButton;
+    private static final int BUILD_PLAN_VIEWER_HEIGHT = 100;
 
-	private Button deselectAllButton;
+    private CheckboxTreeViewer planViewer;
 
-	private Button refreshButton;
+    private boolean validSettings;
 
-	private Collection<BambooPlan> allPlans;
+    private boolean initialized;
 
-	private Combo btnPlanBranches;
+    private Button btnUseFavourites;
 
-	private Label planBranchesExplanationLabel;
+    private Button selectAllButton;
 
-	public BambooRepositorySettingsPage(TaskRepository taskRepository) {
-		super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
-		setNeedsHttpAuth(true);
-		setNeedsEncoding(false);
-		setNeedsAnonymousLogin(false);
-		setNeedsAdvanced(false);
-	}
+    private Button deselectAllButton;
 
-	@Override
-	public void applyTo(final TaskRepository repository) {
-		this.repository = applyToValidate(repository);
-		repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUILD);
+    private Button refreshButton;
 
-		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-		final BambooClient client = clientManager.getClient(repository);
-		if (this.allPlans != null && client != null && client.getClientData() != null) {
-			client.getClientData().setPlans(this.allPlans);
-		}
+    private Collection<BambooPlan> allPlans;
 
-		BambooUtil.setUseFavourites(repository, btnUseFavourites.getSelection());
-		BambooUtil.setPlanBranches(repository, PlanBranches.from(btnPlanBranches.getText()));
+    private Combo btnPlanBranches;
 
-		Object[] items = planViewer.getCheckedElements();
-		Collection<SubscribedPlan> plans = new ArrayList<SubscribedPlan>(items.length);
-		for (Object item : items) {
-			if (item instanceof BambooPlan) {
-				plans.add(new SubscribedPlan(((BambooPlan) item).getKey()));
-			}
-		}
-		BambooUtil.setSubcribedPlans(this.repository, plans);
-		//update cache
-		//updateAndWriteCache();
-		BambooCorePlugin.getBuildPlanManager().buildSubscriptionsChanged(this.repository);
-	}
+    private Label planBranchesExplanationLabel;
 
-	/**
-	 * Helper method for distinguishing between hitting Finish and Validate (because Validation leads to calling applyTo
-	 * in the superclass)
-	 */
-	public TaskRepository applyToValidate(TaskRepository repository) {
-		MigrateToSecureStorageJob.migrateToSecureStorage(repository);
-		super.applyTo(repository);
-		return repository;
-	}
+    public BambooRepositorySettingsPage(final TaskRepository taskRepository) {
+        super("Bamboo Repository Settings", "Enter Bamboo server information", taskRepository);
+        setNeedsHttpAuth(true);
+        setNeedsEncoding(false);
+        setNeedsAnonymousLogin(false);
+        setNeedsAdvanced(false);
+    }
 
-	@Override
-	public TaskRepository createTaskRepository() {
-		TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
-		return applyToValidate(repository);
-	}
+    @Override
+    public void applyTo(final TaskRepository repository) {
+        this.repository = applyToValidate(repository);
+        repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUILD);
 
-	@Override
-	protected void createAdditionalControls(Composite parent) {
-		addRepositoryTemplatesToServerUrlCombo();
-	}
+        final BambooClient client = BambooClientFactory.getDefault().getBambooClient(repository);
+        if (allPlans != null && client != null && client.getClientData() != null) {
+            client.getClientData().setPlans(allPlans);
+        }
 
-	@Override
-	protected void createContributionControls(Composite parent) {
-		// don't call the super method since the Bamboo connector does not take advantage of the tasks UI extensions
+        BambooUtil.setUseFavourites(repository, btnUseFavourites.getSelection());
+        BambooUtil.setPlanBranches(repository, PlanBranches.from(btnPlanBranches.getText()));
 
-		ExpandableComposite section = createSection(parent, "Build Plans");
-		section.setExpanded(true);
-		if (section.getLayoutData() instanceof GridData) {
-			GridData gd = ((GridData) section.getLayoutData());
-			gd.grabExcessVerticalSpace = true;
-			gd.verticalAlignment = SWT.FILL;
-		}
+        final Object[] items = planViewer.getCheckedElements();
+        final Collection<SubscribedPlan> plans = new ArrayList<>(items.length);
+        for (final Object item : items) {
+            if (item instanceof BambooPlan) {
+                plans.add(new SubscribedPlan(((BambooPlan) item).getKey()));
+            }
+        }
+        BambooUtil.setSubcribedPlans(this.repository, plans);
+        // update cache
+        // updateAndWriteCache();
+        BambooCorePlugin.getBuildPlanManager().buildSubscriptionsChanged(this.repository);
+    }
 
-		Composite composite = new Composite(section, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
-		layout.marginWidth = 0;
-		layout.verticalSpacing = 10;
-		composite.setLayout(layout);
-		section.setClient(composite);
+    /**
+     * Helper method for distinguishing between hitting Finish and Validate (because
+     * Validation leads to calling applyTo in the superclass)
+     */
+    public TaskRepository applyToValidate(final TaskRepository repository) {
+        MigrateToSecureStorageJob.migrateToSecureStorage(repository);
+        super.applyTo(repository);
+        return repository;
+    }
 
-		btnUseFavourites = new Button(composite, SWT.CHECK);
-		btnUseFavourites.setText("Use Favourite Builds for Server");
-		GridDataFactory.fillDefaults().span(2, 1).indent(0, 5).applyTo(btnUseFavourites);
+    @Override
+    public TaskRepository createTaskRepository() {
+        final TaskRepository repository = new TaskRepository(connector.getConnectorKind(), getRepositoryUrl());
+        return applyToValidate(repository);
+    }
 
-		planViewer = new CheckboxTreeViewer(composite, SWT.V_SCROLL | SWT.BORDER);
-		planViewer.setContentProvider(new BuildPlanContentProvider());
-		planViewer.setLabelProvider(new BambooLabelProvider());
-		setCachedPlanInput();
-		int height = convertVerticalDLUsToPixels(BUILD_PLAN_VIEWER_HEIGHT);
-		GridDataFactory.fillDefaults()
-				.grab(true, true)
-				.align(SWT.FILL, SWT.FILL)
-				.hint(SWT.DEFAULT, height)
-				.applyTo(planViewer.getControl());
+    @Override
+    protected void createAdditionalControls(final Composite parent) {
+        addRepositoryTemplatesToServerUrlCombo();
+    }
 
-		Composite buttonComposite = new Composite(composite, SWT.NONE);
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonComposite);
-		RowLayout buttonLayout = new RowLayout(SWT.VERTICAL);
-		buttonLayout.fill = true;
-		buttonComposite.setLayout(buttonLayout);
+    @Override
+    protected void createContributionControls(final Composite parent) {
+        // don't call the super method since the Bamboo connector does not take
+        // advantage of the tasks UI extensions
 
-		selectAllButton = new Button(buttonComposite, SWT.PUSH);
-		selectAllButton.setText("&Select All");
-		selectAllButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				Object input = planViewer.getInput();
-				// if there are no plans, let's call validate first
-				if (!(input instanceof Collection<?>)) {
-					validateSettings();
-				}
-				input = planViewer.getInput();
-				if (input instanceof Collection<?>) {
-					planViewer.setCheckedElements(((Collection<?>) input).toArray());
-				}
-			}
-		});
+        final ExpandableComposite section = createSection(parent, "Build Plans");
+        section.setExpanded(true);
+        if (section.getLayoutData() instanceof GridData) {
+            final GridData gd = (GridData) section.getLayoutData();
+            gd.grabExcessVerticalSpace = true;
+            gd.verticalAlignment = SWT.FILL;
+        }
 
-		deselectAllButton = new Button(buttonComposite, SWT.PUSH);
-		deselectAllButton.setText("&Deselect All");
-		deselectAllButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				planViewer.setCheckedElements(new Object[0]);
-			}
-		});
+        final Composite composite = new Composite(section, SWT.NONE);
+        final GridLayout layout = new GridLayout(2, false);
+        layout.marginWidth = 0;
+        layout.verticalSpacing = 10;
+        composite.setLayout(layout);
+        section.setClient(composite);
 
-		refreshButton = new Button(buttonComposite, SWT.PUSH);
-		refreshButton.setText("Refresh");
-		refreshButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent event) {
-				validateSettings();
-			}
-		});
+        btnUseFavourites = new Button(composite, SWT.CHECK);
+        btnUseFavourites.setText("Use Favourite Builds for Server");
+        GridDataFactory.fillDefaults().span(2, 1).indent(0, 5).applyTo(btnUseFavourites);
 
-		Composite planBranchesComposite = new Composite(composite, SWT.NONE);
-		GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(planBranchesComposite);
-		RowLayout planBranchesLayout = new RowLayout(SWT.HORIZONTAL);
-		planBranchesComposite.setLayout(planBranchesLayout);
+        planViewer = new CheckboxTreeViewer(composite, SWT.V_SCROLL | SWT.BORDER);
+        planViewer.setContentProvider(new BuildPlanContentProvider());
+        planViewer.setLabelProvider(new BambooLabelProvider());
+        setCachedPlanInput();
+        final int height = convertVerticalDLUsToPixels(BUILD_PLAN_VIEWER_HEIGHT);
+        GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.FILL).hint(SWT.DEFAULT, height).applyTo(planViewer.getControl());
 
-		// labelComposite is used only to correctly position label
-		Composite labelComposite = new Composite(planBranchesComposite, SWT.NONE);
-		RowDataFactory.swtDefaults().applyTo(labelComposite);
-		RowLayout labelLayout = new RowLayout();
-		labelLayout.marginLeft = 0;
-		labelComposite.setLayout(labelLayout);
+        final Composite buttonComposite = new Composite(composite, SWT.NONE);
+        GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(buttonComposite);
+        final RowLayout buttonLayout = new RowLayout(SWT.VERTICAL);
+        buttonLayout.fill = true;
+        buttonComposite.setLayout(buttonLayout);
 
-		Label planBranchesLabel = new Label(labelComposite, SWT.NONE);
-		planBranchesLabel.setText("Show Plan Branches: ");
+        selectAllButton = new Button(buttonComposite, SWT.PUSH);
+        selectAllButton.setText("&Select All");
+        selectAllButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent event) {
+                Object input = planViewer.getInput();
+                // if there are no plans, let's call validate first
+                if (!(input instanceof Collection<?>)) {
+                    validateSettings();
+                }
+                input = planViewer.getInput();
+                if (input instanceof Collection<?>) {
+                    planViewer.setCheckedElements(((Collection<?>) input).toArray());
+                }
+            }
+        });
 
-		btnPlanBranches = new Combo(planBranchesComposite, SWT.READ_ONLY);
-		btnPlanBranches.setItems(PlanBranches.stringValues());
-		btnPlanBranches.select(0);
+        deselectAllButton = new Button(buttonComposite, SWT.PUSH);
+        deselectAllButton.setText("&Deselect All");
+        deselectAllButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent event) {
+                planViewer.setCheckedElements(new Object[0]);
+            }
+        });
 
-		// labelComposite is used only to correctly position label
-		Composite labelComposite2 = new Composite(planBranchesComposite, SWT.NONE);
-		RowDataFactory.swtDefaults().applyTo(labelComposite);
-		RowLayout labelLayout2 = new RowLayout();
-		labelComposite2.setLayout(labelLayout2);
+        refreshButton = new Button(buttonComposite, SWT.PUSH);
+        refreshButton.setText("Refresh");
+        refreshButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent event) {
+                validateSettings();
+            }
+        });
 
-		planBranchesExplanationLabel = new Label(labelComposite2, SWT.NONE);
-		planBranchesExplanationLabel.setText(" (shows only branches where I am the last commiter)");
-		planBranchesExplanationLabel.setVisible(false);
+        final Composite planBranchesComposite = new Composite(composite, SWT.NONE);
+        GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(planBranchesComposite);
+        final RowLayout planBranchesLayout = new RowLayout(SWT.HORIZONTAL);
+        planBranchesComposite.setLayout(planBranchesLayout);
 
-		btnPlanBranches.addSelectionListener(new SelectionListener() {
+        // labelComposite is used only to correctly position label
+        final Composite labelComposite = new Composite(planBranchesComposite, SWT.NONE);
+        RowDataFactory.swtDefaults().applyTo(labelComposite);
+        final RowLayout labelLayout = new RowLayout();
+        labelLayout.marginLeft = 0;
+        labelComposite.setLayout(labelLayout);
 
-			public void widgetSelected(SelectionEvent e) {
-				if (PlanBranches.values()[btnPlanBranches.getSelectionIndex()] == PlanBranches.MINE) {
-					planBranchesExplanationLabel.setVisible(true);
-				} else {
-					planBranchesExplanationLabel.setVisible(false);
-				}
-			}
+        final Label planBranchesLabel = new Label(labelComposite, SWT.NONE);
+        planBranchesLabel.setText("Show Plan Branches: ");
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
+        btnPlanBranches = new Combo(planBranchesComposite, SWT.READ_ONLY);
+        btnPlanBranches.setItems(PlanBranches.stringValues());
+        btnPlanBranches.select(0);
 
-		btnUseFavourites.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				favouritesSelected(btnUseFavourites.getSelection());
-			}
-		});
+        // labelComposite is used only to correctly position label
+        final Composite labelComposite2 = new Composite(planBranchesComposite, SWT.NONE);
+        RowDataFactory.swtDefaults().applyTo(labelComposite);
+        final RowLayout labelLayout2 = new RowLayout();
+        labelComposite2.setLayout(labelLayout2);
 
-		restoreOldValues();
-	}
+        planBranchesExplanationLabel = new Label(labelComposite2, SWT.NONE);
+        planBranchesExplanationLabel.setText(" (shows only branches where I am the last commiter)");
+        planBranchesExplanationLabel.setVisible(false);
 
-	private void restoreOldValues() {
-		if (BambooUtil.isUseFavourites(repository)) {
-			btnUseFavourites.setSelection(true);
-			favouritesSelected(true);
-		}
+        btnPlanBranches.addSelectionListener(new SelectionListener() {
 
-		PlanBranches planBranches = BambooUtil.getPlanBranches(repository);
-		btnPlanBranches.select(planBranches.ordinal());
-		if (planBranches == PlanBranches.MINE) {
-			planBranchesExplanationLabel.setVisible(true);
-		}
-	}
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                if (PlanBranches.values()[btnPlanBranches.getSelectionIndex()] == PlanBranches.MINE) {
+                    planBranchesExplanationLabel.setVisible(true);
+                } else {
+                    planBranchesExplanationLabel.setVisible(false);
+                }
+            }
 
-	private void favouritesSelected(boolean enabled) {
-		planViewer.getControl().setEnabled(!enabled);
-		selectAllButton.setEnabled(!enabled);
-		deselectAllButton.setEnabled(!enabled);
-		refreshButton.setEnabled(!enabled);
-	}
+            @Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
+            }
+        });
 
-	private void setCachedPlanInput() {
-		if (repository != null) {
-			BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-			BambooClient client = clientManager.getClient(repository);
-			updateUIRestoreState(new Object[0], client.getClientData());
-		}
-	}
+        btnUseFavourites.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                favouritesSelected(btnUseFavourites.getSelection());
+            }
+        });
+
+        restoreOldValues();
+    }
+
+    private void restoreOldValues() {
+        if (BambooUtil.isUseFavourites(repository)) {
+            btnUseFavourites.setSelection(true);
+            favouritesSelected(true);
+        }
+
+        final PlanBranches planBranches = BambooUtil.getPlanBranches(repository);
+        btnPlanBranches.select(planBranches.ordinal());
+        if (planBranches == PlanBranches.MINE) {
+            planBranchesExplanationLabel.setVisible(true);
+        }
+    }
+
+    private void favouritesSelected(final boolean enabled) {
+        planViewer.getControl().setEnabled(!enabled);
+        selectAllButton.setEnabled(!enabled);
+        deselectAllButton.setEnabled(!enabled);
+        refreshButton.setEnabled(!enabled);
+    }
+
+    private void setCachedPlanInput() {
+        if (repository != null) {
+            final BambooClient client = BambooClientFactory.getDefault().getBambooClient(repository);
+            updateUIRestoreState(new Object[0], client.getClientData());
+        }
+    }
 
 //	private void updateAndWriteCache() {
 //		BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
@@ -389,126 +419,127 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 //		BambooCorePlugin.getRepositoryConnector().getClientManager().writeCache();
 //	}
 
-	@Override
-	public String getConnectorKind() {
-		return BambooCorePlugin.CONNECTOR_KIND;
-	}
+    @Override
+    public String getConnectorKind() {
+        return BambooCorePlugin.CONNECTOR_KIND;
+    }
 
-	@Override
-	protected Validator getValidator(TaskRepository repository) {
-		return new BambooValidator(repository);
-	}
+    @Override
+    protected Validator getValidator(final TaskRepository repository) {
+        return new BambooValidator(repository);
+    }
 
-	@Override
-	protected boolean isValidUrl(String name) {
-		if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
-			try {
-				new URL(name);
-				return true;
-			} catch (MalformedURLException e) {
-				// ignore
-			}
-		}
-		return false;
-	}
+    @Override
+    protected boolean isValidUrl(final String name) {
+        if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
+            try {
+                new URL(name);
+                return true;
+            } catch (final MalformedURLException e) {
+                // ignore
+            }
+        }
+        return false;
+    }
 
-	@Override
-	protected void applyValidatorResult(Validator validator) {
-		this.validSettings = validator != null && validator.getStatus() == Status.OK_STATUS;
-		super.applyValidatorResult(validator);
-	}
+    @Override
+    protected void applyValidatorResult(final Validator validator) {
+        validSettings = validator != null && validator.getStatus() == Status.OK_STATUS;
+        super.applyValidatorResult(validator);
+    }
 
-	@Override
-	protected void validateSettings() {
-		if (repository != null) {
-			AuthenticationCredentials repoCredentials = repository.getCredentials(AuthenticationType.REPOSITORY);
-			AuthenticationCredentials proxyCredentials = repository.getCredentials(AuthenticationType.PROXY);
-			AuthenticationCredentials httpCredentials = repository.getCredentials(AuthenticationType.HTTP);
+    @Override
+    protected void validateSettings() {
+        if (repository != null) {
+            final AuthenticationCredentials repoCredentials = repository.getCredentials(AuthenticationType.REPOSITORY);
+            final AuthenticationCredentials proxyCredentials = repository.getCredentials(AuthenticationType.PROXY);
+            final AuthenticationCredentials httpCredentials = repository.getCredentials(AuthenticationType.HTTP);
 
-			super.validateSettings();
-			if (validSettings && !btnUseFavourites.getSelection()) {
-				refreshBuildPlans();
-			}
+            super.validateSettings();
+            if (validSettings && !btnUseFavourites.getSelection()) {
+                refreshBuildPlans();
+            }
 
-			repository.setCredentials(AuthenticationType.REPOSITORY, repoCredentials,
-					repository.getSavePassword(AuthenticationType.REPOSITORY));
-			repository.setCredentials(AuthenticationType.HTTP, httpCredentials,
-					repository.getSavePassword(AuthenticationType.HTTP));
-			repository.setCredentials(AuthenticationType.PROXY, proxyCredentials,
-					repository.getSavePassword(AuthenticationType.PROXY));
-		} else {
-			super.validateSettings();
-			if (validSettings && !btnUseFavourites.getSelection()) {
-				refreshBuildPlans();
-			}
-		}
+            repository.setCredentials(AuthenticationType.REPOSITORY, repoCredentials, repository.getSavePassword(AuthenticationType.REPOSITORY));
+            repository.setCredentials(AuthenticationType.HTTP, httpCredentials, repository.getSavePassword(AuthenticationType.HTTP));
+            repository.setCredentials(AuthenticationType.PROXY, proxyCredentials, repository.getSavePassword(AuthenticationType.PROXY));
+        } else {
+            super.validateSettings();
+            if (validSettings && !btnUseFavourites.getSelection()) {
+                refreshBuildPlans();
+            }
+        }
 
-	}
+    }
 
-	private void refreshBuildPlans() {
-		try {
-			final TaskRepository repository = createTaskRepository();
+    private void refreshBuildPlans() {
+        try {
+            final TaskRepository repository = createTaskRepository();
 
-			// preserve ui state
-			Object[] checkedElements = planViewer.getCheckedElements();
+            // preserve ui state
+            final Object[] checkedElements = planViewer.getCheckedElements();
 
-			// update configuration
-			final BambooClientData[] data = new BambooClientData[1];
-			CommonUiUtil.run(getContainer(), new ICoreRunnable() {
+            // update configuration
+            final BambooClientData[] data = new BambooClientData[1];
+            CommonUiUtil.run(getContainer(), new ICoreRunnable() {
 
-				public void run(IProgressMonitor monitor) throws CoreException {
-					BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
-//					final BambooClient client = clientManager.getClient(repository);
-					final BambooClient client = clientManager.getNewClient(repository);
-					data[0] = client.updateRepositoryData(monitor, repository);
-					rememberPlans(client.getClientData().getPlans());
-					clientManager.removeClient(repository);
-				}
-			});
+                @Override
+                public void run(final IProgressMonitor monitor) throws CoreException {
+                    final BambooClient client = BambooClientFactory.getDefault().getBambooClient(repository);
+                    try {
+                        final int i = 2;
+                        data[0] = client.updateRepositoryData(monitor, repository);
+                    } catch (final RemoteApiException e) {
+                        throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e)); // FIXME
+                    }
+                    final Collection<BambooPlan> plans = client.getClientData().getPlans();
+                    rememberPlans(plans);
+                }
+            });
 
-			// update ui and restore state
-			if (data[0] != null) {
-				updateUIRestoreState(checkedElements, data[0]);
-			}
-		} catch (CoreException e) {
-			CommonUiUtil.setMessage(this, e.getStatus());
-		} catch (OperationCanceledException e) {
-			// ignore
-		}
-	}
+            // update ui and restore state
+            if (data[0] != null) {
+                updateUIRestoreState(checkedElements, data[0]);
+            }
+        } catch (final CoreException e) {
+            CommonUiUtil.setMessage(this, e.getStatus());
+        } catch (final OperationCanceledException e) {
+            // ignore
+        }
+    }
 
-	private void rememberPlans(Collection<BambooPlan> plans) {
-		this.allPlans = plans;
-	}
+    private void rememberPlans(final Collection<BambooPlan> plans) {
+        allPlans = plans;
+    }
 
-	private void updateUIRestoreState(Object[] checkedElements, final BambooClientData data) {
-		Collection<BambooPlan> plans = data.getPlans();
-		if (plans != null) {
-			planViewer.setInput(plans);
-			if (!initialized) {
-				// if plans are empty this indicates a loss of configuration, the initialized flag is not set 
-				// in this case do nothing to re-trigger initialization after he next refresh  
-				if (plans.size() > 0) {
-					initialized = true;
-					if (getRepository() != null) {
-						// restore selection from repository
-						Set<SubscribedPlan> subscribedPlans = new HashSet<SubscribedPlan>(
-								BambooUtil.getSubscribedPlans(getRepository()));
-						for (BambooPlan plan : plans) {
-							if (subscribedPlans.contains(new SubscribedPlan(plan.getKey()))) {
-								planViewer.setChecked(plan, true);
-							}
-						}
-					} else {
-						// new repository: select favorite plan by default
-						for (BambooPlan plan : plans) {
-							if (plan.isFavourite()) {
-								planViewer.setChecked(plan, true);
-							}
-						}
-					}
-				}
-			} else {
+    private void updateUIRestoreState(final Object[] checkedElements, final BambooClientData data) {
+        final Collection<BambooPlan> plans = data.getPlans();
+        if (plans != null) {
+            planViewer.setInput(plans);
+            if (!initialized) {
+                // if plans are empty this indicates a loss of configuration, the initialized
+                // flag is not set
+                // in this case do nothing to re-trigger initialization after he next refresh
+                if (plans.size() > 0) {
+                    initialized = true;
+                    if (getRepository() != null) {
+                        // restore selection from repository
+                        final Set<SubscribedPlan> subscribedPlans = new HashSet<>(BambooUtil.getSubscribedPlans(getRepository()));
+                        for (final BambooPlan plan : plans) {
+                            if (subscribedPlans.contains(new SubscribedPlan(plan.getKey()))) {
+                                planViewer.setChecked(plan, true);
+                            }
+                        }
+                    } else {
+                        // new repository: select favorite plan by default
+                        for (final BambooPlan plan : plans) {
+                            if (plan.isFavourite()) {
+                                planViewer.setChecked(plan, true);
+                            }
+                        }
+                    }
+                }
+            } else {
 //				for (BambooPlan plan : plans) {
 //					if (plan.isSubscribed()) {
 //						planViewer.setChecked(plan, true);
@@ -517,16 +548,16 @@ public class BambooRepositorySettingsPage extends AbstractRepositorySettingsPage
 //				for (Object plan : checkedElements) {
 //					planViewer.setChecked(plan, true);
 //				}
-				planViewer.setCheckedElements(checkedElements);
-			}
-		}
-	}
+                planViewer.setCheckedElements(checkedElements);
+            }
+        }
+    }
 
-	@Override
-	protected void repositoryTemplateSelected(RepositoryTemplate template) {
-		repositoryLabelEditor.setStringValue(template.label);
-		setUrl(template.repositoryUrl);
-		getContainer().updateButtons();
-	}
+    @Override
+    protected void repositoryTemplateSelected(final RepositoryTemplate template) {
+        repositoryLabelEditor.setStringValue(template.label);
+        setUrl(template.repositoryUrl);
+        getContainer().updateButtons();
+    }
 
 }

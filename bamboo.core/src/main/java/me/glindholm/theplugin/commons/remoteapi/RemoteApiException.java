@@ -16,42 +16,47 @@
 
 package me.glindholm.theplugin.commons.remoteapi;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.annotation.Nullable;
+
+import me.glindholm.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
 
 /**
  * Generic exception related to a remote session.
  */
-public class RemoteApiException extends Exception {
+public class RemoteApiException extends CoreException {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -8518437777396192588L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -8518437777396192588L;
 
-	@Nullable
-	public String getServerStackTrace() {
-		return serverStackTrace;
-	}
+    @Nullable
+    public String getServerStackTrace() {
+        return serverStackTrace;
+    }
 
-	private final String serverStackTrace;
+    private final String serverStackTrace;
 
-	public RemoteApiException(String message) {
-		super(message);
-		serverStackTrace = null;
-	}
+    public RemoteApiException(final String message) {
+        super(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN, message));
+        serverStackTrace = null;
+    }
 
-	public RemoteApiException(String message, @Nullable String serverStackTrace) {
-		super(message);
-		this.serverStackTrace = serverStackTrace;
-	}
+    public RemoteApiException(final String message, @Nullable final String serverStackTrace) {
+        super(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN, message));
+        this.serverStackTrace = serverStackTrace;
+    }
 
-	public RemoteApiException(Throwable throwable) {
-		super(throwable);
-		serverStackTrace = null;
-	}
+    public RemoteApiException(final Throwable throwable) {
+        super(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN, "", throwable));
+        serverStackTrace = null;
+    }
 
-	public RemoteApiException(String message, Throwable throwable) {
-		super(message, throwable);
-		serverStackTrace = null;
-	}
+    public RemoteApiException(final String message, final Throwable throwable) {
+        super(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN, message, throwable));
+        serverStackTrace = null;
+    }
 }

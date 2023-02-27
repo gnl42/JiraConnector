@@ -85,14 +85,14 @@ public class TestResultExternalizer {
 			writer.writeApplicationsToStream(testResults, build, failed, success);
 			stream.flush();
 		} catch (IOException e) {
-			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, "Could not write: "
+			throw new CoreException(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN, "Could not write: "
 					+ file.getAbsolutePath(), e));
 		} finally {
 			if (stream != null) {
 				try {
 					stream.close();
 				} catch (IOException e) {
-					StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID,
+					StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN,
 							"Unable to terminate output stream to applications file.", e));
 				}
 			}

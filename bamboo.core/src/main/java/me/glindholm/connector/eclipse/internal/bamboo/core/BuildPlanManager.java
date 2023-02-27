@@ -36,6 +36,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.osgi.util.NLS;
 
 import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
+import me.glindholm.connector.eclipse.internal.core.client.BambooClientFactory;
 import me.glindholm.theplugin.commons.bamboo.BambooBuild;
 import me.glindholm.theplugin.commons.bamboo.BambooBuildInfo;
 import me.glindholm.theplugin.commons.bamboo.BuildStatus;
@@ -63,15 +64,16 @@ public final class BuildPlanManager {
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
             if (!taskRepository.isOffline()) {
-                final BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
+                final BambooClient client = BambooClientFactory.getDefault().getBambooClient(taskRepository);
                 try {
-                    builds.addAll(clientManager.getClient(taskRepository).getBuilds(monitor, taskRepository, true));
+                    final Collection<BambooBuild> bambooBuilds = client.getBuilds(monitor, taskRepository, true);
+                    builds.addAll(bambooBuilds);
                 } catch (final CoreException e) {
-                    return new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID,
+                    return new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN,
                             NLS.bind("Update of builds from {0} failed", taskRepository.getRepositoryLabel()), e);
                 }
             }
-            return new Status(IStatus.OK, BambooCorePlugin.PLUGIN_ID, "Successfully retrieved Builds.");
+            return new Status(IStatus.OK, BambooCorePlugin.ID_PLUGIN, "Successfully retrieved Builds.");
         }
 
         public List<BambooBuild> getBuilds() {
@@ -102,13 +104,12 @@ public final class BuildPlanManager {
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
             if (repositoryManager == null) {
-                StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, "No repository manager found."));
+                StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN, "No repository manager found."));
                 return Status.OK_STATUS;
             }
 
             isRunning = true;
             try {
-                final BambooClientManager clientManager = BambooCorePlugin.getRepositoryConnector().getClientManager();
                 final Set<TaskRepository> repositories = repositoryManager.getRepositories(BambooCorePlugin.CONNECTOR_KIND);
                 boolean allSuccessful = true;
 
@@ -119,11 +120,14 @@ public final class BuildPlanManager {
 
                     // ignore disconnected repositories
                     if (!repository.isOffline()) {
-                        final BambooClient client = clientManager.getClient(repository);
                         try {
-                            builds.put(repository, client.getBuilds(monitor, repository, manualRefresh || !firstScheduledSynchronizationDone));
+                            final BambooClientManager clientManager = BambooCorePlugin.getClientManager();
+                            final BambooClient client = BambooClientFactory.getDefault().getBambooClient(repository);
+                            final Collection<BambooBuild> localBuilds = client.getBuilds(monitor, repository,
+                                    manualRefresh || !firstScheduledSynchronizationDone);
+                            builds.put(repository, localBuilds);
                         } catch (final OperationCanceledException | CoreException e) {
-                            final Status status = new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID,
+                            final Status status = new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN,
                                     NLS.bind("Update of builds from {0} failed", repository.getRepositoryLabel()), e);
                             StatusHandler.log(status);
                             allSuccessful = false;
@@ -232,7 +236,7 @@ public final class BuildPlanManager {
             if (newBuild.getErrorMessage() != null && newBuild.getStatus() == BuildStatus.UNKNOWN) {
                 final TaskRepository bambooRepo = repositoryManager.getRepository(BambooCorePlugin.CONNECTOR_KIND, newBuild.getServerUrl());
 
-                final String repoName = bambooRepo != null ? bambooRepo.getRepositoryLabel() : newBuild.getServer().getUrl();
+                final String repoName = bambooRepo != null ? bambooRepo.getRepositoryLabel() : newBuild.getServer().getServerUrl();
 
                 // log error
                 errorLog.add(newBuild.getPlanKey() + " - " + newBuild.getErrorMessage() + "[" + repoName + "]");
@@ -302,9 +306,9 @@ public final class BuildPlanManager {
         // send failed refreshes to error log
         if (failed && errorLog != null && errorLog.size() > 0) {
             if (forcedRefresh) {
-                final MultiStatus refreshStatus = new MultiStatus(BambooCorePlugin.PLUGIN_ID, 0, "Error while refreshing builds", null);
+                final MultiStatus refreshStatus = new MultiStatus(BambooCorePlugin.ID_PLUGIN, 0, "Error while refreshing builds", null);
                 for (final String error : errorLog) {
-                    refreshStatus.add(new Status(IStatus.WARNING, BambooCorePlugin.PLUGIN_ID, error));
+                    refreshStatus.add(new Status(IStatus.WARNING, BambooCorePlugin.ID_PLUGIN, error));
                 }
                 StatusHandler.log(refreshStatus);
             }

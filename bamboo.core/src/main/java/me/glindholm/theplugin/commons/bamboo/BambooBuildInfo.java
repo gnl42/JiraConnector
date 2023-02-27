@@ -27,10 +27,11 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
+import me.glindholm.connector.eclipse.internal.bamboo.core.rest.client.api.BambooRestClient;
 
 public final class BambooBuildInfo implements BambooBuild {
     private final Instant pollingTime;
-    private final ConnectionCfg server;
+    private final @NonNull BambooRestClient server;
     @Nullable
     private final String projectName;
     @Nullable
@@ -67,7 +68,7 @@ public final class BambooBuildInfo implements BambooBuild {
     private final PlanState planState;
 
     public BambooBuildInfo(@NonNull final String planKey, @Nullable final String planName, @Nullable final String masterPlanKey,
-            @NonNull final ConnectionCfg serverData, @NonNull final Instant pollingTime, @Nullable final String projectName, final boolean isEnabled,
+            @NonNull final BambooRestClient restClient, @NonNull final Instant pollingTime, @Nullable final String projectName, final boolean isEnabled,
             @Nullable final Integer number, @NonNull final BuildStatus status, @Nullable final PlanState planState, @Nullable final String reason,
             @Nullable final Instant startTime, @Nullable final String testSummary, @Nullable final String commitComment, final int testsPassedCount,
             final int testsFailedCount, @Nullable final Instant completionTime, @Nullable final String errorMessage, final Throwable exception,
@@ -80,7 +81,7 @@ public final class BambooBuildInfo implements BambooBuild {
         this.planKey = planKey;
         this.planName = planName;
         this.planState = planState;
-        server = serverData;
+        server = restClient;
         this.projectName = projectName;
         enabled = isEnabled;
         this.number = number;
@@ -103,7 +104,7 @@ public final class BambooBuildInfo implements BambooBuild {
     }
 
     @Override
-    public ConnectionCfg getServer() {
+    public BambooRestClient getServer() {
         return server;
     }
 
@@ -127,7 +128,7 @@ public final class BambooBuildInfo implements BambooBuild {
 
     @Override
     public String getServerUrl() {
-        return server.getUrl();
+        return server.getServerUrl();
     }
 
     @Override
@@ -245,8 +246,11 @@ public final class BambooBuildInfo implements BambooBuild {
 
     @Override
     public String toString() {
-        return projectName + " " + planName + " " + planKey + " " + status + " " + reason + " " + startDate + " " + durationDescription + " " + testSummary
-                + " " + commitComment;
+        final StringBuilder builder2 = new StringBuilder();
+        builder2.append("BambooBuildInfo [projectName=").append(projectName).append(", projectKey=").append(projectKey).append(", planName=").append(planName)
+                .append(", planKey=").append(planKey).append(", enabled=").append(enabled).append(", status=").append(status).append(", number=").append(number)
+                .append("]");
+        return builder2.toString();
     }
 
     /**
@@ -321,13 +325,12 @@ public final class BambooBuildInfo implements BambooBuild {
         return true;
     }
 
-    @SuppressWarnings({ "InnerClassFieldHidesOuterClassField" })
     public static class Builder {
         private final String planKey;
         private final String planName;
         @Nullable
         private String masterPlanKey;
-        private final ConnectionCfg serverData;
+        private final @NonNull BambooRestClient serverData;
         private final String projectName;
         private final Integer buildNumber;
         @NonNull
@@ -353,24 +356,74 @@ public final class BambooBuildInfo implements BambooBuild {
         private Throwable exception;
         @Nullable
         private PlanState planState;
+        private final BambooRestClient restClient;
 
-        public Builder(@NonNull final String planKey, @NonNull final ConnectionCfg serverData, @NonNull final BuildStatus state) {
+        public Builder(final String planKey, final BambooRestClient restClient, final BuildStatus buildState) {
             this.planKey = planKey;
-            this.serverData = serverData;
-            buildState = state;
+            this.restClient = restClient;
+            this.buildState = buildState;
+
+            serverData = null;
+            buildNumber = null;
             planName = null;
             projectName = null;
-            buildNumber = null;
         }
 
-        public Builder(@NonNull final String planKey, @Nullable final String planName, @NonNull final ConnectionCfg serverData,
-                @Nullable final String projectName, @Nullable final Integer buildNumber, @NonNull final BuildStatus state) {
+        public Builder(final String planKey, final String buildName, final BambooRestClient restClient, final String projectName, final int buildNumber,
+                @NonNull final BuildStatus state) {
             this.planKey = planKey;
-            this.planName = planName;
-            this.serverData = serverData;
-            this.projectName = projectName;
-            this.buildNumber = buildNumber;
+            this.restClient = restClient;
             buildState = state;
+            planName = projectName;
+            this.projectName = null;
+            this.buildNumber = buildNumber;
+            serverData = null;
+        }
+
+        public Builder(final String planKey, final Object object, final BambooRestClient restClient, final Object object2, final Object object3,
+                final BuildStatus unknown) {
+            this.planKey = planKey;
+            this.restClient = restClient;
+            serverData = null;
+            buildNumber = null;
+            planName = null;
+            projectName = null;
+            buildState = null;
+        }
+
+        public Builder(@NonNull final String planKey2, final ConnectionCfg serverData2, final BuildStatus unknown) {
+            // TODO Auto-generated constructor stub
+            planKey = null;
+            restClient = null;
+            serverData = null;
+            buildNumber = null;
+            planName = null;
+            projectName = null;
+            buildState = null;
+        }
+
+        public Builder(final String planKey2, final String buildName, final ConnectionCfg serverData2, final String projectName2, final int buildNumber2,
+                @NonNull final BuildStatus status) {
+            // TODO Auto-generated constructor stub
+            planKey = null;
+            restClient = null;
+            serverData = null;
+            buildNumber = null;
+            planName = null;
+            projectName = null;
+            buildState = null;
+        }
+
+        public Builder(final String planKey2, final Object object, final ConnectionCfg serverData2, final Object object2, final Object object3,
+                final BuildStatus unknown) {
+            // TODO Auto-generated constructor stub
+            planKey = null;
+            restClient = null;
+            serverData = null;
+            buildNumber = null;
+            planName = null;
+            projectName = null;
+            buildState = null;
         }
 
         public Builder masterPlanKey(final String aMasterPlanKey) {
@@ -456,7 +509,7 @@ public final class BambooBuildInfo implements BambooBuild {
         }
 
         public BambooBuildInfo build() {
-            return new BambooBuildInfo(planKey, planName, masterPlanKey, serverData, pollingTime, projectName, isEnabled, buildNumber, buildState, planState,
+            return new BambooBuildInfo(planKey, planName, masterPlanKey, restClient, pollingTime, projectName, isEnabled, buildNumber, buildState, planState,
                     buildReason, startTime, testSummary, commitComment, testsPassedCount, testsFailedCount, completionTime, message, exception,
                     relativeBuildDate, durationDescription, commiters);
         }

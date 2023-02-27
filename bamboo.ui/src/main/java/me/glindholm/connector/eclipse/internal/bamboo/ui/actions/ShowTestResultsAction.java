@@ -105,7 +105,7 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 		public void execute(final BuildDetails testResults, final String buildKey) {
 			IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			if (activeWorkbenchWindow == null) {
-				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.ID_PLUGIN,
 						"Error opening JUnit View. No active workbench window."));
 				return;
 			}
@@ -115,7 +115,7 @@ public class ShowTestResultsAction extends EclipseBambooBuildSelectionListenerAc
 					((TestResultsView) testsView).setTestsResult(buildKey, testResults);
 				}
 			} catch (PartInitException e) {
-				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID, "Error opening JUnit View", e));
+				StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.ID_PLUGIN, "Error opening JUnit View", e));
 				return;
 			}
 		}

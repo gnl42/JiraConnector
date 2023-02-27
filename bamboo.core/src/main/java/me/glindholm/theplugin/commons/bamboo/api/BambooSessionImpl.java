@@ -44,23 +44,23 @@ import org.jdom2.xpath.XPath;
 import me.glindholm.bamboo.api.BuildApi;
 import me.glindholm.bamboo.api.DefaultApi;
 import me.glindholm.bamboo.invoker.ApiException;
+import me.glindholm.bamboo.invoker.ApiResponse;
+import me.glindholm.bamboo.model.BuildChange;
+import me.glindholm.bamboo.model.BuildChangeFile;
+import me.glindholm.bamboo.model.BuildChanges;
+import me.glindholm.bamboo.model.BuildPlan;
+import me.glindholm.bamboo.model.BuildPlanBranch;
+import me.glindholm.bamboo.model.BuildPlanConfig;
+import me.glindholm.bamboo.model.BuildPlanLabel;
+import me.glindholm.bamboo.model.BuildPlans;
+import me.glindholm.bamboo.model.BuildResult;
+import me.glindholm.bamboo.model.BuildStage;
 import me.glindholm.bamboo.model.CreateCommentRequest;
-import me.glindholm.bamboo.model.PlanResults;
-import me.glindholm.bamboo.model.RestChange;
-import me.glindholm.bamboo.model.RestChangeFile;
-import me.glindholm.bamboo.model.RestChangeList;
 import me.glindholm.bamboo.model.RestCommentList;
 import me.glindholm.bamboo.model.RestInfo;
-import me.glindholm.bamboo.model.RestPlan;
-import me.glindholm.bamboo.model.RestPlanBranch;
-import me.glindholm.bamboo.model.RestPlanConfig;
-import me.glindholm.bamboo.model.RestPlanLabel;
-import me.glindholm.bamboo.model.RestPlans;
 import me.glindholm.bamboo.model.RestProject;
 import me.glindholm.bamboo.model.RestProjects;
 import me.glindholm.bamboo.model.RestStage;
-import me.glindholm.bamboo.model.Result;
-import me.glindholm.bamboo.model.ResultsResult;
 import me.glindholm.bamboo.model.TestResultErrorMsg;
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.theplugin.commons.BambooFileInfo;
@@ -167,10 +167,10 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     @NonNull
     private List<BambooPlan> listPlanNames() throws RemoteApiException {
         try {
-            final RestPlans buildPlans = new BuildApi(serverData.getApiClient()).getAllPlanList("plans", null, 5000).get();
+            final BuildPlans buildPlans = new BuildApi(serverData.getApiClient()).getAllPlanList("plans", null, 5000).get();
             final List<BambooPlan> plans = new ArrayList<>();
 
-            for (final RestPlan plan : buildPlans.getPlans().getPlan()) {
+            for (final BuildPlan plan : buildPlans.getPlans().getPlan()) {
                 plans.add(new BambooPlan(plan.getName(), plan.getPlanKey().getKey(), null, plan.getEnabled()));
             }
             return plans;
@@ -210,8 +210,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
     @NonNull
     public BambooBuild getLatestBuildForPlan(@NonNull final String planKey, final boolean isPlanEnabled, final int timezoneOffset) throws RemoteApiException {
-        final String buildResultUrl = getBaseUrl() + LATEST_BUILD_FOR_PLAN_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken) + "&buildKey="
-                + UrlUtil.encodeUrl(planKey);
+        final String buildResultUrl = getBaseUrl() + LATEST_BUILD_FOR_PLAN_ACTION + "?buildKey=" + UrlUtil.encodeUrl(planKey);
 
         try {
             final Document doc = retrieveGetResponse(buildResultUrl);
@@ -238,97 +237,34 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
 //    @NonNull
     public BambooBuildInfo.Builder getLatestBuildBuilderForPlan(@NonNull final String planKey, final int timezoneOffset) throws RemoteApiException {
-        // String buildResultUrl =
-        // getBaseUrl() + LATEST_BUILD_FOR_PLAN_ACTION + "?auth=" +
-        // UrlUtil.encodeUrl(authToken) + "&buildKey="
-        // + UrlUtil.encodeUrl(planKey);
-
-        // http://tardigrade.sydney.atlassian.com:8085/bamboo/rest/api/latest/result/STD-XML/15?expand=changes
-        // http://tardigrade.sydney.atlassian.com:8085/bamboo/rest/api/latest/result/STD-XML-JOB1/15?expand=changes
-
-//        final String buildResultUrl = getBaseUrl() + LATEST_BUILD_FOR_PLAN + UrlUtil.encodeUrl(planKey) + "?expand=" + UrlUtil.encodeUrl("results[0].result");
-//
-        final BambooBuildInfo.Builder buildData;
-
         try {
-            final PlanResults result = new DefaultApi(serverData.getApiClient())
-                    .getLatestBuildResultsForProject(planKey, "results[0].result", null, null, null, null, null, null, null, null, null).get();
-//            final Document doc = retrieveGetResponse(buildResultUrl);
-//            final String exception = getExceptionMessages(doc);
-//            if (null != exception) {
-//                return constructBuildErrorInfo(planKey, exception, Instant.now());
-//            }
+            final ApiResponse<BuildResult> buildResultResponse = new DefaultApi(serverData.getApiClient()).getLatestBuildResultForProjectWithHttpInfo(planKey,
+                    "changes,changes.change,changes.change.files,comments,comments.comment,labels,stages.stage[0],stages.stage[0].results.result.testResults.allTests.testResult.errors",
+                    null, null, null, null, null, null, null, null, null).get();
 
-            // final List<Element> elements =
-            // XPath.newInstance("/response").selectNodes(doc);
-//            if (result.getResults().getResult() != null && !result.getResults().getResult().isEmpty()) {
-//                final Integer buildNumber = result.getResults().getResult().get(0).getNumber();
-//                final Set<String> commiters = getCommitersForBuild_40(planKey, buildNumber + "");
-//                return constructBuilderItem_40(e, Instant.now(), planKey, commiters, timezoneOffset);
-//            } else {
-//                // plan may have no builds (never built)
-//                final Integer size = result.getResults().getSize();
-//                if (size == 0) {
-//                    return new BambooBuildInfo.Builder(planKey, serverData, BuildStatus.UNKNOWN).pollingTime(Instant.now()).reason("Never built");
-//                }
-//                return constructBuildErrorInfo(planKey, "Malformed server reply: no response element", Instant.now());
-//            }
-
-            final ResultsResult results = result.getResults();
-            if (results.getResult() != null && !results.getResult().isEmpty()) {
-                final Result build = results.getResult().get(0);
-                final String buildNumber = String.valueOf(build.getBuildNumber());
-                final Set<String> commiters = getCommitersForBuild_40(planKey, buildNumber);
-                return constructBuilderItem_40(build, Instant.now(), planKey, commiters, timezoneOffset);
+            if (buildResultResponse.getStatusCode() == 200) {
+                final BuildResult buildResult = buildResultResponse.getData();
+                final List<BuildStage> stage = buildResult.getStages().getStage();
+                final String buildNumber = String.valueOf(buildResult.getBuildNumber());
+                final Set<String> commiters = new HashSet<>();
+                for (final BuildChange changer : buildResult.getChanges().getChange()) {
+                    commiters.add(changer.getAuthor());
+                }
+                return constructBuilderItem_40(buildResult, Instant.now(), planKey, commiters, timezoneOffset);
             } else {
-                if (results.getSize() == 0) {
+                return new BambooBuildInfo.Builder(planKey, serverData, BuildStatus.UNKNOWN).pollingTime(Instant.now()).reason("Never built");
+
+            }
+
+        } catch (final InterruptedException | ExecutionException | ApiException e) {
+            if (e.getCause() != null && e.getCause() instanceof ApiException) {
+                final ApiException realE = (ApiException) e.getCause();
+                if (realE.getCode() == 404) {
                     return new BambooBuildInfo.Builder(planKey, serverData, BuildStatus.UNKNOWN).pollingTime(Instant.now()).reason("Never built");
                 }
             }
 
-//            List<Element> elements = (List<Element>) XPath.newInstance("/results/results/result").selectNodes(doc);
-//
-//            if (elements != null && !elements.isEmpty()) {
-//                final Element e = elements.iterator().next();
-//                // final Set<String> commiters = constructBuildCommiters(e);
-//                final String buildNumber = e.getAttributeValue("number");
-//                final Set<String> commiters = getCommitersForBuild_40(planKey, buildNumber);
-//                buildData = constructBuilderItem_40(e, Instant.now(), planKey, commiters, timezoneOffset);
-//            } else {
-//                // plan may have no builds (never built)
-//                elements = (List<Element>) XPath.newInstance("/results/results").selectNodes(doc);
-//                if (elements != null && !elements.isEmpty()) {
-//                    final Element e = elements.iterator().next();
-//                    // final Set<String> commiters = constructBuildCommiters(e);
-//                    final String size = e.getAttributeValue("size");
-//                    if (size != null && size.length() > 0 && "0".equals(size)) {
-//                        buildData = new BambooBuildInfo.Builder(planKey, serverData, BuildStatus.UNKNOWN).pollingTime(Instant.now()).reason("Never built");
-//                    }
-//                }
-
-            return constructBuildErrorInfo(planKey, "Malformed server reply: no response element", Instant.now());
-
-        } catch (final RemoteApiException | InterruptedException | ExecutionException |
-
-                ApiException e) {
             return constructBuildErrorInfo(planKey, e.getMessage(), e, Instant.now());
-        }
-    }
-
-    public Set<String> getCommitersForBuild_40(@NonNull final String planKey, @NonNull final String buildNumber) throws RemoteApiException {
-        final Set<String> commiters = new HashSet<>();
-
-        try {
-            final String[] key = planKey.split("-");
-            final Result plan = new DefaultApi(serverData.getApiClient()).getBuild(key[0], key[1], buildNumber, "changes", null).get();
-            if (plan.getChanges() != null && plan.getChanges().getChange() != null) {
-                for (final RestChange change : plan.getChanges().getChange()) {
-                    commiters.add(change.getAuthor());
-                }
-            }
-            return commiters;
-        } catch (final InterruptedException | ExecutionException | ApiException e) {
-            throw new RemoteApiException(e.getMessage(), e);
         }
     }
 
@@ -336,8 +272,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     @NonNull
     public BambooPlan getPlanDetails(@NonNull final String planKey) throws RemoteApiException {
         try {
-            final RestPlan restPlan = new BuildApi(serverData.getApiClient()).getPlan(planKey, "", "actions,stages,branches,variableContext,stages.stage.plans")
-                    .get();
+            final BuildPlan restPlan = new BuildApi(serverData.getApiClient())
+                    .getPlan(planKey, "", "actions,stages,branches,variableContext,stages.stage.plans").get();
 
             return constructPlanItem(restPlan, true);
         } catch (final InterruptedException | ExecutionException | ApiException e) {
@@ -360,7 +296,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             final int timezoneOffset) throws RemoteApiException {
 
         try {
-            final RestPlan restPlan = new BuildApi(serverData.getApiClient()).getPlan(planKey, "", null).get();
+            final BuildPlan restPlan = new BuildApi(serverData.getApiClient()).getPlan(planKey, "", null).get();
 
             final BambooPlan plan = constructPlanItem(restPlan, isPlanEnabled);
 
@@ -423,7 +359,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    private BambooBuild constructBuildItemFromNewApi(final Result result, final Instant instant, final String planKey) throws RemoteApiException {
+    private BambooBuild constructBuildItemFromNewApi(final BuildResult result, final Instant instant, final String planKey) throws RemoteApiException {
         final BambooPlan plan = getPlanDetails(planKey);
 
         final BambooBuildInfo.Builder builder = new BambooBuildInfo.Builder(planKey, plan.getName(), serverData, plan.getProjectName(), result.getBuildNumber(),
@@ -495,8 +431,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
     @Override
     public List<BambooBuild> getRecentBuildsForUser(final int timezoneOffset) throws RemoteApiException {
-        final String buildResultUrl = getBaseUrl() + RECENT_BUILDS_FOR_USER_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken) + "&username="
-                + UrlUtil.encodeUrl(getUsername());
+        final String buildResultUrl = getBaseUrl() + RECENT_BUILDS_FOR_USER_ACTION;
         return getBuildsCollection(buildResultUrl, getUsername(), timezoneOffset);
     }
 
@@ -545,7 +480,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     @NonNull
     public List<String> getFavouriteUserPlans() throws RemoteApiException {
         final List<String> builds = new ArrayList<>();
-        final String buildResultUrl = getBaseUrl() + LATEST_USER_BUILDS_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken);
+        final String buildResultUrl = getBaseUrl() + LATEST_USER_BUILDS_ACTION;
 
         try {
             final Document doc = retrieveGetResponse(buildResultUrl);
@@ -574,8 +509,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     public List<String> getFavouriteUserPlansNew() throws RemoteApiException {
         final List<String> builds = new ArrayList<>();
         try {
-            final RestPlans plans = new BuildApi(serverData.getApiClient()).getAllPlanList("plans", null, 5000).get();
-            for (final RestPlan plan : plans.getPlans().getPlan()) {
+            final BuildPlans plans = new BuildApi(serverData.getApiClient()).getAllPlanList("plans", null, 5000).get();
+            for (final BuildPlan plan : plans.getPlans().getPlan()) {
                 builds.add(plan.getKey());
             }
         } catch (InterruptedException | ExecutionException | ApiException e) {
@@ -625,46 +560,48 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             }
             try {
                 final String[] id = job.getKey().split("-");
-                final Result testData = new DefaultApi(serverData.getApiClient())
+                final BuildResult testData = new DefaultApi(serverData.getApiClient())
                         .getBuild(id[0], id[1], id[2] + "-" + buildNumber, "testResults.allTests.testResult.errors", null).get();
-                for (final me.glindholm.bamboo.model.TestResult data : testData.getTestResults().getAllTests().getTestResult()) {
-                    final TestDetailsInfo tInfo = new TestDetailsInfo();
+                if (testData.getTestResults() != null) {
+                    for (final me.glindholm.bamboo.model.TestResult data : testData.getTestResults().getAllTests().getTestResult()) {
+                        final TestDetailsInfo tInfo = new TestDetailsInfo();
 
-                    tInfo.setTestClassName(data.getClassName());
-                    tInfo.setTestMethodName(data.getMethodName());
-                    final String status = data.getStatus();
-                    try {
-                        tInfo.setTestResult(parseTestResult(status));
-                    } catch (final ParseException e1) {
-                        loger.warn("Cannot parse test result element:" + status, e1);
-                        continue;
-                    }
-
-                    tInfo.setTestDuration(data.getDuration().doubleValue() / 1000);
-
-                    final StringBuilder errMsgs = new StringBuilder();
-                    for (final TestResultErrorMsg error : data.getErrors().getError()) {
-                        final String[] msgs = error.getMessage().split("\n");
-                        errMsgs.append(msgs[0]).append("\n");
-                        for (int i = msgs.length - 1; i > 0; i--) {
-                            errMsgs.append(msgs[i]).append("\n");
+                        tInfo.setTestClassName(data.getClassName());
+                        tInfo.setTestMethodName(data.getMethodName());
+                        final String status = data.getStatus();
+                        try {
+                            tInfo.setTestResult(parseTestResult(status));
+                        } catch (final ParseException e1) {
+                            loger.warn("Cannot parse test result element:" + status, e1);
+                            continue;
                         }
-                    }
-                    tInfo.setTestErrors(errMsgs.toString());
 
-                    switch (tInfo.getTestResult()) {
-                    case TEST_FAILED:
-                        build.addFailedTest(tInfo);
-                        job.addFailedTest(tInfo);
-                        break;
-                    case TEST_SUCCEED:
-                        build.addSuccessfulTest(tInfo);
-                        job.addSuccessfulTest(tInfo);
-                        break;
-                    default:
-                        break;
-                    }
+                        tInfo.setTestDuration(data.getDuration().doubleValue() / 1000);
 
+                        final StringBuilder errMsgs = new StringBuilder();
+                        for (final TestResultErrorMsg error : data.getErrors().getError()) {
+                            final String[] msgs = error.getMessage().split("\n");
+                            errMsgs.append(msgs[0]).append("\n");
+                            for (int i = msgs.length - 1; i > 0; i--) {
+                                errMsgs.append(msgs[i]).append("\n");
+                            }
+                        }
+                        tInfo.setTestErrors(errMsgs.toString());
+
+                        switch (tInfo.getTestResult()) {
+                        case TEST_FAILED:
+                            build.addFailedTest(tInfo);
+                            job.addFailedTest(tInfo);
+                            break;
+                        case TEST_SUCCEED:
+                            build.addSuccessfulTest(tInfo);
+                            job.addSuccessfulTest(tInfo);
+                            break;
+                        default:
+                            break;
+                        }
+
+                    }
                 }
                 if (testData.getChanges().getChange() != null) {
                     build.setCommitInfo(parseChangeSets(testData.getChanges()));
@@ -679,15 +616,15 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return build;
     }
 
-    private static List<BambooChangeSet> parseChangeSets(final RestChangeList changes) {
+    private static List<BambooChangeSet> parseChangeSets(final BuildChanges changes) {
         final List<BambooChangeSet> changeSets = new ArrayList<>();
-        for (final RestChange change : changes.getChange()) {
+        for (final BuildChange change : changes.getChange()) {
             final BambooChangeSetImpl cInfo = new BambooChangeSetImpl();
             cInfo.setAuthor(change.getAuthor());
             cInfo.setCommitDate(change.getDate().toInstant());
             cInfo.setComment(change.getComment());
-            if (change.getChangeFiles() != null) {
-                for (final RestChangeFile file : change.getChangeFiles().getChangeFiles()) {
+            if (change.getFiles() != null) {
+                for (final BuildChangeFile file : change.getFiles().getFile()) {
                     final BambooFileInfo fileInfo = new BambooFileInfo(file.getName(), file.getRevision());
                     cInfo.addCommitFile(fileInfo);
                 }
@@ -714,19 +651,11 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      */
     @Override
     public void addLabelToBuild(@NonNull final String planKey, final int buildNumber, final String buildLabel) throws RemoteApiException {
-        final String buildResultUrl = getBaseUrl() + ADD_LABEL_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken) + "&buildKey=" + UrlUtil.encodeUrl(planKey)
-                + "&buildNumber=" + buildNumber + "&label=" + UrlUtil.encodeUrl(buildLabel);
-
         try {
-            final RestPlanLabel newLabel = new RestPlanLabel();
+            final BuildPlanLabel newLabel = new BuildPlanLabel();
             newLabel.setName(buildLabel);
             new BuildApi(serverData.getApiClient()).addPlanLabel(planKey, buildNumber + "", newLabel).get();
-            final Document doc = retrieveGetResponse(buildResultUrl);
-            final String exception = getExceptionMessages(doc);
-            if (null != exception) {
-                throw new RemoteApiException(exception);
-            }
-        } catch (final IOException | JDOMException | InterruptedException | ExecutionException | ApiException e) {
+        } catch (final InterruptedException | ExecutionException | ApiException e) {
             throw new RemoteApiException(e.getMessage(), e);
         }
     }
@@ -738,21 +667,13 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
      */
     @Override
     public void addCommentToBuild(@NonNull final String planKey, final int buildNumber, final String buildComment) throws RemoteApiException {
-        final String buildResultUrl = getBaseUrl() + ADD_COMMENT_ACTION + "?auth=" + UrlUtil.encodeUrl(authToken) + "&buildKey=" + UrlUtil.encodeUrl(planKey)
-                + "&buildNumber=" + buildNumber + "&content=" + UrlUtil.encodeUrl(buildComment);
-
         try {
             final String[] id = planKey.split("-");
             final CreateCommentRequest newComment = new CreateCommentRequest();
             newComment.setContent(buildComment);
             new DefaultApi(serverData.getApiClient()).addBuildComment(id[0], id[1], buildNumber + "", newComment).get();
 
-            final Document doc = retrieveGetResponse(buildResultUrl);
-            final String exception = getExceptionMessages(doc);
-            if (null != exception) {
-                throw new RemoteApiException(exception);
-            }
-        } catch (final JDOMException | IOException | InterruptedException | ExecutionException | ApiException e) {
+        } catch (final InterruptedException | ExecutionException | ApiException e) {
             throw new RemoteApiException(e.getMessage(), e);
         }
     }
@@ -784,7 +705,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         }
     }
 
-    private BambooPlan constructPlanItem(final RestPlan restPlan, final boolean isEnabledDefault) throws RemoteApiException {
+    private static BambooPlan constructPlanItem(final BuildPlan restPlan, final boolean isEnabledDefault) throws RemoteApiException {
         final String name = restPlan.getName();
         final String key = restPlan.getKey();
 
@@ -838,7 +759,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return builder;
     }
 
-    private Builder constructBuilderItem_40(final Result build, final Instant instant, final String aPlanKey, final Set<String> commiters,
+    private Builder constructBuilderItem_40(final BuildResult build, final Instant instant, final String aPlanKey, final Set<String> commiters,
             final int timezoneOffset) {
         BambooBuildInfo.Builder builder = null;
         // for never executed build we actually have no data here (no children)
@@ -860,7 +781,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
             final RestCommentList comments = build.getComments();
             final String buildComment = ""; // build.getComments().getComment().get(0),getComment.;
             builder = new BambooBuildInfo.Builder(planKey, buildName, serverData, projectName, buildNumber, getStatus(stateStr)).pollingTime(instant)
-                    .reason(getBuildReason_40(build.getBuildReason())).startTime(startTime).testSummary(build.getBuildTestSummary()).commitComment(buildComment)
+                    .reason(getBuildReason(build.getBuildReason())).startTime(startTime).testSummary(build.getBuildTestSummary()).commitComment(buildComment)
                     .testsPassedCount(build.getSuccessfulTestCount()).testsFailedCount(build.getFailedTestCount()).completionTime(completionTime)
                     .relativeBuildDate(relativeBuildDate).durationDescription(durationDescription).commiters(commiters);
         }
@@ -890,7 +811,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             final String commitComment = getChildText(buildItemNode, "buildCommitComment");
             builder = new BambooBuildInfo.Builder(planKey, buildName, serverData, projectName, buildNumber, getStatus(stateStr)).pollingTime(instant)
-                    .reason(getBuildReason_40(getChildText(buildItemNode, "buildReason"))).startTime(startTime)
+                    .reason(getBuildReason(getChildText(buildItemNode, "buildReason"))).startTime(startTime)
                     .testSummary(getChildText(buildItemNode, "buildTestSummary")).commitComment(commitComment)
                     .testsPassedCount(parseInt(getChildText(buildItemNode, "successfulTestCount")))
                     .testsFailedCount(parseInt(getChildText(buildItemNode, "failedTestCount"))).completionTime(completionTime)
@@ -899,7 +820,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         return builder;
     }
 
-    private static String getBuildReason_40(final String reasonOriginal) {
+    private static String getBuildReason(final String reasonOriginal) {
         // Pattern pattern = Pattern.compile("<a([^>]+)>(.+?)</a>");
         final Pattern pattern = Pattern.compile("(.*)<a([^>]+)>(.+)</a>");
 
@@ -992,8 +913,6 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     @Override
     public String getBuildLogs(@NonNull final String planKey, final int buildNumber) throws RemoteApiException {
 
-        String buildResultUrl = null;
-
         // log is available for separate jobs since Bamboo v 2.7 (build number not known
         // yet)
 
@@ -1007,12 +926,9 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
 
             final String jobKey = jobs.get(0).getKey(); // job key contains project key
 
-            buildResultUrl = new StringBuilder().append(getBaseUrl()).append("/download/").append(jobKey).append("/build_logs/").append(jobKey).append("-")
-                    .append(buildNumber).append(".log").toString();
+            final String buildResultUrl = new StringBuilder().append(getBaseUrl()).append("/download/").append(jobKey).append("/build_logs/").append(jobKey)
+                    .append("-").append(buildNumber).append(".log").toString();
 
-        }
-
-        if (buildResultUrl != null && buildResultUrl.length() > 0) {
             try {
                 return doUnconditionalGetForTextNonXmlResource(buildResultUrl);
             } catch (final IOException e) {
@@ -1029,8 +945,8 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         final List<String> branches = new ArrayList<>();
         final String my = myBranchesOnly ? "&my" : "";
         try {
-            final RestPlan plans = new BuildApi(serverData.getApiClient()).getPlan(planKey, "", "branches.branch" + my).get();
-            for (final RestPlanBranch branch : plans.getBranches().getBranch()) {
+            final BuildPlan plans = new BuildApi(serverData.getApiClient()).getPlan(planKey, "", "branches.branch" + my).get();
+            for (final BuildPlanBranch branch : plans.getBranches().getBranch()) {
                 if (!useFavourites && !branch.getIsFavourite()) {
                     branches.add(branch.getKey());
                 }
@@ -1047,10 +963,10 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
         final List<BambooJobImpl> jobs = new ArrayList<>();
         try {
             final String[] id = planKey.split("-");
-            final RestPlan plan = new BuildApi(serverData.getApiClient()).getPlan(id[0], id[1], "stages.stage.plans").get();
+            final BuildPlan plan = new BuildApi(serverData.getApiClient()).getPlan(id[0], id[1], "stages.stage.plans").get();
 
             for (final RestStage stage : plan.getStages().getStage()) {
-                for (final RestPlanConfig plan2 : stage.getPlans().getPlan()) {
+                for (final BuildPlanConfig plan2 : stage.getPlans().getPlan()) {
                     final String key = plan2.getKey();
                     final String shortKey = plan2.getShortKey();
                     final String name = plan2.getName();
@@ -1071,8 +987,7 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     public List<BuildIssue> getIssuesForBuild(@NonNull final String planKey, final int buildNumber) throws RemoteApiException {
         final int bambooBuild = getBamboBuildNumber();
 
-        final String planUrl = getBaseUrl() + GET_BUILD_DETAILS + UrlUtil.encodeUrl(planKey + "-" + buildNumber) + GET_ISSUES_SUFFIX + "&auth="
-                + UrlUtil.encodeUrl(authToken);
+        final String planUrl = getBaseUrl() + GET_BUILD_DETAILS + UrlUtil.encodeUrl(planKey + "-" + buildNumber) + GET_ISSUES_SUFFIX;
 
         try {
             final Document doc = retrieveGetResponse(planUrl);
@@ -1111,13 +1026,10 @@ public class BambooSessionImpl extends LoginBambooSession implements BambooSessi
     @NonNull
     public List<BambooPlan> getPlanList() throws RemoteApiException {
 
-        List<BambooPlan> plans;
-
-        plans = listPlanNames();
+        final List<BambooPlan> plans = listPlanNames();
 
         try {
-            List<String> favPlans;
-            favPlans = getFavouriteUserPlansNew();
+            final List<String> favPlans = getFavouriteUserPlansNew();
             for (final String fav : favPlans) {
                 for (final ListIterator<BambooPlan> it = plans.listIterator(); it.hasNext();) {
                     final BambooPlan plan = it.next();

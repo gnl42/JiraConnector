@@ -11,12 +11,6 @@
 
 package me.glindholm.connector.eclipse.internal.bamboo.ui.operations;
 
-import me.glindholm.connector.eclipse.internal.bamboo.core.BambooCorePlugin;
-import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
-import me.glindholm.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
-import me.glindholm.theplugin.commons.bamboo.BambooBuild;
-import me.glindholm.theplugin.commons.bamboo.BuildDetails;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -25,32 +19,37 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
+import me.glindholm.connector.eclipse.internal.bamboo.core.client.BambooClient;
+import me.glindholm.connector.eclipse.internal.bamboo.ui.BambooUiPlugin;
+import me.glindholm.connector.eclipse.internal.core.client.BambooClientFactory;
+import me.glindholm.theplugin.commons.bamboo.BambooBuild;
+import me.glindholm.theplugin.commons.bamboo.BuildDetails;
+
 public class RetrieveTestResultsJob extends Job {
-	private final BambooBuild build;
+    private final BambooBuild build;
 
-	private final TaskRepository repository;
+    private final TaskRepository repository;
 
-	private BuildDetails testResults;
+    private BuildDetails testResults;
 
-	public RetrieveTestResultsJob(BambooBuild build, TaskRepository repository) {
-		super("Retrieving test results");
-		this.build = build;
-		this.repository = repository;
-	}
+    public RetrieveTestResultsJob(final BambooBuild build, final TaskRepository repository) {
+        super("Retrieving test results");
+        this.build = build;
+        this.repository = repository;
+    }
 
-	@Override
-	protected IStatus run(IProgressMonitor monitor) {
-		BambooClient client = BambooCorePlugin.getRepositoryConnector().getClientManager().getClient(repository);
-		try {
-			testResults = client.getBuildDetails(monitor, repository, build);
-		} catch (CoreException e) {
-			StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
-					"Failed to retrieve test results for build " + build.getPlanKey(), e));
-		}
-		return Status.OK_STATUS;
-	}
+    @Override
+    protected IStatus run(final IProgressMonitor monitor) {
+        final BambooClient client = BambooClientFactory.getDefault().getBambooClient(repository);
+        try {
+            testResults = client.getBuildDetails(monitor, repository, build);
+        } catch (CoreException | UnsupportedOperationException e) {
+            StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.ID_PLUGIN, "Failed to retrieve test results for build " + build.getPlanKey(), e));
+        }
+        return Status.OK_STATUS;
+    }
 
-	public BuildDetails getBuildDetails() {
-		return testResults;
-	}
+    public BuildDetails getBuildDetails() {
+        return testResults;
+    }
 }

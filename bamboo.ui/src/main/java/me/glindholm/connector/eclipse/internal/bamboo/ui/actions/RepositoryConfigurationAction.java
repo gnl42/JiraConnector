@@ -93,7 +93,7 @@ public class RepositoryConfigurationAction extends Action implements IMenuCreato
 			addTaskRepositoryCommand.executeWithChecks(new ExecutionEvent(addTaskRepositoryCommand, parameters, null,
 					handlerService.getCurrentState()));
 		} catch (Exception e) {
-			StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.PLUGIN_ID, NLS.bind(
+			StatusHandler.log(new Status(IStatus.ERROR, BambooCorePlugin.ID_PLUGIN, NLS.bind(
 					"Failed to execute {0} command.", ADD_TASK_REPOSITORY_COMMAND), e));
 		}
 
@@ -157,7 +157,7 @@ public class RepositoryConfigurationAction extends Action implements IMenuCreato
 							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
 									ITasksUiConstants.ID_VIEW_REPOSITORIES);
 						} catch (PartInitException e) {
-							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.PLUGIN_ID,
+							StatusHandler.log(new Status(IStatus.ERROR, BambooUiPlugin.ID_PLUGIN,
 									"Failed to show Repositories View"));
 						}
 					}

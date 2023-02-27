@@ -11,10 +11,14 @@
 
 package me.glindholm.connector.commons.api;
 
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest.Builder;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Objects;
 
 import me.glindholm.bamboo.invoker.ApiClient;
+import me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin;
 
 public class ConnectionCfg {
     private final String url;
@@ -23,6 +27,8 @@ public class ConnectionCfg {
     private final String id;
     private final ApiClient apiClient;
 
+    public static final String PRODUCT_NAME = "Eclipse Mylyn JiraConnector for  Atlassian's Jira/Bamboo/" + JiraConnectorCorePlugin.getDefault().getVersion();
+
     public ConnectionCfg(final String id, final String url, final String username, final String password) {
         this.url = url;
         this.username = username;
@@ -30,8 +36,18 @@ public class ConnectionCfg {
         this.id = id;
 
         apiClient = new ApiClient();
+        final HttpClient.Builder httpClient = HttpClient.newBuilder();
+        httpClient.connectTimeout(Duration.ofMinutes(1));
+        apiClient.setHttpClientBuilder(httpClient);
+
         apiClient.updateBaseUri(url + "/rest");
-        apiClient.setRequestInterceptor(authorize -> authorize.header("Authorization", basicAuth(username, password)));
+        apiClient.setRequestInterceptor(authorize -> addHeaders(username, password, authorize));
+    }
+
+    private static Builder addHeaders(final String username, final String password, final Builder authorize) {
+        authorize.header("Authorization", basicAuth(username, password));
+        authorize.header("User-Agent", PRODUCT_NAME);
+        return authorize;
     }
 
     private void connect() {

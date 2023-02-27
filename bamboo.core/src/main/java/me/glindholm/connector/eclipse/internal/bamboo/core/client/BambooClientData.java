@@ -19,30 +19,32 @@ import me.glindholm.theplugin.commons.bamboo.BambooPlan;
 
 /**
  * Cached repository configuration for Bamboo server.
- * 
+ *
  * @author Shawn Minto
  * @author Thomas Ehrnhoefer
  */
 public class BambooClientData implements Serializable {
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("BambooClientData [cachedPlans=").append(cachedPlans).append("]");
+        return builder.toString();
+    }
 
-	private static final long serialVersionUID = 5078330984585994532L;
+    private static final long serialVersionUID = -1230017044346413273L;
 
-	private Collection<BambooPlan> cachedPlans;
+    private Collection<BambooPlan> cachedPlans;
 
-	public BambooClientData() {
-		cachedPlans = new ArrayList<BambooPlan>();
-	}
+    public synchronized boolean hasData() {
+        return cachedPlans != null;
+    }
 
-	public synchronized boolean hasData() {
-		return cachedPlans != null;
-	}
+    public synchronized Collection<BambooPlan> getPlans() {
+        return cachedPlans;
+    }
 
-	public synchronized Collection<BambooPlan> getPlans() {
-		return cachedPlans;
-	}
+    public synchronized void setPlans(final Collection<BambooPlan> plans) {
+        cachedPlans = new ArrayList<>(plans);
+    }
 
-	public synchronized void setPlans(Collection<BambooPlan> plans) {
-		this.cachedPlans = new ArrayList<BambooPlan>();
-		this.cachedPlans.addAll(plans);
-	}
 }

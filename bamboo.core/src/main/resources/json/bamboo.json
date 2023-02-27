@@ -8,11 +8,11 @@
             "name": "Bamboo Jira Project",
             "url": "https://jira.atlassian.com/projects/BAM/summary"
         },
-        "version": "9.0.1"
+        "version": "9.0.2.gnl"
     },
     "servers": [
         {
-            "url": "http://{baseurl}/rest/",
+            "url": "https://{baseurl}/rest/",
             "variables": {
                 "baseurl": {
                     "default": "example.com:8085",
@@ -889,7 +889,7 @@
                         }
                     },
                     "testResults": {
-                        "$ref": "#/components/schemas/TestResults"
+                        "$ref": "#/components/schemas/TestResultsDetails"
                     },
                     "failedJobResults": {
                         "type": "array",
@@ -1982,7 +1982,7 @@
                     }
                 }
             },
-            "TestResults": {
+            "TestResultsDetails": {
                 "properties": {
                      "expand": {
                         "type": "string",
@@ -2021,28 +2021,28 @@
                         "format": "int32"
                     },
                     "allTests": {
-                        "$ref": "#/components/schemas/MultimapTestResults"
+                        "$ref": "#/components/schemas/TestResultsResult"
                     },
                     "successfulTests": {
-                        "$ref": "#/components/schemas/TestResultSummary"
+                        "$ref": "#/components/schemas/TestResultsResult"
                     },
                     "failedTests": {
-                        "$ref": "#/components/schemas/TestResultSummary"
+                        "$ref": "#/components/schemas/TestResultsResult"
                     },
                     "newFailedTests": {
-                        "$ref": "#/components/schemas/TestResultSummary"
+                        "$ref": "#/components/schemas/TestResultsResult"
                     },
                     "existingFailedTests": {
-                        "$ref": "#/components/schemas/TestResultSummary"
+                        "$ref": "#/components/schemas/TestResultsResult"
                     },
                     "fixedTests": {
-                        "$ref": "#/components/schemas/TestResultSummary"
+                        "$ref": "#/components/schemas/TestResultsResult"
                     },
                     "quarantinedTests": {
-                        "$ref": "#/components/schemas/TestResultSummary"
+                        "$ref": "#/components/schemas/TestResultsResult"
                     },
                     "skippedTests": {
-                        "$ref": "#/components/schemas/TestResultSummary"
+                        "$ref": "#/components/schemas/TestResultsResult"
                     },
                     "allFailedTestList": {
                         "type": "array",
@@ -3666,7 +3666,7 @@
                     }
                 }
             },
-            "ListWrapperCallbackRestArtifactDefinition": {
+             "ListWrapperCallbackRestArtifactDefinition": {
             },
             "ListWrapperCallbackRestBranch": {
             },
@@ -3676,9 +3676,9 @@
             },
             "ListWrapperCallbackRestCapability": {
             },
-            "ListWrapperCallbackRestChange": {
+            "ListWrapperCallbackBuildChange": {
             },
-            "ListWrapperCallbackRestChangeFile": {
+            "ListWrapperCallbackBuildChangeFile": {
             },
             "ListWrapperCallbackRestComment": {
             },
@@ -3690,13 +3690,13 @@
             },
             "ListWrapperCallbackRestJob": {
             },
-            "ListWrapperCallbackRestPlan": {
+            "ListWrapperCallbackBuildPlan": {
             },
-            "ListWrapperCallbackRestPlanAction": {
+            "ListWrapperCallbackBuildPlanAction": {
             },
-            "ListWrapperCallbackRestPlanBranch": {
+            "ListWrapperCallbackBuildPlanBranch": {
             },
-            "ListWrapperCallbackRestPlanLabel": {
+            "ListWrapperCallbackBuildPlanLabel": {
                 "type": "object"
             },
             "ListWrapperCallbackRestProject": {
@@ -3713,11 +3713,11 @@
             },
             "ListWrapperCallbackRestStage": {
             },
-            "ListWrapperCallbackRestStageResult": {
+            "ListWrapperCallbackBuildStage": {
             },
-            "ListWrapperCallbackRestVariable": {
+            "ListWrapperCallbackBuildVariable": {
             },
-            "ListWrapperCallbackRestVariableDefinitionContext": {
+            "ListWrapperCallbackBuildVariableDefinitionContext": {
             },
             "ListWrapperCallbackResult": {
             },
@@ -5279,7 +5279,7 @@
                     }
                 }
             },
-            "RestBuildLabelList": {
+            "BuildLabels": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -5327,7 +5327,7 @@
                         "$ref": "#/components/schemas/Link"
                     },
                     "labels": {
-                        "$ref": "#/components/schemas/RestBuildLabelList"
+                        "$ref": "#/components/schemas/BuildLabels"
                     }
                 }
             },
@@ -5368,7 +5368,7 @@
                     }
                 }
             },
-            "RestChange": {
+            "BuildChange": {
                 "properties": {
                     "expand": {
                         "type": "string",
@@ -5410,12 +5410,12 @@
                         "type": "string",
                         "format": "date-time"
                     },
-                    "changeFiles": {
-                        "$ref": "#/components/schemas/RestChangeFileList"
+                    "files": {
+                        "$ref": "#/components/schemas/BuildChangedFiles"
                     }
                 }
             },
-            "RestChangeFile": {
+            "BuildChangeFile": {
                 "properties": {
                     "name": {
                         "type": "string"
@@ -5425,7 +5425,7 @@
                     }
                 }
             },
-            "RestChangeFileList": {
+            "BuildChangedFiles": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -5451,26 +5451,26 @@
                         }
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestChangeFile"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildChangeFile"
                     },
-                    "changeFiles": {
+                    "file": {
                         "type": "array",
                         "xml": {
                             "name": "file"
                         },
                         "items": {
-                            "$ref": "#/components/schemas/RestChangeFile"
+                            "$ref": "#/components/schemas/BuildChangeFile"
                         }
                     },
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestChangeFile"
+                            "$ref": "#/components/schemas/BuildChangeFile"
                         }
                     }
                 }
             },
-            "RestChangeList": {
+            "BuildChanges": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -5496,7 +5496,7 @@
                         }
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestChange"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildChange"
                     },
                     "expand": {
                         "type": "string",
@@ -5505,13 +5505,13 @@
                     "change": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestChange"
+                            "$ref": "#/components/schemas/BuildChange"
                         }
                     },
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestChange"
+                            "$ref": "#/components/schemas/BuildChange"
                         }
                     }
                 }
@@ -5767,7 +5767,7 @@
                         "$ref": "#/components/schemas/Link"
                     },
                     "dependencies": {
-                        "$ref": "#/components/schemas/RestPlanList"
+                        "$ref": "#/components/schemas/BuildPlanList"
                     }
                 }
             },
@@ -6952,7 +6952,7 @@
                     }
                 }
             },
-            "RestJiraIssueList": {
+            "JiraIssues": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -6986,7 +6986,7 @@
                         "items": {
                             "$ref": "#/components/schemas/RestJiraIssue"
                         }
-                    },
+                     },
                     "allElements": {
                         "type": "array",
                         "items": {
@@ -7725,7 +7725,7 @@
                     }
                 }
             },
-            "RestPlan": {
+            "BuildPlan": {
                 "properties": {
                     "expand": {
                         "type": "string",
@@ -7756,7 +7756,7 @@
                         "$ref": "#/components/schemas/Link"
                     },
                     "master": {
-                        "$ref": "#/components/schemas/RestPlan"
+                        "$ref": "#/components/schemas/BuildPlan"
                     },
                     "stageName": {
                         "type": "string"
@@ -7810,7 +7810,7 @@
                             "attribute": true
                         }
                     },
-                    "restPlanKey": {
+                    "BuildPlanKey": {
                         "$ref": "#/components/schemas/RestKey"
                     },
                     "link": {
@@ -7821,16 +7821,16 @@
                         "format": "double"
                     },
                     "actions": {
-                        "$ref": "#/components/schemas/RestPlanActionList"
+                        "$ref": "#/components/schemas/BuildPlanActionList"
                     },
                     "stages": {
                         "$ref": "#/components/schemas/RestStageList"
                     },
                     "branches": {
-                        "$ref": "#/components/schemas/RestPlanBranchList"
+                        "$ref": "#/components/schemas/BuildPlanBranchList"
                     },
                     "variableContext": {
-                        "$ref": "#/components/schemas/RestVariableDefinitionContextList"
+                        "$ref": "#/components/schemas/BuildVariableDefinitionContextList"
                     },
                     "isFavourite": {
                         "type": "boolean"
@@ -7846,14 +7846,14 @@
                     }
                 }
             },
-            "RestPlanAction": {
+            "BuildPlanAction": {
                 "properties": {
                     "name": {
                         "type": "string"
                     }
                 }
             },
-            "RestPlanActionList": {
+            "BuildPlanActionList": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -7879,23 +7879,23 @@
                         }
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestPlanAction"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildPlanAction"
                     },
                     "action": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestPlanAction"
+                            "$ref": "#/components/schemas/BuildPlanAction"
                         }
                     },
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestPlanAction"
+                            "$ref": "#/components/schemas/BuildPlanAction"
                         }
                     }
                 }
             },
-            "RestPlanBranch": {
+            "BuildPlanBranch": {
                 "properties": {
                     "expand": {
                         "type": "string",
@@ -7953,7 +7953,7 @@
                     }
                 }
             },
-            "RestPlanBranchList": {
+            "BuildPlanBranchList": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -7979,23 +7979,23 @@
                         }
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestPlanBranch"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildPlanBranch"
                     },
                     "branch": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestPlanBranch"
+                            "$ref": "#/components/schemas/BuildPlanBranch"
                         }
                     },
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestPlanBranch"
+                            "$ref": "#/components/schemas/BuildPlanBranch"
                         }
                     }
                 }
             },
-            "RestPlanConfigList": {
+            "BuildPlanConfigList": {
                 "properties": {
                     "size": {
                         "type": "integer",
@@ -8012,15 +8012,15 @@
                     "plan": {
                         "type": "array",
                         "items": {
-                           "$ref": "#/components/schemas/RestPlanConfig"
+                           "$ref": "#/components/schemas/BuildPlanConfig"
                         }
                     }
                 }
             },
-            "RestPlanConfig": {
+            "BuildPlanConfig": {
                 "properties": {
                     "master": {
-                      "$ref": "#/components/schemas/RestPlanConfig"
+                      "$ref": "#/components/schemas/BuildPlanConfig"
                     },
                     "shortName": {
                         "type": "string"
@@ -8068,7 +8068,7 @@
                     }
                 }
             },
-            "RestPlanIdentifier": {
+            "BuildPlanIdentifier": {
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -8104,7 +8104,7 @@
                     }
                 }
             },
-            "RestPlanLabel": {
+            "BuildPlanLabel": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -8118,23 +8118,23 @@
                     "name": "label"
                 }
             },
-            "RestPlanLabelList": {
+            "BuildPlanLabelList": {
                 "type": "object",
                 "properties": {
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestPlanLabel"
+                            "$ref": "#/components/schemas/BuildPlanLabel"
                         }
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestPlanLabel"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildPlanLabel"
                     },
                     "label": {
                         "type": "array",
                         "writeOnly": true,
                         "items": {
-                            "$ref": "#/components/schemas/RestPlanLabel"
+                            "$ref": "#/components/schemas/BuildPlanLabel"
                         }
                     },
                     "max-result": {
@@ -8162,11 +8162,11 @@
                     }
                 }
             },
-            "RestPlanLabels": {
+            "BuildPlanLabels": {
                 "type": "object",
                 "properties": {
                     "labels": {
-                        "$ref": "#/components/schemas/RestPlanLabelList"
+                        "$ref": "#/components/schemas/BuildPlanLabelList"
                     },
                     "link": {
                         "$ref": "#/components/schemas/Link"
@@ -8176,14 +8176,14 @@
                     "name": "labels"
                 }
             },
-            "RestPlanResultTop": {
+            "BuildPlanResultTop": {
                  "properties": {
                     "results": {
-                         "$ref": "#/components/schemas/RestPlanResult"
+                         "$ref": "#/components/schemas/BuildPlanResult"
                     }
                 }
             },
-            "RestPlanResult": {
+            "BuildPlanResult": {
                 "properties": {
                     "size": {
                         "type": "integer",
@@ -8200,7 +8200,7 @@
                     "result": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Result"
+                            "$ref": "#/components/schemas/BuildResult"
                         }
                     }
                 }
@@ -8214,10 +8214,10 @@
                         }
                     },
                     "plan": {
-                        "$ref": "#/components/schemas/RestPlan"
+                        "$ref": "#/components/schemas/BuildPlan"
                     },
                     "master": {
-                        "$ref": "#/components/schemas/RestPlan"
+                        "$ref": "#/components/schemas/BuildPlan"
                     },
                     "buildResultKey": {
                         "type": "string"
@@ -8254,7 +8254,7 @@
                     }
                 }
             },
-            "RestPlanList": {
+            "BuildPlanList": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -8280,7 +8280,7 @@
                         }
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestPlan"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildPlan"
                     },
                     "plan": {
                         "type": "array",
@@ -8288,20 +8288,20 @@
                             "name": "plan"
                         },
                         "items": {
-                            "$ref": "#/components/schemas/RestPlan"
+                            "$ref": "#/components/schemas/BuildPlan"
                         }
                     },
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestPlan"
+                            "$ref": "#/components/schemas/BuildPlan"
                         }
                     }
                 }
             },
-            "RestPlanSpec": {
+            "BuildPlanSpec": {
             },
-            "RestPlans": {
+            "BuildPlans": {
                 "properties": {
                     "expand": {
                         "type": "string",
@@ -8314,7 +8314,7 @@
                         "$ref": "#/components/schemas/Link"
                     },
                     "plans": {
-                        "$ref": "#/components/schemas/RestPlanList"
+                        "$ref": "#/components/schemas/BuildPlanList"
                     }
                 }
             },
@@ -8537,7 +8537,7 @@
                         "type": "string"
                     },
                     "changes": {
-                        "$ref": "#/components/schemas/RestChangeList"
+                        "$ref": "#/components/schemas/BuildChanges"
                     },
                     "link": {
                         "$ref": "#/components/schemas/Link"
@@ -8911,7 +8911,7 @@
                     "plans": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestPlanIdentifier"
+                            "$ref": "#/components/schemas/BuildPlanIdentifier"
                         }
                     },
                     "inaccessiblePlansCount": {
@@ -9330,7 +9330,7 @@
                         "$ref": "#/components/schemas/RestPageModelRestJob"
                     },
                     "plans": {
-                        "$ref": "#/components/schemas/RestPlanConfigList"
+                        "$ref": "#/components/schemas/BuildPlanConfigList"
                     },
                     "index": {
                         "type": "integer",
@@ -9386,14 +9386,14 @@
                     }
                 }
             },
-            "RestStageResult": {
+            "BuildStage": {
                 "properties": {
                     "results": {
-                        "$ref": "#/components/schemas/RestResultList"
+                        "$ref": "#/components/schemas/BuildResults"
                     }
                 }
             },
-            "RestStageResultList": {
+            "BuildStages": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -9419,18 +9419,18 @@
                         }
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestStageResult"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildStage"
                     },
-                    "stages": {
+                    "stage": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestStageResult"
+                            "$ref": "#/components/schemas/BuildStage"
                         }
                     },
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestStageResult"
+                            "$ref": "#/components/schemas/BuildStage"
                         }
                     }
                 }
@@ -9635,7 +9635,7 @@
                     "name": "user"
                 }
             },
-            "RestVariable": {
+            "BuildVariable": {
                 "properties": {
                     "key": {
                         "type": "string",
@@ -9663,7 +9663,7 @@
                     }
                 }
             },
-            "RestVariableDefinitionContext": {
+            "BuildVariableDefinitionContext": {
                 "properties": {
                     "key": {
                         "type": "string"
@@ -9679,7 +9679,7 @@
                     }
                 }
             },
-            "RestVariableDefinitionContextList": {
+            "BuildVariableDefinitionContextList": {
                 "properties": {
                     "size": {
                         "type": "integer",
@@ -9705,27 +9705,27 @@
                         }
                     },
                     "pagingCallback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestVariableDefinitionContext"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildVariableDefinitionContext"
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestVariableDefinitionContext"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildVariableDefinitionContext"
                     },
                     "variable": {
                         "type": "array",
                         "writeOnly": true,
                         "items": {
-                            "$ref": "#/components/schemas/RestVariable"
+                            "$ref": "#/components/schemas/BuildVariable"
                         }
                     },
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestVariable"
+                            "$ref": "#/components/schemas/BuildVariable"
                         }
                     }
                 }
             },
-            "RestVariableList": {
+            "BuildVariables": {
                 "properties": {
                     "start-index": {
                         "type": "integer",
@@ -9751,19 +9751,19 @@
                         }
                     },
                     "callback": {
-                        "$ref": "#/components/schemas/ListWrapperCallbackRestVariable"
+                        "$ref": "#/components/schemas/ListWrapperCallbackBuildVariable"
                     },
                     "variable": {
                         "type": "array",
                         "writeOnly": true,
                         "items": {
-                            "$ref": "#/components/schemas/RestVariable"
+                            "$ref": "#/components/schemas/BuildVariable"
                         }
                     },
                     "allElements": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestVariable"
+                            "$ref": "#/components/schemas/BuildVariable"
                         }
                     }
                 }
@@ -9842,14 +9842,14 @@
                     }
                 }
             },
-            "PlanResults": {
+            "BuildPlanResults": {
                 "properties": {
                     "results": {
-                        "$ref": "#/components/schemas/ResultsResult"
+                        "$ref": "#/components/schemas/BuildResults"
                      }
                 }
             },
-            "ResultsResult": {
+            "BuildResults": {
                 "properties": {
                     "size": {
                         "type": "integer",
@@ -9866,12 +9866,12 @@
                     "result": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Result"
+                            "$ref": "#/components/schemas/BuildResult"
                         }
                     }
                 }
             },
-            "Result": {
+            "BuildResult": {
                 "properties": {
                     "expand": {
                         "type": "string",
@@ -9881,7 +9881,7 @@
                         "$ref": "#/components/schemas/Link"
                     },
                     "plan": {
-                        "$ref": "#/components/schemas/RestPlan"
+                        "$ref": "#/components/schemas/BuildPlan"
                     },
                     "parentLink": {
                         "$ref": "#/components/schemas/Link"
@@ -10067,16 +10067,16 @@
                         "$ref": "#/components/schemas/RestCommentList"
                     },
                     "labels": {
-                        "$ref": "#/components/schemas/RestBuildLabelList"
+                        "$ref": "#/components/schemas/BuildLabels"
                     },
                     "jiraIssues": {
-                        "$ref": "#/components/schemas/RestJiraIssueList"
+                        "$ref": "#/components/schemas/JiraIssues"
                     },
                     "variables": {
-                        "$ref": "#/components/schemas/RestVariableList"
+                        "$ref": "#/components/schemas/BuildVariables"
                     },
                     "changes": {
-                        "$ref": "#/components/schemas/RestChangeList"
+                        "$ref": "#/components/schemas/BuildChanges"
                     },
                     "logFiles": {
                         "type": "array",
@@ -10085,10 +10085,10 @@
                         }
                     },
                     "testResults": {
-                        "$ref": "#/components/schemas/TestResults"
+                        "$ref": "#/components/schemas/TestResultsDetails"
                     },
                     "stages": {
-                        "$ref": "#/components/schemas/RestStageResultList"
+                        "$ref": "#/components/schemas/BuildStages"
                     },
                     "stageResult": {
                         "$ref": "#/components/schemas/ChainStageResult"
@@ -10868,7 +10868,7 @@
                     }
                 }
             },
-            "MultimapTestResults": {
+            "TestResultsResult": {
                 "properties": {
                     "size": {
                         "type": "integer",
@@ -11457,13 +11457,13 @@
                     "incrementableVariables": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestVariableDefinitionContext"
+                            "$ref": "#/components/schemas/BuildVariableDefinitionContext"
                         }
                     },
                     "buildVariables": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RestVariableDefinitionContext"
+                            "$ref": "#/components/schemas/BuildVariableDefinitionContext"
                         }
                     }
                 }
@@ -15377,7 +15377,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestPlan"
+                                    "$ref": "#/components/schemas/BuildPlan"
                                 }
                             }
                         }
@@ -15870,7 +15870,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestPlan"
+                                    "$ref": "#/components/schemas/BuildPlan"
                                 }
                             }
                         }
@@ -16020,12 +16020,12 @@
                     "content": {
                         "application/xml": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestVariable"
+                                "$ref": "#/components/schemas/BuildVariable"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestVariable"
+                                "$ref": "#/components/schemas/BuildVariable"
                             }
                         }
                     },
@@ -16037,7 +16037,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariable"
+                                    "$ref": "#/components/schemas/BuildVariable"
                                 }
                             }
                         }
@@ -16110,7 +16110,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariable"
+                                    "$ref": "#/components/schemas/BuildVariable"
                                 }
                             }
                         }
@@ -16171,12 +16171,12 @@
                     "content": {
                         "application/xml": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestVariable"
+                                "$ref": "#/components/schemas/BuildVariable"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestVariable"
+                                "$ref": "#/components/schemas/BuildVariable"
                             }
                         }
                     },
@@ -16188,7 +16188,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariable"
+                                    "$ref": "#/components/schemas/BuildVariable"
                                 }
                             }
                         }
@@ -16586,7 +16586,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestPlan"
+                                    "$ref": "#/components/schemas/BuildPlan"
                                 }
                             }
                         }
@@ -16737,7 +16737,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestPlanBranch"
+                                    "$ref": "#/components/schemas/BuildPlanBranch"
                                 }
                             }
                         }
@@ -16824,7 +16824,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestPlanBranch"
+                                    "$ref": "#/components/schemas/BuildPlanBranch"
                                 }
                             }
                         }
@@ -16909,7 +16909,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestPlanSpec"
+                                    "$ref": "#/components/schemas/BuildPlanSpec"
                                 }
                             }
                         }
@@ -16982,7 +16982,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestPlans"
+                                    "$ref": "#/components/schemas/BuildPlans"
                                 }
                             }
                         }
@@ -17075,12 +17075,12 @@
                     "content": {
                         "application/xml": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestPlanLabel"
+                                "$ref": "#/components/schemas/BuildPlanLabel"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestPlanLabel"
+                                "$ref": "#/components/schemas/BuildPlanLabel"
                             }
                         }
                     },
@@ -17842,7 +17842,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Result"
+                                    "$ref": "#/components/schemas/BuildResult"
                                 }
                             }
                         }
@@ -17871,7 +17871,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Result"
+                                    "$ref": "#/components/schemas/BuildResult"
                                 }
                             }
                         }
@@ -18084,7 +18084,125 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                     "$ref": "#/components/schemas/PlanResults"
+                                     "$ref": "#/components/schemas/BuildPlanResults"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When specified project does not exists or user does not have permission to see plans for specified project",
+                        "content": {
+                            "application/json": {
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/latest/result/{projectKey}/latest": {
+            "get": {
+                "description": "Provide latest build results for top level plans for specified project. List of results is limited to plans visible for user.",
+                "operationId": "getLatestBuildResultForProject",
+                "parameters": [
+                    {
+                        "name": "expand",
+                        "in": "query",
+                        "description": "Possible values: changes,metadata,plan,master,vcsRevisions,artifacts,comments,labels,jiraIssues,variables,stages",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "includeAllStates",
+                        "in": "query",
+                        "description": "return build results in all lifecycle states, including unknown and active states",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "continuable",
+                        "in": "query",
+                        "description": "filter only results that may be continued (stopped on Manual Stage)",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "projectKey",
+                        "in": "path",
+                        "description": "project key to filter plan result list",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "issueKey",
+                        "in": "query",
+                        "description": "Filter by comma separated list of Jira issue key related to result",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "max-results",
+                        "in": "query",
+                        "description": "Maximum size for returned list",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "start-index",
+                        "in": "query",
+                        "description": "Start index for results list (zero based)",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "label",
+                        "in": "query",
+                        "description": "Filter by comma separated list of labels",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "buildstate",
+                        "in": "query",
+                        "description": "filter results by state, valid values are Unknown, Successful, Failed",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "favourite",
+                        "in": "query",
+                        "description": "Filters build results list to show only results for favourite plans. Works only for authenticated user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lifeCycleState",
+                        "in": "query",
+                        "description": "return build results in given lifecycle state, valid values are Pending, Queued, InProgress, Finished, NotBuilt (multiple values can be separated by a comma)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Latest build results for plans for specified project",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                     "$ref": "#/components/schemas/BuildResult"
                                 }
                             }
                         }
@@ -18211,7 +18329,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                   "$ref": "#/components/schemas/PlanResults"
+                                   "$ref": "#/components/schemas/BuildResults"
                                 }
                             }
                         }
@@ -18354,7 +18472,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Result"
+                                    "$ref": "#/components/schemas/BuildResult"
                                 }
                             }
                         }
@@ -18423,7 +18541,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Result"
+                                    "$ref": "#/components/schemas/BuildResult"
                                 }
                             }
                         }
@@ -18500,7 +18618,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Result"
+                                    "$ref": "#/components/schemas/BuildResult"
                                 }
                             }
                         }
@@ -22317,7 +22435,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestVariable"
+                                "$ref": "#/components/schemas/BuildVariable"
                             }
                         }
                     }
@@ -22328,7 +22446,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariableDefinitionContext"
+                                    "$ref": "#/components/schemas/BuildVariableDefinitionContext"
                                 }
                             }
                         }
@@ -22400,7 +22518,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariable"
+                                    "$ref": "#/components/schemas/BuildVariable"
                                 }
                             }
                         }
@@ -22459,7 +22577,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestVariable"
+                                "$ref": "#/components/schemas/BuildVariable"
                             }
                         }
                     }
@@ -22470,7 +22588,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariableDefinitionContext"
+                                    "$ref": "#/components/schemas/BuildVariableDefinitionContext"
                                 }
                             }
                         }
@@ -23168,7 +23286,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/RestVariable"
+                                        "$ref": "#/components/schemas/BuildVariable"
                                     }
                                 }
                             },
@@ -23176,7 +23294,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/RestVariable"
+                                        "$ref": "#/components/schemas/BuildVariable"
                                     }
                                 }
                             }
@@ -23239,7 +23357,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariable"
+                                    "$ref": "#/components/schemas/BuildVariable"
                                 }
                             }
                         }
@@ -23344,12 +23462,12 @@
                     "content": {
                         "application/xml": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestVariable"
+                                "$ref": "#/components/schemas/BuildVariable"
                             }
                         },
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RestVariable"
+                                "$ref": "#/components/schemas/BuildVariable"
                             }
                         }
                     },
@@ -23361,7 +23479,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariableDefinitionContext"
+                                    "$ref": "#/components/schemas/BuildVariableDefinitionContext"
                                 }
                             }
                         }
@@ -23371,7 +23489,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/RestVariableDefinitionContext"
+                                    "$ref": "#/components/schemas/BuildVariableDefinitionContext"
                                 }
                             }
                         }

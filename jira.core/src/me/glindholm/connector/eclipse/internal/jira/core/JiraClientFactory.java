@@ -86,17 +86,6 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
         return instance;
     }
 
-    public synchronized void logOutFromAll() {
-        final JiraClient[] clients = clientManager.getAllClients();
-        for (final JiraClient client : clients) {
-            try {
-                client.logout(null);
-            } catch (final JiraException e) {
-                // ignore
-            }
-        }
-    }
-
     public void repositoriesRead() {
         // ignore
     }

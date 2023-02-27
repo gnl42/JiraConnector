@@ -128,9 +128,6 @@ public class JiraClient {
         localConfiguration = configuration;
 
         cache = new JiraClientCache(this);
-        // this.webSession = new JiraWebSession(this);
-        // this.webClient = new JiraWebClient(this, webSession);
-        // this.rssClient = new JiraRssClient(this, webSession);
         this.restClient = restClient;
 
     }
@@ -156,7 +153,6 @@ public class JiraClient {
             restClient = createRestClient(location, cache);
             try {
                 final User currentUser = restClient.getCurrentUser();
-                final int i = 0;
             } catch (final JiraException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

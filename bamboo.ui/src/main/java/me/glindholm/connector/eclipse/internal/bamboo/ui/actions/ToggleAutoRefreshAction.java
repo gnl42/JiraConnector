@@ -28,7 +28,7 @@ public class ToggleAutoRefreshAction extends Action {
         setId(ID);
         setChecked(BambooCorePlugin.isAutoRefresh());
 
-        IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(BambooCorePlugin.PLUGIN_ID);
+        IEclipsePreferences preferences = InstanceScope.INSTANCE.getNode(BambooCorePlugin.ID_PLUGIN);
         preferences.addPreferenceChangeListener(new IPreferenceChangeListener() {
             @Override
             public void preferenceChange(PreferenceChangeEvent event) {

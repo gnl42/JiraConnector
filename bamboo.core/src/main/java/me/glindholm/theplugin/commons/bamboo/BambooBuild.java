@@ -22,13 +22,13 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import me.glindholm.connector.commons.api.ConnectionCfg;
+import me.glindholm.connector.eclipse.internal.bamboo.core.rest.client.api.BambooRestClient;
 
 /**
  * Build information retrieved from Bamboo server.
  */
 public interface BambooBuild {
-    ConnectionCfg getServer();
+    BambooRestClient getServer();
 
     String getServerUrl();
 

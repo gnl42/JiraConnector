@@ -49,10 +49,10 @@ public class JiraUiPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns an image descriptor for the image file at the given plug-in relative path.
+     * Returns an image descriptor for the image file at the given plug-in relative
+     * path.
      *
-     * @param path
-     *            the path
+     * @param path the path
      * @return the image descriptor
      */
     public static ImageDescriptor getImageDescriptor(final String path) {
@@ -73,7 +73,8 @@ public class JiraUiPlugin extends AbstractUIPlugin {
 
         @Override
         public void activityReset() {
-            // hack to prevent reseting activity time when Mylyn is starting and reloading activity
+            // hack to prevent reseting activity time when Mylyn is starting and reloading
+            // activity
             initialized = true;
         }
 
@@ -92,18 +93,16 @@ public class JiraUiPlugin extends AbstractUIPlugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
         instance = this;
-        JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new JiraTaskRepositoryLocationUiFactory(),
-                false);
+        JiraClientFactory.getDefault().setTaskRepositoryLocationFactory(new JiraTaskRepositoryLocationUiFactory(), false);
         TasksUi.getRepositoryManager().addListener(JiraClientFactory.getDefault());
 
-        if (!getPreferenceStore().getBoolean(JiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED)
-                && !RuntimeUtil.suppressConfigurationWizards()) {
+        if (!getPreferenceStore().getBoolean(JiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED) && !RuntimeUtil.suppressConfigurationWizards()) {
             final Job migrateJob = new MigrateToSecureStorageJob(JiraCorePlugin.CONNECTOR_KIND);
             migrateJob.addJobChangeListener(new JobChangeAdapter() {
                 @Override
                 public void done(final IJobChangeEvent event) {
                     super.done(event);
-                    getPreferenceStore().setValue(JiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED, Boolean.TRUE);
+                    getPreferenceStore().setValue(JiraConstants.PREFERENCE_SECURE_STORAGE_MIGRATED, true);
                 }
             });
             migrateJob.schedule();
@@ -116,7 +115,6 @@ public class JiraUiPlugin extends AbstractUIPlugin {
     public void stop(final BundleContext context) throws Exception {
         TasksUiPlugin.getTaskActivityManager().removeActivityListener(activityTimeListener);
         TasksUi.getRepositoryManager().removeListener(JiraClientFactory.getDefault());
-        JiraClientFactory.getDefault().logOutFromAll();
         instance = null;
         super.stop(context);
     }

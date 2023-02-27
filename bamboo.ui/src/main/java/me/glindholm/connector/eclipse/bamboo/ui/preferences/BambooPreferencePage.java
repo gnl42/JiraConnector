@@ -32,7 +32,7 @@ public class BambooPreferencePage extends FieldEditorPreferencePage implements I
 
     @Override
     protected IPreferenceStore doGetPreferenceStore() {
-        return new EclipsePreferencesAdapter(InstanceScope.INSTANCE, BambooCorePlugin.PLUGIN_ID);
+        return new EclipsePreferencesAdapter(InstanceScope.INSTANCE, BambooCorePlugin.ID_PLUGIN);
     }
 
     @Override

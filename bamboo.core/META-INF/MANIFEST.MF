@@ -8,18 +8,26 @@ Bundle-Activator: me.glindholm.connector.eclipse.internal.bamboo.core.BambooCore
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.mylyn.tasks.core;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.mylyn.commons.core;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.mylyn.commons.net;bundle-version="[3.2.0,4.0.0)",
+ org.eclipse.mylyn.tasks.core;bundle-version="3.25.2",
+ org.eclipse.mylyn.commons.core;bundle-version="3.25.2",
+ org.eclipse.mylyn.commons.net;bundle-version="3.25.2",
  me.glindholm.connector.eclipse.commons.core,
  me.glindholm.connector.eclipse.core,
  org.apache.commons.io,
  me.glindholm.connector.eclipse.commons.core;visibility:=reexport,
- org.eclipse.jdt.annotation
-Export-Package: me.glindholm.connector.commons.api,
+ org.eclipse.jdt.annotation,
+ me.glindholm.connector.eclipse.bamboo.core,
+ org.apache.commons.lang3,
+ org.eclipse.ui.workbench,
+ org.eclipse.jface;bundle-version="3.28.0",
+ org.eclipse.mylyn.commons.workbench;bundle-version="3.25.2"
+Export-Package: me.glindholm.bamboo.invoker,
+ me.glindholm.bamboo.model,
+ me.glindholm.connector.commons.api,
  me.glindholm.connector.commons.misc,
  me.glindholm.connector.eclipse.internal.bamboo.core;x-friends:="me.glindholm.connector.eclipse.bamboo.tests,me.glindholm.connector.eclipse.bamboo.ui",
  me.glindholm.connector.eclipse.internal.bamboo.core.client;x-friends:="me.glindholm.connector.eclipse.bamboo.tests,me.glindholm.connector.eclipse.bamboo.ui",
+ me.glindholm.connector.eclipse.internal.bamboo.core.service,
  me.glindholm.connector.eclipse.internal.core.client;x-friends:="me.glindholm.connector.eclipse.bamboo.core,me.glindholm.connector.eclipse.bamboo.ui,me.glindholm.connector.eclipse.ui",
  me.glindholm.theplugin.commons,
  me.glindholm.theplugin.commons.bamboo,
@@ -36,7 +44,8 @@ Export-Package: me.glindholm.connector.commons.api,
  org.jaxen
 Bundle-Vendor: George Lindholm
 Eclipse-RegisterBuddy: me.glindholm.connector.eclipse.core
-Import-Package: org.eclipse.mylyn.commons.core,
+Import-Package: me.glindholm.theplugin.commons.bamboo,
+ org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.core.data,
  org.eclipse.mylyn.tasks.core.sync

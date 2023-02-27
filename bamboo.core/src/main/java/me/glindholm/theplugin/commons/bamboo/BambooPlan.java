@@ -22,118 +22,123 @@ import java.io.Serializable;
  * This class is immutable
  */
 public class BambooPlan implements Serializable {
-	private final String name;
-	private final String key;
+    private final String name;
+    private final String key;
     private final String materPlanKey;
-	private final boolean favourite;
-	private final boolean enabled;
-	private final String projectName;
-	private final String projectKey;
-	private final Integer averageBuildTime;
-	private final PlanState state;
+    private final boolean favourite;
+    private final boolean enabled;
+    private final String projectName;
+    private final String projectKey;
+    private final Integer averageBuildTime;
+    private final PlanState state;
 
-	public BambooPlan(String name, String key, String masterPlanKey) {
-		this(name, key, masterPlanKey, true);
-	}
+    public BambooPlan(final String name, final String key, final String masterPlanKey) {
+        this(name, key, masterPlanKey, true);
+    }
 
-	public BambooPlan(String name, String key, String masterPlanKey, boolean isEnabled) {
-		this(name, key, masterPlanKey, isEnabled, false);
-	}
+    public BambooPlan(final String name, final String key, final String masterPlanKey, final boolean isEnabled) {
+        this(name, key, masterPlanKey, isEnabled, false);
+    }
 
-	public BambooPlan(String name, String key, String masterPlanKey, boolean isEnabled, boolean isFavourite) {
-		this(name, key, masterPlanKey, isEnabled, isFavourite, "", "", null, false, false);
-	}
+    public BambooPlan(final String name, final String key, final String masterPlanKey, final boolean isEnabled, final boolean isFavourite) {
+        this(name, key, masterPlanKey, isEnabled, isFavourite, "", "", null, false, false);
+    }
 
-	public BambooPlan(final String name, final String key, final String masterPlanKey, final boolean isEnabled, final Boolean isFavourite,
-			final String projectName, final String projectKey, final Integer averageBuildTime, final boolean inQueue,
-			final boolean building) {
-		this.name = name;
-		this.key = key;
-        this.materPlanKey = masterPlanKey;
-		this.enabled = isEnabled;
-		this.favourite = isFavourite;
-		this.projectName = projectName;
-		this.projectKey = projectKey;
-		this.averageBuildTime = averageBuildTime;
+    public BambooPlan(final String name, final String key, final String masterPlanKey, final boolean isEnabled, final Boolean isFavourite,
+            final String projectName, final String projectKey, final Integer averageBuildTime, final boolean inQueue, final boolean building) {
+        this.name = name;
+        this.key = key;
+        materPlanKey = masterPlanKey;
+        enabled = isEnabled;
+        favourite = isFavourite;
+        this.projectName = projectName;
+        this.projectKey = projectKey;
+        this.averageBuildTime = averageBuildTime;
 
-		if (building) {
-			this.state = PlanState.BUILDING;
-		} else if (inQueue) {
-			this.state = PlanState.IN_QUEUE;
-		} else {
-			this.state = PlanState.STANDING;
-		}
-	}
+        if (building) {
+            state = PlanState.BUILDING;
+        } else if (inQueue) {
+            state = PlanState.IN_QUEUE;
+        } else {
+            state = PlanState.STANDING;
+        }
+    }
 
+    public String getName() {
+        return name;
+    }
 
-	public String getName() {
-		return this.name;
-	}
-
-	public String getKey() {
-		return this.key;
-	}
+    public String getKey() {
+        return key;
+    }
 
     public String getMaterPlanKey() {
         return materPlanKey;
     }
 
     public boolean isFavourite() {
-		return favourite;
-	}
+        return favourite;
+    }
 
-	/**
-	 * Returns copy of this object with favourite information set.
-	 *
-	 * @param isFavourite
-	 *            requested favourite state
-	 * @return copy of this object
-	 */
-	public BambooPlan withFavourite(boolean isFavourite) {
-		return new BambooPlan(name, key, materPlanKey, enabled, isFavourite);
-	}
+    /**
+     * Returns copy of this object with favourite information set.
+     *
+     * @param isFavourite requested favourite state
+     * @return copy of this object
+     */
+    public BambooPlan withFavourite(final boolean isFavourite) {
+        return new BambooPlan(name, key, materPlanKey, enabled, isFavourite);
+    }
 
-	public boolean isEnabled() {
-		return enabled;
-	}
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-	public String getProjectName() {
-		return projectName;
-	}
+    public String getProjectName() {
+        return projectName;
+    }
 
-	public String getProjectKey() {
-		return projectKey;
-	}
+    public String getProjectKey() {
+        return projectKey;
+    }
 
-	public Integer getAverageBuildTime() {
-		return averageBuildTime;
-	}
+    public Integer getAverageBuildTime() {
+        return averageBuildTime;
+    }
 
-	public PlanState getState() {
-		return state;
-	}
+    public PlanState getState() {
+        return state;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof BambooPlan)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BambooPlan)) {
+            return false;
+        }
 
-		BambooPlan that = (BambooPlan) o;
+        final BambooPlan that = (BambooPlan) o;
 
-		//noinspection RedundantIfStatement
-		if (key != null ? !key.equals(that.key) : that.key != null) {
-			return false;
-		}
+        // noinspection RedundantIfStatement
+        if (key != null ? !key.equals(that.key) : that.key != null) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		return (key != null ? key.hashCode() : 0);
-	}
+    @Override
+    public int hashCode() {
+        return key != null ? key.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("BambooPlan [name=").append(name).append(", key=").append(key).append(", favourite=").append(favourite).append(", enabled=")
+                .append(enabled).append(", state=").append(state).append("]");
+        return builder.toString();
+    }
 }
