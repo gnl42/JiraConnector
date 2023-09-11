@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jira Rest Java Client
+Automatic-Module-Name: ira-rest-java-client-api
+Bundle-SymbolicName: jira-rest-java-client-app
+Bundle-Version: 6.0.1.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-ClassPath: .,
+ target/lib/commons-cli.jar
+Bundle-Vendor: George Lindholm
+Eclipse-BuddyPolicy: registered
+Require-Bundle: jira-rest-java-client-api;bundle-version="6.0.0",
+ jira-rest-java-client-core;bundle-version="6.0.0",
+ org.slf4j.api;bundle-version="1.7.30",
+ org.apache.commons.logging;bundle-version="1.2.0"

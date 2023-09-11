@@ -1,0 +1,127 @@
+{
+	"customfield_10020": {
+		"required": false,
+		"schema": {
+			"type": "version",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:version",
+			"customId": 10020
+		},
+		"name": "versionpicker",
+		"operations": [
+			"set"
+		],
+		"allowedValues": [
+			[
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/version/10001",
+					"id": "10001",
+					"description": "initial version",
+					"name": "1",
+					"archived": false,
+					"released": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/version/10000",
+					"id": "10000",
+					"description": "Some version",
+					"name": "1.1",
+					"releaseDate": "2010-08-25",
+					"archived": false,
+					"released": false
+				}
+			]
+		]
+	},
+	"customfield_10021": {
+		"required": false,
+		"schema": {
+			"type": "array",
+			"items": "version",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiversion",
+			"customId": 10021
+		},
+		"name": "multi-version-picker",
+		"operations": [
+			"set",
+			"add",
+			"remove"
+		],
+		"allowedValues": [
+			[
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/version/10001",
+					"id": "10001",
+					"description": "initial version",
+					"name": "1",
+					"archived": false,
+					"released": false
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/version/10000",
+					"id": "10000",
+					"description": "Some version",
+					"name": "1.1",
+					"releaseDate": "2010-08-25",
+					"archived": false,
+					"released": false
+				}
+			]
+		]
+	},
+	"customfield_10010": {
+		"required": false,
+		"schema": {
+			"type": "project",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:project",
+			"customId": 10010
+		},
+		"name": "project3",
+		"operations": [
+			"set"
+		],
+		"allowedValues": [
+			[
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/project/ANONEDIT",
+					"id": "10030",
+					"key": "ANONEDIT",
+					"name": "Anonymous Editable Project",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10030&avatarId=10011",
+						"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10030&avatarId=10011"
+					}
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/project/ANNON",
+					"id": "10020",
+					"key": "ANNON",
+					"name": "Anonymously Accessible Project",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10020&avatarId=10011",
+						"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10020&avatarId=10011"
+					}
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/project/RST",
+					"id": "10010",
+					"key": "RST",
+					"name": "Restricted Project",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10010&avatarId=10011",
+						"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10010&avatarId=10011"
+					}
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/project/TST",
+					"id": "10000",
+					"key": "TST",
+					"name": "Test Project",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+						"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+					}
+				}
+			]
+		]
+	}
+}

@@ -1,0 +1,6 @@
+{
+	"self":"http://localhost:8090/jira/rest/api/latest/issueType/1",
+	"id":"1",
+	"name":"Bug",
+	"subtask":true
+}

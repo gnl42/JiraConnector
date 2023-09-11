@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>me.glindholm.jira</groupId>
+		<artifactId>jira-rest-java-client-parent</artifactId>
+		<version>6.1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>jira-rest-java-client-test</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+
+	<name>JIRA REST Java Client - Tests</name>
+	<description>Tests of JIRA REST Java Client.</description>
+
+	<properties>
+		<plugins>com.atlassian.jira.tests:jira-testkit-plugin:${testkit.version}</plugins>
+		<jira.jvm.args>-Xms512m -Xmx1024m</jira.jvm.args>
+	</properties>
+
+
+	<build>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>src/test/xml</directory>
+			</testResource>
+		</testResources>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.twdata.maven</groupId>
+					<artifactId>cargo-maven2-plrest-apiugin</artifactId>
+					<version>1.0-beta-2-db2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/lib</outputDirectory>
+							<stripVersion>true</stripVersion>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<classifier></classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M6</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+					<excludes>
+						<exclude>it/**</exclude>
+						<exclude>it2/**</exclude>
+					</excludes>
+					<forkMode>once</forkMode>
+					<skipITs>true</skipITs> <!-- tomcat fails to spin up, looking for wrong names of jars: a.jar but
+						a-1.jar in folder -->
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>clean test</preparationGoals>
+					<releaseProfiles>releaseProfile</releaseProfiles>
+					<!--allowTimestampedSnapshots>true</allowTimestampedSnapshots -->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>1.3.1</version>
+				<configuration>
+					<properties>
+						<property>
+							<name>jira.version</name>
+							<dependencies>
+								<dependency>
+									<groupId>com.atlassian.jira</groupId>
+									<artifactId>jira-core</artifactId>
+								</dependency>
+							</dependencies>
+						</property>
+					</properties>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.8</version>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>jacoco</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>prepare-agent</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+								<configuration>
+									<propertyName>jacoco.agent</propertyName>
+									<includes>
+										<include>com/atlassian/**</include>
+									</includes>
+								</configuration>
+							</execution>
+							<execution>
+								<id>report</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.atlassian.maven.plugins</groupId>
+						<artifactId>maven-jira-plugin</artifactId>
+						<configuration>
+							<jvmArgs>${jira.jvm.args} ${jacoco.agent}</jvmArgs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
