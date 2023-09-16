@@ -3,32 +3,35 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Automatic-Module-Name: %Bundle-Name
 Bundle-SymbolicName: me.glindholm.connector.eclipse.jira.core;singleton:=true
-Bundle-Version: 4.3.0.qualifier
+Bundle-Version: 4.4.0.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.apache.commons.io,
  org.eclipse.core.runtime,
- org.eclipse.mylyn.commons.core;bundle-version="[3.24.0,4.0.0)",
- org.eclipse.mylyn.commons.net;bundle-version="[3.24.0,4.0.0)",
- org.eclipse.mylyn.tasks.core;bundle-version="[3.25.0,4.0.0)",
+ org.eclipse.mylyn.tasks.core,
  me.glindholm.connector.eclipse.commons.core,
- jira-rest-java-client-api;bundle-version="6.1.0",
- jira-rest-java-client-core;bundle-version="6.1.0",
+ jira-rest-java-client-api;bundle-version="6.2.0",
+ jira-rest-java-client-core;bundle-version="6.2.0",
  org.eclipse.ui.workbench,
  org.eclipse.swt,
- org.eclipse.mylyn.commons.workbench,
  org.eclipse.jface,
- org.eclipse.jdt.annotation
+ org.eclipse.jdt.annotation,
+ org.apache.commons.lang3,
+ org.apache.commons.httpclient;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: me.glindholm.connector.commons.jira.cache,
  me.glindholm.connector.eclipse.internal.jira.core;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.html;x-friends:="me.glindholm.connector.eclipse.jira.ui",
- me.glindholm.connector.eclipse.internal.jira.core.model;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
+ me.glindholm.connector.eclipse.internal.jira.core.model;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.model.filter;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service.rest;x-friends:="me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui"
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Localization: plugin
-Import-Package: org.eclipse.mylyn.tasks.core
+Import-Package: org.apache.hc.core5;version="5.1.4",
+ org.eclipse.mylyn.commons.core,
+ org.eclipse.mylyn.commons.net,
+ org.eclipse.mylyn.commons.workbench,
+ org.eclipse.mylyn.tasks.core

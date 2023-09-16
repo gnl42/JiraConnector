@@ -11,17 +11,21 @@
 
 package me.glindholm.connector.eclipse.internal.core.client;
 
+import static me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin.PLUGIN_ID;
+
+import java.io.IOException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
 import org.eclipse.mylyn.commons.net.AuthenticationCredentials;
 import org.eclipse.mylyn.commons.net.AuthenticationType;
 import org.eclipse.mylyn.commons.net.UnsupportedRequestException;
 import org.eclipse.mylyn.tasks.core.RepositoryStatus;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
-import javax.annotation.Nonnull;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.connector.eclipse.internal.core.CoreMessages;
@@ -31,10 +35,6 @@ import me.glindholm.theplugin.commons.remoteapi.ProductServerFacade;
 import me.glindholm.theplugin.commons.remoteapi.ProductSession;
 import me.glindholm.theplugin.commons.remoteapi.RemoteApiException;
 import me.glindholm.theplugin.commons.remoteapi.RemoteApiLoginException;
-
-import static me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin.PLUGIN_ID;
-
-import java.io.IOException;
 
 public abstract class AbstractConnectorClient<F extends ProductServerFacade, S extends ProductSession> {
     protected final F facade;
@@ -113,7 +113,7 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
         }
     }
 
-    @Nonnull
+    @NonNull
     protected abstract S getSession(ConnectionCfg connectionCfg) throws RemoteApiException,
             ServerPasswordNotProvidedException;
 

@@ -16,7 +16,9 @@
 
 package me.glindholm.connector.cfg;
 
-import javax.annotation.Nullable;
+import java.util.Collection;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.theplugin.commons.ServerType;
 import me.glindholm.theplugin.commons.bamboo.BambooServerData;
@@ -25,8 +27,6 @@ import me.glindholm.theplugin.commons.cfg.ServerCfg;
 import me.glindholm.theplugin.commons.cfg.ServerId;
 import me.glindholm.theplugin.commons.jira.JiraServerData;
 import me.glindholm.theplugin.commons.remoteapi.ServerData;
-
-import java.util.Collection;
 
 public interface ProjectCfgManager {
 

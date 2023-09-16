@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 public abstract class JobWithStatus extends Job {
 
@@ -26,20 +26,20 @@ public abstract class JobWithStatus extends Job {
 		super(name);
 	}
 
-	protected void setStatus(@Nonnull IStatus status) {
+	protected void setStatus(@NonNull IStatus status) {
 		this.status = status;
 	}
 
 	/**
 	 * @return if run did not set status it will return {@link Status#OK_STATUS} just to make using this method easier
 	 */
-	@Nonnull
+	@NonNull
 	public IStatus getStatus() {
 		return status;
 	}
 
 	@Override
-	@Nonnull
+	@NonNull
 	public IStatus run(IProgressMonitor monitor) {
 		if (monitor != null && monitor.isCanceled()) {
 			setStatus(Status.CANCEL_STATUS);

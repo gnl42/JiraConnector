@@ -13,7 +13,7 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.wizards;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

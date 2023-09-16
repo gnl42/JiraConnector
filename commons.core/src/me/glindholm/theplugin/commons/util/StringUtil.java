@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 
 public final class StringUtil {
     private static final int BUFFER_SIZE = 4096;

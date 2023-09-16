@@ -16,6 +16,18 @@
 
 package me.glindholm.theplugin.commons.remoteapi.rest;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -30,6 +42,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -37,7 +50,6 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPath;
-import javax.annotation.Nonnull;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.theplugin.commons.exception.HttpProxySettingsException;
@@ -48,33 +60,21 @@ import me.glindholm.theplugin.commons.remoteapi.ServiceUnavailableException;
 import me.glindholm.theplugin.commons.util.LoggerImpl;
 import me.glindholm.theplugin.commons.util.UrlUtil;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
 /**
  * Communication stub for lightweight XML based APIs. This method should be tread-safe (at least it is used in this
  * manner), however I think there are still some issues with thread-safety here [wseliga]. E.g. as Server is not
  * immutable then this may be the cause of races
  */
 public abstract class AbstractHttpSession {
-    @Nonnull
+    @NonNull
     protected final HttpSessionCallback callback;
 
-    @Nonnull
+    @NonNull
     private final ConnectionCfg server;
     private static final int MAX_REDIRECTS = 3;
     private String responseCharSet;
 
-    @Nonnull
+    @NonNull
     protected ConnectionCfg getServer() {
         return server;
     }
@@ -151,7 +151,7 @@ public abstract class AbstractHttpSession {
      * @throws me.glindholm.theplugin.commons.remoteapi.RemoteApiMalformedUrlException
      *          for malformed url
      */
-    public AbstractHttpSession(@Nonnull ConnectionCfg server, @Nonnull HttpSessionCallback callback)
+    public AbstractHttpSession(@NonNull ConnectionCfg server, @NonNull HttpSessionCallback callback)
             throws RemoteApiMalformedUrlException {
         this.server = server;
         this.callback = callback;

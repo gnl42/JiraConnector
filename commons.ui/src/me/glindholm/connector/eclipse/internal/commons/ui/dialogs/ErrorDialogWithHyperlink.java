@@ -13,9 +13,8 @@ package me.glindholm.connector.eclipse.internal.commons.ui.dialogs;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -39,8 +38,8 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 
     private final String title;
 
-    public ErrorDialogWithHyperlink(Shell parentShell, @Nonnull
-            String title, @Nonnull
+    public ErrorDialogWithHyperlink(Shell parentShell, @NonNull
+            String title, @NonNull
             String message, @Nullable
             String linkText, @Nullable
             Runnable linkHandler) {

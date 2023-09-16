@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <introContent>
-	<extensionContent id="me.glindholm.connector.eclipse" name="Mylyn Atlassian Jira/Bamboo Connector for Eclipse"
+	<extensionContent id="me.glindholm.connector.eclipse" name="Mylyn Atlassian Jira Connector for Eclipse"
 		style="css/whatsnew.css" alt-style="css/whatsnew.properties" path="whatsnew/@">
 		<group id="content-group" style-id="content-group">
-			<link label="Mylyn Atlassian Jira/Bamboo Connector for Eclipse"
+			<link label="Mylyn Atlassian Jira Connector for Eclipse"
 				id="atlassian-eclipse-connector-noteworthy" style-id="content-link">
 				<text>
-					Add Jira/Bamboo to the Eclipse workflow
+					Add Jira to the Eclipse workflow
 				</text>
 			</link>
 		</group>

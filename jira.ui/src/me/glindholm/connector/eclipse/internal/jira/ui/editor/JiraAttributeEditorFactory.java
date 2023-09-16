@@ -11,7 +11,7 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.editor;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.PersonAttributeEditor;
 import org.eclipse.mylyn.tasks.core.IRepositoryPerson;

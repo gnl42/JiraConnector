@@ -15,18 +15,18 @@
  */
 package me.glindholm.connector.commons.misc;
 
-import javax.annotation.Nonnull;
+import java.util.ArrayList;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import me.glindholm.theplugin.commons.util.MiscUtil;
-
-import java.util.ArrayList;
 
 public final class IntRangesParser {
 	private IntRangesParser() {
 	}
 
-	@Nonnull
-	public static IntRanges parse(@Nonnull String rangesStr) throws NumberFormatException {
+	@NonNull
+	public static IntRanges parse(@NonNull String rangesStr) throws NumberFormatException {
 		if (rangesStr == null) {
 			throw new IllegalArgumentException("Parameter cannot be null");
 		}
@@ -46,7 +46,7 @@ public final class IntRangesParser {
 					// now the case for -X- -Y
 					int index2 = token.lastIndexOf('-', index - 1);
 					if (index2 > 0) {
-						index = index2; // there was additional "-" found in the middle of the string 
+						index = index2; // there was additional "-" found in the middle of the string
 					}
 
 					final int min = Integer.parseInt(token.substring(0, index).trim());

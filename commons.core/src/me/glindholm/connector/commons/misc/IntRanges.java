@@ -15,16 +15,21 @@
  */
 package me.glindholm.connector.commons.misc;
 
-import org.apache.commons.lang.StringUtils;
-import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.*;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
 
 /**
  * This class is immutable
  */
 public class IntRanges {
-	@Nonnull
+	@NonNull
 	private final ArrayList<IntRange> ranges;
 	private static final Comparator<IntRange> COMPARATOR = new Comparator<IntRange>() {
 		public int compare(final IntRange o1, final IntRange o2) {
@@ -35,7 +40,7 @@ public class IntRanges {
 	/**
 	 * @param ranges list cannot be empty. Copy is made here, so you may freely modify the array afterwards
 	 */
-	public IntRanges(@Nonnull List<IntRange> ranges) {
+	public IntRanges(@NonNull List<IntRange> ranges) {
 		this.ranges = new ArrayList<IntRange>(ranges);
 		if (this.ranges.isEmpty()) {
 			throw new IllegalArgumentException("Cannot create ranges object from the empty list");
@@ -43,7 +48,7 @@ public class IntRanges {
 		Collections.sort(this.ranges, COMPARATOR);
 	}
 
-	public IntRanges(@Nonnull IntRange ... ranges) {
+	public IntRanges(@NonNull IntRange ... ranges) {
 		if (ranges.length == 0) {
 			throw new IllegalArgumentException("Cannot create ranges object from the empty list");
 		}
@@ -59,7 +64,7 @@ public class IntRanges {
 		return ranges.get(ranges.size() - 1).getMax();
 	}
 
-	@Nonnull
+	@NonNull
 	public List<IntRange> getRanges() {
 		return Collections.unmodifiableList(ranges);
 	}

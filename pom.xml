@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.glindholm.connector.eclipse</groupId>
     <artifactId>JiraConnector</artifactId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <developers>
         <developer>
@@ -60,7 +60,7 @@
         <connection>         scm:git:git@github.com:gnl42/JiraConnector.git</connection>
         <url>                scm:git:git@github.com:gnl42/JiraConnector.git</url>
         <developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
-        <tag>4.3.0</tag>
+        <tag>4.4.0</tag>
     </scm>
     <issueManagement>
         <system>GitHub</system>
@@ -76,7 +76,7 @@
     <repositories>
         <repository>
             <id>eclipse</id>
-            <url>https://download.eclipse.org/releases/latest</url>
+            <url>https://download.eclipse.org/releases/2023-09</url>
             <layout>p2</layout>
         </repository>
         <repository>
@@ -120,11 +120,12 @@
         <current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
         <!-- The label for the Composite sites -->
         <site.label>JiraConnector</site.label>
-        <tycho.version>3.0.1</tycho.version>
-        <java.version>11</java.version>
+        <tycho.version>4.0.2</tycho.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
+         <module>jira.target</module>
         <module>jrjc</module>
         <module>commons-feature</module>
         <module>commons.core</module>
@@ -133,9 +134,6 @@
         <module>core</module>
         <module>ui</module>
         <module>dependencies-feature</module>
-        <module>bamboo-feature</module>
-        <module>bamboo.core</module>
-        <module>bamboo.ui</module>
         <module>branding.ui</module>
         <module>help</module>
         <!-- <module>me.glindholm.jira.rest.client</module> -->
@@ -144,32 +142,11 @@
         <module>jira.ui</module>
         <!-- Will have to real life tests for now <module>me.glindholm.connector.commons.tests.dependencies</module>
 			<module>test-feature</module> <module>tests</module> <module>jira.tests</module> -->
-        <!-- Unable to launch eclipse instance <module>bamboo.tests</module> -->
-        <!-- Unable to resolve swtbot.eclipse.core <module>bamboo.testsUI</module> -->
         <module>releng</module>
     </modules>
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-toolchains-plugin</artifactId>
-                    <version>3.1.0</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>toolchain</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <toolchains>
-                            <jdk>
-                                <version>11</version>
-                            </jdk>
-                        </toolchains>
-                    </configuration>
-                </plugin>
                 <!--
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -346,10 +323,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-toolchains-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
                     <encoding>UTF-8</encoding>
@@ -359,8 +332,7 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                     <release>${java.version}</release>
                     <optimize>true</optimize>
                     <showWarnings>false</showWarnings>
                     <!-- <useJDK>${tycho.useJDK}</useJDK> -->
@@ -487,7 +459,14 @@
                             <arch>x86_64</arch>
                         </environment>
                     </environments>
-                </configuration>
+ 					<target>
+						<artifact>
+							<groupId>me.glindholm.connector.eclipse</groupId>
+							<artifactId>jira.target</artifactId>
+							<version>4.4.0-SNAPSHOT</version>
+						</artifact>
+					</target>
+               </configuration>
             </plugin>
         </plugins>
     </build>

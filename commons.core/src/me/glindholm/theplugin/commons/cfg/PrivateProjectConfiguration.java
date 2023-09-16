@@ -18,7 +18,7 @@ package me.glindholm.theplugin.commons.cfg;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 
 import me.glindholm.theplugin.commons.util.MiscUtil;
 
@@ -29,7 +29,7 @@ public class PrivateProjectConfiguration {
 
     private Set<PrivateServerCfgInfo> privateServerCfgInfos = MiscUtil.buildHashSet();
 
-    public void add(@Nonnull PrivateServerCfgInfo info) {
+    public void add(@NonNull PrivateServerCfgInfo info) {
         privateServerCfgInfos.add(info);
     }
 

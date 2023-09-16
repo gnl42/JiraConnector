@@ -14,11 +14,10 @@ package me.glindholm.connector.eclipse.ui.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.LineRange;
 import org.eclipse.jface.viewers.ISelection;
@@ -155,6 +154,6 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
         return null;
     }
 
-    protected abstract void processResources(@Nonnull List<ResourceEditorBean> selection, final Shell shell);
+    protected abstract void processResources(@NonNull List<ResourceEditorBean> selection, final Shell shell);
 
 }

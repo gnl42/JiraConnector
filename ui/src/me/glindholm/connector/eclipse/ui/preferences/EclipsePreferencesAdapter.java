@@ -15,7 +15,7 @@ package me.glindholm.connector.eclipse.ui.preferences;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;

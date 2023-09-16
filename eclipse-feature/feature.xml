@@ -2,12 +2,12 @@
 <feature
       id="me.glindholm.connector.eclipse"
       label="%featureName"
-      version="4.3.0.qualifier"
+      version="4.4.0.qualifier"
       provider-name="%providerName"
       plugin="me.glindholm.connector.eclipse.branding.ui">
 
    <description url="https://gnl42.github.io/gnl42/JiraConnector">
-      Eclipse Mylyn connector for Atlassian Jira/Bamboo
+      Eclipse Mylyn connector for Atlassian Jira
    </description>
 
    <copyright>
@@ -20,10 +20,6 @@
 
    <includes
          id="me.glindholm.connector.eclipse.commons"
-         version="0.0.0"/>
-
-   <includes
-         id="me.glindholm.connector.eclipse.bamboo"
          version="0.0.0"/>
 
    <includes

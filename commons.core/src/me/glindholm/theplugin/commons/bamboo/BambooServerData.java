@@ -15,7 +15,9 @@
  */
 package me.glindholm.theplugin.commons.bamboo;
 
-import javax.annotation.Nonnull;
+import java.util.Collection;
+
+import org.eclipse.jdt.annotation.NonNull;
 
 import me.glindholm.theplugin.commons.cfg.BambooServerCfg;
 import me.glindholm.theplugin.commons.cfg.Server;
@@ -23,13 +25,11 @@ import me.glindholm.theplugin.commons.cfg.SubscribedPlan;
 import me.glindholm.theplugin.commons.cfg.UserCfg;
 import me.glindholm.theplugin.commons.remoteapi.ServerData;
 
-import java.util.Collection;
-
 /**
  * @author Jacek Jaroczynski
  */
 public class BambooServerData extends ServerData {
-	public BambooServerData(@Nonnull BambooServerCfg server) {
+	public BambooServerData(@NonNull BambooServerCfg server) {
 		super(server);
 	}
 
@@ -61,7 +61,7 @@ public class BambooServerData extends ServerData {
         protected Server getServer() {
             return super.getServer();
         }
-    }	
+    }
 	public Collection<SubscribedPlan> getPlans() {
 		return getServer().getPlans();
 	}

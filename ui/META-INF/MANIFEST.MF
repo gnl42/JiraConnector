@@ -3,35 +3,37 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector for Eclipse
 Automatic-Module-Name: JiraConnector for Eclipse
 Bundle-SymbolicName: me.glindholm.connector.eclipse.ui;singleton:=true
-Bundle-Version: 4.3.0.qualifier
+Bundle-Version: 4.4.0.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.ui.JiraConnectorUiPlugin
 Bundle-Vendor: George Lindholm
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: me.glindholm.connector.eclipse.commons.core,
+ me.glindholm.connector.eclipse.commons.ui,
+ me.glindholm.connector.eclipse.core,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.team.core,
  org.eclipse.team.ui,
  org.eclipse.core.resources,
  org.eclipse.core.filesystem,
  org.eclipse.equinox.security,
- org.eclipse.mylyn.commons.core,
  org.eclipse.ui.ide,
  org.eclipse.ui.forms,
- me.glindholm.connector.eclipse.commons.core,
  org.eclipse.ui.editors,
  org.eclipse.jface.text,
  org.eclipse.jface,
  org.eclipse.compare,
+ org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.commons.net,
  org.eclipse.mylyn.commons.ui,
  org.eclipse.mylyn.commons.workbench,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.ui,
- me.glindholm.connector.eclipse.commons.ui,
- me.glindholm.connector.eclipse.core
+ org.apache.commons.lang3;bundle-version="3.12.0",
+ org.eclipse.jdt.annotation;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-Export-Package: me.glindholm.connector.eclipse.ui;x-friends:="me.glindholm.connector.eclipse.bamboo.ui",
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Export-Package: me.glindholm.connector.eclipse.ui,
  me.glindholm.connector.eclipse.ui.actions,
- me.glindholm.connector.eclipse.ui.commons;x-friends:="me.glindholm.connector.eclipse.bamboo.ui",
+ me.glindholm.connector.eclipse.ui.commons,
  me.glindholm.connector.eclipse.ui.dialogs,
- me.glindholm.connector.eclipse.ui.preferences;x-friends:="me.glindholm.connector.eclipse.directclickthrough.ui"
+ me.glindholm.connector.eclipse.ui.preferences;x-friends:="me.glindholm.connector.eclipse.directclickthrough.ui

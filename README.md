@@ -3,7 +3,7 @@ JiraConnector
 
 JiraConnector is a fork of the 'Atlassian Connector for Eclipse' plugin
 
-It provides Jira/Bamboo integration withing Eclipse.
+It provides Jira integration withing Eclipse.
 
 Works with Bamboo 2.7+ and Jira 6.0+
 
