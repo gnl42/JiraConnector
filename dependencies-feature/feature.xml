@@ -36,27 +36,17 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.26.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.mylyn.commons" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.net" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.identity.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.workbench" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.ide.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.ide.ant" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.java.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.java.tasks" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.monitor.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.context.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.context.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.monitor.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.resources.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.search" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.bugs" version="3.26.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.mylyn.commons.notifications" version="3.26.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.mylyn.commons.repositories" version="3.26.0" match="greaterOrEqual"/>
+       <import plugin="org.eclipse.mylyn.commons.net" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.identity.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.workbench" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.monitor.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.context.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.monitor.ui" version="4.0.0" match="greaterOrEqual"/>
+       <import plugin="org.eclipse.mylyn.tasks.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.search" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.bugs" version="4.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -102,56 +92,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.mylyn.java.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.java.tasks"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.ide.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.ide.ant"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.mylyn.context.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.context.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.discovery.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.discovery.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -215,13 +156,6 @@
 
    <plugin
          id="org.eclipse.mylyn.tasks.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.resources.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

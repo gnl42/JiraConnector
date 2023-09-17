@@ -41,5 +41,4 @@ Bundle-ClassPath: .,
  target/lib/jdom.jar,
  target/lib/velocity.jar,
  target/lib/jaxen.jar,
- target/lib/commons-discovery.jar,
- target/lib/jsr305.jar
+ target/lib/commons-discovery.jar
