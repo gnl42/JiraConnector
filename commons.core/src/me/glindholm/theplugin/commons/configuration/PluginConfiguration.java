@@ -31,7 +31,5 @@ public interface PluginConfiguration {
     void transientSetHttpConfigurable(HttpConfigurableAdapter httpConfigurableAdapter);
     HttpConfigurableAdapter transientGetHttpConfigurable();
 
-    BambooConfigurationBean getBambooConfigurationData();
-
     JiraConfigurationBean getJIRAConfigurationData();
 }

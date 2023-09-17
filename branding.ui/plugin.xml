@@ -2,14 +2,6 @@
 <?eclipse version="3.0"?>
 <plugin>
 
-   <extension
-         name="%startupAndShutdown.name"
-         point="org.eclipse.ui.startup">
-      <startup
-            class="me.glindholm.connector.eclipse.internal.branding.ui.FastStartup">
-      </startup>
-   </extension>
-
 	<!-- intro page -->
    <extension
          point="org.eclipse.ui.intro.configExtension">

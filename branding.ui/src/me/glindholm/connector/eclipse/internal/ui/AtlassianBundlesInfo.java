@@ -36,6 +36,6 @@ public class AtlassianBundlesInfo {
 	}
 
 	public static boolean isOnlyJiraInstalled() {
-		return Boolean.valueOf(System.getProperty(BrandingConstants.JIRA_INSTALLED_SYSTEM_PROPERTY));
+		return true;
 	}
 }

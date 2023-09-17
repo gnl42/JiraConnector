@@ -20,10 +20,8 @@ package me.glindholm.theplugin.commons;
  * Represents server types
  */
 public enum ServerType {
-	BAMBOO_SERVER("Bamboo Servers", "Bamboo", "http://www.atlassian.com/software/bamboo/"),
-	JIRA_SERVER("JIRA Servers", "JIRA", "http://www.atlassian.com/software/jira/"),
-    JIRA_STUDIO_SERVER("JIRA Studio Servers", "JIRA Studio", "http://www.atlassian.com/studio/", true);
-//    STASH_SERVER("Stash Servers", "STASH", "http://www.atlassian.com/software/stash/");
+	JIRA_SERVER("JIRA Servers", "JIRA", "https://www.atlassian.com/software/jira/"),
+	JIRA_CLOUD_SERVER("JIRA Servers", "JIRA Cloud", "https://www.atlassian.com/software/jira/");
 //
 	private final String name;
 	private String shortName;

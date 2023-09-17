@@ -165,18 +165,6 @@ public class ProjectConfiguration {
         return jiraServers;
     }
 
-    public Collection<BambooServerCfg> getAllBambooServers() {
-        Collection<BambooServerCfg> bambooServers = MiscUtil.buildArrayList();
-
-        for (ServerCfg server : servers) {
-            if (server.getServerType() == ServerType.BAMBOO_SERVER && server instanceof BambooServerCfg) {
-                bambooServers.add((BambooServerCfg) server);
-            }
-        }
-
-        return bambooServers;
-    }
-
 
     public Collection<ServerCfg> getAllEnabledServersWithDefaultCredentials() {
         Collection<ServerCfg> defServers = MiscUtil.buildArrayList();

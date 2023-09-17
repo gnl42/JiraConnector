@@ -8,9 +8,6 @@ Require-Bundle:
  me.glindholm.connector.commons,
  me.glindholm.connector.eclipse.core,
  me.glindholm.connector.eclipse.ui,
- me.glindholm.connector.eclipse.bamboo.core,
- me.glindholm.connector.eclipse.bamboo.tests,
- me.glindholm.connector.eclipse.bamboo.ui,
  me.glindholm.connector.commons.tests.dependencies,
  me.glindholm.connector.eclipse.jira.tests,
  org.junit

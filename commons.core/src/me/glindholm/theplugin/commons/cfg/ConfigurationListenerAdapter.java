@@ -58,7 +58,4 @@ public abstract class ConfigurationListenerAdapter implements ConfigurationListe
 	public void jiraServersChanged(ProjectConfiguration newConfiguration) {
 	}
 
-	public void bambooServersChanged(ProjectConfiguration newConfiguration) {
-	}
-
 }

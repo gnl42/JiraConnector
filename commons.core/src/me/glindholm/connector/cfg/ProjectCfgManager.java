@@ -21,7 +21,6 @@ import java.util.Collection;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.theplugin.commons.ServerType;
-import me.glindholm.theplugin.commons.bamboo.BambooServerData;
 import me.glindholm.theplugin.commons.cfg.ConfigurationListener;
 import me.glindholm.theplugin.commons.cfg.ServerCfg;
 import me.glindholm.theplugin.commons.cfg.ServerId;
@@ -60,8 +59,6 @@ public interface ProjectCfgManager {
 
     JiraServerData getJiraServerr(ServerId serverId);
 
-    Collection<BambooServerData> getAllEnabledBambooServerss();
-
     ServerData getServerr(ServerId serverId);
 
     @Nullable
@@ -76,8 +73,6 @@ public interface ProjectCfgManager {
     Collection<JiraServerData> getAllEnabledJiraServerss();
 
     Collection<ServerData> getAllEnabledServerss();
-
-    Collection<BambooServerData> getAllBambooServerss();
 
     @Deprecated
     Collection<ServerCfg> getAllEnabledServers(ServerType serverType);

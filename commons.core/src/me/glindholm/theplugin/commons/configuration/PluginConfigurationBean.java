@@ -8,8 +8,6 @@ import me.glindholm.theplugin.commons.util.HttpConfigurableAdapter;
  * Time: 2:48:30 PM
  */
 public class PluginConfigurationBean implements PluginConfiguration {
-    private BambooConfigurationBean bambooConfiguration = new BambooConfigurationBean();
-
     private JiraConfigurationBean jiraConfiguration = new JiraConfigurationBean();
     private GeneralConfigurationBean generalConfigurationBean = new GeneralConfigurationBean();
     private HttpConfigurableAdapter httpConfigurableAdapter;
@@ -38,27 +36,8 @@ public class PluginConfigurationBean implements PluginConfiguration {
     public void setConfiguration(PluginConfiguration cfg) {
 
         this.setGeneralConfigurationData(new GeneralConfigurationBean(cfg.getGeneralConfigurationData()));
-        this.setBambooConfigurationData(new BambooConfigurationBean(cfg.getBambooConfigurationData()));
         this.setJIRAConfigurationData(new JiraConfigurationBean(cfg.getJIRAConfigurationData()));
         this.transientSetHttpConfigurable(cfg.transientGetHttpConfigurable());
-    }
-
-    /**
-     * For storage purposes.
-     * <p/>
-     * Does not use the JDK1.5 'return a subclass' due to problem with XML serialization.
-     */
-    public BambooConfigurationBean getBambooConfigurationData() {
-        return bambooConfiguration;
-    }
-
-    /**
-     * For storage purposes.
-     * <p/>
-     * Does not use the JDK1.5 'return a subclass' due to problem with XML serialization.
-     */
-    public void setBambooConfigurationData(BambooConfigurationBean newConfiguration) {
-        bambooConfiguration = newConfiguration;
     }
 
     /**
@@ -112,10 +91,6 @@ public class PluginConfigurationBean implements PluginConfiguration {
         PluginConfigurationBean that = (PluginConfigurationBean) o;
 
 
-        if (!bambooConfiguration.equals(that.bambooConfiguration)) {
-            return false;
-        }
-
         if (!generalConfigurationBean.equals(that.generalConfigurationBean)) {
             return false;
         }
@@ -128,7 +103,6 @@ public class PluginConfigurationBean implements PluginConfiguration {
     @Override
 	public int hashCode() {
         int result = 0;
-        result = ONE_EFF * result + (bambooConfiguration != null ? bambooConfiguration.hashCode() : 0);
         result = ONE_EFF * result + (jiraConfiguration != null ? jiraConfiguration.hashCode() : 0);
         result = ONE_EFF * result + (generalConfigurationBean != null ? generalConfigurationBean.hashCode() : 0);
 

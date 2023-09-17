@@ -103,12 +103,4 @@ public interface ConfigurationListener {
 	 */
 	void jiraServersChanged(ProjectConfiguration newConfiguration);
 
-	/**
-	 * Called in case something in the Bamboo servers list has been changed
-	 *
-	 * @param newConfiguration
-	 *            fresh configuration
-	 */
-	void bambooServersChanged(ProjectConfiguration newConfiguration);
-
 }

@@ -13,8 +13,6 @@ package me.glindholm.connector.eclipse.internal.ui;
 
 public abstract class BrandingConstants {
 
-    public static final String JIRA_INSTALLED_SYSTEM_PROPERTY = "me.glindholm.connector.eclipse.branding.ui.isOnlyJiraInstalled";
-
     public static final String PRODUCT_NAME = "Eclipse Mylyn JiraConnector for  Atlassian's Jira";
 
 }
