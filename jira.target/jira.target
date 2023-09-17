@@ -10,6 +10,7 @@
 			<unit id="org.jdom2.source" version="2.0.6.v20191125-0928"/>
 			<unit id="org.apache.commons.io" version="2.6.0.v20190123-2029"/>
 			<unit id="org.apache.commons.io.source" version="2.6.0.v20190123-2029"/>
+			<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20230531010532/repository"/>
