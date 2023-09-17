@@ -50,15 +50,6 @@
        </taskRepositoryPageContribution>
     </extension>
 
-   <extension
-          point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">
-       <taskRepositoryPageContribution
-       		 id="me.glindholm.connector.eclipse.jira.ui.googleAppsExtensionSettings"
-             class="me.glindholm.connector.eclipse.internal.jira.ui.wizards.GoogleAppsExtensionSettingsContribution"
-             connectorKind="jira">
-       </taskRepositoryPageContribution>
-    </extension>
-
   <!-- TODO jj add icon and fix label -->
   <extension point="org.eclipse.ui.popupMenus">
    <objectContribution
