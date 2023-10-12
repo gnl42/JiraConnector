@@ -1,0 +1,6 @@
+{
+	"self": "http://localhost:2990/jira/rest/api/2/securitylevel/10000",
+	"id": "10000",
+	"description": "Description of this security level",
+	"name": "Name of security level"
+}

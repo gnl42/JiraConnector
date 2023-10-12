@@ -1,0 +1,1018 @@
+{
+	"expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog",
+	"id": "10072",
+	"self": "http://localhost:2990/jira/rest/api/latest/issue/10072",
+	"key": "TST-10",
+	"fields": {
+		"summary": "Not assigned",
+		"issuetype": {
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/1",
+			"id": "1",
+			"description": "A problem which impairs or prevents the functions of the product.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+			"name": "Bug",
+			"subtask": false
+		},
+		"votes": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/TST-10/votes",
+			"votes": 0,
+			"hasVoted": false
+		},
+		"resolution": null,
+		"fixVersions": [
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/version/10000",
+				"id": "10000",
+				"description": "Some version",
+				"name": "1.1",
+				"releaseDate": "2010-08-25",
+				"archived": false,
+				"released": false
+			}
+		],
+		"resolutiondate": null,
+		"reporter": {
+			"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+			"name": "admin",
+			"emailAddress": "wojciech.seliga@spartez.com",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+				"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+			},
+			"displayName": "Administrator",
+			"active": true
+		},
+		"created": "2012-12-07T15:31:21.197+0100",
+		"updated": "2012-12-07T15:32:44.493+0100",
+		"description": "my description",
+		"priority": {
+			"self": "http://localhost:2990/jira/rest/api/2/priority/3",
+			"iconUrl": "http://localhost:2990/jira/images/icons/priority_major.gif",
+			"name": "Major",
+			"id": "3"
+		},
+		"duedate": null,
+		"customfield_10001": {
+			"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10001",
+			"value": "Another",
+			"id": "10001"
+		},
+		"issuelinks": [],
+		"watches": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/TST-10/watchers",
+			"watchCount": 1,
+			"isWatching": false
+		},
+		"customfield_10000": 1.457,
+		"subtasks": [],
+		"status": {
+			"self": "http://localhost:2990/jira/rest/api/2/status/1",
+			"description": "The issue is open and ready for the assignee to start work on it.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/status_open.gif",
+			"name": "Open",
+			"id": "1"
+		},
+		"labels": [],
+		"workratio": 0,
+		"assignee": null,
+		"attachment": [],
+		"project": {
+			"self": "http://localhost:2990/jira/rest/api/2/project/TST",
+			"id": "10000",
+			"key": "TST",
+			"name": "Test Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+			}
+		},
+		"versions": [
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/version/10001",
+				"id": "10001",
+				"description": "initial version",
+				"name": "1",
+				"archived": false,
+				"released": false
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/version/10000",
+				"id": "10000",
+				"description": "Some version",
+				"name": "1.1",
+				"releaseDate": "2010-08-25",
+				"archived": false,
+				"released": false
+			}
+		],
+		"environment": "abc",
+		"components": [
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/component/10000",
+				"id": "10000",
+				"name": "Component A",
+				"description": "this is some description of component A"
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/component/10001",
+				"id": "10001",
+				"name": "Component B",
+				"description": "another description"
+			}
+		],
+		"comment": {
+			"startAt": 0,
+			"maxResults": 0,
+			"total": 0,
+			"comments": []
+		},
+		"customfield_10010": {
+			"self": "http://localhost:2990/jira/rest/api/2/project/TST",
+			"id": "10000",
+			"key": "TST",
+			"name": "Test Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+			}
+		},
+		"customfield_10011": null
+	},
+	"names": {
+		"summary": "Summary",
+		"issuetype": "Issue Type",
+		"votes": "Votes",
+		"resolution": "Resolution",
+		"fixVersions": "Fix Version/s",
+		"resolutiondate": "Resolved",
+		"reporter": "Reporter",
+		"created": "Created",
+		"updated": "Updated",
+		"description": "Description",
+		"priority": "Priority",
+		"duedate": "Due Date",
+		"customfield_10001": "My Radio buttons",
+		"issuelinks": "Linked Issues",
+		"watches": "Watchers",
+		"customfield_10000": "My Number Field New",
+		"subtasks": "Sub-Tasks",
+		"status": "Status",
+		"labels": "Labels",
+		"workratio": "Work Ratio",
+		"assignee": "Assignee",
+		"attachment": "Attachment",
+		"project": "Project",
+		"versions": "Affects Version/s",
+		"environment": "Environment",
+		"components": "Component/s",
+		"comment": "Comment",
+		"customfield_10010": "project3",
+		"customfield_10011": "project2"
+	},
+	"schema": {
+		"summary": {
+			"type": "string",
+			"system": "summary"
+		},
+		"issuetype": {
+			"type": "issuetype",
+			"system": "issuetype"
+		},
+		"votes": {
+			"type": "array",
+			"items": "votes",
+			"system": "votes"
+		},
+		"resolution": {
+			"type": "resolution",
+			"system": "resolution"
+		},
+		"fixVersions": {
+			"type": "array",
+			"items": "version",
+			"system": "fixVersions"
+		},
+		"resolutiondate": {
+			"type": "datetime",
+			"system": "resolutiondate"
+		},
+		"reporter": {
+			"type": "user",
+			"system": "reporter"
+		},
+		"created": {
+			"type": "datetime",
+			"system": "created"
+		},
+		"updated": {
+			"type": "datetime",
+			"system": "updated"
+		},
+		"description": {
+			"type": "string",
+			"system": "description"
+		},
+		"priority": {
+			"type": "priority",
+			"system": "priority"
+		},
+		"duedate": {
+			"type": "date",
+			"system": "duedate"
+		},
+		"customfield_10001": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+			"customId": 10001
+		},
+		"issuelinks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "issuelinks"
+		},
+		"watches": {
+			"type": "array",
+			"items": "watches",
+			"system": "watches"
+		},
+		"customfield_10000": {
+			"type": "number",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+			"customId": 10000
+		},
+		"subtasks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "subtasks"
+		},
+		"status": {
+			"type": "status",
+			"system": "status"
+		},
+		"labels": {
+			"type": "array",
+			"items": "string",
+			"system": "labels"
+		},
+		"workratio": {
+			"type": "number",
+			"system": "workratio"
+		},
+		"assignee": {
+			"type": "user",
+			"system": "assignee"
+		},
+		"attachment": {
+			"type": "array",
+			"items": "attachment",
+			"system": "attachment"
+		},
+		"project": {
+			"type": "project",
+			"system": "project"
+		},
+		"versions": {
+			"type": "array",
+			"items": "version",
+			"system": "versions"
+		},
+		"environment": {
+			"type": "string",
+			"system": "environment"
+		},
+		"components": {
+			"type": "array",
+			"items": "component",
+			"system": "components"
+		},
+		"comment": {
+			"type": "array",
+			"items": "comment",
+			"system": "comment"
+		},
+		"customfield_10010": {
+			"type": "project",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:project",
+			"customId": 10010
+		},
+		"customfield_10011": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+			"customId": 10011
+		}
+	},
+	"transitions": [
+		{
+			"id": "5",
+			"name": "Resolve Issue",
+			"to": {
+				"self": "http://localhost:2990/jira/rest/api/2/status/5",
+				"description": "A resolution has been taken, and it is awaiting verification by reporter. From here issues are either reopened, or are closed.",
+				"iconUrl": "http://localhost:2990/jira/images/icons/status_resolved.gif",
+				"name": "Resolved",
+				"id": "5"
+			}
+		},
+		{
+			"id": "2",
+			"name": "Close Issue",
+			"to": {
+				"self": "http://localhost:2990/jira/rest/api/2/status/6",
+				"description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+				"iconUrl": "http://localhost:2990/jira/images/icons/status_closed.gif",
+				"name": "Closed",
+				"id": "6"
+			}
+		},
+		{
+			"id": "711",
+			"name": "Estimate",
+			"to": {
+				"self": "http://localhost:2990/jira/rest/api/2/status/1",
+				"description": "The issue is open and ready for the assignee to start work on it.",
+				"iconUrl": "http://localhost:2990/jira/images/icons/status_open.gif",
+				"name": "Open",
+				"id": "1"
+			}
+		}
+	],
+	"operations": {
+		"linkGroups": [
+			{
+				"id": "view.issue.opsbar",
+				"links": [],
+				"groups": [
+					{
+						"links": [
+							{
+								"id": "edit-issue",
+								"styleClass": "issueaction-edit-issue",
+								"iconClass": "butt-edit",
+								"label": "Edit",
+								"title": "Edit this issue",
+								"href": "/jira/secure/EditIssue!default.jspa?id=10072"
+							}
+						],
+						"groups": []
+					},
+					{
+						"links": [
+							{
+								"id": "assign-issue",
+								"styleClass": "issueaction-assign-issue",
+								"label": "Assign",
+								"title": "Assign this issue to someone",
+								"href": "/jira/secure/AssignIssue!default.jspa?id=10072"
+							},
+							{
+								"id": "assign-to-me",
+								"styleClass": "conjoined issueaction-assign-to-me",
+								"label": "Assign To Me",
+								"title": "Assign this issue to me",
+								"href": "/jira/secure/AssignIssue.jspa?atl_token=BWU2-SJPU-J495-LC4Y|86150b354f8321a7c5faa7117f478a4142a38150|lin&id=10072&assignee=admin"
+							},
+							{
+								"id": "comment-issue",
+								"styleClass": "conjoined issueaction-comment-issue",
+								"label": "Comment",
+								"title": "Comment on this issue",
+								"href": "/jira/secure/AddComment!default.jspa?id=10072"
+							}
+						],
+						"groups": [
+							{
+								"header": {
+									"id": "opsbar-operations_more",
+									"label": "More Actions"
+								},
+								"links": [],
+								"groups": [
+									{
+										"links": [
+											{
+												"id": "attach-file",
+												"styleClass": "issueaction-attach-file",
+												"label": "Attach Files",
+												"title": "Attach one or more files to this issue",
+												"href": "/jira/secure/AttachFile!default.jspa?id=10072"
+											}
+										],
+										"groups": []
+									},
+									{
+										"links": [
+											{
+												"id": "view-voters",
+												"styleClass": "issueaction-view-voters",
+												"label": "Voters",
+												"title": "View voters for this issue",
+												"href": "/jira/secure/ViewVoters!default.jspa?id=10072"
+											},
+											{
+												"id": "toggle-watch-issue",
+												"styleClass": "issueaction-watch-issue",
+												"label": "Watch Issue",
+												"title": "Start watching this issue",
+												"href": "/jira/secure/VoteOrWatchIssue.jspa?atl_token=BWU2-SJPU-J495-LC4Y|86150b354f8321a7c5faa7117f478a4142a38150|lin&id=10072&watch=watch"
+											},
+											{
+												"id": "manage-watchers",
+												"styleClass": "issueaction-manage-watchers",
+												"label": "Watchers",
+												"title": "Manage the watchers of this issue",
+												"href": "/jira/secure/ManageWatchers!default.jspa?id=10072"
+											}
+										],
+										"groups": []
+									},
+									{
+										"links": [
+											{
+												"id": "create-subtask",
+												"styleClass": "issueaction-create-subtask",
+												"label": "Create Sub-Task",
+												"title": "Create sub-task for this issue",
+												"href": "/jira/secure/CreateSubTaskIssue!default.jspa?parentIssueId=10072"
+											},
+											{
+												"id": "issue-to-subtask",
+												"styleClass": "issueaction-issue-to-subtask",
+												"label": "Convert to Sub-Task",
+												"title": "Convert this issue to sub-task",
+												"href": "/jira/secure/ConvertIssue.jspa?id=10072"
+											}
+										],
+										"groups": []
+									},
+									{
+										"links": [
+											{
+												"id": "move-issue",
+												"styleClass": "issueaction-move-issue",
+												"label": "Move",
+												"title": "Move this issue to another project or issue type.",
+												"href": "/jira/secure/MoveIssue!default.jspa?id=10072"
+											},
+											{
+												"id": "link-issue",
+												"styleClass": "issueaction-link-issue",
+												"label": "Link",
+												"title": "Link this issue to another issue or item",
+												"href": "/jira/secure/LinkExistingIssue!default.jspa?id=10072"
+											},
+											{
+												"id": "clone-issue",
+												"styleClass": "issueaction-clone-issue",
+												"label": "Clone",
+												"title": "Clone this issue",
+												"href": "/jira/secure/CloneIssueDetails!default.jspa?id=10072"
+											},
+											{
+												"id": "edit-labels",
+												"styleClass": "issueaction-edit-labels",
+												"label": "Labels",
+												"title": "Edit this issue's labels",
+												"href": "/jira/secure/EditLabels!default.jspa?id=10072"
+											}
+										],
+										"groups": []
+									},
+									{
+										"links": [
+											{
+												"id": "delete-issue",
+												"styleClass": "issueaction-delete-issue",
+												"label": "Delete",
+												"title": "Delete this issue",
+												"href": "/jira/secure/DeleteIssue!default.jspa?id=10072"
+											}
+										],
+										"groups": []
+									}
+								]
+							}
+						]
+					},
+					{
+						"links": [
+							{
+								"id": "action_id_5",
+								"styleClass": "issueaction-workflow-transition",
+								"label": "Resolve Issue",
+								"href": "/jira/secure/WorkflowUIDispatcher.jspa?id=10072&action=5&atl_token="
+							},
+							{
+								"id": "action_id_2",
+								"styleClass": "issueaction-workflow-transition",
+								"label": "Close Issue",
+								"href": "/jira/secure/WorkflowUIDispatcher.jspa?id=10072&action=2&atl_token="
+							}
+						],
+						"groups": [
+							{
+								"header": {
+									"id": "opsbar-transitions_more",
+									"label": "Workflow"
+								},
+								"links": [],
+								"groups": [
+									{
+										"links": [
+											{
+												"id": "action_id_711",
+												"styleClass": "issueaction-workflow-transition",
+												"label": "Estimate",
+												"title": "Estimate - Provide some estimation",
+												"href": "/jira/secure/WorkflowUIDispatcher.jspa?id=10072&action=711&atl_token="
+											}
+										],
+										"groups": []
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			{
+				"id": "jira.issue.tools",
+				"links": [],
+				"groups": [
+					{
+						"header": {
+							"iconClass": "icon-view",
+							"label": "Views",
+							"title": "View this issue in another format"
+						},
+						"links": [
+							{
+								"label": "XML",
+								"href": "/jira/si/jira.issueviews:issue-xml/TST-10/TST-10.xml"
+							},
+							{
+								"label": "Word",
+								"href": "/jira/si/jira.issueviews:issue-word/TST-10/TST-10.doc"
+							},
+							{
+								"label": "Printable",
+								"href": "/jira/si/jira.issueviews:issue-html/TST-10/TST-10.html"
+							}
+						],
+						"groups": []
+					}
+				]
+			}
+		]
+	},
+	"editmeta": {
+		"fields": {
+			"summary": {
+				"required": true,
+				"schema": {
+					"type": "string",
+					"system": "summary"
+				},
+				"name": "Summary",
+				"operations": [
+					"set"
+				]
+			},
+			"issuetype": {
+				"required": true,
+				"schema": {
+					"type": "issuetype",
+					"system": "issuetype"
+				},
+				"name": "Issue Type",
+				"operations": [],
+				"allowedValues": [
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/issuetype/1",
+						"id": "1",
+						"description": "A problem which impairs or prevents the functions of the product.",
+						"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+						"name": "Bug",
+						"subtask": false
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/issuetype/2",
+						"id": "2",
+						"description": "A new feature of the product, which has yet to be developed.",
+						"iconUrl": "http://localhost:2990/jira/images/icons/newfeature.gif",
+						"name": "New Feature",
+						"subtask": false
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/issuetype/3",
+						"id": "3",
+						"description": "A task that needs to be done.",
+						"iconUrl": "http://localhost:2990/jira/images/icons/task.gif",
+						"name": "Task",
+						"subtask": false
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/issuetype/4",
+						"id": "4",
+						"description": "An improvement or enhancement to an existing feature or task.",
+						"iconUrl": "http://localhost:2990/jira/images/icons/improvement.gif",
+						"name": "Improvement",
+						"subtask": false
+					}
+				]
+			},
+			"labels": {
+				"required": false,
+				"schema": {
+					"type": "array",
+					"items": "string",
+					"system": "labels"
+				},
+				"name": "Labels",
+				"autoCompleteUrl": "http://localhost:2990/jira/rest/api/1.0/labels/suggest?query=",
+				"operations": [
+					"add",
+					"set",
+					"remove"
+				]
+			},
+			"assignee": {
+				"required": false,
+				"schema": {
+					"type": "user",
+					"system": "assignee"
+				},
+				"name": "Assignee",
+				"autoCompleteUrl": "http://localhost:2990/jira/rest/api/latest/user/assignable/search?issueKey=TST-10&username=",
+				"operations": [
+					"set"
+				]
+			},
+			"fixVersions": {
+				"required": false,
+				"schema": {
+					"type": "array",
+					"items": "version",
+					"system": "fixVersions"
+				},
+				"name": "Fix Version/s",
+				"operations": [
+					"set",
+					"add",
+					"remove"
+				],
+				"allowedValues": [
+					{
+						"self": "http://localhost:2990/jira/rest/api/latest/version/10001",
+						"id": "10001",
+						"description": "initial version",
+						"name": "1",
+						"archived": false,
+						"released": false
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/latest/version/10000",
+						"id": "10000",
+						"description": "Some version",
+						"name": "1.1",
+						"overdue": true,
+						"userReleaseDate": "25/sie/10",
+						"archived": false,
+						"releaseDate": "2010-08-25",
+						"released": false
+					}
+				]
+			},
+			"attachment": {
+				"required": false,
+				"schema": {
+					"type": "array",
+					"items": "attachment",
+					"system": "attachment"
+				},
+				"name": "Attachment",
+				"operations": []
+			},
+			"reporter": {
+				"required": true,
+				"schema": {
+					"type": "user",
+					"system": "reporter"
+				},
+				"name": "Reporter",
+				"autoCompleteUrl": "http://localhost:2990/jira/rest/api/latest/user/search?username=",
+				"operations": [
+					"set"
+				]
+			},
+			"versions": {
+				"required": false,
+				"schema": {
+					"type": "array",
+					"items": "version",
+					"system": "versions"
+				},
+				"name": "Affects Version/s",
+				"operations": [
+					"set",
+					"add",
+					"remove"
+				],
+				"allowedValues": [
+					{
+						"self": "http://localhost:2990/jira/rest/api/latest/version/10001",
+						"id": "10001",
+						"description": "initial version",
+						"name": "1",
+						"archived": false,
+						"released": false
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/latest/version/10000",
+						"id": "10000",
+						"description": "Some version",
+						"name": "1.1",
+						"overdue": true,
+						"userReleaseDate": "25/sie/10",
+						"archived": false,
+						"releaseDate": "2010-08-25",
+						"released": false
+					}
+				]
+			},
+			"environment": {
+				"required": false,
+				"schema": {
+					"type": "string",
+					"system": "environment"
+				},
+				"name": "Environment",
+				"operations": [
+					"set"
+				]
+			},
+			"priority": {
+				"required": false,
+				"schema": {
+					"type": "priority",
+					"system": "priority"
+				},
+				"name": "Priority",
+				"operations": [
+					"set"
+				],
+				"allowedValues": [
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/priority/1",
+						"iconUrl": "http://localhost:2990/jira/images/icons/priority_blocker.gif",
+						"name": "Blocker",
+						"id": "1"
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/priority/2",
+						"iconUrl": "http://localhost:2990/jira/images/icons/priority_critical.gif",
+						"name": "Critical",
+						"id": "2"
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/priority/3",
+						"iconUrl": "http://localhost:2990/jira/images/icons/priority_major.gif",
+						"name": "Major",
+						"id": "3"
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/priority/4",
+						"iconUrl": "http://localhost:2990/jira/images/icons/priority_minor.gif",
+						"name": "Minor",
+						"id": "4"
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/priority/5",
+						"iconUrl": "http://localhost:2990/jira/images/icons/priority_trivial.gif",
+						"name": "Trivial",
+						"id": "5"
+					}
+				]
+			},
+			"description": {
+				"required": false,
+				"schema": {
+					"type": "string",
+					"system": "description"
+				},
+				"name": "Description",
+				"operations": [
+					"set"
+				]
+			},
+			"customfield_10001": {
+				"required": false,
+				"schema": {
+					"type": "string",
+					"custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+					"customId": 10001
+				},
+				"name": "My Radio buttons",
+				"operations": [
+					"set"
+				],
+				"allowedValues": [
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10000",
+						"value": "abc",
+						"id": "10000"
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10001",
+						"value": "Another",
+						"id": "10001"
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10002",
+						"value": "The last option",
+						"id": "10002"
+					}
+				]
+			},
+			"duedate": {
+				"required": false,
+				"schema": {
+					"type": "date",
+					"system": "duedate"
+				},
+				"name": "Due Date",
+				"operations": [
+					"set"
+				]
+			},
+			"components": {
+				"required": false,
+				"schema": {
+					"type": "array",
+					"items": "component",
+					"system": "components"
+				},
+				"name": "Component/s",
+				"operations": [
+					"add",
+					"set",
+					"remove"
+				],
+				"allowedValues": [
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/component/10000",
+						"id": "10000",
+						"name": "Component A",
+						"description": "this is some description of component A"
+					},
+					{
+						"self": "http://localhost:2990/jira/rest/api/2/component/10001",
+						"id": "10001",
+						"name": "Component B",
+						"description": "another description"
+					}
+				]
+			},
+			"comment": {
+				"required": false,
+				"schema": {
+					"type": "array",
+					"items": "comment",
+					"system": "comment"
+				},
+				"name": "Comment",
+				"operations": [
+					"add",
+					"edit",
+					"remove"
+				]
+			},
+			"customfield_10010": {
+				"required": false,
+				"schema": {
+					"type": "project",
+					"custom": "com.atlassian.jira.plugin.system.customfieldtypes:project",
+					"customId": 10010
+				},
+				"name": "project3",
+				"operations": [
+					"set"
+				],
+				"allowedValues": [
+					[
+						{
+							"self": "http://localhost:2990/jira/rest/api/2/project/ANNON",
+							"id": "10020",
+							"key": "ANNON",
+							"name": "Anonymously Accessible Project",
+							"avatarUrls": {
+								"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10020&avatarId=10011",
+								"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10020&avatarId=10011"
+							}
+						},
+						{
+							"self": "http://localhost:2990/jira/rest/api/2/project/RST",
+							"id": "10010",
+							"key": "RST",
+							"name": "Restricted Project",
+							"avatarUrls": {
+								"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10010&avatarId=10011",
+								"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10010&avatarId=10011"
+							}
+						},
+						{
+							"self": "http://localhost:2990/jira/rest/api/2/project/TST",
+							"id": "10000",
+							"key": "TST",
+							"name": "Test Project",
+							"avatarUrls": {
+								"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+								"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+							}
+						}
+					]
+				]
+			},
+			"customfield_10011": {
+				"required": false,
+				"schema": {
+					"type": "string",
+					"custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+					"customId": 10011
+				},
+				"name": "project2",
+				"operations": [
+					"set"
+				]
+			},
+			"customfield_10000": {
+				"required": false,
+				"schema": {
+					"type": "number",
+					"custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+					"customId": 10000
+				},
+				"name": "My Number Field New",
+				"operations": [
+					"set"
+				]
+			}
+		}
+	},
+	"changelog": {
+		"startAt": 0,
+		"maxResults": 2,
+		"total": 2,
+		"histories": [
+			{
+				"id": "10173",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2012-12-07T15:31:32.126+0100",
+				"items": [
+					{
+						"field": "assignee",
+						"fieldtype": "jira",
+						"from": "wseliga",
+						"fromString": "Wojciech Seliga",
+						"to": "admin",
+						"toString": "Administrator"
+					}
+				]
+			},
+			{
+				"id": "10174",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2012-12-07T15:32:44.495+0100",
+				"items": [
+					{
+						"field": "assignee",
+						"fieldtype": "jira",
+						"from": "admin",
+						"fromString": "Administrator",
+						"to": null,
+						"toString": null
+					}
+				]
+			}
+		]
+	}
+}

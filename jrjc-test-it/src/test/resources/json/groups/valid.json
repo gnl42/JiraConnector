@@ -1,0 +1,16 @@
+{
+    "header": "2 of 2",
+    "total": 2,
+    "groups": [
+        {
+            "name": "jira-administrators",
+            "html": "jira-administrators",
+            "labels": []
+        },
+        {
+            "name": "jira-users",
+            "html": "jira-users",
+            "labels": []
+        }
+    ]
+}

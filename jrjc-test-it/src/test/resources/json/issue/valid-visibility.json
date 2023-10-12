@@ -1,0 +1,1781 @@
+{
+	"expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog",
+	"id": "10010",
+	"self": "http://localhost:2990/jira/rest/api/latest/issue/10010",
+	"key": "TST-2",
+	"fields": {
+		"summary": "Testing attachem2",
+		"progress": {
+			"progress": 8700,
+			"total": 8700,
+			"percent": 100
+		},
+		"timetracking": {
+			"originalEstimate": "0m",
+			"remainingEstimate": "0m",
+			"timeSpent": "2h 25m",
+			"originalEstimateSeconds": 0,
+			"remainingEstimateSeconds": 0,
+			"timeSpentSeconds": 8700
+		},
+		"issuetype": {
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/1",
+			"id": "1",
+			"description": "A problem which impairs or prevents the functions of the product.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+			"name": "Bug",
+			"subtask": false
+		},
+		"votes": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/TST-2/votes",
+			"votes": 1,
+			"hasVoted": false
+		},
+		"resolution": null,
+		"fixVersions": [
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/version/10000",
+				"id": "10000",
+				"description": "Some version",
+				"name": "1.1",
+				"releaseDate": "2010-08-25",
+				"archived": false,
+				"released": false
+			}
+		],
+		"resolutiondate": null,
+		"timespent": 8700,
+		"reporter": {
+			"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+			"name": "admin",
+			"emailAddress": "wojciech.seliga@spartez.com",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+				"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+			},
+			"displayName": "Administrator",
+			"active": true
+		},
+		"aggregatetimeoriginalestimate": 0,
+		"created": "2010-07-26T13:29:18.262+0200",
+		"updated": "2012-12-07T14:52:52.570+0100",
+		"description": "my description",
+		"priority": {
+			"self": "http://localhost:2990/jira/rest/api/2/priority/3",
+			"iconUrl": "http://localhost:2990/jira/images/icons/priority_major.gif",
+			"name": "Major",
+			"id": "3"
+		},
+		"duedate": null,
+		"customfield_10001": {
+			"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10001",
+			"value": "Another",
+			"id": "10001"
+		},
+		"issuelinks": [
+			{
+				"id": "10010",
+				"self": "http://localhost:2990/jira/rest/api/2/issueLink/10010",
+				"type": {
+					"id": "10010",
+					"name": "Duplicate",
+					"inward": "is duplicated by",
+					"outward": "duplicates",
+					"self": "http://localhost:2990/jira/rest/api/2/issueLinkType/10010"
+				},
+				"outwardIssue": {
+					"id": "10000",
+					"key": "TST-1",
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10000",
+					"fields": {
+						"summary": "My sample test",
+						"status": {
+							"self": "http://localhost:2990/jira/rest/api/2/status/1",
+							"description": "The issue is open and ready for the assignee to start work on it.",
+							"iconUrl": "http://localhost:2990/jira/images/icons/status_open.gif",
+							"name": "Open",
+							"id": "1"
+						},
+						"issuetype": {
+							"self": "http://localhost:2990/jira/rest/api/2/issuetype/1",
+							"id": "1",
+							"description": "A problem which impairs or prevents the functions of the product.",
+							"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+							"name": "Bug",
+							"subtask": false
+						},
+						"priority": {
+							"self": "http://localhost:2990/jira/rest/api/2/priority/3",
+							"iconUrl": "http://localhost:2990/jira/images/icons/priority_major.gif",
+							"name": "Major",
+							"id": "3"
+						}
+					}
+				}
+			},
+			{
+				"id": "10000",
+				"self": "http://localhost:2990/jira/rest/api/2/issueLink/10000",
+				"type": {
+					"id": "10010",
+					"name": "Duplicate",
+					"inward": "is duplicated by",
+					"outward": "duplicates",
+					"self": "http://localhost:2990/jira/rest/api/2/issueLinkType/10010"
+				},
+				"inwardIssue": {
+					"id": "10000",
+					"key": "TST-1",
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10000",
+					"fields": {
+						"summary": "My sample test",
+						"status": {
+							"self": "http://localhost:2990/jira/rest/api/2/status/1",
+							"description": "The issue is open and ready for the assignee to start work on it.",
+							"iconUrl": "http://localhost:2990/jira/images/icons/status_open.gif",
+							"name": "Open",
+							"id": "1"
+						},
+						"issuetype": {
+							"self": "http://localhost:2990/jira/rest/api/2/issuetype/1",
+							"id": "1",
+							"description": "A problem which impairs or prevents the functions of the product.",
+							"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+							"name": "Bug",
+							"subtask": false
+						},
+						"priority": {
+							"self": "http://localhost:2990/jira/rest/api/2/priority/3",
+							"iconUrl": "http://localhost:2990/jira/images/icons/priority_major.gif",
+							"name": "Major",
+							"id": "3"
+						}
+					}
+				}
+			}
+		],
+		"watches": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/TST-2/watchers",
+			"watchCount": 1,
+			"isWatching": false
+		},
+		"worklog": {
+			"startAt": 0,
+			"maxResults": 5,
+			"total": 5,
+			"worklogs": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/worklog/10010",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"comment": "my first work",
+					"created": "2010-08-17T16:35:47.466+0200",
+					"updated": "2010-08-17T16:35:47.466+0200",
+					"started": "2010-08-15T16:35:00.000+0200",
+					"timeSpent": "1h",
+					"timeSpentSeconds": 3600,
+					"id": "10010"
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/worklog/10011",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+						"name": "wseliga",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+						},
+						"displayName": "Wojciech Seliga",
+						"active": true
+					},
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+						"name": "wseliga",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+						},
+						"displayName": "Wojciech Seliga",
+						"active": true
+					},
+					"comment": "another piece of work",
+					"created": "2010-08-17T16:38:00.013+0200",
+					"updated": "2010-08-17T16:38:24.948+0200",
+					"started": "2010-08-17T16:37:00.000+0200",
+					"timeSpent": "15m",
+					"timeSpentSeconds": 900,
+					"id": "10011",
+					"visibility": {
+						"type": "role",
+						"value": "Developers"
+					}
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/worklog/10012",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+						"name": "wseliga",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+						},
+						"displayName": "Wojciech Seliga",
+						"active": true
+					},
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+						"name": "wseliga",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+						},
+						"displayName": "Wojciech Seliga",
+						"active": true
+					},
+					"comment": "a worklog viewable just by jira-users",
+					"created": "2010-08-17T16:53:15.848+0200",
+					"updated": "2010-08-17T16:53:15.848+0200",
+					"started": "2010-08-11T16:52:00.000+0200",
+					"timeSpent": "3m",
+					"timeSpentSeconds": 180,
+					"id": "10012",
+					"visibility": {
+						"type": "group",
+						"value": "jira-users"
+					}
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/worklog/10020",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"comment": "",
+					"created": "2010-08-27T14:58:37.130+0200",
+					"updated": "2010-08-27T14:58:37.130+0200",
+					"started": "2010-08-27T14:57:00.000+0200",
+					"timeSpent": "1h",
+					"timeSpentSeconds": 3600,
+					"id": "10020"
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/worklog/10021",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"comment": "Another work for 7 min",
+					"created": "2010-08-27T15:00:02.104+0200",
+					"updated": "2010-08-27T15:00:02.104+0200",
+					"started": "2010-08-27T14:59:00.000+0200",
+					"timeSpent": "7m",
+					"timeSpentSeconds": 420,
+					"id": "10021"
+				}
+			]
+		},
+		"customfield_10000": 1.457,
+		"subtasks": [],
+		"status": {
+			"self": "http://localhost:2990/jira/rest/api/2/status/3",
+			"description": "This issue is being actively worked on at the moment by the assignee.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/status_inprogress.gif",
+			"name": "In Progress",
+			"id": "3"
+		},
+		"labels": [],
+		"workratio": 9223372036854776000,
+		"assignee": {
+			"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+			"name": "wseliga",
+			"emailAddress": "wojciech.seliga@spartez.com",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+				"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+			},
+			"displayName": "Wojciech Seliga",
+			"active": true
+		},
+		"attachment": [
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/attachment/10062",
+				"id": "10062",
+				"filename": "10000_thumb_snipe.jpg",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-30T10:49:33.412+0200",
+				"size": 10260,
+				"mimeType": "image/jpeg",
+				"content": "http://localhost:2990/jira/secure/attachment/10062/10000_thumb_snipe.jpg"
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/attachment/10060",
+				"id": "10060",
+				"filename": "Admal pompa ciepła.pdf",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-30T10:49:33.390+0200",
+				"size": 306939,
+				"mimeType": "application/force-download",
+				"content": "http://localhost:2990/jira/secure/attachment/10060/Admal+pompa+ciep%C5%82a.pdf"
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/attachment/10061",
+				"id": "10061",
+				"filename": "apache-tomcat-5.5.30.zip",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-30T10:49:33.410+0200",
+				"size": 9144101,
+				"mimeType": "application/zip",
+				"content": "http://localhost:2990/jira/secure/attachment/10061/apache-tomcat-5.5.30.zip"
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/attachment/10070",
+				"id": "10070",
+				"filename": "avatar1.png",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2012-12-07T14:52:52.562+0100",
+				"size": 359345,
+				"mimeType": "image/png",
+				"content": "http://localhost:2990/jira/secure/attachment/10070/avatar1.png",
+				"thumbnail": "http://localhost:2990/jira/secure/thumbnail/10070/_thumb_10070.png"
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/attachment/10036",
+				"id": "10036",
+				"filename": "jira_logo.gif",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T14:41:52.159+0200",
+				"size": 2517,
+				"mimeType": "image/gif",
+				"content": "http://localhost:2990/jira/secure/attachment/10036/jira_logo.gif"
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/attachment/10031",
+				"id": "10031",
+				"filename": "snipe.png",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T13:31:35.577+0200",
+				"size": 31020,
+				"mimeType": "image/png",
+				"content": "http://localhost:2990/jira/secure/attachment/10031/snipe.png"
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/attachment/10035",
+				"id": "10035",
+				"filename": "transparent-png.png",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T13:38:32.643+0200",
+				"size": 30347,
+				"mimeType": "image/png",
+				"content": "http://localhost:2990/jira/secure/attachment/10035/transparent-png.png"
+			}
+		],
+		"aggregatetimeestimate": 0,
+		"project": {
+			"self": "http://localhost:2990/jira/rest/api/2/project/TST",
+			"id": "10000",
+			"key": "TST",
+			"name": "Test Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+			}
+		},
+		"versions": [
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/version/10001",
+				"id": "10001",
+				"description": "initial version",
+				"name": "1",
+				"archived": false,
+				"released": false
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/version/10000",
+				"id": "10000",
+				"description": "Some version",
+				"name": "1.1",
+				"releaseDate": "2010-08-25",
+				"archived": false,
+				"released": false
+			}
+		],
+		"environment": "abc",
+		"timeestimate": 0,
+		"aggregateprogress": {
+			"progress": 8700,
+			"total": 8700,
+			"percent": 100
+		},
+		"components": [
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/component/10000",
+				"id": "10000",
+				"name": "Component A",
+				"description": "this is some description of component A"
+			},
+			{
+				"self": "http://localhost:2990/jira/rest/api/2/component/10001",
+				"id": "10001",
+				"name": "Component B",
+				"description": "another description"
+			}
+		],
+		"comment": {
+			"startAt": 0,
+			"maxResults": 4,
+			"total": 4,
+			"comments": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/comment/10020",
+					"id": "10020",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"body": "some comment",
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"created": "2010-08-17T16:40:57.791+0200",
+					"updated": "2010-08-17T16:40:57.791+0200",
+					"visibility": {
+						"type": "role",
+						"value": "Administrators"
+					}
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/comment/10021",
+					"id": "10021",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+						"name": "wseliga",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+						},
+						"displayName": "Wojciech Seliga",
+						"active": true
+					},
+					"body": "a comment by user",
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+						"name": "wseliga",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+						},
+						"displayName": "Wojciech Seliga",
+						"active": true
+					},
+					"created": "2010-08-17T16:41:15.360+0200",
+					"updated": "2010-08-17T16:41:15.360+0200"
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/comment/10022",
+					"id": "10022",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+						"name": "wseliga",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+						},
+						"displayName": "Wojciech Seliga",
+						"active": true
+					},
+					"body": "a comment viewable only by jira-users",
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+						"name": "wseliga",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+						},
+						"displayName": "Wojciech Seliga",
+						"active": true
+					},
+					"created": "2010-08-17T16:49:31.528+0200",
+					"updated": "2010-08-17T16:49:31.528+0200",
+					"visibility": {
+						"type": "group",
+						"value": "jira-users"
+					}
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10010/comment/10050",
+					"id": "10050",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"body": "Comment for *avatar1*!",
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name": "admin",
+						"emailAddress": "wojciech.seliga@spartez.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName": "Administrator",
+						"active": true
+					},
+					"created": "2012-12-07T14:52:52.567+0100",
+					"updated": "2012-12-07T14:52:52.567+0100"
+				}
+			]
+		},
+		"customfield_10010": {
+			"self": "http://localhost:2990/jira/rest/api/2/project/TST",
+			"id": "10000",
+			"key": "TST",
+			"name": "Test Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+			}
+		},
+		"timeoriginalestimate": 0,
+		"customfield_10011": null,
+		"aggregatetimespent": 8700
+	},
+	"names": {
+		"summary": "Summary",
+		"progress": "Progress",
+		"timetracking": "Time Tracking",
+		"issuetype": "Issue Type",
+		"votes": "Votes",
+		"resolution": "Resolution",
+		"fixVersions": "Fix Version/s",
+		"resolutiondate": "Resolved",
+		"timespent": "Time Spent",
+		"reporter": "Reporter",
+		"aggregatetimeoriginalestimate": "Σ Original Estimate",
+		"created": "Created",
+		"updated": "Updated",
+		"description": "Description",
+		"priority": "Priority",
+		"duedate": "Due Date",
+		"customfield_10001": "My Radio buttons",
+		"issuelinks": "Linked Issues",
+		"watches": "Watchers",
+		"worklog": "Log Work",
+		"customfield_10000": "My Number Field New",
+		"subtasks": "Sub-Tasks",
+		"status": "Status",
+		"labels": "Labels",
+		"workratio": "Work Ratio",
+		"assignee": "Assignee",
+		"attachment": "Attachment",
+		"aggregatetimeestimate": "Σ Remaining Estimate",
+		"project": "Project",
+		"versions": "Affects Version/s",
+		"environment": "Environment",
+		"timeestimate": "Remaining Estimate",
+		"aggregateprogress": "Σ Progress",
+		"components": "Component/s",
+		"comment": "Comment",
+		"customfield_10010": "project3",
+		"timeoriginalestimate": "Original Estimate",
+		"customfield_10011": "project2",
+		"aggregatetimespent": "Σ Time Spent"
+	},
+	"schema": {
+		"summary": {
+			"type": "string",
+			"system": "summary"
+		},
+		"progress": {
+			"type": "progress",
+			"system": "progress"
+		},
+		"timetracking": {
+			"type": "timetracking",
+			"system": "timetracking"
+		},
+		"issuetype": {
+			"type": "issuetype",
+			"system": "issuetype"
+		},
+		"votes": {
+			"type": "array",
+			"items": "votes",
+			"system": "votes"
+		},
+		"resolution": {
+			"type": "resolution",
+			"system": "resolution"
+		},
+		"fixVersions": {
+			"type": "array",
+			"items": "version",
+			"system": "fixVersions"
+		},
+		"resolutiondate": {
+			"type": "datetime",
+			"system": "resolutiondate"
+		},
+		"timespent": {
+			"type": "number",
+			"system": "timespent"
+		},
+		"reporter": {
+			"type": "user",
+			"system": "reporter"
+		},
+		"aggregatetimeoriginalestimate": {
+			"type": "number",
+			"system": "aggregatetimeoriginalestimate"
+		},
+		"created": {
+			"type": "datetime",
+			"system": "created"
+		},
+		"updated": {
+			"type": "datetime",
+			"system": "updated"
+		},
+		"description": {
+			"type": "string",
+			"system": "description"
+		},
+		"priority": {
+			"type": "priority",
+			"system": "priority"
+		},
+		"duedate": {
+			"type": "date",
+			"system": "duedate"
+		},
+		"customfield_10001": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+			"customId": 10001
+		},
+		"issuelinks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "issuelinks"
+		},
+		"watches": {
+			"type": "array",
+			"items": "watches",
+			"system": "watches"
+		},
+		"worklog": {
+			"type": "array",
+			"items": "worklog",
+			"system": "worklog"
+		},
+		"customfield_10000": {
+			"type": "number",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+			"customId": 10000
+		},
+		"subtasks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "subtasks"
+		},
+		"status": {
+			"type": "status",
+			"system": "status"
+		},
+		"labels": {
+			"type": "array",
+			"items": "string",
+			"system": "labels"
+		},
+		"workratio": {
+			"type": "number",
+			"system": "workratio"
+		},
+		"assignee": {
+			"type": "user",
+			"system": "assignee"
+		},
+		"attachment": {
+			"type": "array",
+			"items": "attachment",
+			"system": "attachment"
+		},
+		"aggregatetimeestimate": {
+			"type": "number",
+			"system": "aggregatetimeestimate"
+		},
+		"project": {
+			"type": "project",
+			"system": "project"
+		},
+		"versions": {
+			"type": "array",
+			"items": "version",
+			"system": "versions"
+		},
+		"environment": {
+			"type": "string",
+			"system": "environment"
+		},
+		"timeestimate": {
+			"type": "number",
+			"system": "timeestimate"
+		},
+		"aggregateprogress": {
+			"type": "progress",
+			"system": "aggregateprogress"
+		},
+		"components": {
+			"type": "array",
+			"items": "component",
+			"system": "components"
+		},
+		"comment": {
+			"type": "array",
+			"items": "comment",
+			"system": "comment"
+		},
+		"customfield_10010": {
+			"type": "project",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:project",
+			"customId": 10010
+		},
+		"timeoriginalestimate": {
+			"type": "number",
+			"system": "timeoriginalestimate"
+		},
+		"customfield_10011": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+			"customId": 10011
+		},
+		"aggregatetimespent": {
+			"type": "number",
+			"system": "aggregatetimespent"
+		}
+	},
+	"changelog": {
+		"startAt": 0,
+		"maxResults": 30,
+		"total": 30,
+		"histories": [
+			{
+				"id": "10030",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T13:29:53.820+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10030",
+						"toString": "DSC_0051.jpg"
+					}
+				]
+			},
+			{
+				"id": "10031",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T13:31:35.582+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10031",
+						"toString": "snipe.png"
+					}
+				]
+			},
+			{
+				"id": "10032",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T13:34:12.360+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10032",
+						"toString": "spartez-logo-new.gif"
+					}
+				]
+			},
+			{
+				"id": "10033",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T13:35:00.924+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10033",
+						"toString": "skitch2.png"
+					}
+				]
+			},
+			{
+				"id": "10034",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T13:35:44.766+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10034",
+						"toString": "jira-million-issues.png"
+					}
+				]
+			},
+			{
+				"id": "10035",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T13:38:32.647+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10035",
+						"toString": "transparent-png.png"
+					}
+				]
+			},
+			{
+				"id": "10036",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T14:41:27.866+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": "10032",
+						"fromString": "spartez-logo-new.gif",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10037",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-07-26T14:41:52.162+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10036",
+						"toString": "jira_logo.gif"
+					}
+				]
+			},
+			{
+				"id": "10081",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-10T13:13:44.810+0200",
+				"items": [
+					{
+						"field": "Link",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "TST-1",
+						"toString": "This issue is duplicated by TST-1"
+					}
+				]
+			},
+			{
+				"id": "10087",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-10T17:39:19.927+0200",
+				"items": [
+					{
+						"field": "Fix Version",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10000",
+						"toString": "1.1"
+					},
+					{
+						"field": "Version",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10001",
+						"toString": "1"
+					},
+					{
+						"field": "Version",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10000",
+						"toString": "1.1"
+					},
+					{
+						"field": "Component",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10001",
+						"toString": "Component B"
+					}
+				]
+			},
+			{
+				"id": "10090",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-17T14:28:14.720+0200",
+				"items": [
+					{
+						"field": "Component",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10000",
+						"toString": "Component A"
+					}
+				]
+			},
+			{
+				"id": "10091",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-17T16:35:47.477+0200",
+				"items": [
+					{
+						"field": "timeestimate",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "0",
+						"toString": "0"
+					},
+					{
+						"field": "timespent",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "3600",
+						"toString": "3600"
+					},
+					{
+						"field": "WorklogId",
+						"fieldtype": "jira",
+						"from": "10010",
+						"fromString": "10010",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10092",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-17T16:36:29.178+0200",
+				"items": [
+					{
+						"field": "Link",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "TST-1",
+						"toString": "This issue duplicates TST-1"
+					}
+				]
+			},
+			{
+				"id": "10094",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+					"name": "wseliga",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+					},
+					"displayName": "Wojciech Seliga",
+					"active": true
+				},
+				"created": "2010-08-17T16:38:00.017+0200",
+				"items": [
+					{
+						"field": "timespent",
+						"fieldtype": "jira",
+						"from": "3600",
+						"fromString": "3600",
+						"to": "4500",
+						"toString": "4500"
+					},
+					{
+						"field": "WorklogId",
+						"fieldtype": "jira",
+						"from": "10011",
+						"fromString": "10011",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10095",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+					"name": "wseliga",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+					},
+					"displayName": "Wojciech Seliga",
+					"active": true
+				},
+				"created": "2010-08-17T16:38:24.955+0200",
+				"items": [
+					{
+						"field": "WorklogId",
+						"fieldtype": "jira",
+						"from": "10011",
+						"fromString": "10011",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10096",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-17T16:39:54.382+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": "10033",
+						"fromString": "skitch2.png",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10097",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-17T16:39:59.386+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": "10030",
+						"fromString": "DSC_0051.jpg",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10098",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-17T16:40:09.680+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": "10034",
+						"fromString": "jira-million-issues.png",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10099",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-17T16:40:34.924+0200",
+				"items": [
+					{
+						"field": "status",
+						"fieldtype": "jira",
+						"from": "1",
+						"fromString": "Open",
+						"to": "3",
+						"toString": "In Progress"
+					}
+				]
+			},
+			{
+				"id": "10100",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+					"name": "wseliga",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+					},
+					"displayName": "Wojciech Seliga",
+					"active": true
+				},
+				"created": "2010-08-17T16:53:15.852+0200",
+				"items": [
+					{
+						"field": "timespent",
+						"fieldtype": "jira",
+						"from": "4500",
+						"fromString": "4500",
+						"to": "4680",
+						"toString": "4680"
+					},
+					{
+						"field": "WorklogId",
+						"fieldtype": "jira",
+						"from": "10012",
+						"fromString": "10012",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10120",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-24T16:10:23.468+0200",
+				"items": [
+					{
+						"field": "timeoriginalestimate",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "0",
+						"toString": "0"
+					},
+					{
+						"field": "My Radio buttons",
+						"fieldtype": "custom",
+						"from": null,
+						"fromString": null,
+						"to": null,
+						"toString": "Another"
+					},
+					{
+						"field": "project3",
+						"fieldtype": "custom",
+						"from": null,
+						"fromString": null,
+						"to": "10000",
+						"toString": "Test Project"
+					},
+					{
+						"field": "My Number Field New",
+						"fieldtype": "custom",
+						"from": null,
+						"fromString": null,
+						"to": null,
+						"toString": "1.45"
+					}
+				]
+			},
+			{
+				"id": "10130",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-24T17:16:39.529+0200",
+				"items": [
+					{
+						"field": "My Number Field New",
+						"fieldtype": "custom",
+						"from": null,
+						"fromString": "1,45",
+						"to": null,
+						"toString": "1,457"
+					}
+				]
+			},
+			{
+				"id": "10131",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-24T17:37:13.274+0200",
+				"items": [
+					{
+						"field": "environment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": null,
+						"toString": "abc"
+					}
+				]
+			},
+			{
+				"id": "10132",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-26T13:09:49.493+0200",
+				"items": [
+					{
+						"field": "description",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": null,
+						"toString": "my description"
+					}
+				]
+			},
+			{
+				"id": "10140",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-27T14:58:37.158+0200",
+				"items": [
+					{
+						"field": "timespent",
+						"fieldtype": "jira",
+						"from": "4680",
+						"fromString": "4680",
+						"to": "8280",
+						"toString": "8280"
+					},
+					{
+						"field": "WorklogId",
+						"fieldtype": "jira",
+						"from": "10020",
+						"fromString": "10020",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10141",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-27T15:00:02.110+0200",
+				"items": [
+					{
+						"field": "timespent",
+						"fieldtype": "jira",
+						"from": "8280",
+						"fromString": "8280",
+						"to": "8700",
+						"toString": "8700"
+					},
+					{
+						"field": "WorklogId",
+						"fieldtype": "jira",
+						"from": "10021",
+						"fromString": "10021",
+						"to": null,
+						"toString": null
+					}
+				]
+			},
+			{
+				"id": "10142",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-08-30T10:49:33.450+0200",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10060",
+						"toString": "Admal pompa ciepła.pdf"
+					},
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10061",
+						"toString": "apache-tomcat-5.5.30.zip"
+					},
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10062",
+						"toString": "10000_thumb_snipe.jpg"
+					}
+				]
+			},
+			{
+				"id": "10154",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2010-09-20T18:35:57.253+0200",
+				"items": [
+					{
+						"field": "Workflow",
+						"fieldtype": "jira",
+						"from": "10010",
+						"fromString": "jira",
+						"to": "10044",
+						"toString": "test-workflow"
+					}
+				]
+			},
+			{
+				"id": "10170",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2012-12-07T14:43:49.593+0100",
+				"items": [
+					{
+						"field": "assignee",
+						"fieldtype": "jira",
+						"from": "admin",
+						"fromString": "Administrator",
+						"to": "wseliga",
+						"toString": "Wojciech Seliga"
+					}
+				]
+			},
+			{
+				"id": "10171",
+				"author": {
+					"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+					"name": "admin",
+					"emailAddress": "wojciech.seliga@spartez.com",
+					"avatarUrls": {
+						"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName": "Administrator",
+					"active": true
+				},
+				"created": "2012-12-07T14:52:52.572+0100",
+				"items": [
+					{
+						"field": "Attachment",
+						"fieldtype": "jira",
+						"from": null,
+						"fromString": null,
+						"to": "10070",
+						"toString": "avatar1.png"
+					}
+				]
+			}
+		]
+	}
+}

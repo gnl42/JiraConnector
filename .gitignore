@@ -1,5 +1,16 @@
+<<<<<<< HEAD
 .classpath
 .project
 .settings/
 .tycho-consumer-pom.xml
 target/
+=======
+*.iml
+.idea
+target
+bin
+.settings
+.classpath
+.project
+
+>>>>>>> repo1
