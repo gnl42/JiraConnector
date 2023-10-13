@@ -4,7 +4,7 @@ Bundle-Name: Jira Rest Java Client
 Automatic-Module-Name: ira-rest-java-client-api
 Bundle-SymbolicName: jira-rest-java-client-app
 Bundle-Version: 6.0.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ClassPath: .,
  target/lib/commons-cli.jar
 Bundle-Vendor: George Lindholm

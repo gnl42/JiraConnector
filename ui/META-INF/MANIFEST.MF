@@ -28,7 +28,6 @@ Require-Bundle: me.glindholm.connector.eclipse.commons.core,
  org.eclipse.mylyn.commons.workbench,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.ui,
- org.apache.commons.lang3;bundle-version="3.12.0",
  org.eclipse.jdt.annotation;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
@@ -37,3 +36,4 @@ Export-Package: me.glindholm.connector.eclipse.ui,
  me.glindholm.connector.eclipse.ui.commons,
  me.glindholm.connector.eclipse.ui.dialogs,
  me.glindholm.connector.eclipse.ui.preferences;x-friends:="me.glindholm.connector.eclipse.directclickthrough.ui
+Import-Package: org.apache.commons.lang3
