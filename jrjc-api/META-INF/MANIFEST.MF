@@ -4,7 +4,7 @@ Bundle-Name: Jira Rest Java Client
 Automatic-Module-Name: ira-rest-java-client-api
 Bundle-SymbolicName: jira-rest-java-client-api
 Bundle-Version: 4.4.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ClassPath: .,
  target/lib/atlassian-httpclient-api.jar,
  target/lib/atlassian-util-concurrent.jar,
@@ -13,9 +13,9 @@ Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
 Export-Package: com.atlassian.httpclient.api,
  io.atlassian.util.concurrent,
- me.glindholm.jira.rest.client.api,
- me.glindholm.jira.rest.client.api.domain,
- me.glindholm.jira.rest.client.api.domain.input,
+ me.glindholm.jira.rest.client.api;uses:="me.glindholm.jira.rest.client.api.domain,me.glindholm.jira.rest.client.api.domain.input,Request",
+ me.glindholm.jira.rest.client.api.domain;uses:="me.glindholm.jira.rest.client.api.domain.util,me.glindholm.jira.rest.client.api",
+ me.glindholm.jira.rest.client.api.domain.input;uses:="me.glindholm.jira.rest.client.api.domain,me.glindholm.jira.rest.client.api",
  me.glindholm.jira.rest.client.api.domain.util
 Require-Bundle: org.eclipse.jdt.annotation,
  com.google.guava

@@ -7,29 +7,30 @@ Bundle-Version: 4.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ClassPath: .,
  target/lib/atlassian-event.jar,
- target/lib/atlassian-httpclient-library.jar,
- target/lib/jettison.jar,
- target/lib/sal-api.jar,
  target/lib/atlassian-httpclient-api.jar,
- target/lib/httpmime.jar,
- target/lib/httpcore.jar,
- target/lib/spring-beans.jar,
- target/lib/httpcore-nio.jar,
- target/lib/httpasyncclient.jar,
- target/lib/httpclient-cache.jar,
+ target/lib/atlassian-httpclient-library.jar,
  target/lib/fugue.jar,
+ target/lib/httpasyncclient.jar,
  target/lib/httpasyncclient-cache.jar,
  target/lib/httpclient.jar,
- target/lib/httpcore5.jar
+ target/lib/httpclient-cache.jar,
+ target/lib/httpcore.jar,
+ target/lib/httpcore5.jar,
+ target/lib/httpcore-nio.jar,
+ target/lib/httpmime.jar,
+ target/lib/jakarta.ws.rs-api.jar,
+ target/lib/jettison.jar,
+ target/lib/sal-api.jar,
+ target/lib/spring-beans.jar
 Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
 Require-Bundle: jira-rest-java-client-api,
  org.apache.commons.lang3,
  org.apache.commons.codec,
  com.google.guava;bundle-version="30.1.0",
- org.slf4j.api,
  org.apache.commons.logging;bundle-version="1.2.0",
- org.eclipse.jdt.annotation
+ org.eclipse.jdt.annotation,
+ slf4j.api
 Export-Package: com.atlassian.httpclient.api.factory,
  com.atlassian.sal.api.executor,
  io.atlassian.fugue,
