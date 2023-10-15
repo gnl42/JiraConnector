@@ -36,7 +36,7 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-       <import plugin="org.eclipse.mylyn.commons.net" version="3.26.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="3.26.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.commons.core" version="3.26.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.commons.ui" version="3.26.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.commons.identity.core" version="3.26.0" match="greaterOrEqual"/>
@@ -44,9 +44,10 @@
       <import plugin="org.eclipse.mylyn.monitor.core" version="3.26.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.context.core" version="3.26.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.monitor.ui" version="3.26.0" match="greaterOrEqual"/>
-       <import plugin="org.eclipse.mylyn.tasks.core" version="3.26.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="3.26.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.tasks.search" version="3.26.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.mylyn.tasks.bugs" version="3.26.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.index.ui" version="3.26.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -170,6 +171,13 @@
 
    <plugin
          id="org.eclipse.mylyn.tasks.bugs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.tasks.index.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
