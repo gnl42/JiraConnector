@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector for Eclipse Commons Core
 Automatic-Module-Name: JiraConnector for Eclipse Commons Core
 Bundle-SymbolicName: me.glindholm.connector.eclipse.commons.core;singleton:=true
-Bundle-Version: 4.4.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
