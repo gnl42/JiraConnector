@@ -18,61 +18,63 @@ package me.glindholm.theplugin.commons.cfg;
 import java.util.UUID;
 
 public class ServerIdImpl implements ServerId {
-	private UUID uuid = UUID.randomUUID();
+    private UUID uuid = UUID.randomUUID();
 
-	public ServerIdImpl() {
-		uuid = UUID.randomUUID();
-		assert uuid != null;
-	}
+    public ServerIdImpl() {
+        uuid = UUID.randomUUID();
+        assert uuid != null;
+    }
 
-	public ServerIdImpl(final String uuid) {
-		this.uuid = UUID.fromString(uuid);
-		assert uuid != null;
-	}
+    public ServerIdImpl(final String uuid) {
+        this.uuid = UUID.fromString(uuid);
+        assert uuid != null;
+    }
 
-	public String getId() {
-		return uuid.toString();
-	}
+    @Override
+    public String getId() {
+        return uuid.toString();
+    }
 
-	/**
-	 * DO NOT USE THAT METHOD. It is here only for IDEA serialization mechanism.
-	 * USE interface instead of implementation.
-	 *
-	 * @param aUuid UUID
-	 */
-	public void setId(String aUuid) {
-		this.uuid = UUID.fromString(aUuid);
-	}
+    /**
+     * DO NOT USE THAT METHOD. It is here only for IDEA serialization mechanism. USE interface instead
+     * of implementation.
+     *
+     * @param aUuid UUID
+     */
+    public void setId(final String aUuid) {
+        uuid = UUID.fromString(aUuid);
+    }
 
-	@Override
-	public String toString() {
-		return uuid.toString();
-	}
+    @Override
+    public String toString() {
+        return uuid.toString();
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-		final ServerIdImpl serverId = (ServerIdImpl) o;
+        final ServerIdImpl serverId = (ServerIdImpl) o;
 
-		if (!uuid.equals(serverId.uuid)) {
-			return false;
-		}
+        if (!uuid.equals(serverId.uuid)) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public boolean equals(final ServerId o) {
-		return equals((Object) o);
-	}
+    @Override
+    public boolean equals(final ServerId o) {
+        return equals((Object) o);
+    }
 
-	@Override
-	public int hashCode() {
-		return uuid.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
 }

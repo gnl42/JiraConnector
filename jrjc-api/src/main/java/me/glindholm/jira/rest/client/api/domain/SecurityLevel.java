@@ -63,8 +63,7 @@ public class SecurityLevel extends AddressableNamedEntity implements Serializabl
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof SecurityLevel) {
-            final SecurityLevel that = (SecurityLevel) obj;
+        if (obj instanceof final SecurityLevel that) {
             return super.equals(that) && Objects.equals(id, that.id) && Objects.equals(description, that.description);
         }
         return false;

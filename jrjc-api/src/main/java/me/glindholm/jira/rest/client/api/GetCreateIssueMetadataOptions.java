@@ -22,7 +22,8 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * Set of optional parameters for {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}.
+ * Set of optional parameters for
+ * {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}.
  * {@link GetCreateIssueMetadataOptionsBuilder} is very useful for building objects of this class.
  *
  * @since v1.0
@@ -43,15 +44,19 @@ public class GetCreateIssueMetadataOptions {
     public final Set<String> expandos;
 
     /**
-     * @param expandos       List of fields that should be expanded. See constants with prefix EXPAND_ in this class. Pass <code>null</code> to ignore.
-     * @param issueTypeNames List of issue types names to filter results. Pass <code>null</code> to ignore.
-     * @param issueTypeIds   List of issue types Ids to filter results. Pass <code>null</code> to ignore.
-     * @param projectKeys    List of projects keys used to filter results. Pass <code>null</code> to ignore.
-     * @param projectIds     List of projects Ids used to filter results. Pass <code>null</code> to ignore.
+     * @param expandos       List of fields that should be expanded. See constants with prefix EXPAND_
+     *                       in this class. Pass <code>null</code> to ignore.
+     * @param issueTypeNames List of issue types names to filter results. Pass <code>null</code> to
+     *                       ignore.
+     * @param issueTypeIds   List of issue types Ids to filter results. Pass <code>null</code> to
+     *                       ignore.
+     * @param projectKeys    List of projects keys used to filter results. Pass <code>null</code> to
+     *                       ignore.
+     * @param projectIds     List of projects Ids used to filter results. Pass <code>null</code> to
+     *                       ignore.
      */
-    public GetCreateIssueMetadataOptions(@Nullable Set<String> expandos, @Nullable List<String> issueTypeNames,
-            @Nullable List<Long> issueTypeIds, @Nullable List<String> projectKeys,
-            @Nullable List<Long> projectIds) {
+    public GetCreateIssueMetadataOptions(@Nullable final Set<String> expandos, @Nullable final List<String> issueTypeNames,
+            @Nullable final List<Long> issueTypeIds, @Nullable final List<String> projectKeys, @Nullable final List<Long> projectIds) {
         this.expandos = expandos;
         this.issueTypeNames = issueTypeNames;
         this.issueTypeIds = issueTypeIds;

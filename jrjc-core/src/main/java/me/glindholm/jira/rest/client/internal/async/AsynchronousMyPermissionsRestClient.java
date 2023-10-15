@@ -45,7 +45,7 @@ public class AsynchronousMyPermissionsRestClient extends AbstractAsynchronousRes
         return getAndParse(uriBuilder.build(), permissionsJsonParser);
     }
 
-    private URIBuilder addContextParams(URIBuilder uriBuilder, MyPermissionsInput permissionInput) {
+    private URIBuilder addContextParams(final URIBuilder uriBuilder, final MyPermissionsInput permissionInput) {
         if (permissionInput != null) {
             if (permissionInput.getProjectKey() != null) {
                 uriBuilder.addParameter("projectKey", permissionInput.getProjectKey());

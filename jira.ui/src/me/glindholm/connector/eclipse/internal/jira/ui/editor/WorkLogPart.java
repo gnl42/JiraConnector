@@ -20,16 +20,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.IOpenListener;
-import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -40,8 +36,6 @@ import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -160,22 +154,14 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         }
         attachmentsViewer.setContentProvider(new ArrayContentProvider());
         attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider(getJiraTimeFormat()));
-        attachmentsViewer.addOpenListener(new IOpenListener() {
-            @Override
-            public void open(final OpenEvent event) {
-                TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(), getModel().getTask()));
-            }
-        });
+        attachmentsViewer.addOpenListener(event -> TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(), getModel().getTask())));
         attachmentsViewer.addSelectionChangedListener(getTaskEditorPage());
         attachmentsViewer.setInput(workLogList);
 
         menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(true);
-        menuManager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(final IMenuManager manager) {
-                // TODO provide popup menu
-            }
+        menuManager.addMenuListener(manager -> {
+            // TODO provide popup menu
         });
         getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, false);
         final Menu menu = menuManager.createContextMenu(table);
@@ -310,13 +296,10 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
         toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Time_Spent);
         timeSpentText = toolkit.createText(newWorkLogComposite, getJiraTimeFormat().format(Long.valueOf(newWorkDoneAmount)));
-        timeSpentText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                setTimeSpendDecorator();
-                timeSpentText.setToolTipText(timeSpendTooltip);
-                addWorkLogToModel();
-            }
+        timeSpentText.addModifyListener(e -> {
+            setTimeSpendDecorator();
+            timeSpentText.setToolTipText(timeSpendTooltip);
+            addWorkLogToModel();
         });
 
         timeSpentText.setToolTipText(timeSpendTooltip);
@@ -382,12 +365,9 @@ public class WorkLogPart extends AbstractTaskEditorPart {
 
         toolkit.createLabel(newWorkLogComposite, Messages.WorkLogPart_Work_Description);
         final Text descriptionText = toolkit.createText(newWorkLogComposite, newWorkDoneDescription, SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
-        descriptionText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                newWorkDoneDescription = descriptionText.getText();
-                addWorkLogToModel();
-            }
+        descriptionText.addModifyListener(e -> {
+            newWorkDoneDescription = descriptionText.getText();
+            addWorkLogToModel();
         });
         GridDataFactory.fillDefaults().grab(true, true).hint(150, 100).span(2, 1).applyTo(descriptionText);
 

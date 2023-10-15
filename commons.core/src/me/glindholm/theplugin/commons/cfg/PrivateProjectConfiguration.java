@@ -27,14 +27,14 @@ public class PrivateProjectConfiguration {
         return privateServerCfgInfos;
     }
 
-    private Set<PrivateServerCfgInfo> privateServerCfgInfos = MiscUtil.buildHashSet();
+    private final Set<PrivateServerCfgInfo> privateServerCfgInfos = MiscUtil.buildHashSet();
 
-    public void add(@NonNull PrivateServerCfgInfo info) {
+    public void add(@NonNull final PrivateServerCfgInfo info) {
         privateServerCfgInfos.add(info);
     }
 
     public PrivateServerCfgInfo getPrivateServerCfgInfo(final ServerId serverId) {
-        for (PrivateServerCfgInfo privateServerCfgInfo : privateServerCfgInfos) {
+        for (final PrivateServerCfgInfo privateServerCfgInfo : privateServerCfgInfos) {
             if (privateServerCfgInfo.getServerId().equals(serverId)) {
                 return privateServerCfgInfo;
             }

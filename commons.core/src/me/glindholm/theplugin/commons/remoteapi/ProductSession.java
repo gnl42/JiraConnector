@@ -19,9 +19,9 @@ package me.glindholm.theplugin.commons.remoteapi;
  * User: pmaruszak
  */
 public interface ProductSession {
-	void login(String name, char[] aPassword) throws RemoteApiLoginException;
+    void login(String name, char[] aPassword) throws RemoteApiLoginException;
 
-	void logout();
+    void logout();
 
-	boolean isLoggedIn() throws RemoteApiLoginException;
+    boolean isLoggedIn() throws RemoteApiLoginException;
 }

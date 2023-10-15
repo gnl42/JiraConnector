@@ -59,8 +59,7 @@ public class Priority extends BasicPriority {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Priority) {
-            final Priority that = (Priority) obj;
+        if (obj instanceof final Priority that) {
             return super.equals(obj) && Objects.equals(description, that.description) && Objects.equals(statusColor, that.statusColor)
                     && Objects.equals(iconUrl, that.iconUrl);
         }

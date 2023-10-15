@@ -44,29 +44,26 @@ public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRest
 
     public AsynchronousProjectRolesRestClient(final URI serverUri, final HttpClient client) {
         super(client);
-        this.projectRoleJsonParser = new ProjectRoleJsonParser(serverUri);
-        this.basicRoleJsonParser = new BasicProjectRoleJsonParser();
+        projectRoleJsonParser = new ProjectRoleJsonParser(serverUri);
+        basicRoleJsonParser = new BasicProjectRoleJsonParser();
     }
 
     @Override
-    public Promise<ProjectRole> getRole(URI uri) {
+    public Promise<ProjectRole> getRole(final URI uri) {
         return getAndParse(uri, projectRoleJsonParser);
     }
 
     @Override
     public Promise<ProjectRole> getRole(final URI projectUri, final Long roleId) throws URISyntaxException {
-        final URI roleUri = new URIBuilder(projectUri).appendPath("role").appendPath(String.valueOf(roleId))
-                .build();
+        final URI roleUri = new URIBuilder(projectUri).appendPath("role").appendPath(String.valueOf(roleId)).build();
         return getAndParse(roleUri, projectRoleJsonParser);
     }
 
     @Override
     public Promise<List<ProjectRole>> getRoles(final URI projectUri) throws URISyntaxException {
-        final URI rolesUris = new URIBuilder(projectUri).appendPath("role")
-                .build();
+        final URI rolesUris = new URIBuilder(projectUri).appendPath("role").build();
         final Promise<List<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
 
-        ;
         return Promises.promise(basicProjectRoles.claim().stream().map(basic -> getRole(basic.getSelf()).claim()).collect(Collectors.toList()));
     }
 }

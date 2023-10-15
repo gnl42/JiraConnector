@@ -16,16 +16,16 @@
 package me.glindholm.theplugin.commons.cfg;
 
 public class ServerCfgFactoryException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 267587258839389682L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 267587258839389682L;
 
-	public ServerCfgFactoryException(final String message) {
-		super(message);
-	}
+    public ServerCfgFactoryException(final String message) {
+        super(message);
+    }
 
-	public ServerCfgFactoryException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    public ServerCfgFactoryException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

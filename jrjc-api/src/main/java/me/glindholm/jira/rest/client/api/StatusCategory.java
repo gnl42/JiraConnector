@@ -16,7 +16,7 @@ public class StatusCategory extends AddressableNamedEntity implements Identifiab
     private final String key;
     private final String colorName;
 
-    public StatusCategory(URI self, String name, Long id, String key, String colorName) {
+    public StatusCategory(final URI self, final String name, final Long id, final String key, final String colorName) {
         super(self, name);
         this.id = id;
         this.key = key;
@@ -42,13 +42,9 @@ public class StatusCategory extends AddressableNamedEntity implements Identifiab
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof StatusCategory) {
-            StatusCategory that = (StatusCategory) obj;
-            return super.equals(obj)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.key, that.key)
-                    && Objects.equals(this.colorName, that.colorName);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final StatusCategory that) {
+            return super.equals(obj) && Objects.equals(id, that.id) && Objects.equals(key, that.key) && Objects.equals(colorName, that.colorName);
         }
         return false;
     }

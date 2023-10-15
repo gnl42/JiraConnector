@@ -85,7 +85,7 @@ public final class CachedIconLoader {
                 icons.put(urlString, i);
                 maybeGenerateDisabledIcon(urlString, i);
             } catch (final MalformedURLException e) {
-                //logger.warn("Cannot load icon: [" + urlString + "]", e);
+                // logger.warn("Cannot load icon: [" + urlString + "]", e);
             }
         }
     }

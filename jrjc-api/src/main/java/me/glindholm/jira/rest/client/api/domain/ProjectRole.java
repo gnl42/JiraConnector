@@ -23,10 +23,10 @@ import java.util.Objects;
 import me.glindholm.jira.rest.client.api.IdentifiableEntity;
 
 /**
- * A way to group users (@see RoleActors) with projects. An example would be a global role called "testers". If you
- * have a project X and a project Y, you would then be able to configure different RoleActors in the "testers" role
- * for project X than for project Y. You can use ProjectRole objects as the target of Notification and Permission
- * schemes.
+ * A way to group users (@see RoleActors) with projects. An example would be a global role called
+ * "testers". If you have a project X and a project Y, you would then be able to configure different
+ * RoleActors in the "testers" role for project X than for project Y. You can use ProjectRole
+ * objects as the target of Notification and Permission schemes.
  *
  * @see com.atlassian.jira.security.roles.ProjectRole
  */
@@ -43,7 +43,7 @@ public class ProjectRole extends BasicProjectRole implements Serializable, Ident
     private final List<RoleActor> actors;
     private final long id;
 
-    public ProjectRole(long id, URI self, String name, String description, List<RoleActor> actors) {
+    public ProjectRole(final long id, final URI self, final String name, final String description, final List<RoleActor> actors) {
         super(self, name);
         this.id = id;
         this.description = description;
@@ -73,13 +73,9 @@ public class ProjectRole extends BasicProjectRole implements Serializable, Ident
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof ProjectRole) {
-            final ProjectRole that = (ProjectRole) o;
-            return super.equals(o)
-                    && Objects.equals(this.description, that.description)
-                    && Objects.equals(this.actors, that.actors)
-                    && Objects.equals(this.id, that.id);
+    public boolean equals(final Object o) {
+        if (o instanceof final ProjectRole that) {
+            return super.equals(o) && Objects.equals(description, that.description) && Objects.equals(actors, that.actors) && Objects.equals(id, that.id);
         }
         return false;
     }

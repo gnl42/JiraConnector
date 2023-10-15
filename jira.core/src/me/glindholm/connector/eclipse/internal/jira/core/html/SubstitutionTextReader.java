@@ -25,7 +25,8 @@ import java.io.Reader;
  */
 public abstract class SubstitutionTextReader extends SingleCharReader {
 
-    // protected static final String LINE_DELIM= System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+    // protected static final String LINE_DELIM= System.getProperty("line.separator", "\n");
+    // //$NON-NLS-1$ //$NON-NLS-2$
     protected static final String LINE_DELIM = "\n"; //$NON-NLS-1$
 
     private final Reader fReader;
@@ -55,14 +56,12 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
     }
 
     /**
-     * Computes the substitution for the given character and if necessary subsequent characters. Implementation should
-     * use <code>nextChar</code> to read subsequent characters.
+     * Computes the substitution for the given character and if necessary subsequent characters.
+     * Implementation should use <code>nextChar</code> to read subsequent characters.
      *
-     * @param c
-     *            the character to be substituted
+     * @param c the character to be substituted
      * @return the substitution for <code>c</code>
-     * @throws IOException
-     *             in case computing the substitution fails
+     * @throws IOException in case computing the substitution fails
      */
     protected abstract String computeSubstitution(int c) throws IOException;
 
@@ -79,8 +78,7 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
      * Returns the next character.
      *
      * @return the next character
-     * @throws IOException
-     *             in case reading the character fails
+     * @throws IOException in case reading the character fails
      */
     protected int nextChar() throws IOException {
         fReadFromBuffer = fBuffer.length() > 0;

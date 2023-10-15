@@ -19,7 +19,6 @@ package me.glindholm.jira.rest.client.api.domain;
 import java.net.URI;
 import java.util.Objects;
 
-
 /**
  * Complete information about a single JIRA group
  *
@@ -28,15 +27,14 @@ import java.util.Objects;
 public class Group extends AddressableNamedEntity {
     private static final long serialVersionUID = 1L;
 
-    public Group(URI self, String name) {
+    public Group(final URI self, final String name) {
         super(self, name);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Group) {
-            Group that = (Group) obj;
-            return super.equals(obj) && Objects.equals(this.name, that.name);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Group that) {
+            return super.equals(obj) && Objects.equals(name, that.name);
         }
         return false;
     }

@@ -11,19 +11,19 @@
 
 package me.glindholm.connector.eclipse.internal.branding.ui;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.mylyn.commons.core.CoreUtil;
-
 import java.util.Arrays;
 import java.util.List;
 
-public final class RuntimeUtil {
-	private RuntimeUtil() {
-	}
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.mylyn.commons.core.CoreUtil;
 
-	public static boolean suppressConfigurationWizards() {
-		final List<String> commandLineArgs = Arrays.asList(Platform.getCommandLineArgs());
-		return commandLineArgs.contains("-testPluginName") || CoreUtil.TEST_MODE;
-	}
+public final class RuntimeUtil {
+    private RuntimeUtil() {
+    }
+
+    public static boolean suppressConfigurationWizards() {
+        final List<String> commandLineArgs = Arrays.asList(Platform.getCommandLineArgs());
+        return commandLineArgs.contains("-testPluginName") || CoreUtil.TEST_MODE;
+    }
 
 }

@@ -29,14 +29,13 @@ import me.glindholm.theplugin.commons.remoteapi.ServerData;
 
 public interface ProjectCfgManager {
 
-
     @Nullable
     JiraServerData getDefaultJiraServer();
 
     /**
-     * Finds server with specified url in collection of servers (exact String match).
-     * It tries to find enabled server. If not found then tries to find disabled server.
-     * If the above failed then it tries to compare host, port and path (skips protocol and query string)
+     * Finds server with specified url in collection of servers (exact String match). It tries to find
+     * enabled server. If not found then tries to find disabled server. If the above failed then it
+     * tries to compare host, port and path (skips protocol and query string)
      *
      * @param serverUrl url of server
      * @param servers   collection of servers

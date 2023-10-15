@@ -45,8 +45,8 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
 
     private final HttpSessionCallbackImpl callback;
 
-    public AbstractConnectorClient(AbstractWebLocation location, ConnectionCfg connectionCfg, F facade,
-            HttpSessionCallbackImpl callback) {
+    public AbstractConnectorClient(final AbstractWebLocation location, final ConnectionCfg connectionCfg, final F facade,
+            final HttpSessionCallbackImpl callback) {
         this.location = location;
         this.connectionCfg = connectionCfg;
         this.facade = facade;
@@ -54,7 +54,7 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
     }
 
     public String getUsername() {
-        AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+        final AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
         if (credentials != null) {
             return credentials.getUserName();
         } else {
@@ -62,34 +62,32 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
         }
     }
 
-    public <T> T execute(RemoteOperation<T, F> op) throws CoreException {
+    public <T> T execute(final RemoteOperation<T, F> op) throws CoreException {
         return execute(op, true);
     }
 
-    public <T> T execute(RemoteSessionOperation<T, S> op) throws CoreException {
+    public <T> T execute(final RemoteSessionOperation<T, S> op) throws CoreException {
         return execute(op, true);
     }
 
-    private <T> T executeRetry(RemoteSessionOperation<T, S> op, IProgressMonitor monitor, Exception e)
-            throws CoreException {
+    private <T> T executeRetry(final RemoteSessionOperation<T, S> op, final IProgressMonitor monitor, final Exception e) throws CoreException {
         try {
             location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-        } catch (UnsupportedRequestException ex) {
-            throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN,
-                    e.getMessage(), e));
+        } catch (final UnsupportedRequestException ex) {
+            throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
         }
         return execute(op);
     }
 
-    public final <T> T execute(RemoteSessionOperation<T, S> op, boolean promptForCredentials) throws CoreException {
-        IProgressMonitor monitor = op.getMonitor();
-        TaskRepository taskRepository = op.getTaskRepository();
+    public final <T> T execute(final RemoteSessionOperation<T, S> op, final boolean promptForCredentials) throws CoreException {
+        final IProgressMonitor monitor = op.getMonitor();
+        final TaskRepository taskRepository = op.getTaskRepository();
         try {
-            AuthenticationCredentials creds = taskRepository.getCredentials(AuthenticationType.REPOSITORY);
+            final AuthenticationCredentials creds = taskRepository.getCredentials(AuthenticationType.REPOSITORY);
             if (creds != null && creds.getPassword().length() < 1 && promptForCredentials) {
                 try {
                     location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-                } catch (UnsupportedRequestException e) {
+                } catch (final UnsupportedRequestException e) {
                     // ignore
                 }
             }
@@ -99,14 +97,14 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
             // @todo refactor this part in 10 years or so - as this is hack which workarounds facade ill design
             callback.updateHostConfiguration(location, connectionCfg);
             return op.run(getSession(connectionCfg), op.getMonitor());
-        } catch (RemoteApiLoginException e) {
+        } catch (final RemoteApiLoginException e) {
             if (e.getCause() instanceof IOException) {
                 throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
             }
             return executeRetry(op, monitor, e);
-        } catch (ServerPasswordNotProvidedException e) {
+        } catch (final ServerPasswordNotProvidedException e) {
             return executeRetry(op, monitor, e);
-        } catch (RemoteApiException e) {
+        } catch (final RemoteApiException e) {
             throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
         } finally {
             monitor.done();
@@ -114,18 +112,17 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
     }
 
     @NonNull
-    protected abstract S getSession(ConnectionCfg connectionCfg) throws RemoteApiException,
-            ServerPasswordNotProvidedException;
+    protected abstract S getSession(ConnectionCfg connectionCfg) throws RemoteApiException, ServerPasswordNotProvidedException;
 
-    public final <T> T execute(RemoteOperation<T, F> op, boolean promptForCredentials) throws CoreException {
-        IProgressMonitor monitor = op.getMonitor();
-        TaskRepository taskRepository = op.getTaskRepository();
+    public final <T> T execute(final RemoteOperation<T, F> op, final boolean promptForCredentials) throws CoreException {
+        final IProgressMonitor monitor = op.getMonitor();
+        final TaskRepository taskRepository = op.getTaskRepository();
         try {
-            AuthenticationCredentials creds = taskRepository.getCredentials(AuthenticationType.REPOSITORY);
+            final AuthenticationCredentials creds = taskRepository.getCredentials(AuthenticationType.REPOSITORY);
             if (creds != null && creds.getPassword().length() < 1 && promptForCredentials) {
                 try {
                     location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-                } catch (UnsupportedRequestException e) {
+                } catch (final UnsupportedRequestException e) {
                     // ignore
                 }
             }
@@ -135,50 +132,44 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
             // @todo refactor this part in 10 years or so - as this is hack which workarounds facade ill design
             callback.updateHostConfiguration(location, connectionCfg);
             return op.run(facade, connectionCfg, op.getMonitor());
-        } catch (CaptchaRequiredException e) {
+        } catch (final CaptchaRequiredException e) {
             throw new CoreException(
-                    new RepositoryStatus(
-                            IStatus.ERROR,
-                            PLUGIN_ID,
-                            RepositoryStatus.ERROR_REPOSITORY_LOGIN, CoreMessages.Captcha_authentication_required
-                        , e));
-        } catch (RemoteApiLoginException e) {
+                    new RepositoryStatus(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN, CoreMessages.Captcha_authentication_required, e));
+        } catch (final RemoteApiLoginException e) {
             if (e.getCause() instanceof IOException) {
                 throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
             }
             return executeRetry(op, monitor, e);
-        } catch (ServerPasswordNotProvidedException e) {
+        } catch (final ServerPasswordNotProvidedException e) {
             return executeRetry(op, monitor, e);
-        } catch (RemoteApiException e) {
+        } catch (final RemoteApiException e) {
             throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
         } finally {
             monitor.done();
         }
     }
 
-    private <T> T executeRetry(RemoteOperation<T, F> op, IProgressMonitor monitor, Exception e) throws CoreException {
+    private <T> T executeRetry(final RemoteOperation<T, F> op, final IProgressMonitor monitor, final Exception e) throws CoreException {
         try {
             location.requestCredentials(AuthenticationType.REPOSITORY, null, monitor);
-        } catch (UnsupportedRequestException ex) {
-            throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN,
-                    e.getMessage(), e));
+        } catch (final UnsupportedRequestException ex) {
+            throw new CoreException(new Status(IStatus.ERROR, PLUGIN_ID, RepositoryStatus.ERROR_REPOSITORY_LOGIN, e.getMessage(), e));
         }
         return execute(op);
     }
 
     protected void updateServer() {
-        AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+        final AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
         if (credentials != null) {
-            connectionCfg = new ConnectionCfg(connectionCfg.getId(), connectionCfg.getUrl(), credentials.getUserName(),
-                    credentials.getPassword());
+            connectionCfg = new ConnectionCfg(connectionCfg.getId(), connectionCfg.getUrl(), credentials.getUserName(), credentials.getPassword());
         }
     }
 
-    public void validate(IProgressMonitor monitor, TaskRepository taskRepository) throws CoreException {
+    public void validate(final IProgressMonitor monitor, final TaskRepository taskRepository) throws CoreException {
         execute(new RemoteOperation<Void, F>(monitor, taskRepository) {
             @Override
-            public Void run(F server, ConnectionCfg serverCfg, IProgressMonitor monitor) throws RemoteApiException,
-                    RemoteApiException, ServerPasswordNotProvidedException {
+            public Void run(final F server, final ConnectionCfg serverCfg, final IProgressMonitor monitor)
+                    throws RemoteApiException, RemoteApiException, ServerPasswordNotProvidedException {
                 server.testServerConnection(serverCfg);
                 return null;
             }
@@ -186,8 +177,8 @@ public abstract class AbstractConnectorClient<F extends ProductServerFacade, S e
     }
 
     // needed so that the ui location can replace the default one
-    public void updateLocation(AbstractWebLocation newLocation) {
-        this.location = newLocation;
+    public void updateLocation(final AbstractWebLocation newLocation) {
+        location = newLocation;
     }
 
     public ConnectionCfg getServerData() {

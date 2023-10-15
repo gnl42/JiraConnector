@@ -30,8 +30,7 @@ public interface SessionRestClient {
 
     /**
      * @return information about current session
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      * @throws URISyntaxException
      */
     Promise<Session> getCurrentSession() throws RestClientException, URISyntaxException;

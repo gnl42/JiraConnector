@@ -38,11 +38,8 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
 
     private final String title;
 
-    public ErrorDialogWithHyperlink(Shell parentShell, @NonNull
-            String title, @NonNull
-            String message, @Nullable
-            String linkText, @Nullable
-            Runnable linkHandler) {
+    public ErrorDialogWithHyperlink(final Shell parentShell, @NonNull final String title, @NonNull final String message, @Nullable final String linkText,
+            @Nullable final Runnable linkHandler) {
         super(parentShell);
         this.title = title;
         setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -52,7 +49,7 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
     }
 
     @Override
-    protected Control createDialogArea(Composite parent) {
+    protected Control createDialogArea(final Composite parent) {
         createMessageArea(parent);
         getShell().setText(title);
         if (linkText != null) {
@@ -61,7 +58,7 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
             link.setText(linkText);
             link.addSelectionListener(new SelectionAdapter() {
                 @Override
-                public void widgetSelected(SelectionEvent e) {
+                public void widgetSelected(final SelectionEvent e) {
                     close();
                     if (linkHandler != null) {
                         linkHandler.run();
@@ -74,17 +71,16 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
     }
 
     @Override
-    protected void createButtonsForButtonBar(Composite parent) {
+    protected void createButtonsForButtonBar(final Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         createButton(parent, IDialogConstants.HELP_ID, "Help", false);
     }
 
     @Override
-    protected void buttonPressed(int buttonId) {
+    protected void buttonPressed(final int buttonId) {
         super.buttonPressed(buttonId);
         if (buttonId == IDialogConstants.HELP_ID) {
-            BrowserUtil.openUrl("http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse",
-                    IWorkbenchBrowserSupport.AS_EXTERNAL);
+            BrowserUtil.openUrl("http://confluence.atlassian.com/display/IDEPLUGIN/Atlassian+Connector+for+Eclipse", IWorkbenchBrowserSupport.AS_EXTERNAL);
         }
     }
 
@@ -93,12 +89,13 @@ public class ErrorDialogWithHyperlink extends IconAndMessageDialog {
      *
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
-        Display display = new Display();
+    public static void main(final String[] args) throws IOException {
+        final Display display = new Display();
         final Shell shell = new Shell(display);
-        String msg = "this is a very long text flsdjlsdjflkdsj fljsljslkdj jlkdjslk jlkjlfdsj END"
-                + "this is a very long text flsdjlsdjflkdsj fljsljslkdj jlkdjslk jlkjlfdsj END"
-                + "this is a very long text flsdjlsdjflkdsj fljsljslkdj jlkdjslk jlkjlfdsj END!";
+        final String msg = """
+                this is a very long text flsdjlsdjflkdsj fljsljslkdj jlkdjslk jlkjlfdsj END\
+                this is a very long text flsdjlsdjflkdsj fljsljslkdj jlkdjslk jlkjlfdsj END\
+                this is a very long text flsdjlsdjflkdsj fljsljslkdj jlkdjslk jlkjlfdsj END!""";
         new ErrorDialogWithHyperlink(shell, "My title", msg, "My <a>awesome</a> link which is quite long", null).open();
     }
 

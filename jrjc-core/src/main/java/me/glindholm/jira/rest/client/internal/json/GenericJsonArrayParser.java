@@ -24,19 +24,19 @@ import org.codehaus.jettison.json.JSONException;
 
 public class GenericJsonArrayParser<T> implements JsonArrayParser<List<T>> {
 
-    public static <K> GenericJsonArrayParser<K> create(JsonObjectParser<K> jsonParser) {
+    public static <K> GenericJsonArrayParser<K> create(final JsonObjectParser<K> jsonParser) {
         return new GenericJsonArrayParser<>(jsonParser);
     }
 
     private final JsonObjectParser<T> jsonParser;
 
-    public GenericJsonArrayParser(JsonObjectParser<T> jsonParser) {
+    public GenericJsonArrayParser(final JsonObjectParser<T> jsonParser) {
         this.jsonParser = jsonParser;
     }
 
     @Override
-    public List<T> parse(JSONArray json) throws JSONException, URISyntaxException {
-        ArrayList<T> res = new ArrayList<>(json.length());
+    public List<T> parse(final JSONArray json) throws JSONException, URISyntaxException {
+        final ArrayList<T> res = new ArrayList<>(json.length());
         for (int i = 0; i < json.length(); i++) {
             res.add(jsonParser.parse(json.getJSONObject(i)));
         }

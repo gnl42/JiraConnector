@@ -148,8 +148,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * @return reporter of this issue or <code>null</code> if this issue has no
-     *         reporter
+     * @return reporter of this issue or <code>null</code> if this issue has no reporter
      */
     @Nullable
     public User getReporter() {
@@ -157,8 +156,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * @return assignee of this issue or <code>null</code> if this issue is
-     *         unassigned.
+     * @return assignee of this issue or <code>null</code> if this issue is unassigned.
      */
     @Nullable
     public User getAssignee() {
@@ -178,8 +176,8 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * @return issue links for this issue (possibly nothing) or <code>null</code>
-     *         when issue links are deactivated for this JIRA instance
+     * @return issue links for this issue (possibly nothing) or <code>null</code> when issue links are
+     *         deactivated for this JIRA instance
      */
     @Nullable
     public List<IssueLink> getIssueLinks() {
@@ -192,8 +190,7 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * @return fields inaccessible by concrete getter methods (e.g. all custom
-     *         issueFields)
+     * @return fields inaccessible by concrete getter methods (e.g. all custom issueFields)
      */
     public List<IssueField> getFields() {
         return issueFields;
@@ -201,8 +198,8 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
 
     /**
      * @param id identifier of the field (inaccessible by concrete getter method)
-     * @return field with given id, or <code>null</code> when no field with given id
-     *         exists for this issue
+     * @return field with given id, or <code>null</code> when no field with given id exists for this
+     *         issue
      */
     @Nullable
     public IssueField getField(final String id) {
@@ -215,14 +212,13 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * This method returns the first field with specified name. Names of fields in
-     * JIRA do not need to be unique. Therefore this method does not guarantee that
-     * you will get what you really want. It's added just for convenience. For
-     * identify fields you should use id rather than name.
+     * This method returns the first field with specified name. Names of fields in JIRA do not need to
+     * be unique. Therefore this method does not guarantee that you will get what you really want. It's
+     * added just for convenience. For identify fields you should use id rather than name.
      *
      * @param name name of the field.
-     * @return the first field matching selected name or <code>null</code> when no
-     *         field with given name exists for this issue
+     * @return the first field matching selected name or <code>null</code> when no field with given name
+     *         exists for this issue
      */
     @Nullable
     public IssueField getFieldByName(final String name) {
@@ -317,9 +313,8 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     /**
      * Returns changelog available for issues retrieved with CHANGELOG expanded.
      *
-     * @return issue changelog or <code>null</code> if CHANGELOG has not been
-     *         expanded or REST API on the server side does not serve this
-     *         information (pre-5.0)
+     * @return issue changelog or <code>null</code> if CHANGELOG has not been expanded or REST API on
+     *         the server side does not serve this information (pre-5.0)
      * @see me.glindholm.jira.rest.client.api.IssueRestClient#getIssue(String, List)
      * @since me.glindholm.jira.rest.client.api 0.6, server 5.0
      */
@@ -329,12 +324,11 @@ public class Issue extends BasicIssue implements Serializable, ExpandableResourc
     }
 
     /**
-     * Returns operations available/allowed for issues retrieved with
-     * {@link Expandos#OPERATIONS} expanded.
+     * Returns operations available/allowed for issues retrieved with {@link Expandos#OPERATIONS}
+     * expanded.
      *
-     * @return issue operations or <code>null</code> if {@link Expandos#OPERATIONS}
-     *         has not been expanded or REST API on the server side does not serve
-     *         this information (pre-5.0)
+     * @return issue operations or <code>null</code> if {@link Expandos#OPERATIONS} has not been
+     *         expanded or REST API on the server side does not serve this information (pre-5.0)
      * @see me.glindholm.jira.rest.client.api.IssueRestClient#getIssue(String, List)
      * @since me.glindholm.jira.rest.client.api 2.0, server 5.0
      */

@@ -19,15 +19,15 @@ package me.glindholm.jira.rest.client.api;
 import java.net.URI;
 
 /**
- * Any REST resource representation with URI to itself (or to its complete version - when partial representation
- * is embedded in other resources)
+ * Any REST resource representation with URI to itself (or to its complete version - when partial
+ * representation is embedded in other resources)
  *
  * @since v0.1
  */
 public interface AddressableEntity {
     /**
-     * @return URI to this resource or (usually) its complete version - when partial representation
-     * is embedded in other resources
+     * @return URI to this resource or (usually) its complete version - when partial representation is
+     *         embedded in other resources
      */
     URI getSelf();
 }

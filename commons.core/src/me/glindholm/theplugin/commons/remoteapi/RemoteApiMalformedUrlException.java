@@ -21,20 +21,20 @@ package me.glindholm.theplugin.commons.remoteapi;
  */
 public class RemoteApiMalformedUrlException extends RemoteApiException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3783282730078381957L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3783282730078381957L;
 
-	public RemoteApiMalformedUrlException(String message) {
-		super(message);
-	}
+    public RemoteApiMalformedUrlException(final String message) {
+        super(message);
+    }
 
-	public RemoteApiMalformedUrlException(Throwable throwable) {
-		super(throwable);
-	}
+    public RemoteApiMalformedUrlException(final Throwable throwable) {
+        super(throwable);
+    }
 
-	public RemoteApiMalformedUrlException(String message, Throwable throwable) {
-		super(message, throwable);
-	}
+    public RemoteApiMalformedUrlException(final String message, final Throwable throwable) {
+        super(message, throwable);
+    }
 }

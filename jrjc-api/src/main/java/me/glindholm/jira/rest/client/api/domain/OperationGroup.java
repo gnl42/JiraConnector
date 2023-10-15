@@ -42,8 +42,7 @@ public class OperationGroup implements Serializable, Operation {
     @Nullable
     private final Integer weight;
 
-    public OperationGroup(@Nullable final String id, final List<OperationLink> links,
-            final List<OperationGroup> groups, @Nullable final OperationHeader header,
+    public OperationGroup(@Nullable final String id, final List<OperationLink> links, final List<OperationGroup> groups, @Nullable final OperationHeader header,
             @Nullable final Integer weight) {
         this.id = id;
         this.header = header;
@@ -73,8 +72,8 @@ public class OperationGroup implements Serializable, Operation {
     }
 
     static <T> Optional<T> accept(final List<? extends Operation> operations, final OperationVisitor<T> visitor) {
-        for (Operation operation : operations) {
-            Optional<T> result = operation.accept(visitor);
+        for (final Operation operation : operations) {
+            final Optional<T> result = operation.accept(visitor);
             if (result.isPresent()) {
                 return result;
             }
@@ -106,7 +105,7 @@ public class OperationGroup implements Serializable, Operation {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -114,11 +113,8 @@ public class OperationGroup implements Serializable, Operation {
             return false;
         }
         final OperationGroup other = (OperationGroup) obj;
-        return Objects.equals(this.id, other.id)
-                && Objects.equals(this.header, other.header)
-                && this.links.equals(other.links)
-                && this.groups.equals(other.groups)
-                && Objects.equals(this.weight, other.weight);
+        return Objects.equals(id, other.id) && Objects.equals(header, other.header) && links.equals(other.links) && groups.equals(other.groups)
+                && Objects.equals(weight, other.weight);
     }
 
     @Override

@@ -20,9 +20,9 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Main access point to REST me.glindholm.jira.rest.client.api.
- * As there are many types resources exposed by JIRA REST API, various resources are grouped into clusters
- * and then handled by different specialized *RestClient classes.
+ * Main access point to REST me.glindholm.jira.rest.client.api. As there are many types resources
+ * exposed by JIRA REST API, various resources are grouped into clusters and then handled by
+ * different specialized *RestClient classes.
  *
  * @since v0.1
  */
@@ -58,8 +58,8 @@ public interface JiraRestClient extends Closeable {
     ComponentRestClient getComponentClient();
 
     /**
-     * @return the me.glindholm.jira.rest.client.api handling basic meta-data (data dictionaries defined in JIRA - like resolutions, statuses,
-     * priorities)
+     * @return the me.glindholm.jira.rest.client.api handling basic meta-data (data dictionaries defined
+     *         in JIRA - like resolutions, statuses, priorities)
      */
     MetadataRestClient getMetadataClient();
 
@@ -93,5 +93,6 @@ public interface JiraRestClient extends Closeable {
      *
      * @throws IOException if there is a problem closing this client.
      */
+    @Override
     void close() throws IOException;
 }

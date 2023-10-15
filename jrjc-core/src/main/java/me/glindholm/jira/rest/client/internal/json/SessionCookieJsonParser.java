@@ -23,7 +23,7 @@ import me.glindholm.jira.rest.client.api.domain.SessionCookie;
 
 public class SessionCookieJsonParser implements JsonObjectParser<SessionCookie> {
     @Override
-    public SessionCookie parse(JSONObject json) throws JSONException {
+    public SessionCookie parse(final JSONObject json) throws JSONException {
         return new SessionCookie(json.getString("name"), json.getString("value"));
     }
 

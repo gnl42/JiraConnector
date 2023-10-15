@@ -37,15 +37,13 @@ public class CustomFieldOptionJsonParser implements JsonObjectParser<CustomField
     private final JsonArrayParser<List<CustomFieldOption>> childrenParser = GenericJsonArrayParser.create(this);
 
     @Override
-    public CustomFieldOption parse(JSONObject json) throws JSONException, URISyntaxException {
+    public CustomFieldOption parse(final JSONObject json) throws JSONException, URISyntaxException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final long id = json.getLong("id");
         final String value = json.getString("value");
 
         final JSONArray childrenArray = json.optJSONArray("children");
-        final List<CustomFieldOption> children = childrenArray != null
-                ? childrenParser.parse(childrenArray)
-                        : Collections.emptyList();
+        final List<CustomFieldOption> children = childrenArray != null ? childrenParser.parse(childrenArray) : Collections.emptyList();
 
         final JSONObject childObject = json.optJSONObject("child");
         final CustomFieldOption child = childObject != null ? parse(childObject) : null;

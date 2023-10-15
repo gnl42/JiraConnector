@@ -13,7 +13,7 @@ public class CreateIssueMetaFieldsParser implements JsonObjectParser<Page<CimFie
     private final PageJsonParser<CimFieldInfo> pageParser = new PageJsonParser<>(new GenericJsonArrayParser<>(new CimFieldsInfoJsonParser()));
 
     @Override
-    public Page<CimFieldInfo> parse(JSONObject json) throws JSONException, URISyntaxException {
+    public Page<CimFieldInfo> parse(final JSONObject json) throws JSONException, URISyntaxException {
         return pageParser.parse(json);
     }
 }

@@ -428,36 +428,27 @@ public class JiraRestConverter {
                 if (cim.getAllowedValues() != null) {
                     final List<JiraAllowedValue> allowedValues = new ArrayList<>();
                     for (final Object allowedValue : cim.getAllowedValues()) {
-                        if (allowedValue instanceof CustomFieldOption) {
-                            final CustomFieldOption value = (CustomFieldOption) allowedValue;
+                        if (allowedValue instanceof final CustomFieldOption value) {
                             final String optionalId = value.getId() + "";
                             final String optionalValue = value.getValue();
                             if (optionalValue != null && optionalId != null) {
                                 allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
                             }
-                        } else if (allowedValue instanceof IssueType) {
-                            final IssueType issueType = (IssueType) allowedValue;
+                        } else if (allowedValue instanceof final IssueType issueType) {
                             allowedValues.add(new JiraAllowedValue(issueType.getId() + "", issueType.getName()));
-                        } else if (allowedValue instanceof BasicComponent) {
-                            final BasicComponent basicComponent = (BasicComponent) allowedValue;
+                        } else if (allowedValue instanceof final BasicComponent basicComponent) {
                             allowedValues.add(new JiraAllowedValue(basicComponent.getId() + "", basicComponent.getName()));
-                        } else if (allowedValue instanceof BasicIssue) {
-                            final BasicIssue basicIssue = (BasicIssue) allowedValue;
+                        } else if (allowedValue instanceof final BasicIssue basicIssue) {
                             allowedValues.add(new JiraAllowedValue(basicIssue.getId() + "", basicIssue.getKey()));
-                        } else if (allowedValue instanceof BasicPriority) {
-                            final BasicPriority priority2 = (BasicPriority) allowedValue;
+                        } else if (allowedValue instanceof final BasicPriority priority2) {
                             allowedValues.add(new JiraAllowedValue(priority2.getId() + "", priority2.getName()));
-                        } else if (allowedValue instanceof BasicProject) {
-                            final BasicProject basicProject = (BasicProject) allowedValue;
+                        } else if (allowedValue instanceof final BasicProject basicProject) {
                             allowedValues.add(new JiraAllowedValue(basicProject.getId() + "", basicProject.getName()));
-                        } else if (allowedValue instanceof Resolution) {
-                            final Resolution resolution = (Resolution) allowedValue;
+                        } else if (allowedValue instanceof final Resolution resolution) {
                             allowedValues.add(new JiraAllowedValue(resolution.getId() + "", resolution.getName()));
-                        } else if (allowedValue instanceof Version) {
-                            final Version version = (Version) allowedValue;
+                        } else if (allowedValue instanceof final Version version) {
                             allowedValues.add(new JiraAllowedValue(version.getId() + "", version.getName()));
-                        } else if (allowedValue instanceof SecurityLevel) {
-                            final SecurityLevel securityLevel = (SecurityLevel) allowedValue;
+                        } else if (allowedValue instanceof final SecurityLevel securityLevel) {
                             allowedValues.add(new JiraAllowedValue(securityLevel.getId() + "", securityLevel.getName()));
                         } else {
                             StatusHandler.log(new org.eclipse.core.runtime.Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,

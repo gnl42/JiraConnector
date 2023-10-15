@@ -38,17 +38,12 @@ public class Operations {
         return linkGroups;
     }
 
-    public <T> Optional<T> accept(OperationVisitor<T> visitor) {
+    public <T> Optional<T> accept(final OperationVisitor<T> visitor) {
         return OperationGroup.accept(getLinkGroups(), visitor);
     }
 
     public Operation getOperationById(final String operationId) {
-        return accept(new OperationVisitor<Operation>() {
-            @Override
-            public Optional<Operation> visit(Operation operation) {
-                return operationId.equals(operation.getId()) ? Optional.of(operation) : Optional.<Operation>empty();
-            }
-        }).orElse(null);
+        return accept(operation -> operationId.equals(operation.getId()) ? Optional.of(operation) : Optional.<Operation>empty()).orElse(null);
     }
 
     @Override
@@ -57,7 +52,7 @@ public class Operations {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }

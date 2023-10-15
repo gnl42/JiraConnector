@@ -18,18 +18,18 @@ package me.glindholm.theplugin.commons.configuration;
 
 public abstract class ConfigurationFactory {
 
-	///CLOVER:OFF
-	private ConfigurationFactory() {
-	}
-	///CLOVER:ON
+    /// CLOVER:OFF
+    private ConfigurationFactory() {
+    }
+    /// CLOVER:ON
 
-	private static PluginConfiguration pluginConfiguration;
+    private static PluginConfiguration pluginConfiguration;
 
-	public static PluginConfiguration getConfiguration() {
-		return pluginConfiguration;
-	}
+    public static PluginConfiguration getConfiguration() {
+        return pluginConfiguration;
+    }
 
-	public static void setConfiguration(PluginConfiguration newConfiguration) {
-		pluginConfiguration = newConfiguration;
-	}
+    public static void setConfiguration(final PluginConfiguration newConfiguration) {
+        pluginConfiguration = newConfiguration;
+    }
 }

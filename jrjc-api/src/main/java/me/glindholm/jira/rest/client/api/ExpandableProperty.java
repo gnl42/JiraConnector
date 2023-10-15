@@ -22,26 +22,26 @@ import java.util.Objects;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * Represents a resource which can be expandable - that is REST API is capable of sending just the number
- * of child resources or when the entity is expanded, also the child resources themselves
+ * Represents a resource which can be expandable - that is REST API is capable of sending just the
+ * number of child resources or when the entity is expanded, also the child resources themselves
  *
  * @since v0.1
  */
 public class ExpandableProperty<T> {
     private final int size;
 
-    public ExpandableProperty(int size) {
+    public ExpandableProperty(final int size) {
         this.size = size;
         items = null;
     }
 
-    public ExpandableProperty(int size, @Nullable List<T> items) {
+    public ExpandableProperty(final int size, @Nullable final List<T> items) {
         this.size = size;
         this.items = items;
     }
 
-    public ExpandableProperty(List<T> items) {
-        this.size = items.size();
+    public ExpandableProperty(final List<T> items) {
+        size = items.size();
         this.items = items;
     }
 
@@ -62,13 +62,11 @@ public class ExpandableProperty<T> {
         return "ExpandableProperty [size=" + size + ", items=" + items + "]";
     }
 
-
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof ExpandableProperty) {
-            ExpandableProperty<T> that = (ExpandableProperty<T>) obj;
-            return Objects.equals(this.size, that.size)
-                    && Objects.equals(this.items, that.items);
+            final ExpandableProperty<T> that = (ExpandableProperty<T>) obj;
+            return Objects.equals(size, that.size) && Objects.equals(items, that.items);
         }
         return false;
     }

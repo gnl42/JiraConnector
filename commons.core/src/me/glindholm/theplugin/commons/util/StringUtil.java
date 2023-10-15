@@ -29,11 +29,11 @@ public final class StringUtil {
         // this is utility class
     }
 
-    public static String getFirstLine(@Nullable String s) {
+    public static String getFirstLine(@Nullable final String s) {
         if (s == null) {
             return null;
         }
-        int index = s.indexOf("\n");
+        final int index = s.indexOf("\n");
         if (index == -1) {
             return s;
         } else {
@@ -41,48 +41,47 @@ public final class StringUtil {
         }
     }
 
-    public static synchronized String decode(String str2decode) {
-        // for empty strings we have to handle them separately as empty string and invalid sequence of valid characters
+    public static synchronized String decode(final String str2decode) {
+        // for empty strings we have to handle them separately as empty string and invalid sequence of valid
+        // characters
         // have the same effect: Base64.decode returns empty array.
         if (str2decode.length() == 0) {
             return "";
         }
         try {
-            Base64 base64 = new Base64();
-            byte[] passwordBytes = base64.decode(str2decode.getBytes("UTF-8"));
+            final Base64 base64 = new Base64();
+            final byte[] passwordBytes = base64.decode(str2decode.getBytes("UTF-8"));
             if (passwordBytes == null || passwordBytes.length == 0) {
-                throw new IllegalArgumentException("Cannot decode string due to not supported "
-                        + "characters or becuase it is not encoded");
+                throw new IllegalArgumentException("Cannot decode string due to not supported " + "characters or becuase it is not encoded");
             }
 
             return new String(passwordBytes, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            ///CLOVER:OFF
+        } catch (final UnsupportedEncodingException e) {
+            /// CLOVER:OFF
             // cannot happen
             throw new RuntimeException("UTF-8 is not supported", e);
-            ///CLOVER:ON
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException(
-                    "Cannot decode string due to not supported characters " + "or becuase it is not encoded", e);
+            /// CLOVER:ON
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("Cannot decode string due to not supported characters " + "or becuase it is not encoded", e);
         }
     }
 
-    public static synchronized String encode(String str2encode) {
+    public static synchronized String encode(final String str2encode) {
         try {
-            Base64 base64 = new Base64();
-            byte[] bytes = base64.encode(str2encode.getBytes("UTF-8"));
+            final Base64 base64 = new Base64();
+            final byte[] bytes = base64.encode(str2encode.getBytes("UTF-8"));
             return new String(bytes);
-        } catch (UnsupportedEncodingException e) {
-            ///CLOVER:OFF
+        } catch (final UnsupportedEncodingException e) {
+            /// CLOVER:OFF
             // cannot happen
             throw new RuntimeException("UTF-8 is not supported", e);
-            ///CLOVER:ON
+            /// CLOVER:ON
         }
     }
 
-    public static String slurp(InputStream in) throws IOException { // FIXME Replace with IOUtils.toString()
-        StringBuilder out = new StringBuilder();
-        byte[] b = new byte[BUFFER_SIZE];
+    public static String slurp(final InputStream in) throws IOException { // FIXME Replace with IOUtils.toString()
+        final StringBuilder out = new StringBuilder();
+        final byte[] b = new byte[BUFFER_SIZE];
         for (int n = in.read(b); n != -1; n = in.read(b)) {
             out.append(new String(b, 0, n));
         }
@@ -91,6 +90,7 @@ public final class StringUtil {
 
     /**
      * Removes slashes from the beginning end the end of the input string
+     *
      * @param text string to parse
      * @return string without trailing slashes
      */
@@ -107,6 +107,7 @@ public final class StringUtil {
 
     /**
      * Removes slashes from the beginning of the input string
+     *
      * @param text string to parse
      * @return string without prefix slashes
      */
@@ -116,7 +117,7 @@ public final class StringUtil {
         }
 
         while (text.startsWith("/")) {
-            text = text.substring(1, text.length());
+            text = text.substring(1);
         }
 
         return text;
@@ -124,6 +125,7 @@ public final class StringUtil {
 
     /**
      * Removes slashes from the end of the input string
+     *
      * @param text string to parse
      * @return string without suffix slashes
      */
@@ -145,17 +147,15 @@ public final class StringUtil {
     private static final int SECONDS_PER_WEEK = SECONDS_PER_DAY * 7;
 
     public static String generateJiraLogTimeString(final long secondsSpent) {
-        StringBuilder timeLog = new StringBuilder();
-        long totalSeconds = secondsSpent;
-        long remainingTime = 0;
-        long weeks = totalSeconds / SECONDS_PER_WEEK;
-        remainingTime = totalSeconds - weeks * SECONDS_PER_WEEK;
-        long days = remainingTime / SECONDS_PER_DAY;
+        final StringBuilder timeLog = new StringBuilder();
+        final long totalSeconds = secondsSpent;
+        final long weeks = totalSeconds / SECONDS_PER_WEEK;
+        long remainingTime = totalSeconds - weeks * SECONDS_PER_WEEK;
+        final long days = remainingTime / SECONDS_PER_DAY;
         remainingTime = remainingTime - days * SECONDS_PER_DAY;
-        long hours = remainingTime / SECONDS_PER_HOUR;
+        final long hours = remainingTime / SECONDS_PER_HOUR;
         remainingTime = remainingTime - hours * SECONDS_PER_HOUR;
-        long minutes = remainingTime / SECONDS_PER_MINUTE;
-
+        final long minutes = remainingTime / SECONDS_PER_MINUTE;
 
         if (weeks > 0) {
             timeLog.append(" ").append(weeks).append("w");

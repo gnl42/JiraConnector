@@ -16,21 +16,21 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
-
-import java.net.URI;
 
 public class AttachmentJsonParser implements JsonObjectParser<Attachment> {
 
     private static final String THUMBNAIL = "thumbnail";
 
     @Override
-    public Attachment parse(JSONObject json) throws JSONException {
+    public Attachment parse(final JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final String filename = json.getString("filename");
         final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));

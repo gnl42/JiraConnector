@@ -176,27 +176,21 @@ public class JiraRestClientAdapter {
 
     public void addComment(final String issueKey, final String comment) throws JiraException {
 
-        call(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                restClient.getIssueClient().addComment(getIssue(issueKey).getCommentsUri(), Comment.valueOf(comment)).claim();
+        call(() -> {
+            restClient.getIssueClient().addComment(getIssue(issueKey).getCommentsUri(), Comment.valueOf(comment)).claim();
 
-                return null;
-            }
+            return null;
         });
     }
 
     private Issue getIssue(final String issueKeyOrId) throws JiraException {
-        return call(new Callable<Issue>() {
-            @Override
-            public Issue call() throws JiraException {
-                try {
-                    final Issue issue = restClient.getIssueClient()
-                            .getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA, IssueRestClient.Expandos.EDITMETA)).get();
-                    return issue;
-                } catch (InterruptedException | ExecutionException | URISyntaxException e) {
-                    throw new JiraException(e);
-                }
+        return call(() -> {
+            try {
+                final Issue issue = restClient.getIssueClient()
+                        .getIssue(issueKeyOrId, List.of(IssueRestClient.Expandos.SCHEMA, IssueRestClient.Expandos.EDITMETA)).get();
+                return issue;
+            } catch (InterruptedException | ExecutionException | URISyntaxException e) {
+                throw new JiraException(e);
             }
         });
     }
@@ -226,13 +220,7 @@ public class JiraRestClientAdapter {
 
     public JiraNamedFilter[] getFavouriteFilters() throws JiraException {
 
-        return call(new Callable<JiraNamedFilter[]>() {
-
-            @Override
-            public JiraNamedFilter[] call() throws Exception {
-                return JiraRestConverter.convertNamedFilters(restClient.getSearchClient().getFavouriteFilters().get());
-            }
-        });
+        return call(() -> JiraRestConverter.convertNamedFilters(restClient.getSearchClient().getFavouriteFilters().get()));
     }
 
     public JiraResolution[] getResolutions() throws JiraException {
@@ -290,44 +278,39 @@ public class JiraRestClientAdapter {
 
     public List<JiraIssue> getIssues(final String jql, final int maxSearchResult, final IProgressMonitor monitor) throws JiraException {
 
-        return call(new Callable<List<JiraIssue>>() {
+        return call(() -> {
+            try {
+                final Set<String> fields = new TreeSet<>();
+                fields.add("*all");
+                monitor.subTask("Process issues");
+                final SubMonitor progress = SubMonitor.convert(monitor, 100);
+                progress.split(0);
+                progress.setTaskName("Query server");
+                final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, fields).get().getIssues();
+                progress.split(20).setWorkRemaining(issuesFromServer.size());
 
-            @Override
-            public List<JiraIssue> call() throws Exception {
-                try {
-                    final Set<String> fields = new TreeSet<>();
-                    fields.add("*all");
-                    monitor.subTask("Process issues");
-                    final SubMonitor progress = SubMonitor.convert(monitor, 100);
-                    progress.split(0);
-                    progress.setTaskName("Query server");
-                    final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, fields).get().getIssues();
-                    progress.split(20).setWorkRemaining(issuesFromServer.size());
-
-                    final List<JiraIssue> fullIssues = new ArrayList<>();
-                    for (final Issue issue : issuesFromServer) {
-                        fullIssues.add(JiraRestConverter.convertIssue(restClient, issue, cache, url, progress));
-                        progress.split(1);
-                    }
-                    progress.done();
-                    return fullIssues;
-                } catch (final Exception e) {
-                    final IStatus[] msgs = { new org.eclipse.core.runtime.Status(IStatus.INFO, //
-                            JiraCorePlugin.ID_PLUGIN, //
-                            NLS.bind("using jql [{0}].", //$NON-NLS-1$
-                                    new Object[] { jql })),
-                            new org.eclipse.core.runtime.Status(IStatus.INFO, //
-                                    JiraCorePlugin.ID_PLUGIN, //
-                                    NLS.bind("Server: [{0}].", //$NON-NLS-1$
-                                            new Object[] { cache.getServerInfo().getVersion() })) };
-
-                    final MultiStatus multiMsgs = new MultiStatus(JiraCorePlugin.ID_PLUGIN, IStatus.ERROR, msgs, "Error finding issues", e);
-                    StatusHandler.log(multiMsgs);
-
-                    throw e;
+                final List<JiraIssue> fullIssues = new ArrayList<>();
+                for (final Issue issue : issuesFromServer) {
+                    fullIssues.add(JiraRestConverter.convertIssue(restClient, issue, cache, url, progress));
+                    progress.split(1);
                 }
-            }
+                progress.done();
+                return fullIssues;
+            } catch (final Exception e) {
+                final IStatus[] msgs = { new org.eclipse.core.runtime.Status(IStatus.INFO, //
+                        JiraCorePlugin.ID_PLUGIN, //
+                        NLS.bind("using jql [{0}].", //$NON-NLS-1$
+                                new Object[] { jql })),
+                        new org.eclipse.core.runtime.Status(IStatus.INFO, //
+                                JiraCorePlugin.ID_PLUGIN, //
+                                NLS.bind("Server: [{0}].", //$NON-NLS-1$
+                                        new Object[] { cache.getServerInfo().getVersion() })) };
 
+                final MultiStatus multiMsgs = new MultiStatus(JiraCorePlugin.ID_PLUGIN, IStatus.ERROR, msgs, "Error finding issues", e);
+                StatusHandler.log(multiMsgs);
+
+                throw e;
+            }
         });
 
     }
@@ -367,40 +350,31 @@ public class JiraRestClientAdapter {
     }
 
     public JiraServerInfo getServerInfo() throws JiraException {
-        return call(new Callable<JiraServerInfo>() {
-            @Override
-            public JiraServerInfo call() throws JiraException {
-                try {
-                    return JiraRestConverter.convert(restClient.getMetadataClient().getServerInfo().get());
-                } catch (InterruptedException | ExecutionException | URISyntaxException e) {
-                    throw new JiraException(e);
-                }
+        return call(() -> {
+            try {
+                return JiraRestConverter.convert(restClient.getMetadataClient().getServerInfo().get());
+            } catch (InterruptedException | ExecutionException | URISyntaxException e) {
+                throw new JiraException(e);
             }
         });
     }
 
     public Session getSession() throws JiraException {
-        return call(new Callable<Session>() {
-            @Override
-            public Session call() throws JiraException {
-                try {
-                    return restClient.getSessionClient().getCurrentSession().get();
-                } catch (RestClientException | InterruptedException | ExecutionException | URISyntaxException e) {
-                    throw new JiraException(e);
-                }
+        return call(() -> {
+            try {
+                return restClient.getSessionClient().getCurrentSession().get();
+            } catch (RestClientException | InterruptedException | ExecutionException | URISyntaxException e) {
+                throw new JiraException(e);
             }
         });
     }
 
     public User getCurrentUser() throws JiraException {
-        return call(new Callable<User>() {
-            @Override
-            public User call() throws JiraException {
-                try {
-                    return restClient.getUserClient().getCurrentUser().get();
-                } catch (RestClientException | InterruptedException | ExecutionException | URISyntaxException e) {
-                    throw new JiraException(e);
-                }
+        return call(() -> {
+            try {
+                return restClient.getUserClient().getCurrentUser().get();
+            } catch (RestClientException | InterruptedException | ExecutionException | URISyntaxException e) {
+                throw new JiraException(e);
             }
         });
     }
@@ -613,13 +587,7 @@ public class JiraRestClientAdapter {
             issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.PARENT, ComplexIssueInputFieldValue.with(JiraRestFields.ID, issue.getParentId())));
         }
 
-        return call(new Callable<String>() {
-
-            @Override
-            public String call() throws Exception {
-                return restClient.getIssueClient().createIssue(issueInputBuilder.build()).get().getKey();
-            }
-        });
+        return call(() -> restClient.getIssueClient().createIssue(issueInputBuilder.build()).get().getKey());
     }
 
     public void updateIssue(final JiraIssue changedIssue, final boolean updateEstimate) throws JiraException {
@@ -761,14 +729,10 @@ public class JiraRestClientAdapter {
             }
         }
 
-        call(new Callable<Void>() {
-
-            @Override
-            public Void call() throws Exception {
-                final IssueInput issueInput = IssueInput.createWithFields(updateFields.toArray(new FieldInput[0]));
-                restClient.getIssueClient().updateIssue(issue.getKey(), issueInput).claim();
-                return null;
-            }
+        call(() -> {
+            final IssueInput issueInput = IssueInput.createWithFields(updateFields.toArray(new FieldInput[0]));
+            restClient.getIssueClient().updateIssue(issue.getKey(), issueInput).claim();
+            return null;
         });
 
     }
@@ -845,16 +809,13 @@ public class JiraRestClientAdapter {
     }
 
     public void deleteIssue(final String key, final IProgressMonitor monitor) throws JiraException {
-        call(new Callable<Void>() {
-            @Override
-            public Void call() throws JiraException {
-                try {
-                    restClient.getIssueClient().deleteIssue(key, true).claim();
-                } catch (final URISyntaxException e) {
-                    throw new JiraException(e);
-                }
-                return null;
+        call(() -> {
+            try {
+                restClient.getIssueClient().deleteIssue(key, true).claim();
+            } catch (final URISyntaxException e) {
+                throw new JiraException(e);
             }
+            return null;
         });
     }
 

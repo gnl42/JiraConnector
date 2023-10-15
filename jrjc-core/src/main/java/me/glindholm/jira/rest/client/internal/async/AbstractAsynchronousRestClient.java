@@ -36,6 +36,7 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import com.atlassian.httpclient.api.DefaultResponseTransformation;
 import com.atlassian.httpclient.api.EntityBuilder;
+import com.atlassian.httpclient.api.EntityBuilder.Entity;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Response;
 import com.atlassian.httpclient.api.ResponsePromise;
@@ -125,13 +126,10 @@ public abstract class AbstractAsynchronousRestClient {
 
     @SuppressWarnings("unchecked")
     protected final <T> Promise<T> callAndParse(final ResponsePromise responsePromise, final JsonParser<?, T> parser) {
-        final ResponseHandler<T> responseHandler = new ResponseHandler<>() {
-            @Override
-            public T handle(final Response response) throws JSONException, IOException, URISyntaxException {
-                final String body = response.getEntity();
-                return parser instanceof JsonObjectParser ? ((JsonObjectParser<T>) parser).parse(new JSONObject(body))
-                        : ((JsonArrayParser<T>) parser).parse(new JSONArray(body));
-            }
+        final ResponseHandler<T> responseHandler = response -> {
+            final String body = response.getEntity();
+            return parser instanceof JsonObjectParser ? ((JsonObjectParser<T>) parser).parse(new JSONObject(body))
+                    : ((JsonArrayParser<T>) parser).parse(new JSONArray(body));
         };
         return callAndParse(responsePromise, responseHandler);
     }
@@ -147,40 +145,29 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     private static <T> Function<Response, T> errorFunction() {
-        return new Function<>() {
-            @Override
-            public T apply(final Response response) {
-                try {
-                    final String body = response.getEntity();
-                    final List<ErrorCollection> errorMessages = extractErrors(response.getStatusCode(), body);
-                    throw new RestClientException(errorMessages, response.getStatusCode());
-                } catch (final JSONException e) {
-                    throw new RestClientException(e, response.getStatusCode());
-                }
+        return response -> {
+            try {
+                final String body = response.getEntity();
+                final List<ErrorCollection> errorMessages = extractErrors(response.getStatusCode(), body);
+                throw new RestClientException(errorMessages, response.getStatusCode());
+            } catch (final JSONException e) {
+                throw new RestClientException(e, response.getStatusCode());
             }
         };
     }
 
     private static <T> Function<Response, T> toFunction(final ResponseHandler<T> responseHandler) {
-        return new Function<>() {
-            @Override
-            public T apply(@Nullable final Response input) {
-                try {
-                    return responseHandler.handle(input);
-                } catch (JSONException | IOException | URISyntaxException e) {
-                    throw new RestClientException(e);
-                }
+        return (@Nullable final Response input) -> {
+            try {
+                return responseHandler.handle(input);
+            } catch (JSONException | IOException | URISyntaxException e) {
+                throw new RestClientException(e);
             }
         };
     }
 
     private static <T> Function<Response, T> constant(final T value) {
-        return new Function<>() {
-            @Override
-            public T apply(final Response input) {
-                return value;
-            }
-        };
+        return input -> value;
     }
 
     public static List<ErrorCollection> extractErrors(final int status, final String body) throws JSONException {
@@ -234,25 +221,19 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     private <T> EntityBuilder toEntity(final JsonGenerator<T> generator, final T bean) {
-        return new EntityBuilder() {
+        return () -> new Entity() {
+            @Override
+            public Map<String, String> getHeaders() {
+                return Collections.singletonMap("Content-Type", JSON_CONTENT_TYPE);
+            }
 
             @Override
-            public Entity build() {
-                return new Entity() {
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        return Collections.singletonMap("Content-Type", JSON_CONTENT_TYPE);
-                    }
-
-                    @Override
-                    public InputStream getInputStream() {
-                        try {
-                            return new ByteArrayInputStream(generator.generate(bean).toString().getBytes(Charset.forName("UTF-8")));
-                        } catch (final JSONException e) {
-                            throw new RestClientException(e);
-                        }
-                    }
-                };
+            public InputStream getInputStream() {
+                try {
+                    return new ByteArrayInputStream(generator.generate(bean).toString().getBytes(Charset.forName("UTF-8")));
+                } catch (final JSONException e) {
+                    throw new RestClientException(e);
+                }
             }
         };
     }

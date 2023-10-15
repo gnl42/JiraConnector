@@ -90,11 +90,9 @@ public class JiraResolution implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if ((obj == null) || !(obj instanceof JiraResolution)) {
+        if (obj == null || !(obj instanceof final JiraResolution that)) {
             return false;
         }
-
-        final JiraResolution that = (JiraResolution) obj;
 
         return id.equals(that.id);
     }

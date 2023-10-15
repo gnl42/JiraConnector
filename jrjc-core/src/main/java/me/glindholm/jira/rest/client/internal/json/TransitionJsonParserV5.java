@@ -17,8 +17,8 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -29,7 +29,7 @@ public class TransitionJsonParserV5 implements JsonObjectParser<Transition> {
     private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();
 
     @Override
-    public Transition parse(JSONObject json) throws JSONException {
+    public Transition parse(final JSONObject json) throws JSONException {
         final int id = json.getInt("id");
         final String name = json.getString("name");
         final JSONObject fieldsObj = json.getJSONObject("fields");
@@ -43,7 +43,7 @@ public class TransitionJsonParserV5 implements JsonObjectParser<Transition> {
     }
 
     public static class TransitionFieldJsonParser {
-        public Transition.Field parse(JSONObject json, final String id) throws JSONException {
+        public Transition.Field parse(final JSONObject json, final String id) throws JSONException {
             final boolean isRequired = json.getBoolean("required");
             final String type = json.getJSONObject("schema").getString("type");
             return new Transition.Field(id, isRequired, type);

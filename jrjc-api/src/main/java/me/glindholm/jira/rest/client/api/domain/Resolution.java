@@ -54,12 +54,9 @@ public class Resolution extends AddressableNamedEntity implements Serializable, 
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Resolution) {
-            Resolution that = (Resolution) obj;
-            return super.equals(obj)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.description, that.description);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Resolution that) {
+            return super.equals(obj) && Objects.equals(id, that.id) && Objects.equals(description, that.description);
         }
         return false;
     }

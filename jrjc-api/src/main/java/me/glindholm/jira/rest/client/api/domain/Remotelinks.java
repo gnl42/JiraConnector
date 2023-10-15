@@ -25,10 +25,9 @@ public class Remotelinks {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof Remotelinks)) {
+        if (!(obj instanceof final Remotelinks other)) {
             return false;
         }
-        final Remotelinks other = (Remotelinks) obj;
         return Objects.equals(remotelinks, other.remotelinks);
     }
 

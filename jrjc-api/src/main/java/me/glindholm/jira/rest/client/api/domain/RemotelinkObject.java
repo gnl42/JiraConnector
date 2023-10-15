@@ -48,10 +48,9 @@ public class RemotelinkObject {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof RemotelinkObject)) {
+        if (!(obj instanceof final RemotelinkObject other)) {
             return false;
         }
-        final RemotelinkObject other = (RemotelinkObject) obj;
         return Objects.equals(icon, other.icon) && Objects.equals(status, other.status) && Objects.equals(summary, other.summary)
                 && Objects.equals(title, other.title) && Objects.equals(url, other.url);
     }

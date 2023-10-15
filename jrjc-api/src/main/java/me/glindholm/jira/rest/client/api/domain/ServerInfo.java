@@ -79,8 +79,8 @@ public class ServerInfo {
     }
 
     /**
-     * @return current time (when the response is generated) on the server side or
-     *         <code>null</code> when the user is not authenticated.
+     * @return current time (when the response is generated) on the server side or <code>null</code>
+     *         when the user is not authenticated.
      */
     @Nullable
     public OffsetDateTime getServerTime() {
@@ -88,8 +88,8 @@ public class ServerInfo {
     }
 
     /**
-     * @return SCM information (like SVN revision) indicated from which sources this
-     *         JIRA server has been built.
+     * @return SCM information (like SVN revision) indicated from which sources this JIRA server has
+     *         been built.
      */
     public String getScmInfo() {
         return scmInfo;
@@ -114,8 +114,7 @@ public class ServerInfo {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof ServerInfo) {
-            final ServerInfo that = (ServerInfo) obj;
+        if (obj instanceof final ServerInfo that) {
             return Objects.equals(baseUri, that.baseUri) && Objects.equals(version, that.version) && Objects.equals(buildNumber, that.buildNumber)
                     && Objects.equals(buildDate, that.buildDate) && Objects.equals(serverTime, that.serverTime) && Objects.equals(scmInfo, that.scmInfo)
                     && Objects.equals(serverTitle, that.serverTitle);

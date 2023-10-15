@@ -31,7 +31,7 @@ public class VotesJsonParser implements JsonObjectParser<Votes> {
     private final BasicUserJsonParser basicUserJsonParser = new BasicUserJsonParser();
 
     @Override
-    public Votes parse(JSONObject json) throws JSONException, URISyntaxException {
+    public Votes parse(final JSONObject json) throws JSONException, URISyntaxException {
         final BasicVotes basicVotes = basicVotesJsonParser.parse(json);
         final List<BasicUser> users = JsonParseUtil.parseJsonArray(json.getJSONArray("voters"), basicUserJsonParser);
         return new Votes(basicVotes.getSelf(), basicVotes.getVotes(), basicVotes.hasVoted(), users);

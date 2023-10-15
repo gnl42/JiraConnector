@@ -29,7 +29,7 @@ import me.glindholm.jira.rest.client.api.domain.Group;
  */
 public class GroupsJsonParser implements JsonObjectParser<List<Group>> {
     @Override
-    public List<Group> parse(JSONObject json) throws JSONException, URISyntaxException {
+    public List<Group> parse(final JSONObject json) throws JSONException, URISyntaxException {
         return JsonParseUtil.parseJsonArray(json.optJSONArray("groups"), new GroupJsonParser());
     }
 }

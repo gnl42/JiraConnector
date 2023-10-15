@@ -63,7 +63,7 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     private final JsonArrayParser<List<Field>> fieldsJsonParser = FieldJsonParser.createFieldsArrayParser();
     private final URI baseUri;
 
-    public AsynchronousMetadataRestClient(final URI baseUri, HttpClient httpClient) {
+    public AsynchronousMetadataRestClient(final URI baseUri, final HttpClient httpClient) {
         super(httpClient);
         this.baseUri = baseUri;
 
@@ -87,7 +87,7 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     }
 
     @Override
-    public Promise<Status> getStatus(URI uri) {
+    public Promise<Status> getStatus(final URI uri) {
         return getAndParse(uri, statusJsonParser);
     }
 
@@ -98,7 +98,7 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     }
 
     @Override
-    public Promise<Priority> getPriority(URI uri) {
+    public Promise<Priority> getPriority(final URI uri) {
         return getAndParse(uri, priorityJsonParser);
     }
 
@@ -109,7 +109,7 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     }
 
     @Override
-    public Promise<Resolution> getResolution(URI uri) {
+    public Promise<Resolution> getResolution(final URI uri) {
         return getAndParse(uri, resolutionJsonParser);
     }
 

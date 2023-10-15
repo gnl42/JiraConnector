@@ -30,10 +30,9 @@ import me.glindholm.connector.eclipse.internal.jira.core.service.JiraLocalConfig
 import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 
 /**
- * This class acts as a layer of indirection between clients in this project and
- * the server API implemented by the Jira Dashboard, and also abstracts some
- * Mylyn implementation details. It initializes a jiraServer object and serves
- * as the central location to get a reference to it.
+ * This class acts as a layer of indirection between clients in this project and the server API
+ * implemented by the Jira Dashboard, and also abstracts some Mylyn implementation details. It
+ * initializes a jiraServer object and serves as the central location to get a reference to it.
  *
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)

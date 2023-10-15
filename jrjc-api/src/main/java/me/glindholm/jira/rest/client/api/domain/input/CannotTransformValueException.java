@@ -17,7 +17,8 @@
 package me.glindholm.jira.rest.client.api.domain.input;
 
 /**
- * This exception is thrown by ValueTransformerManager when there is not transformer that can transform given value.
+ * This exception is thrown by ValueTransformerManager when there is not transformer that can
+ * transform given value.
  *
  * @since v1.0
  */
@@ -28,17 +29,17 @@ public class CannotTransformValueException extends RuntimeException {
     public CannotTransformValueException() {
     }
 
-    public CannotTransformValueException(String message) {
+    public CannotTransformValueException(final String message) {
         super(message);
     }
 
     @SuppressWarnings("unused")
-    public CannotTransformValueException(String message, Throwable cause) {
+    public CannotTransformValueException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
     @SuppressWarnings("unused")
-    public CannotTransformValueException(Throwable cause) {
+    public CannotTransformValueException(final Throwable cause) {
         super(cause);
     }
 }

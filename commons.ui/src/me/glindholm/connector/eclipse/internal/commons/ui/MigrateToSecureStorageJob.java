@@ -27,12 +27,12 @@ public class MigrateToSecureStorageJob extends UIJob {
 
     public static class MutexRule implements ISchedulingRule {
         @Override
-        public boolean isConflicting(ISchedulingRule rule) {
+        public boolean isConflicting(final ISchedulingRule rule) {
             return rule == this;
         }
 
         @Override
-        public boolean contains(ISchedulingRule rule) {
+        public boolean contains(final ISchedulingRule rule) {
             return rule == this;
         }
     }
@@ -41,7 +41,7 @@ public class MigrateToSecureStorageJob extends UIJob {
 
     private static final MutexRule mutex = new MutexRule();
 
-    public MigrateToSecureStorageJob(String kind) {
+    public MigrateToSecureStorageJob(final String kind) {
         super("Migrating passwords to secure storage");
         this.kind = kind;
 
@@ -49,20 +49,23 @@ public class MigrateToSecureStorageJob extends UIJob {
     }
 
     @Override
-    public IStatus runInUIThread(IProgressMonitor monitor) {
-        Set<TaskRepository> repos = TasksUiPlugin.getRepositoryManager().getRepositories(kind);
+    public IStatus runInUIThread(final IProgressMonitor monitor) {
+        final Set<TaskRepository> repos = TasksUiPlugin.getRepositoryManager().getRepositories(kind);
         if (repos != null) {
-            for (TaskRepository repo : repos) {
+            for (final TaskRepository repo : repos) {
                 migrateToSecureStorage(repo);
             }
         }
         return Status.OK_STATUS;
     }
 
-    public static boolean migrateToSecureStorage(TaskRepository repository) {
+    public static boolean migrateToSecureStorage(final TaskRepository repository) {
         if (!"local".equals(repository.getUrl())) { //$NON-NLS-1$
-            AuthenticationCredentials creds = repository.getCredentials(AuthenticationType.REPOSITORY), httpCreds = repository.getCredentials(AuthenticationType.HTTP), proxyCreds = repository.getCredentials(AuthenticationType.PROXY);
-            boolean savePassword = repository.getSavePassword(AuthenticationType.REPOSITORY), httpSavePassword = repository.getSavePassword(AuthenticationType.HTTP), proxySavePassword = repository.getSavePassword(AuthenticationType.PROXY);
+            final AuthenticationCredentials creds = repository.getCredentials(AuthenticationType.REPOSITORY),
+                    httpCreds = repository.getCredentials(AuthenticationType.HTTP), proxyCreds = repository.getCredentials(AuthenticationType.PROXY);
+            final boolean savePassword = repository.getSavePassword(AuthenticationType.REPOSITORY),
+                    httpSavePassword = repository.getSavePassword(AuthenticationType.HTTP),
+                    proxySavePassword = repository.getSavePassword(AuthenticationType.PROXY);
 
             if (creds != null) {
                 repository.setCredentials(AuthenticationType.REPOSITORY, creds, savePassword);

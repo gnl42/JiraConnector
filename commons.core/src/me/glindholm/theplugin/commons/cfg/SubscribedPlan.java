@@ -20,30 +20,29 @@ package me.glindholm.theplugin.commons.cfg;
  * This class is immutable
  */
 public final class SubscribedPlan {
-	private final String key;
+    private final String key;
     private boolean grouped;
-
 
     public SubscribedPlan(final SubscribedPlan cfg) {
         key = cfg.getKey();
-        this.grouped = cfg.isGrouped();
-	}
+        grouped = cfg.isGrouped();
+    }
 
     public SubscribedPlan(final String key, final boolean grouped) {
         this.key = key;
         this.grouped = grouped;
     }
 
-	public SubscribedPlan(final String key) {
-		this(key, false);
-	}
+    public SubscribedPlan(final String key) {
+        this(key, false);
+    }
 
     public String getKey() {
-		return key;
-	}
+        return key;
+    }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -51,13 +50,9 @@ public final class SubscribedPlan {
             return false;
         }
 
-        SubscribedPlan that = (SubscribedPlan) o;
+        final SubscribedPlan that = (SubscribedPlan) o;
 
-        if (grouped != that.grouped) {
-            return false;
-        }
-
-        if (!key.equals(that.key)) {
+        if ((grouped != that.grouped) || !key.equals(that.key)) {
             return false;
         }
 
@@ -75,7 +70,7 @@ public final class SubscribedPlan {
         return grouped;
     }
 
-    public void setGrouped(boolean grouped) {
+    public void setGrouped(final boolean grouped) {
         this.grouped = grouped;
     }
 }

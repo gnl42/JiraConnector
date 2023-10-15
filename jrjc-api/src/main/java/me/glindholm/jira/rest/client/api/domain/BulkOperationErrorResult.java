@@ -31,7 +31,7 @@ public class BulkOperationErrorResult {
     private final Integer failedElementNumber;
 
     public BulkOperationErrorResult(final ErrorCollection errors, final Integer failedElementNumber) {
-        this.elementErrors = errors;
+        elementErrors = errors;
         this.failedElementNumber = failedElementNumber;
     }
 
@@ -45,7 +45,6 @@ public class BulkOperationErrorResult {
         return failedElementNumber;
     }
 
-
     @Override
     public String toString() {
         return "BulkOperationErrorResult [elementErrors=" + elementErrors + ", failedElementNumber=" + failedElementNumber + "]";
@@ -53,10 +52,8 @@ public class BulkOperationErrorResult {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof BulkOperationErrorResult) {
-            final BulkOperationErrorResult that = (BulkOperationErrorResult) obj;
-            return Objects.equals(this.elementErrors, that.elementErrors)
-                    && Objects.equals(this.failedElementNumber, that.failedElementNumber);
+        if (obj instanceof final BulkOperationErrorResult that) {
+            return Objects.equals(elementErrors, that.elementErrors) && Objects.equals(failedElementNumber, that.failedElementNumber);
         }
         return false;
     }

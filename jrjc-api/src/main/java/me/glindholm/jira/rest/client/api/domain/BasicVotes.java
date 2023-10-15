@@ -34,7 +34,7 @@ public class BasicVotes implements Serializable, AddressableEntity {
     private final int votes;
     private final boolean hasVoted;
 
-    public BasicVotes(URI self, int votes, boolean hasVoted) {
+    public BasicVotes(final URI self, final int votes, final boolean hasVoted) {
         this.self = self;
         this.votes = votes;
         this.hasVoted = hasVoted;
@@ -63,12 +63,9 @@ public class BasicVotes implements Serializable, AddressableEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof BasicVotes) {
-            final BasicVotes that = (BasicVotes) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.votes, that.votes)
-                    && Objects.equals(this.hasVoted, that.hasVoted);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final BasicVotes that) {
+            return Objects.equals(self, that.self) && Objects.equals(votes, that.votes) && Objects.equals(hasVoted, that.hasVoted);
         }
         return false;
     }

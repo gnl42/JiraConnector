@@ -16,24 +16,24 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.input.LinkIssuesInput;
 import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 public class LinkIssuesInputGenerator implements JsonGenerator<LinkIssuesInput> {
 
     private final ServerInfo serverInfo;
 
-    public LinkIssuesInputGenerator(ServerInfo serverInfo) {
+    public LinkIssuesInputGenerator(final ServerInfo serverInfo) {
         this.serverInfo = serverInfo;
     }
 
     @Override
-    public JSONObject generate(LinkIssuesInput linkIssuesInput) throws JSONException {
-        JSONObject res = new JSONObject();
+    public JSONObject generate(final LinkIssuesInput linkIssuesInput) throws JSONException {
+        final JSONObject res = new JSONObject();
 
         final int buildNumber = serverInfo.getBuildNumber();
         if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {

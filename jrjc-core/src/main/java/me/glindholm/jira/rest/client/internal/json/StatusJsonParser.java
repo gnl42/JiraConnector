@@ -16,20 +16,20 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.StatusCategory;
 import me.glindholm.jira.rest.client.api.domain.Status;
 
-import java.net.URI;
-
 public class StatusJsonParser implements JsonObjectParser<Status> {
 
     private final StatusCategoryJsonParser statusCategoryJsonParser = new StatusCategoryJsonParser();
 
     @Override
-    public Status parse(JSONObject json) throws JSONException {
+    public Status parse(final JSONObject json) throws JSONException {
         final URI self = JsonParseUtil.getSelfUri(json);
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final String name = json.getString("name");

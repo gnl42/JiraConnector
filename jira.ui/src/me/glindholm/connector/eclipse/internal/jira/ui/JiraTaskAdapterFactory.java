@@ -49,8 +49,7 @@ public class JiraTaskAdapterFactory implements IAdapterFactory {
             return null;
         }
 
-        if (adaptableObject instanceof ITask) {
-            final ITask task = (ITask) adaptableObject;
+        if (adaptableObject instanceof final ITask task) {
             if (JiraCorePlugin.CONNECTOR_KIND.equals(task.getConnectorKind())) {
                 return new JiraTask((ITask) adaptableObject);
             }

@@ -9,9 +9,9 @@ import org.apache.commons.httpclient.HttpMethod;
  */
 public abstract class HttpSessionCallbackImpl implements HttpSessionCallback {
 
-	public void configureHttpMethod(AbstractHttpSession session, HttpMethod method) {
-		session.adjustHttpHeader(method);
-	}
-
+    @Override
+    public void configureHttpMethod(final AbstractHttpSession session, final HttpMethod method) {
+        session.adjustHttpHeader(method);
+    }
 
 }

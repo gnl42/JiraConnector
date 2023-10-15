@@ -10,12 +10,8 @@ import me.glindholm.jira.rest.client.api.domain.AuditAssociatedItem;
  */
 public class AuditAssociatedItemJsonGenerator implements JsonGenerator<AuditAssociatedItem> {
     @Override
-    public JSONObject generate(AuditAssociatedItem bean) throws JSONException {
-        return new JSONObject()
-                .put("id", bean.getId())
-                .put("name", bean.getName())
-                .put("typeName", bean.getTypeName())
-                .put("parentId", bean.getParentId())
+    public JSONObject generate(final AuditAssociatedItem bean) throws JSONException {
+        return new JSONObject().put("id", bean.getId()).put("name", bean.getName()).put("typeName", bean.getTypeName()).put("parentId", bean.getParentId())
                 .put("parentName", bean.getParentName());
     }
 }

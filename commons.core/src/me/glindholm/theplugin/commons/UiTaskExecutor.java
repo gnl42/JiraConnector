@@ -17,5 +17,5 @@
 package me.glindholm.theplugin.commons;
 
 public interface UiTaskExecutor {
-	void execute(UiTask uiTask);
+    void execute(UiTask uiTask);
 }

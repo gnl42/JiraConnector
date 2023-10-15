@@ -51,8 +51,7 @@ public class BulkOperationResult<T> {
     public boolean equals(final Object obj) {
         if (obj instanceof BulkOperationResult) {
             final BulkOperationResult<T> that = (BulkOperationResult<T>) obj;
-            return Objects.equals(this.issues, that.issues)
-                    && Objects.equals(this.errors, that.errors);
+            return Objects.equals(issues, that.issues) && Objects.equals(errors, that.errors);
         }
         return false;
     }

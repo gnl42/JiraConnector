@@ -44,7 +44,8 @@ public class AuditRecordsJsonParser implements JsonObjectParser<AuditRecordsData
             final String authorKey = JsonParseUtil.getOptionalString(json, "authorKey");
             final String remoteAddress = JsonParseUtil.getOptionalString(json, "remoteAddress");
             final AuditAssociatedItem objectItem = JsonParseUtil.getOptionalJsonObject(json, "objectItem", associatedItemJsonParser);
-            final List<AuditAssociatedItem> associatedItem = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("associatedItems"), associatedItemJsonParser);
+            final List<AuditAssociatedItem> associatedItem = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("associatedItems"),
+                    associatedItemJsonParser);
             final List<AuditChangedValue> changedValues = JsonParseUtil.parseOptionalJsonArray(json.optJSONArray("changedValues"), changedValueJsonParser);
 
             return new AuditRecord(id, summary, remoteAddress, created, category, eventSource, authorKey, objectItem, associatedItem, changedValues);

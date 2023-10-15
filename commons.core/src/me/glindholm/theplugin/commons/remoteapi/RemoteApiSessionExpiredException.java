@@ -21,16 +21,16 @@ package me.glindholm.theplugin.commons.remoteapi;
  */
 public class RemoteApiSessionExpiredException extends RemoteApiException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4881606643316502502L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4881606643316502502L;
 
-	public RemoteApiSessionExpiredException(String message) {
-		super(message);
-	}
+    public RemoteApiSessionExpiredException(final String message) {
+        super(message);
+    }
 
-	public RemoteApiSessionExpiredException(String message, Throwable throwable) {
-		super(message, throwable);
-	}
+    public RemoteApiSessionExpiredException(final String message, final Throwable throwable) {
+        super(message, throwable);
+    }
 }

@@ -19,52 +19,51 @@ package me.glindholm.theplugin.commons.util;
 public abstract class LoggerImpl implements Logger {
 
     /**
-     * For backward compatibility, support the overriding the factory
-     * with a singleton instance of the logger.
+     * For backward compatibility, support the overriding the factory with a singleton instance of the
+     * logger.
      */
     private static Logger singleton;
-	public static final String LOGGER_CATEGORY = "me.glindholm.theplugin";
+    public static final String LOGGER_CATEGORY = "me.glindholm.theplugin";
 
-
-	public boolean isDebugEnabled() {
-		return debug;
-	}
-
-	public static Logger getInstance() {
-        if (singleton != null) {
-			return singleton;
-		} else {
-			System.out.println("Logger not initialized");
-			return new NullLogger();
-		}
+    @Override
+    public boolean isDebugEnabled() {
+        return debug;
     }
-	
-	private static boolean debug;
+
+    public static Logger getInstance() {
+        if (singleton != null) {
+            return singleton;
+        } else {
+            System.out.println("Logger not initialized");
+            return new NullLogger();
+        }
+    }
+
+    private static boolean debug;
 
     private static boolean verbose;
 
     /**
-     * If set, this instance will be returned by all requests made to getInstance,
-     * overriding the factory implementation and thereby providing backward
-     * compatibility.
+     * If set, this instance will be returned by all requests made to getInstance, overriding the
+     * factory implementation and thereby providing backward compatibility.
      *
      * @param instance instance
      */
-    public static void setInstance(Logger instance) {
+    public static void setInstance(final Logger instance) {
         singleton = instance;
     }
 
     protected LoggerImpl() {
-	}
+    }
 
-    //these values mirror Ant's values
+    // these values mirror Ant's values
     public static final int LOG_ERR = 0;
     public static final int LOG_WARN = 1;
     public static final int LOG_INFO = 2;
     public static final int LOG_VERBOSE = 3;
     public static final int LOG_DEBUG = 4;
 
-    public static void setDebug(boolean debug) {
+    public static void setDebug(final boolean debug) {
         LoggerImpl.debug = debug;
     }
 
@@ -76,86 +75,97 @@ public abstract class LoggerImpl implements Logger {
         return LoggerImpl.verbose;
     }
 
-    public static void setVerbose(boolean verbose) {
+    public static void setVerbose(final boolean verbose) {
         LoggerImpl.verbose = verbose;
     }
 
-    public void error(String msg) {
+    @Override
+    public void error(final String msg) {
         log(LOG_ERR, msg, null);
     }
 
-    public void error(String msg, Throwable t) {
+    @Override
+    public void error(final String msg, final Throwable t) {
         log(LOG_ERR, msg, t);
     }
 
-    public void error(Throwable t) {
-        log(LOG_ERR, (t != null) ? t.getMessage() : "Exception", t);
+    @Override
+    public void error(final Throwable t) {
+        log(LOG_ERR, t != null ? t.getMessage() : "Exception", t);
     }
 
-    public void warn(String msg) {
+    @Override
+    public void warn(final String msg) {
         log(LOG_WARN, msg, null);
     }
 
-    public void warn(String msg, Throwable t) {
+    @Override
+    public void warn(final String msg, final Throwable t) {
         log(LOG_WARN, msg, t);
     }
 
-    public void warn(Throwable t) {
-        log(LOG_WARN, (t != null) ? t.getMessage() : "Exception", t);
+    @Override
+    public void warn(final Throwable t) {
+        log(LOG_WARN, t != null ? t.getMessage() : "Exception", t);
     }
 
-
-	public void info(String msg) {
+    @Override
+    public void info(final String msg) {
         log(LOG_INFO, msg, null);
     }
 
-    public void info(String msg, Throwable t) {
+    @Override
+    public void info(final String msg, final Throwable t) {
         log(LOG_INFO, msg, t);
     }
 
-    public void info(Throwable t) {
-        log(LOG_INFO, (t != null) ? t.getMessage() : "Exception", t);
+    @Override
+    public void info(final Throwable t) {
+        log(LOG_INFO, t != null ? t.getMessage() : "Exception", t);
     }
 
-
-
-	public void verbose(String msg) {
+    @Override
+    public void verbose(final String msg) {
         log(LOG_VERBOSE, msg, null);
     }
 
-    public void verbose(String msg, Throwable t) {
+    @Override
+    public void verbose(final String msg, final Throwable t) {
         log(LOG_VERBOSE, msg, t);
     }
 
-    public void verbose(Throwable t) {
-        log(LOG_VERBOSE, (t != null) ? t.getMessage() : "Exception", t);
+    @Override
+    public void verbose(final Throwable t) {
+        log(LOG_VERBOSE, t != null ? t.getMessage() : "Exception", t);
     }
 
-    public void debug(String msg) {
+    @Override
+    public void debug(final String msg) {
         log(LOG_DEBUG, msg, null);
     }
 
-    public void debug(String msg, Throwable t) {
+    @Override
+    public void debug(final String msg, final Throwable t) {
         log(LOG_DEBUG, msg, t);
     }
 
-    public void debug(Throwable t) {
-        log(LOG_DEBUG, (t != null) ? t.getMessage() : "Exception", t);
+    @Override
+    public void debug(final Throwable t) {
+        log(LOG_DEBUG, t != null ? t.getMessage() : "Exception", t);
     }
 
-    public static boolean canIgnore(int level) {
-        if (!debug && (level == LOG_DEBUG)) {
+    public static boolean canIgnore(final int level) {
+        if (!debug && level == LOG_DEBUG) {
             return true;
         }
-        return !(verbose || debug) && (level == LOG_VERBOSE);
+        return !(verbose || debug) && level == LOG_VERBOSE;
     }
 
-	static class NullLogger extends LoggerImpl {
+    static class NullLogger extends LoggerImpl {
 
-        public void log(int level, String msg, Throwable t) {
-            //no-op
+        @Override
+        public void log(final int level, final String msg, final Throwable t) {
+            // no-op
         }
-	}
+    }
 }
-
-

@@ -34,7 +34,7 @@ public class AddressableNamedEntity implements Serializable, AddressableEntity, 
     protected final URI self;
     protected final String name;
 
-    public AddressableNamedEntity(URI self, String name) {
+    public AddressableNamedEntity(final URI self, final String name) {
         this.name = name;
         this.self = self;
     }
@@ -55,11 +55,9 @@ public class AddressableNamedEntity implements Serializable, AddressableEntity, 
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof AddressableNamedEntity) {
-            AddressableNamedEntity that = (AddressableNamedEntity) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.name, that.name);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final AddressableNamedEntity that) {
+            return Objects.equals(self, that.self) && Objects.equals(name, that.name);
         }
         return false;
     }

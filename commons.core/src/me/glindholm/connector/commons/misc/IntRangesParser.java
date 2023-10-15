@@ -22,48 +22,47 @@ import org.eclipse.jdt.annotation.NonNull;
 import me.glindholm.theplugin.commons.util.MiscUtil;
 
 public final class IntRangesParser {
-	private IntRangesParser() {
-	}
+    private IntRangesParser() {
+    }
 
-	@NonNull
-	public static IntRanges parse(@NonNull String rangesStr) throws NumberFormatException {
-		if (rangesStr == null) {
-			throw new IllegalArgumentException("Parameter cannot be null");
-		}
-		rangesStr = rangesStr.trim();
-		if (rangesStr.length() == 0) {
-			throw new NumberFormatException("Cannot parse [" + rangesStr + "] into " + IntRanges.class.getName());
-		}
-		String[] tokens = rangesStr.split(",");
-		ArrayList<IntRange> res = MiscUtil.buildArrayList();
-		for (final String nontrimmedtoken : tokens) {
-			final String token = nontrimmedtoken.trim();
-			try {
-				int index = token.lastIndexOf('-');
-				if (index < 1) {
-					res.add(new IntRange(Integer.parseInt(token)));
-				} else {
-					// now the case for -X- -Y
-					int index2 = token.lastIndexOf('-', index - 1);
-					if (index2 > 0) {
-						index = index2; // there was additional "-" found in the middle of the string
-					}
+    @NonNull
+    public static IntRanges parse(@NonNull String rangesStr) throws NumberFormatException {
+        if (rangesStr == null) {
+            throw new IllegalArgumentException("Parameter cannot be null");
+        }
+        rangesStr = rangesStr.trim();
+        if (rangesStr.length() == 0) {
+            throw new NumberFormatException("Cannot parse [" + rangesStr + "] into " + IntRanges.class.getName());
+        }
+        final String[] tokens = rangesStr.split(",");
+        final ArrayList<IntRange> res = MiscUtil.buildArrayList();
+        for (final String nontrimmedtoken : tokens) {
+            final String token = nontrimmedtoken.trim();
+            try {
+                int index = token.lastIndexOf('-');
+                if (index < 1) {
+                    res.add(new IntRange(Integer.parseInt(token)));
+                } else {
+                    // now the case for -X- -Y
+                    final int index2 = token.lastIndexOf('-', index - 1);
+                    if (index2 > 0) {
+                        index = index2; // there was additional "-" found in the middle of the string
+                    }
 
-					final int min = Integer.parseInt(token.substring(0, index).trim());
-					final int max = Integer.parseInt(token.substring(index + 1).trim());
-					if (min > max) {
-						throw new NumberFormatException("The lower bound of the range [" + min + "] cannot be greater than"
-								+ "the upper bound of the range [" + max + "]");
-					}
-					res.add(new IntRange(min, max));
-				}
-			} catch (NumberFormatException e) {
-				final NumberFormatException ex = new NumberFormatException(
-						"Cannot parse [" + rangesStr + "] into " + IntRanges.class.getName());
-				ex.initCause(e);
-				throw ex;
-			}
-		}
-		return new IntRanges(res);
-	}
+                    final int min = Integer.parseInt(token.substring(0, index).trim());
+                    final int max = Integer.parseInt(token.substring(index + 1).trim());
+                    if (min > max) {
+                        throw new NumberFormatException(
+                                "The lower bound of the range [" + min + "] cannot be greater than" + "the upper bound of the range [" + max + "]");
+                    }
+                    res.add(new IntRange(min, max));
+                }
+            } catch (final NumberFormatException e) {
+                final NumberFormatException ex = new NumberFormatException("Cannot parse [" + rangesStr + "] into " + IntRanges.class.getName());
+                ex.initCause(e);
+                throw ex;
+            }
+        }
+        return new IntRanges(res);
+    }
 }

@@ -23,7 +23,8 @@ import java.util.Objects;
 import me.glindholm.jira.rest.client.api.NamedEntity;
 
 /**
- * Information about selected transition including fields which can or must be set while performing the transition.
+ * Information about selected transition including fields which can or must be set while performing
+ * the transition.
  *
  * @since v0.1
  */
@@ -34,7 +35,7 @@ public class Transition implements Serializable, NamedEntity {
     private final int id;
     private final List<Field> fields;
 
-    public Transition(String name, int id, List<Field> fields) {
+    public Transition(final String name, final int id, final List<Field> fields) {
         this.name = name;
         this.id = id;
         this.fields = fields;
@@ -54,12 +55,9 @@ public class Transition implements Serializable, NamedEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Transition) {
-            Transition that = (Transition) obj;
-            return Objects.equals(this.name, that.name)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.fields, that.fields);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Transition that) {
+            return Objects.equals(name, that.name) && Objects.equals(id, that.id) && Objects.equals(fields, that.fields);
         }
         return false;
     }
@@ -69,19 +67,17 @@ public class Transition implements Serializable, NamedEntity {
         return Objects.hash(id, name, fields);
     }
 
-
     @Override
     public String toString() {
         return "Transition [name=" + name + ", id=" + id + ", fields=" + fields + "]";
     }
-
 
     public static class Field {
         private final String id;
         private final boolean isRequired;
         private final String type;
 
-        public Field(String id, boolean isRequired, String type) {
+        public Field(final String id, final boolean isRequired, final String type) {
             this.id = id;
             this.isRequired = isRequired;
             this.type = type;
@@ -105,12 +101,9 @@ public class Transition implements Serializable, NamedEntity {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof Field) {
-                Field that = (Field) obj;
-                return Objects.equals(this.id, that.id)
-                        && Objects.equals(this.isRequired, that.isRequired)
-                        && Objects.equals(this.type, that.type);
+        public boolean equals(final Object obj) {
+            if (obj instanceof final Field that) {
+                return Objects.equals(id, that.id) && Objects.equals(isRequired, that.isRequired) && Objects.equals(type, that.type);
             }
             return false;
         }

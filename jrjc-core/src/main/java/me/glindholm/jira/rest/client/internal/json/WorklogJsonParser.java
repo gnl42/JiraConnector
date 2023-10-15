@@ -16,20 +16,20 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.Worklog;
 
-import java.net.URI;
-
 public class WorklogJsonParser implements JsonObjectParser<Worklog> {
 
     @Override
-    public Worklog parse(JSONObject json) throws JSONException {
+    public Worklog parse(final JSONObject json) throws JSONException {
         final URI self = JsonParseUtil.getSelfUri(json);
         final URI issueUri = JsonParseUtil.parseURI(json.getString("issue"));
         final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));

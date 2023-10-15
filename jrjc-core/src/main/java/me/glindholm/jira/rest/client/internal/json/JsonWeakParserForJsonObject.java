@@ -24,20 +24,20 @@ import org.codehaus.jettison.json.JSONObject;
 class JsonWeakParserForJsonObject<T> implements JsonWeakParser<T> {
     private final JsonObjectParser<T> jsonParser;
 
-    public JsonWeakParserForJsonObject(JsonObjectParser<T> jsonParser) {
+    public JsonWeakParserForJsonObject(final JsonObjectParser<T> jsonParser) {
         this.jsonParser = jsonParser;
     }
 
-    private <T> T convert(Object o, Class<T> clazz) throws JSONException {
+    private <T> T convert(final Object o, final Class<T> clazz) throws JSONException {
         try {
             return clazz.cast(o);
-        } catch (ClassCastException e) {
+        } catch (final ClassCastException e) {
             throw new JSONException("Expected [" + clazz.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]");
         }
     }
 
     @Override
-    public T parse(Object o) throws JSONException, URISyntaxException {
+    public T parse(final Object o) throws JSONException, URISyntaxException {
         return jsonParser.parse(convert(o, JSONObject.class));
     }
 }

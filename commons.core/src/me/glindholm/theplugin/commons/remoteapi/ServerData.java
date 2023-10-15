@@ -34,35 +34,33 @@ public class ServerData extends ConnectionCfg {
 
 //    private boolean serverResponding = false;
 
-    public ServerData(Builder builder) {
+    public ServerData(final Builder builder) {
         super(builder.server != null && builder.server.getServerId() != null ? builder.server.getServerId().getId() : "",
                 builder.server != null ? builder.server.getUrl() : "",
-                builder.useDefaultUser ? builder.defaultUser.getUsername()
-                        : (builder.server != null ? builder.server.getUsername() : ""),
-                builder.useDefaultUser ? builder.defaultUser.getPassword()
-                        : (builder.server != null ? builder.server.getPassword() : ""));
-        this.server = builder.server;
-        this.basicUser = builder.basicUser;
-        this.useProxy = builder.useProxyUser;
-        this.proxyUser = builder.proxyUser;
-        this.useBasicUser = builder.useBasicUser;
-        this.useSessionCookies = builder.useSessionCookies;
+                builder.useDefaultUser ? builder.defaultUser.getUsername() : builder.server != null ? builder.server.getUsername() : "",
+                builder.useDefaultUser ? builder.defaultUser.getPassword() : builder.server != null ? builder.server.getPassword() : "");
+        server = builder.server;
+        basicUser = builder.basicUser;
+        useProxy = builder.useProxyUser;
+        proxyUser = builder.proxyUser;
+        useBasicUser = builder.useBasicUser;
+        useSessionCookies = builder.useSessionCookies;
     }
 
-    private ServerData(ServerData that) {
+    private ServerData(final ServerData that) {
         super(that.getId(), that.getUrl(), that.getUsername(), that.getPassword());
-        this.server = that.server;
-        this.useProxy = that.useProxy;
-        this.basicUser = that.basicUser;
-        this.proxyUser = that.proxyUser;
-        this.useBasicUser = that.useBasicUser;
-        this.useSessionCookies = that.useSessionCookies;
+        server = that.server;
+        useProxy = that.useProxy;
+        basicUser = that.basicUser;
+        proxyUser = that.proxyUser;
+        useBasicUser = that.useBasicUser;
+        useSessionCookies = that.useSessionCookies;
     }
 
     public static class Builder {
-        //required params
+        // required params
         protected final Server server;
-        //optional params
+        // optional params
         protected UserCfg defaultUser;
         protected UserCfg basicUser;
         protected UserCfg proxyUser;
@@ -71,71 +69,70 @@ public class ServerData extends ConnectionCfg {
         private boolean useBasicUser;
         private boolean useSessionCookies = false;
 
-        public Builder(Server server) {
+        public Builder(final Server server) {
             this.server = server;
-            this.basicUser = server.getBasicHttpUser();
-            this.useBasicUser = !server.isDontUseBasicAuth();
-            this.useDefaultUser = server.isUseDefaultCredentials();
-            this.useSessionCookies = server.isUseSessionCookies();
+            basicUser = server.getBasicHttpUser();
+            useBasicUser = !server.isDontUseBasicAuth();
+            useDefaultUser = server.isUseDefaultCredentials();
+            useSessionCookies = server.isUseSessionCookies();
         }
-	    public Builder(Server server, UserCfg defaultUser) {
+
+        public Builder(final Server server, final UserCfg defaultUser) {
             this(server);
-			this.defaultUser = defaultUser;
+            this.defaultUser = defaultUser;
         }
 
         protected Server getServer() {
             return server;
         }
 
-        public void basicUser(UserCfg basicUsr) {
-            this.basicUser = basicUsr;
+        public void basicUser(final UserCfg basicUsr) {
+            basicUser = basicUsr;
         }
 
-        public void defaultUser(UserCfg defaultUsr) {
-            this.defaultUser = defaultUsr;
+        public void defaultUser(final UserCfg defaultUsr) {
+            defaultUser = defaultUsr;
         }
 
-        public void proxyUser(UserCfg proxyUsr) {
-            this.proxyUser = proxyUsr;
+        public void proxyUser(final UserCfg proxyUsr) {
+            proxyUser = proxyUsr;
         }
 
-        public void useDefaultUser(boolean useDefault) {
-            this.useDefaultUser = useDefault;
+        public void useDefaultUser(final boolean useDefault) {
+            useDefaultUser = useDefault;
         }
 
-        public void useProxyUser(boolean useProxy) {
-            this.useProxyUser = useProxy;
+        public void useProxyUser(final boolean useProxy) {
+            useProxyUser = useProxy;
         }
 
-        public void useBasicUser(boolean useBasic) {
-            this.useBasicUser = useBasic;
+        public void useBasicUser(final boolean useBasic) {
+            useBasicUser = useBasic;
         }
+
         public ServerData build() {
             return new ServerData(this);
         }
 
-        public void setUseSessionCookies(boolean useSessionCookies) {
+        public void setUseSessionCookies(final boolean useSessionCookies) {
             this.useSessionCookies = useSessionCookies;
         }
     }
 
     public ServerData(final Server server) {
-        super(server != null ? (server.getServerId() != null ? server.getServerId().getId() : "") : "",
-                server != null ? server.getUrl() : "",
-                server != null ? server.getUsername() : "",
-                server != null ? server.getPassword() : "");
+        super(server != null ? server.getServerId() != null ? server.getServerId().getId() : "" : "", server != null ? server.getUrl() : "",
+                server != null ? server.getUsername() : "", server != null ? server.getPassword() : "");
         this.server = server;
         if (server != null) {
-            this.useBasicUser = !server.isDontUseBasicAuth();
-            this.basicUser = server.getBasicHttpUser();
+            useBasicUser = !server.isDontUseBasicAuth();
+            basicUser = server.getBasicHttpUser();
         }
     }
 
-    public ServerData(final Server server, UserCfg defaultUser) {
-        super(server != null && server.getServerId() != null ? server.getServerId().getId() : "",
-                server != null ? server.getUrl() : "",
-                defaultUser != null ? defaultUser.getUsername() : (server != null ? server.getUsername() : ""),
-                defaultUser != null ? defaultUser.getPassword() : (server != null ? server.getPassword() : ""));
+    public ServerData(final Server server, final UserCfg defaultUser) {
+        super(server != null && server.getServerId() != null ? server.getServerId().getId() : "", server != null ? server.getUrl() : "",
+                defaultUser != null ? defaultUser.getUsername() : server != null ? server.getUsername() : "",
+                defaultUser != null ? defaultUser.getPassword() : server != null ? server.getPassword() : "");
         this.server = server;
 
     }
@@ -144,14 +141,17 @@ public class ServerData extends ConnectionCfg {
         return server;
     }
 
+    @Override
     public String getUsername() {
         return super.getUsername();
     }
 
+    @Override
     public String getPassword() {
         return super.getPassword();
     }
 
+    @Override
     public String getUrl() {
         return server.getUrl();
     }
@@ -192,7 +192,7 @@ public class ServerData extends ConnectionCfg {
         return useSessionCookies;
     }
 
-    //    public boolean isServerResponding() {
+    // public boolean isServerResponding() {
 //        return serverResponding;
 //    }
 
@@ -202,52 +202,45 @@ public class ServerData extends ConnectionCfg {
 
     @Override
     /**
-     * Beware when overriding this method. It uses instanceof instead of getClass().
-     * Remember to keep 'symmetry'
+     * Beware when overriding this method. It uses instanceof instead of getClass(). Remember to keep
+     * 'symmetry'
      */
     public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || !(o instanceof ServerData)) { //getClass() != o.getClass()) {
+        if (o == null || !(o instanceof final ServerData that)) { // getClass() != o.getClass()) {
             return false;
         }
 
-        final ServerData that = (ServerData) o;
-
-        if (getServerId() != null ? !getServerId().equals(that.getServerId()) : that.getServerId() != null) {
-            return false;
-        }
-        if (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null) {
+        if ((getServerId() != null ? !getServerId().equals(that.getServerId()) : that.getServerId() != null) || (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null)) {
             return false;
         }
 
-		if (getPassword() == null) {
-			if (that.getPassword() != null) {
-				return false;
-			}
-		} else if (!getPassword().equals(that.getPassword())) {
-			return false;
-		}
+        if (getPassword() == null) {
+            if (that.getPassword() != null) {
+                return false;
+            }
+        } else if (!getPassword().equals(that.getPassword())) {
+            return false;
+        }
 
-		if (getUsername() == null) {
-			if (that.getUsername() != null) {
-				return false;
-			}
-		} else if (!getUsername().equals(that.getUsername())) {
-			return false;
-		}
-		return true;	
+        if (getUsername() == null) {
+            if (that.getUsername() != null) {
+                return false;
+            }
+        } else if (!getUsername().equals(that.getUsername())) {
+            return false;
+        }
+        return true;
     }
 
-
-
-@Override
+    @Override
     public int hashCode() {
         int result;
         // todo do we want to use name for hashCode and Equals???
 //		result = (name != null ? name.hashCode() : 0);
-        result = (getServerId() != null ? getServerId().hashCode() : 0);
+        result = getServerId() != null ? getServerId().hashCode() : 0;
         result = 31 * result + super.hashCode();
         result = 31 * result + (getUrl() != null ? getUrl().hashCode() : 0);
         return result;

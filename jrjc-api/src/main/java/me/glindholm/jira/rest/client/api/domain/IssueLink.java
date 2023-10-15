@@ -16,7 +16,6 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-
 import java.net.URI;
 import java.util.Objects;
 
@@ -30,7 +29,7 @@ public class IssueLink {
     private final URI targetIssueUri;
     private final IssueLinkType issueLinkType;
 
-    public IssueLink(String targetIssueKey, URI targetIssueUri, IssueLinkType issueLinkType) {
+    public IssueLink(final String targetIssueKey, final URI targetIssueUri, final IssueLinkType issueLinkType) {
         this.targetIssueKey = targetIssueKey;
         this.targetIssueUri = targetIssueUri;
         this.issueLinkType = issueLinkType;
@@ -54,12 +53,10 @@ public class IssueLink {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof IssueLink) {
-            IssueLink that = (IssueLink) obj;
-            return Objects.equals(this.targetIssueKey, that.targetIssueKey)
-                    && Objects.equals(this.targetIssueUri, that.targetIssueUri)
-                    && Objects.equals(this.issueLinkType, that.issueLinkType);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final IssueLink that) {
+            return Objects.equals(targetIssueKey, that.targetIssueKey) && Objects.equals(targetIssueUri, that.targetIssueUri)
+                    && Objects.equals(issueLinkType, that.issueLinkType);
         }
         return false;
     }

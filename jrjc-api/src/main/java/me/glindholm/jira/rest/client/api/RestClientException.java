@@ -23,8 +23,9 @@ import java.util.Optional;
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 
 /**
- * Basic exception which may be thrown by any remote operation encapsulated by the REST me.glindholm.jira.rest.client.api.
- * Usually some more specific exception will be chained here and available via {@link #getCause()}
+ * Basic exception which may be thrown by any remote operation encapsulated by the REST
+ * me.glindholm.jira.rest.client.api. Usually some more specific exception will be chained here and
+ * available via {@link #getCause()}
  *
  * @since v0.1
  */
@@ -36,25 +37,25 @@ public class RestClientException extends RuntimeException {
 
     public RestClientException(final RestClientException exception) {
         super(exception.getMessage(), exception);
-        this.statusCode = exception.getStatusCode();
-        this.ErrorCollections = exception.ErrorCollections;
+        statusCode = exception.getStatusCode();
+        ErrorCollections = exception.ErrorCollections;
     }
 
     public RestClientException(final Throwable cause) {
         super(cause);
-        this.ErrorCollections = Collections.emptyList();
-        this.statusCode = Optional.empty();
+        ErrorCollections = Collections.emptyList();
+        statusCode = Optional.empty();
     }
 
     public RestClientException(final Throwable cause, final int statusCode) {
         super(cause);
-        this.ErrorCollections = Collections.emptyList();
+        ErrorCollections = Collections.emptyList();
         this.statusCode = Optional.of(statusCode);
     }
 
     public RestClientException(final String errorMessage, final Throwable cause) {
         super(errorMessage, cause);
-        this.ErrorCollections = List.of(new ErrorCollection(errorMessage));
+        ErrorCollections = List.of(new ErrorCollection(errorMessage));
         statusCode = Optional.empty();
     }
 
@@ -86,9 +87,6 @@ public class RestClientException extends RuntimeException {
 
     @Override
     public String toString() {
-        return "RestClientException{" +
-                "statusCode=" + statusCode +
-                ", ErrorCollections=" + ErrorCollections +
-                '}';
+        return "RestClientException{" + "statusCode=" + statusCode + ", ErrorCollections=" + ErrorCollections + '}';
     }
 }

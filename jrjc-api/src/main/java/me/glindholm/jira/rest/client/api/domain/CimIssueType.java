@@ -28,7 +28,8 @@ import me.glindholm.jira.rest.client.api.IssueRestClient;
 /**
  * Describes issue type with fields info map.
  * <p>
- * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of
+ * {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
  *
  * @since v1.0
  */
@@ -42,7 +43,8 @@ public class CimIssueType extends IssueType {
 
     private final Map<String, CimFieldInfo> fields;
 
-    public CimIssueType(URI self, @Nullable Long id, String name, boolean isSubtask, String description, URI iconUri, Map<String, CimFieldInfo> fields) {
+    public CimIssueType(final URI self, @Nullable final Long id, final String name, final boolean isSubtask, final String description, final URI iconUri,
+            final Map<String, CimFieldInfo> fields) {
         super(self, id, name, isSubtask, description, iconUri);
         this.fields = fields;
     }
@@ -52,12 +54,13 @@ public class CimIssueType extends IssueType {
     }
 
     @Nullable
-    public CimFieldInfo getField(IssueFieldId fieldId) {
+    public CimFieldInfo getField(final IssueFieldId fieldId) {
         return fields.get(fieldId.id);
     }
 
     /**
-     * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+     * Returns ToStringHelper with all fields inserted. Override this method to insert additional
+     * fields.
      *
      * @return ToStringHelper
      */
@@ -67,11 +70,9 @@ public class CimIssueType extends IssueType {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof CimIssueType) {
-            CimIssueType that = (CimIssueType) obj;
-            return super.equals(obj)
-                    && Objects.equals(this.fields, that.fields);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final CimIssueType that) {
+            return super.equals(obj) && Objects.equals(fields, that.fields);
         }
         return false;
     }

@@ -19,36 +19,39 @@ package me.glindholm.theplugin.commons;
 import java.util.TimerTask;
 
 public interface SchedulableChecker {
-	/**
-	 * Create a new instance of TimerTask for this component so it can be used for (re)scheduling in
-	 * {@link java.util.Timer}
-	 * @return new instance of TimerTask
-	 */
-	TimerTask newTimerTask();
+    /**
+     * Create a new instance of TimerTask for this component so it can be used for (re)scheduling in
+     * {@link java.util.Timer}
+     *
+     * @return new instance of TimerTask
+     */
+    TimerTask newTimerTask();
 
-	/**
-	 * Provides info whether the component should be scheduled - ie. if there is any work for it to be done on timer.
-	 * @return true when this component wants to be scheduled.
-	 */
-	boolean canSchedule();
+    /**
+     * Provides info whether the component should be scheduled - ie. if there is any work for it to be
+     * done on timer.
+     *
+     * @return true when this component wants to be scheduled.
+     */
+    boolean canSchedule();
 
-	/**
-	 * Preferred scheduling interval in milliseconds.
-	 * <p>
-	 * Will be used for {@link java.util.Timer#schedule(java.util.TimerTask, long)}.
-	 *  
-	 * @return Preferred scheduling interval in milliseconds.
-	 */
-	long getInterval();
+    /**
+     * Preferred scheduling interval in milliseconds.
+     * <p>
+     * Will be used for {@link java.util.Timer#schedule(java.util.TimerTask, long)}.
+     * 
+     * @return Preferred scheduling interval in milliseconds.
+     */
+    long getInterval();
 
-	/**
-	 * Resets state of registered listeners (sets state to default/empty) 
-	 */
-	void resetListenersState();
+    /**
+     * Resets state of registered listeners (sets state to default/empty)
+     */
+    void resetListenersState();
 
-	/**
-	 *
-	 * @return name of the checker which can be used for example in UI
-	 */
-	String getName();
+    /**
+     *
+     * @return name of the checker which can be used for example in UI
+     */
+    String getName();
 }

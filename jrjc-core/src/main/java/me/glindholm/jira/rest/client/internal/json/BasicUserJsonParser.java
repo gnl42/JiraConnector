@@ -23,7 +23,7 @@ import me.glindholm.jira.rest.client.api.domain.BasicUser;
 
 public class BasicUserJsonParser implements JsonObjectParser<BasicUser> {
     @Override
-    public BasicUser parse(JSONObject jsonObject) throws JSONException {
+    public BasicUser parse(final JSONObject jsonObject) throws JSONException {
         return JsonParseUtil.parseBasicUser(jsonObject);
     }
 }

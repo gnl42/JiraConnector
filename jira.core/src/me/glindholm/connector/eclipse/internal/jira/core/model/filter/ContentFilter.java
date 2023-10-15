@@ -15,8 +15,8 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 import java.io.Serializable;
 
 /**
- * This filter will restrict matches to issues that have either a summary, description, environment or comment matching
- * the specified query string.
+ * This filter will restrict matches to issues that have either a summary, description, environment
+ * or comment matching the specified query string.
  *
  * @author Brock Janiczak
  */
@@ -35,19 +35,14 @@ public class ContentFilter implements Filter, Serializable {
 
     /**
      *
-     * @param queryString
-     *            content being searched for
-     * @param searchSummary
-     *            Search the issue's summary for matches of <code>queryString</code>
-     * @param searchDescription
-     *            Search the issue's description for matches of <code>queryString</code>
-     * @param searchEnvironment
-     *            Search the issue's environment for matches of </code>queryString</code>
-     * @param searchComments
-     *            Search the issue's comments for matches of </code>queryString</code>
+     * @param queryString       content being searched for
+     * @param searchSummary     Search the issue's summary for matches of <code>queryString</code>
+     * @param searchDescription Search the issue's description for matches of <code>queryString</code>
+     * @param searchEnvironment Search the issue's environment for matches of </code>queryString</code>
+     * @param searchComments    Search the issue's comments for matches of </code>queryString</code>
      */
-    public ContentFilter(final String queryString, final boolean searchSummary, final boolean searchDescription,
-            final boolean searchEnvironment, final boolean searchComments) {
+    public ContentFilter(final String queryString, final boolean searchSummary, final boolean searchDescription, final boolean searchEnvironment,
+            final boolean searchComments) {
         assert queryString != null;
         this.queryString = queryString;
         searchingComments = searchComments;
@@ -77,7 +72,6 @@ public class ContentFilter implements Filter, Serializable {
     }
 
     ContentFilter copy() {
-        return new ContentFilter(queryString, searchingSummary, searchingDescription, searchingEnvironment,
-                searchingComments);
+        return new ContentFilter(queryString, searchingSummary, searchingDescription, searchingEnvironment, searchingComments);
     }
 }

@@ -56,8 +56,8 @@ public interface IssueRestClient {
      * @param issue populated with data to create new issue
      * @return basicIssue with generated <code>issueKey</code>
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
     Promise<BasicIssue> createIssue(IssueInput issue) throws URISyntaxException;
@@ -69,8 +69,8 @@ public interface IssueRestClient {
      * @param issue    populated with fields to set (no other verbs) in issue
      * @return Void
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      * @since me.glindholm.jira.rest.client.api 3.0, server 5.0
      */
     Promise<Void> updateIssue(String issueKey, IssueInput issue) throws URISyntaxException;
@@ -79,11 +79,11 @@ public interface IssueRestClient {
      * Creates new issues in batch.
      *
      * @param issues populated with data to create new issue
-     * @return BulkOperationResult&lt;BasicIssues&gt; with generated
-     *         <code>issueKey</code> and errors for failed issues
+     * @return BulkOperationResult&lt;BasicIssues&gt; with generated <code>issueKey</code> and errors
+     *         for failed issues
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      * @since me.glindholm.jira.rest.client.api 2.0, server 6.0
      */
 
@@ -101,8 +101,8 @@ public interface IssueRestClient {
      * @param issueKey issue key (like TST-1, or JRA-9)
      * @return issue with given <code>issueKey</code>
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<Issue> getIssue(String issueKey) throws URISyntaxException;
 
@@ -110,12 +110,12 @@ public interface IssueRestClient {
      * Retrieves issue with selected issue key, with specified additional expandos.
      *
      * @param issueKey issue key (like TST-1, or JRA-9)
-     * @param expand   additional expands. Currently CHANGELOG is the only supported
-     *                 expand that is not expanded by default.
+     * @param expand   additional expands. Currently CHANGELOG is the only supported expand that is not
+     *                 expanded by default.
      * @return issue with given <code>issueKey</code>
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      * @since 0.6
      */
     Promise<Issue> getIssue(String issueKey, List<Expandos> expand) throws URISyntaxException;
@@ -132,14 +132,13 @@ public interface IssueRestClient {
     Promise<List<Remotelink>> getRemotelinks(String issueIdorKey) throws URISyntaxException;
 
     /**
-     * Deletes issue with given issueKey. You can set {@code deleteSubtasks} to
-     * delete issue with subtasks. If issue have subtasks and {@code deleteSubtasks}
-     * is set to false, then issue won't be deleted.
+     * Deletes issue with given issueKey. You can set {@code deleteSubtasks} to delete issue with
+     * subtasks. If issue have subtasks and {@code deleteSubtasks} is set to false, then issue won't be
+     * deleted.
      *
      * @param issueKey       issue key (like TST-1, or JRA-9)
-     * @param deleteSubtasks Determines if subtask of issue should be also deleted.
-     *                       If false, and issue has subtasks, then it won't be
-     *                       deleted.
+     * @param deleteSubtasks Determines if subtask of issue should be also deleted. If false, and issue
+     *                       has subtasks, then it won't be deleted.
      * @return Void
      * @throws URISyntaxException
      * @since 2.0
@@ -147,56 +146,50 @@ public interface IssueRestClient {
     Promise<Void> deleteIssue(String issueKey, boolean deleteSubtasks) throws URISyntaxException;
 
     /**
-     * Retrieves complete information (if the caller has permission) about watchers
-     * for selected issue.
+     * Retrieves complete information (if the caller has permission) about watchers for selected issue.
      *
-     * @param watchersUri URI of watchers resource for selected issue. Usually
-     *                    obtained by calling
+     * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling
      *                    <code>Issue.getWatchers().getSelf()</code>
      * @return detailed information about watchers watching selected issue.
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      * @see me.glindholm.jira.rest.client.api.domain.Issue#getWatchers()
      */
     Promise<Watchers> getWatchers(URI watchersUri);
 
     /**
-     * Retrieves complete information (if the caller has permission) about voters
-     * for selected issue.
+     * Retrieves complete information (if the caller has permission) about voters for selected issue.
      *
-     * @param votesUri URI of voters resource for selected issue. Usually obtained
-     *                 by calling <code>Issue.getVotesUri()</code>
+     * @param votesUri URI of voters resource for selected issue. Usually obtained by calling
+     *                 <code>Issue.getVotesUri()</code>
      * @return detailed information about voters of selected issue
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      * @see me.glindholm.jira.rest.client.api.domain.Issue#getVotesUri()
      */
     Promise<Votes> getVotes(URI votesUri);
 
     /**
-     * Retrieves complete information (if the caller has permission) about
-     * transitions available for the selected issue in its current state.
+     * Retrieves complete information (if the caller has permission) about transitions available for the
+     * selected issue in its current state.
      *
-     * @param transitionsUri URI of transitions resource of selected issue. Usually
-     *                       obtained by calling
+     * @param transitionsUri URI of transitions resource of selected issue. Usually obtained by calling
      *                       <code>Issue.getTransitionsUri()</code>
-     * @return transitions about transitions available for the selected issue in its
-     *         current state.
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @return transitions about transitions available for the selected issue in its current state.
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<List<Transition>> getTransitions(URI transitionsUri);
 
     /**
-     * Retrieves complete information (if the caller has permission) about
-     * transitions available for the selected issue in its current state.
+     * Retrieves complete information (if the caller has permission) about transitions available for the
+     * selected issue in its current state.
      *
      * @param issue issue
-     * @return transitions about transitions available for the selected issue in its
-     *         current state.
+     * @return transitions about transitions available for the selected issue in its current state.
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      * @since v0.5
      */
     Promise<List<Transition>> getTransitions(Issue issue) throws URISyntaxException;
@@ -204,14 +197,12 @@ public interface IssueRestClient {
     /**
      * Performs selected transition on selected issue.
      *
-     * @param transitionsUri  URI of transitions resource of selected issue. Usually
-     *                        obtained by calling
+     * @param transitionsUri  URI of transitions resource of selected issue. Usually obtained by calling
      *                        <code>Issue.getTransitionsUri()</code>
-     * @param transitionInput data for this transition (fields modified, the
-     *                        comment, etc.)
+     * @param transitionInput data for this transition (fields modified, the comment, etc.)
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<Void> transition(URI transitionsUri, TransitionInput transitionInput) throws URISyntaxException;
 
@@ -219,96 +210,89 @@ public interface IssueRestClient {
      * Performs selected transition on selected issue.
      *
      * @param issue           selected issue
-     * @param transitionInput data for this transition (fields modified, the
-     *                        comment, etc.)
+     * @param transitionInput data for this transition (fields modified, the comment, etc.)
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      * @since v0.5
      */
     Promise<Void> transition(Issue issue, TransitionInput transitionInput) throws URISyntaxException;
 
     /**
-     * Casts your vote on the selected issue. Casting a vote on already votes issue
-     * by the caller, causes the exception.
+     * Casts your vote on the selected issue. Casting a vote on already votes issue by the caller,
+     * causes the exception.
      *
-     * @param votesUri URI of votes resource for selected issue. Usually obtained by
-     *                 calling <code>Issue.getVotesUri()</code>
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @param votesUri URI of votes resource for selected issue. Usually obtained by calling
+     *                 <code>Issue.getVotesUri()</code>
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<Void> vote(URI votesUri);
 
     /**
-     * Removes your vote from the selected issue. Removing a vote from the issue
-     * without your vote causes the exception.
+     * Removes your vote from the selected issue. Removing a vote from the issue without your vote
+     * causes the exception.
      *
-     * @param votesUri URI of votes resource for selected issue. Usually obtained by
-     *                 calling <code>Issue.getVotesUri()</code>
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @param votesUri URI of votes resource for selected issue. Usually obtained by calling
+     *                 <code>Issue.getVotesUri()</code>
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<Void> unvote(URI votesUri);
 
     /**
      * Starts watching selected issue
      *
-     * @param watchersUri URI of watchers resource for selected issue. Usually
-     *                    obtained by calling
+     * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling
      *                    <code>Issue.getWatchers().getSelf()</code>
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<Void> watch(URI watchersUri);
 
     /**
      * Stops watching selected issue
      *
-     * @param watchersUri URI of watchers resource for selected issue. Usually
-     *                    obtained by calling
+     * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling
      *                    <code>Issue.getWatchers().getSelf()</code>
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<Void> unwatch(URI watchersUri) throws URISyntaxException;
 
     /**
-     * Adds selected person as a watcher for selected issue. You need to have
-     * permissions to do that (otherwise the exception is thrown).
+     * Adds selected person as a watcher for selected issue. You need to have permissions to do that
+     * (otherwise the exception is thrown).
      *
-     * @param watchersUri URI of watchers resource for selected issue. Usually
-     *                    obtained by calling
+     * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling
      *                    <code>Issue.getWatchers().getSelf()</code>
      * @param username    user to add as a watcher
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<Void> addWatcher(final URI watchersUri, final String username);
 
     /**
-     * Removes selected person from the watchers list for selected issue. You need
-     * to have permissions to do that (otherwise the exception is thrown).
+     * Removes selected person from the watchers list for selected issue. You need to have permissions
+     * to do that (otherwise the exception is thrown).
      *
-     * @param watchersUri URI of watchers resource for selected issue. Usually
-     *                    obtained by calling
+     * @param watchersUri URI of watchers resource for selected issue. Usually obtained by calling
      *                    <code>Issue.getWatchers().getSelf()</code>
      * @param username    user to remove from the watcher list
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, etc.)
      */
     Promise<Void> removeWatcher(final URI watchersUri, final String username) throws URISyntaxException;
 
     /**
-     * Creates link between two issues and adds a comment (optional) to the source
-     * issues.
+     * Creates link between two issues and adds a comment (optional) to the source issues.
      *
-     * @param linkIssuesInput details for the link and the comment (optional) to be
-     *                        created
+     * @param linkIssuesInput details for the link and the comment (optional) to be created
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, invalid argument, permissions, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
+     *                             argument, permissions, etc.)
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
      */
     Promise<Void> linkIssue(LinkIssuesInput linkIssuesInput) throws URISyntaxException;
@@ -316,8 +300,8 @@ public interface IssueRestClient {
     /**
      * Uploads attachments to JIRA (adding it to selected issue)
      *
-     * @param attachmentsUri where to upload the attachment. You can get this URI by
-     *                       examining issue resource first
+     * @param attachmentsUri where to upload the attachment. You can get this URI by examining issue
+     *                       resource first
      * @param in             stream from which to read data to upload
      * @param filename       file name to use for the uploaded attachment
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
@@ -327,8 +311,8 @@ public interface IssueRestClient {
     /**
      * Uploads attachments to JIRA (adding it to selected issue)
      *
-     * @param attachmentsUri where to upload the attachments. You can get this URI
-     *                       by examining issue resource first
+     * @param attachmentsUri where to upload the attachments. You can get this URI by examining issue
+     *                       resource first
      * @param attachments    attachments to upload
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
      */
@@ -337,8 +321,8 @@ public interface IssueRestClient {
     /**
      * Uploads attachments to JIRA (adding it to selected issue)
      *
-     * @param attachmentsUri where to upload the attachments. You can get this URI
-     *                       by examining issue resource first
+     * @param attachmentsUri where to upload the attachments. You can get this URI by examining issue
+     *                       resource first
      * @param files          files to upload
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
      */
@@ -358,8 +342,8 @@ public interface IssueRestClient {
      * Retrieves the content of given attachment.
      *
      * @param attachmentUri URI for the attachment to retrieve
-     * @return stream from which the caller may read the attachment content (bytes).
-     *         The caller is responsible for closing the stream.
+     * @return stream from which the caller may read the attachment content (bytes). The caller is
+     *         responsible for closing the stream.
      */
     Promise<InputStream> getAttachment(URI attachmentUri);
 

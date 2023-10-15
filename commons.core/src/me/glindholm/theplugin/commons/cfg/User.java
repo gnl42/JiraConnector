@@ -19,9 +19,9 @@ package me.glindholm.theplugin.commons.cfg;
  * User: pmaruszak
  */
 public interface User {
-	String getUsername();
+    String getUsername();
 
-	String getPassword();
+    String getPassword();
 
-	boolean isPasswordStored();
+    boolean isPasswordStored();
 }

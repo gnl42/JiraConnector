@@ -20,24 +20,23 @@ import me.glindholm.theplugin.commons.remoteapi.RemoteApiException;
 
 public abstract class RemoteSessionOperation<T, S> {
 
-	private final IProgressMonitor fMonitor;
+    private final IProgressMonitor fMonitor;
 
-	private final TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
 
-	public RemoteSessionOperation(IProgressMonitor monitor, TaskRepository taskRepository) {
-		this.fMonitor = Policy.monitorFor(monitor);
-		this.taskRepository = taskRepository;
-	}
+    public RemoteSessionOperation(final IProgressMonitor monitor, final TaskRepository taskRepository) {
+        fMonitor = Policy.monitorFor(monitor);
+        this.taskRepository = taskRepository;
+    }
 
-	public IProgressMonitor getMonitor() {
-		return fMonitor;
-	}
+    public IProgressMonitor getMonitor() {
+        return fMonitor;
+    }
 
-	public abstract T run(S session, IProgressMonitor monitor) throws RemoteApiException,
-			ServerPasswordNotProvidedException;
+    public abstract T run(S session, IProgressMonitor monitor) throws RemoteApiException, ServerPasswordNotProvidedException;
 
-	public TaskRepository getTaskRepository() {
-		return taskRepository;
-	}
+    public TaskRepository getTaskRepository() {
+        return taskRepository;
+    }
 
 }

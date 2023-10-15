@@ -17,11 +17,11 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.ChangelogGroup;
@@ -31,7 +31,7 @@ public class ChangelogJsonParser implements JsonObjectParser<ChangelogGroup> {
     private final ChangelogItemJsonParser changelogItemJsonParser = new ChangelogItemJsonParser();
 
     @Override
-    public ChangelogGroup parse(JSONObject json) throws JSONException, URISyntaxException {
+    public ChangelogGroup parse(final JSONObject json) throws JSONException, URISyntaxException {
         final OffsetDateTime created = JsonParseUtil.parseOffsetDateTime(json, "created");
         final BasicUser author = json.has("author") ? JsonParseUtil.parseBasicUser(json.getJSONObject("author")) : null;
         final List<ChangelogItem> items = JsonParseUtil.parseJsonArray(json.getJSONArray("items"), changelogItemJsonParser);

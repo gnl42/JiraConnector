@@ -45,8 +45,7 @@ public interface ProjectRolesRestClient {
      * @param roleId     unique role id.
      * @return full information about selected role.
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<ProjectRole> getRole(URI projectUri, Long roleId) throws URISyntaxException;
 
@@ -56,8 +55,7 @@ public interface ProjectRolesRestClient {
      * @param projectUri uri of the project of the roles to retrieve.
      * @return a collection of roles in the selected project.
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<List<ProjectRole>> getRoles(URI projectUri) throws URISyntaxException;
 

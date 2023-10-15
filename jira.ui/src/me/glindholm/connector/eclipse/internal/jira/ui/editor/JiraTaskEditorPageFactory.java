@@ -31,9 +31,7 @@ public class JiraTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
     @Override
     public boolean canCreatePageFor(final TaskEditorInput input) {
-        if (JiraCorePlugin.CONNECTOR_KIND.equals(input.getTask().getConnectorKind())) {
-            return true;
-        } else if (TasksUiUtil.isOutgoingNewTask(input.getTask(), JiraCorePlugin.CONNECTOR_KIND)) {
+        if (JiraCorePlugin.CONNECTOR_KIND.equals(input.getTask().getConnectorKind()) || TasksUiUtil.isOutgoingNewTask(input.getTask(), JiraCorePlugin.CONNECTOR_KIND)) {
             return true;
         }
         return false;

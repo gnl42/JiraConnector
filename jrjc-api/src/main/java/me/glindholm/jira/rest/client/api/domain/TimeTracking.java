@@ -34,14 +34,16 @@ public class TimeTracking {
     @Nullable
     private final Integer timeSpentMinutes;
 
-    public TimeTracking(@Nullable Integer originalEstimateMinutes, @Nullable Integer remainingEstimateMinutes, @Nullable Integer timeSpentMinutes) {
+    public TimeTracking(@Nullable final Integer originalEstimateMinutes, @Nullable final Integer remainingEstimateMinutes,
+            @Nullable final Integer timeSpentMinutes) {
         this.originalEstimateMinutes = originalEstimateMinutes;
         this.remainingEstimateMinutes = remainingEstimateMinutes;
         this.timeSpentMinutes = timeSpentMinutes;
     }
 
     /**
-     * @return original estimation [in minutes] for this issue or <code>null</code> when time spent information is not available
+     * @return original estimation [in minutes] for this issue or <code>null</code> when time spent
+     *         information is not available
      */
     @Nullable
     public Integer getOriginalEstimateMinutes() {
@@ -49,7 +51,8 @@ public class TimeTracking {
     }
 
     /**
-     * @return original remaining estimated time [in minutes] for this issue or <code>null</code> when such estimation was not provided
+     * @return original remaining estimated time [in minutes] for this issue or <code>null</code> when
+     *         such estimation was not provided
      */
     @Nullable
     public Integer getRemainingEstimateMinutes() {
@@ -57,8 +60,8 @@ public class TimeTracking {
     }
 
     /**
-     * @return time spent [in minutes] on this issue or <code>null</code> when time spent information is not available to the caller
-     * (in some strange circumstances)
+     * @return time spent [in minutes] on this issue or <code>null</code> when time spent information is
+     *         not available to the caller (in some strange circumstances)
      */
     @Nullable
     public Integer getTimeSpentMinutes() {
@@ -72,12 +75,10 @@ public class TimeTracking {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof TimeTracking) {
-            TimeTracking that = (TimeTracking) obj;
-            return Objects.equals(this.originalEstimateMinutes, that.originalEstimateMinutes)
-                    && Objects.equals(this.timeSpentMinutes, that.timeSpentMinutes)
-                    && Objects.equals(this.remainingEstimateMinutes, that.remainingEstimateMinutes);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final TimeTracking that) {
+            return Objects.equals(originalEstimateMinutes, that.originalEstimateMinutes) && Objects.equals(timeSpentMinutes, that.timeSpentMinutes)
+                    && Objects.equals(remainingEstimateMinutes, that.remainingEstimateMinutes);
         }
         return false;
     }

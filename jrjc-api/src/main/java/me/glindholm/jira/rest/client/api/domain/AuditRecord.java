@@ -107,8 +107,7 @@ public class AuditRecord {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof AuditRecord) {
-            final AuditRecord that = (AuditRecord) o;
+        if (o instanceof final AuditRecord that) {
             return Objects.equals(id, that.id) && Objects.equals(summary, that.summary) && Objects.equals(remoteAddress, that.remoteAddress)
                     && Objects.equals(created, that.created) && Objects.equals(category, that.category) && Objects.equals(authorKey, that.authorKey)
                     && Objects.equals(objectItem, that.objectItem) && Objects.equals(associatedItem, that.associatedItem)

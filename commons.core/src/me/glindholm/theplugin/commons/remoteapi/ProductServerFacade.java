@@ -21,5 +21,6 @@ import me.glindholm.theplugin.commons.ServerType;
 
 public interface ProductServerFacade {
     void testServerConnection(ConnectionCfg httpConnectionCfg) throws RemoteApiException;
-	ServerType getServerType();
+
+    ServerType getServerType();
 }

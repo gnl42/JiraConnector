@@ -22,14 +22,15 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Builder class for {@link GetCreateIssueMetadataOptions}. All fields are optional so set only those that
- * you need and use {@link GetCreateIssueMetadataOptionsBuilder#build()} method to build new
- * {@link GetCreateIssueMetadataOptions} class.
+ * Builder class for {@link GetCreateIssueMetadataOptions}. All fields are optional so set only
+ * those that you need and use {@link GetCreateIssueMetadataOptionsBuilder#build()} method to build
+ * new {@link GetCreateIssueMetadataOptions} class.
  * <p>
  * <strong>Please note</strong> that all setters for fields sets given value instead of adding it.it
  * to previously set. For example doing:<br>
  * <code>new GetCreateIssueMetadataOptionsBuilder().withExpandos("ONE", "TWO").withExpandos("THREE").build()</code><br>
- * will result in creating new GetCreateIssueMetadataOptions with only one field marked to be expanded - "THREE"
+ * will result in creating new GetCreateIssueMetadataOptions with only one field marked to be
+ * expanded - "THREE"
  *
  * @since v1.0
  */
@@ -40,13 +41,13 @@ public class GetCreateIssueMetadataOptionsBuilder {
     private List<String> projectKeys;
     private List<Long> projectIds;
 
-    public GetCreateIssueMetadataOptionsBuilder withExpandos(Set<String> expandos) {
+    public GetCreateIssueMetadataOptionsBuilder withExpandos(final Set<String> expandos) {
         this.expandos = expandos;
         return this;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public GetCreateIssueMetadataOptionsBuilder withExpandos(String... expandos) {
+    public GetCreateIssueMetadataOptionsBuilder withExpandos(final String... expandos) {
         return withExpandos(Set.of(expandos));
     }
 
@@ -54,42 +55,42 @@ public class GetCreateIssueMetadataOptionsBuilder {
         return withExpandos(GetCreateIssueMetadataOptions.EXPAND_PROJECTS_ISSUETYPES_FIELDS);
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(List<String> issueTypeNames) {
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(final List<String> issueTypeNames) {
         this.issueTypeNames = issueTypeNames;
         return this;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(String... issueTypeNames) {
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeNames(final String... issueTypeNames) {
         return withIssueTypeNames(List.copyOf(Arrays.asList(issueTypeNames)));
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(List<Long> issueTypeIds) {
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(final List<Long> issueTypeIds) {
         this.issueTypeIds = issueTypeIds;
         return this;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(Long... issueTypeIds) {
+    public GetCreateIssueMetadataOptionsBuilder withIssueTypeIds(final Long... issueTypeIds) {
         return withIssueTypeIds(List.copyOf(Arrays.asList(issueTypeIds)));
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withProjectKeys(List<String> projectKeys) {
+    public GetCreateIssueMetadataOptionsBuilder withProjectKeys(final List<String> projectKeys) {
         this.projectKeys = projectKeys;
         return this;
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withProjectKeys(String... projectKeys) {
+    public GetCreateIssueMetadataOptionsBuilder withProjectKeys(final String... projectKeys) {
         return withProjectKeys(List.of(projectKeys));
     }
 
-    public GetCreateIssueMetadataOptionsBuilder withProjectIds(List<Long> projectIds) {
+    public GetCreateIssueMetadataOptionsBuilder withProjectIds(final List<Long> projectIds) {
         this.projectIds = projectIds;
         return this;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public GetCreateIssueMetadataOptionsBuilder withProjectIds(Long... projectIds) {
+    public GetCreateIssueMetadataOptionsBuilder withProjectIds(final Long... projectIds) {
         return withProjectIds(List.of(projectIds));
     }
 

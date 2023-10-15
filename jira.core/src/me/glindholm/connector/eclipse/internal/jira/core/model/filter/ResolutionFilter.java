@@ -17,8 +17,9 @@ import java.io.Serializable;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraResolution;
 
 /**
- * Filter for restricting issues by their resolution. If you are looking for unresolved issues, don't specify and
- * resolutions. If you want all issues regardless of their resolution omit this filter.
+ * Filter for restricting issues by their resolution. If you are looking for unresolved issues,
+ * don't specify and resolutions. If you want all issues regardless of their resolution omit this
+ * filter.
  *
  * @author Brock Janiczak
  */

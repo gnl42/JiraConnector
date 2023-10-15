@@ -16,7 +16,6 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
@@ -34,7 +33,7 @@ public class ChangelogItem {
     private final String to;
     private final String toString;
 
-    public ChangelogItem(FieldType fieldType, String field, String from, String fromString, String to, String toString) {
+    public ChangelogItem(final FieldType fieldType, final String field, final String from, final String fromString, final String to, final String toString) {
         this.fieldType = fieldType;
         this.field = field;
         this.from = from;
@@ -72,15 +71,10 @@ public class ChangelogItem {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ChangelogItem) {
-            ChangelogItem that = (ChangelogItem) obj;
-            return Objects.equals(this.fieldType, that.fieldType)
-                    && Objects.equals(this.field, that.field)
-                    && Objects.equals(this.from, that.from)
-                    && Objects.equals(this.fromString, that.fromString)
-                    && Objects.equals(this.to, that.to)
-                    && Objects.equals(this.toString, that.toString);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final ChangelogItem that) {
+            return Objects.equals(fieldType, that.fieldType) && Objects.equals(field, that.field) && Objects.equals(from, that.from)
+                    && Objects.equals(fromString, that.fromString) && Objects.equals(to, that.to) && Objects.equals(toString, that.toString);
         }
         return false;
 

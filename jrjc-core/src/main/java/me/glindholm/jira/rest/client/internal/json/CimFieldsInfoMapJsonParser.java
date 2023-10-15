@@ -33,10 +33,10 @@ import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
  */
 public class CimFieldsInfoMapJsonParser implements JsonObjectParser<Map<String, CimFieldInfo>> {
 
-    private CimFieldsInfoJsonParser cimFieldsInfoJsonParser = new CimFieldsInfoJsonParser();
+    private final CimFieldsInfoJsonParser cimFieldsInfoJsonParser = new CimFieldsInfoJsonParser();
 
     @Override
-    public Map<String, CimFieldInfo> parse(JSONObject json) throws JSONException, URISyntaxException {
+    public Map<String, CimFieldInfo> parse(final JSONObject json) throws JSONException, URISyntaxException {
         final Map<String, CimFieldInfo> res = new HashMap<>(json.length());
         final Iterator<String> keysIterator = json.keys();
         while (keysIterator.hasNext()) {

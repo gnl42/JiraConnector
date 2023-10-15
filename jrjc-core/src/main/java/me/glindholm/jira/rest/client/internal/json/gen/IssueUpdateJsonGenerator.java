@@ -11,12 +11,11 @@ public class IssueUpdateJsonGenerator implements JsonGenerator<List<FieldInput>>
     private final ComplexIssueInputFieldValueJsonGenerator generator = new ComplexIssueInputFieldValueJsonGenerator();
 
     @Override
-    public JSONObject generate(List<FieldInput> fieldInputs) throws JSONException {
+    public JSONObject generate(final List<FieldInput> fieldInputs) throws JSONException {
         final JSONObject fields = new JSONObject();
         if (fieldInputs != null) {
             for (final FieldInput field : fieldInputs) {
-                final Object fieldValue = field.getValue() == null ? JSONObject.NULL
-                        : generator.generateFieldValueForJson(field.getValue());
+                final Object fieldValue = field.getValue() == null ? JSONObject.NULL : generator.generateFieldValueForJson(field.getValue());
 
                 fields.put(field.getId(), fieldValue);
             }

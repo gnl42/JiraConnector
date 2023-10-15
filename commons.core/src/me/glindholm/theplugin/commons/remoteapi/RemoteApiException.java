@@ -23,35 +23,35 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 public class RemoteApiException extends Exception {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -8518437777396192588L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -8518437777396192588L;
 
-	@Nullable
-	public String getServerStackTrace() {
-		return serverStackTrace;
-	}
+    @Nullable
+    public String getServerStackTrace() {
+        return serverStackTrace;
+    }
 
-	private final String serverStackTrace;
+    private final String serverStackTrace;
 
-	public RemoteApiException(String message) {
-		super(message);
-		serverStackTrace = null;
-	}
+    public RemoteApiException(final String message) {
+        super(message);
+        serverStackTrace = null;
+    }
 
-	public RemoteApiException(String message, @Nullable String serverStackTrace) {
-		super(message);
-		this.serverStackTrace = serverStackTrace;
-	}
+    public RemoteApiException(final String message, @Nullable final String serverStackTrace) {
+        super(message);
+        this.serverStackTrace = serverStackTrace;
+    }
 
-	public RemoteApiException(Throwable throwable) {
-		super(throwable);
-		serverStackTrace = null;
-	}
+    public RemoteApiException(final Throwable throwable) {
+        super(throwable);
+        serverStackTrace = null;
+    }
 
-	public RemoteApiException(String message, Throwable throwable) {
-		super(message, throwable);
-		serverStackTrace = null;
-	}
+    public RemoteApiException(final String message, final Throwable throwable) {
+        super(message, throwable);
+        serverStackTrace = null;
+    }
 }

@@ -29,10 +29,9 @@ public class RemotelinkStatus {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof RemotelinkStatus)) {
+        if (!(obj instanceof final RemotelinkStatus other)) {
             return false;
         }
-        final RemotelinkStatus other = (RemotelinkStatus) obj;
         return Objects.equals(icon, other.icon) && Objects.equals(resolved, other.resolved);
     }
 

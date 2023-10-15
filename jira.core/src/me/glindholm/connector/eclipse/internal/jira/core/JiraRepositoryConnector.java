@@ -115,8 +115,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public IStatus performQuery(final TaskRepository repository, final IRepositoryQuery repositoryQuery,
-            final TaskDataCollector resultCollector, final ISynchronizationSession session, IProgressMonitor monitor) {
+    public IStatus performQuery(final TaskRepository repository, final IRepositoryQuery repositoryQuery, final TaskDataCollector resultCollector,
+            final ISynchronizationSession session, IProgressMonitor monitor) {
         monitor = Policy.monitorFor(monitor);
         try {
             if (repository.isOffline()) {
@@ -139,8 +139,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
                 return JiraCorePlugin.toStatus(repository, e);
             }
             try {
-                final QueryHitCollector collector = new QueryHitCollector(repository, client, resultCollector, session,
-                        monitor);
+                final QueryHitCollector collector = new QueryHitCollector(repository, client, resultCollector, session, monitor);
                 client.search(filter, collector, monitor);
                 return collector.getStatus();
             } catch (final JiraException e) {
@@ -155,98 +154,102 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
 
     @Override
     public void preSynchronization(final ISynchronizationSession session, final IProgressMonitor monitor) throws CoreException {
-        //		monitor = Policy.monitorFor(monitor);
-        //		try {
-        //			monitor.beginTask(Messages.JiraRepositoryConnector_Getting_changed_tasks, IProgressMonitor.UNKNOWN);
+        // monitor = Policy.monitorFor(monitor);
+        // try {
+        // monitor.beginTask(Messages.JiraRepositoryConnector_Getting_changed_tasks,
+        // IProgressMonitor.UNKNOWN);
         //
-        //			session.setNeedsPerformQueries(true);
+        // session.setNeedsPerformQueries(true);
         //
-        //			if (!session.isFullSynchronization()) {
-        //				return;
-        //			}
+        // if (!session.isFullSynchronization()) {
+        // return;
+        // }
         //
-        //			Date now = new Date();
-        //			TaskRepository repository = session.getTaskRepository();
-        //			FilterDefinition changedFilter = getSynchronizationFilter(session, now);
-        //			if (changedFilter == null) {
-        //				// could not determine last time, rerun queries
-        //				repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
-        //				return;
-        //			}
+        // Date now = new Date();
+        // TaskRepository repository = session.getTaskRepository();
+        // FilterDefinition changedFilter = getSynchronizationFilter(session, now);
+        // if (changedFilter == null) {
+        // // could not determine last time, rerun queries
+        // repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
+        // return;
+        // }
         //
-        //			List<JiraIssue> issues = new ArrayList<JiraIssue>();
-        //			JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
-        //			int maxResults = JiraUtil.getMaxSearchResults(repository);
-        //			if (maxResults <= 0) {
-        //				maxResults = MAX_MARK_STALE_QUERY_HITS;
-        //			} else {
-        //				maxResults = Math.min(MAX_MARK_STALE_QUERY_HITS, maxResults);
-        //			}
-        //			// unlimited maxHits can create crazy amounts of traffic
-        //			JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues, maxResults);
-        //			try {
-        //				client.search(changedFilter, issueCollector, monitor);
+        // List<JiraIssue> issues = new ArrayList<JiraIssue>();
+        // JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
+        // int maxResults = JiraUtil.getMaxSearchResults(repository);
+        // if (maxResults <= 0) {
+        // maxResults = MAX_MARK_STALE_QUERY_HITS;
+        // } else {
+        // maxResults = Math.min(MAX_MARK_STALE_QUERY_HITS, maxResults);
+        // }
+        // // unlimited maxHits can create crazy amounts of traffic
+        // JiraIssueCollector issueCollector = new JiraIssueCollector(new NullProgressMonitor(), issues,
+        // maxResults);
+        // try {
+        // client.search(changedFilter, issueCollector, monitor);
         //
-        //				if (issues.isEmpty()) {
-        //					// repository is unchanged
-        //					repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
-        //					session.setNeedsPerformQueries(false);
-        //					return;
-        //				}
+        // if (issues.isEmpty()) {
+        // // repository is unchanged
+        // repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
+        // session.setNeedsPerformQueries(false);
+        // return;
+        // }
         //
-        //				HashMap<String, ITask> taskById = new HashMap<String, ITask>();
-        //				for (ITask task : session.getTasks()) {
-        //					taskById.put(task.getTaskId(), task);
-        //				}
-        //				for (JiraIssue issue : issues) {
-        //					ITask task = taskById.get(issue.getId());
-        //					if (task != null) {
-        //						if (issue.getProject() == null) {
-        //							throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0,
-        //									ERROR_REPOSITORY_CONFIGURATION, null));
-        //						}
+        // HashMap<String, ITask> taskById = new HashMap<String, ITask>();
+        // for (ITask task : session.getTasks()) {
+        // taskById.put(task.getTaskId(), task);
+        // }
+        // for (JiraIssue issue : issues) {
+        // ITask task = taskById.get(issue.getId());
+        // if (task != null) {
+        // if (issue.getProject() == null) {
+        // throw new CoreException(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, 0,
+        // ERROR_REPOSITORY_CONFIGURATION, null));
+        // }
         //
-        //						// for JIRA sufficient information to create task data is returned by the query so no need to mark tasks as stale
-        //						monitor.subTask(issue.getKey() + " " + issue.getSummary()); //$NON-NLS-1$
-        //						// only load old task data from if necessary
-        //						if (hasChanged(task, issue)) {
-        //							TaskData oldTaskData = null;
-        //							if (session.getTaskDataManager() != null) {
-        //								try {
-        //									oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
-        //								} catch (CoreException e) {
-        //									// ignore
-        //								}
-        //							}
-        //							TaskData taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData,
-        //									monitor);
-        //							session.putTaskData(task, taskData);
-        //						}
-        //					}
-        //				}
+        // // for JIRA sufficient information to create task data is returned by the query so no need to
+        // mark tasks as stale
+        // monitor.subTask(issue.getKey() + " " + issue.getSummary()); //$NON-NLS-1$
+        // // only load old task data from if necessary
+        // if (hasChanged(task, issue)) {
+        // TaskData oldTaskData = null;
+        // if (session.getTaskDataManager() != null) {
+        // try {
+        // oldTaskData = session.getTaskDataManager().getTaskData(repository, issue.getId());
+        // } catch (CoreException e) {
+        // // ignore
+        // }
+        // }
+        // TaskData taskData = taskDataHandler.createTaskData(repository, client, issue, oldTaskData,
+        // monitor);
+        // session.putTaskData(task, taskData);
+        // }
+        // }
+        // }
         //
-        //				repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
+        // repository.setSynchronizationTimeStamp(JiraUtil.dateToString(now));
         //
-        //				Date lastUpdate = issues.get(0).getUpdated();
-        //				Date repositoryUpdateTimeStamp = JiraUtil.getLastUpdate(repository);
-        //				if (repositoryUpdateTimeStamp != null && repositoryUpdateTimeStamp.equals(lastUpdate)) {
-        //					// didn't see any new changes
-        //					session.setNeedsPerformQueries(false);
-        //				} else {
-        //					// updates may have caused tasks to match/not match a query therefore we need to rerun all queries
-        //					if (lastUpdate != null) {
-        //						JiraUtil.setLastUpdate(repository, lastUpdate);
-        //					}
-        //				}
-        //			} catch (JiraException e) {
-        //				e.printStackTrace();
-        //				IStatus status = JiraCorePlugin.toStatus(repository, e);
-        //				trace(status);
-        //				throw new CoreException(status);
-        //			}
-        //		} finally {
-        //			monitor.done();
-        //		}
+        // Date lastUpdate = issues.get(0).getUpdated();
+        // Date repositoryUpdateTimeStamp = JiraUtil.getLastUpdate(repository);
+        // if (repositoryUpdateTimeStamp != null && repositoryUpdateTimeStamp.equals(lastUpdate)) {
+        // // didn't see any new changes
+        // session.setNeedsPerformQueries(false);
+        // } else {
+        // // updates may have caused tasks to match/not match a query therefore we need to rerun all
+        // queries
+        // if (lastUpdate != null) {
+        // JiraUtil.setLastUpdate(repository, lastUpdate);
+        // }
+        // }
+        // } catch (JiraException e) {
+        // e.printStackTrace();
+        // IStatus status = JiraCorePlugin.toStatus(repository, e);
+        // trace(status);
+        // throw new CoreException(status);
+        // }
+        // } finally {
+        // monitor.done();
+        // }
     }
 
     @Override
@@ -281,7 +284,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
         if (lastSyncTime >= nowTime) {
             trace(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, 0,
                     "Synchronization time stamp clock skew detected for " + repository.getRepositoryUrl() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-                    + lastSyncTime + " >= " + now, null)); //$NON-NLS-1$
+                            + lastSyncTime + " >= " + now, //$NON-NLS-1$
+                    null));
 
             // use the time stamp on the task that was modified last
             lastSyncDate = null;
@@ -396,8 +400,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
         }
         // for backward compatibility we are also checking the status
         final TaskAttribute status = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id());
-        return status != null
-                && (ID_STATUS_RESOLVED.equals(status.getValue()) || ID_STATUS_CLOSED.equals(status.getValue()));
+        return status != null && (ID_STATUS_RESOLVED.equals(status.getValue()) || ID_STATUS_CLOSED.equals(status.getValue()));
     }
 
     public static boolean isClosed(final JiraIssue issue) {
@@ -438,8 +441,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public void updateRepositoryConfiguration(final TaskRepository taskRepository, final ITask task, final IProgressMonitor monitor)
-            throws CoreException {
+    public void updateRepositoryConfiguration(final TaskRepository taskRepository, final ITask task, final IProgressMonitor monitor) throws CoreException {
         final String projectId = task == null ? null : task.getAttribute(JiraAttribute.PROJECT.id());
         if (projectId != null && !"".equals(projectId)) { //$NON-NLS-1$
             try {
@@ -471,10 +473,8 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public boolean isRepositoryConfigurationStale(final TaskRepository repository, final IProgressMonitor monitor)
-            throws CoreException {
-        return JiraUtil.getAutoRefreshConfiguration(repository)
-                && super.isRepositoryConfigurationStale(repository, monitor);
+    public boolean isRepositoryConfigurationStale(final TaskRepository repository, final IProgressMonitor monitor) throws CoreException {
+        return JiraUtil.getAutoRefreshConfiguration(repository) && super.isRepositoryConfigurationStale(repository, monitor);
     }
 
     @Override
@@ -503,8 +503,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
     }
 
     @Override
-    public TaskData getTaskData(final TaskRepository taskRepository, final String taskId, final IProgressMonitor monitor)
-            throws CoreException {
+    public TaskData getTaskData(final TaskRepository taskRepository, final String taskId, final IProgressMonitor monitor) throws CoreException {
         return taskDataHandler.getTaskData(taskRepository, taskId, monitor);
     }
 
@@ -520,8 +519,7 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
         // flag subtasks to disable creation of sub-subtasks
         TaskAttribute attribute = taskData.getRoot().getAttribute(JiraAttribute.TYPE.id());
         if (attribute != null) {
-            final boolean isSubTask = Boolean.parseBoolean(attribute.getMetaData()
-                    .getValue(JiraConstants.META_SUB_TASK_TYPE));
+            final boolean isSubTask = Boolean.parseBoolean(attribute.getMetaData().getValue(JiraConstants.META_SUB_TASK_TYPE));
             task.setAttribute(JiraConstants.META_SUB_TASK_TYPE, Boolean.toString(isSubTask));
         } else {
             task.setAttribute(JiraConstants.META_SUB_TASK_TYPE, Boolean.toString(false));
@@ -533,9 +531,12 @@ public class JiraRepositoryConnector extends AbstractRepositoryConnector {
             task.setAttribute(JiraAttribute.PROJECT.id(), attribute.getValue());
         }
 
-        // Don't set modification date on the task if the task data is partial: otherwise hasTaskChanged will fail
-        // to detect changes and the synchronization will fail to store the task data when synchronized -- unless it's
-        // run by the user.  This could have an adverse performance impact due to multiple task synchronizations.
+        // Don't set modification date on the task if the task data is partial: otherwise hasTaskChanged
+        // will fail
+        // to detect changes and the synchronization will fail to store the task data when synchronized --
+        // unless it's
+        // run by the user. This could have an adverse performance impact due to multiple task
+        // synchronizations.
         if (taskData.isPartial()) {
             task.setModificationDate(originalModificationDate == null ? null : Date.from(originalModificationDate));
         }

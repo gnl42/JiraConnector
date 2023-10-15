@@ -32,7 +32,8 @@ import me.glindholm.jira.rest.client.api.NamedEntity;
 /**
  * Contains information about field in IssueType.
  * <p>
- * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of
+ * {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
  *
  * @since v1.0
  */
@@ -50,9 +51,8 @@ public class CimFieldInfo implements Serializable, NamedEntity, IdentifiableEnti
     @Nullable
     private final URI autoCompleteUri;
 
-
-    public CimFieldInfo(String id, boolean required, @Nullable String name, FieldSchema schema,
-            Set<StandardOperation> operations, @Nullable List<Object> allowedValues, @Nullable URI autoCompleteUri) {
+    public CimFieldInfo(final String id, final boolean required, @Nullable final String name, final FieldSchema schema, final Set<StandardOperation> operations,
+            @Nullable final List<Object> allowedValues, @Nullable final URI autoCompleteUri) {
         this.id = id;
         this.required = required;
         this.name = name;
@@ -106,7 +106,8 @@ public class CimFieldInfo implements Serializable, NamedEntity, IdentifiableEnti
     }
 
     /**
-     * Returns URI to Auto Complete feature for this field. To make use of it append searched text to returned address.
+     * Returns URI to Auto Complete feature for this field. To make use of it append searched text to
+     * returned address.
      * <p>
      * Example:<br>
      * {@code URI uriToGetResponseFrom = new URI(getAutoCompleteUri() + "typedLetters"); }
@@ -120,7 +121,8 @@ public class CimFieldInfo implements Serializable, NamedEntity, IdentifiableEnti
     }
 
     /**
-     * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+     * Returns ToStringHelper with all fields inserted. Override this method to insert additional
+     * fields.
      *
      * @return ToStringHelper
      */
@@ -134,18 +136,12 @@ public class CimFieldInfo implements Serializable, NamedEntity, IdentifiableEnti
                 + allowedValues + ", autoCompleteUri=" + autoCompleteUri + "]";
     }
 
-
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof CimFieldInfo) {
-            CimFieldInfo that = (CimFieldInfo) obj;
-            return Objects.equals(this.id, that.id)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.required, that.required)
-                    && Objects.equals(this.schema, that.schema)
-                    && Objects.equals(this.operations, that.operations)
-                    && Objects.equals(this.allowedValues, that.allowedValues)
-                    && Objects.equals(this.autoCompleteUri, that.autoCompleteUri);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final CimFieldInfo that) {
+            return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(required, that.required)
+                    && Objects.equals(schema, that.schema) && Objects.equals(operations, that.operations) && Objects.equals(allowedValues, that.allowedValues)
+                    && Objects.equals(autoCompleteUri, that.autoCompleteUri);
         }
         return false;
     }

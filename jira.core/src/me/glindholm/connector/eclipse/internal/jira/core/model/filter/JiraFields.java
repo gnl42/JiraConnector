@@ -12,8 +12,8 @@
 package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 
 /**
- * Enumeration keeping mapping (jiraField -> classicName, jqlName). See also the {@link JiraFieldsNames} helper class
- * which wraps the getClassic()/getJql() getters.
+ * Enumeration keeping mapping (jiraField -> classicName, jqlName). See also the
+ * {@link JiraFieldsNames} helper class which wraps the getClassic()/getJql() getters.
  */
 public enum JiraFields {
     AFFECTED_VERSION("version", "affectedVersion"), //$NON-NLS-1$ //$NON-NLS-2$
@@ -41,17 +41,15 @@ public enum JiraFields {
     private final String jqlFieldName;
 
     /**
-     * @param classicFieldName
-     *            name of the field for classic query
-     * @param jqlFieldName
-     *            name of the field for JQL query
+     * @param classicFieldName name of the field for classic query
+     * @param jqlFieldName     name of the field for JQL query
      */
-    private JiraFields(final String classicFieldName, final String jqlFieldName) {
+    JiraFields(final String classicFieldName, final String jqlFieldName) {
         this.classicFieldName = classicFieldName;
         this.jqlFieldName = jqlFieldName;
     }
 
-    private JiraFields(final String classicFieldName) {
+    JiraFields(final String classicFieldName) {
         this(classicFieldName, classicFieldName);
     }
 

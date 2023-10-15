@@ -17,46 +17,46 @@ package me.glindholm.theplugin.commons.cfg;
 
 public class ProjectId {
 
-	private final String internal;
+    private final String internal;
 
-	public ProjectId(final String string) {
-		if (string == null) {
-			throw new NullPointerException();
-		}
-		internal = string;
-	}
+    public ProjectId(final String string) {
+        if (string == null) {
+            throw new NullPointerException();
+        }
+        internal = string;
+    }
 
-	public ProjectId() {
-		internal = null;
-	}
+    public ProjectId() {
+        internal = null;
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof ProjectId)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ProjectId)) {
+            return false;
+        }
 
-		if (internal == null) {
-			return this == o;
-		}
+        if (internal == null) {
+            return this == o;
+        }
 
-		final ProjectId projectId = (ProjectId) o;
+        final ProjectId projectId = (ProjectId) o;
 
-		if (!internal.equals(projectId.internal)) {
-			return false;
-		}
+        if (!internal.equals(projectId.internal)) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		if (internal == null) {
-			return super.hashCode();
-		}
-		return internal.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        if (internal == null) {
+            return super.hashCode();
+        }
+        return internal.hashCode();
+    }
 }

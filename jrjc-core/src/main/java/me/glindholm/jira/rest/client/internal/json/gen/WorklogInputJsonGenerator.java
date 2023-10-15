@@ -36,17 +36,14 @@ public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
         this(JsonParseUtil.JIRA_DATE_TIME_FORMATTER);
     }
 
-    public WorklogInputJsonGenerator(DateTimeFormatter dateTimeFormatter) {
+    public WorklogInputJsonGenerator(final DateTimeFormatter dateTimeFormatter) {
         this.dateTimeFormatter = dateTimeFormatter;
     }
 
     @Override
     public JSONObject generate(final WorklogInput worklogInput) throws JSONException {
-        final JSONObject res = new JSONObject()
-                .put("self", worklogInput.getSelf())
-                .put("comment", worklogInput.getComment())
-                .put("started", worklogInput.getStartDate().format(dateTimeFormatter))
-                .put("timeSpent", worklogInput.getMinutesSpent() + "m");
+        final JSONObject res = new JSONObject().put("self", worklogInput.getSelf()).put("comment", worklogInput.getComment())
+                .put("started", worklogInput.getStartDate().format(dateTimeFormatter)).put("timeSpent", worklogInput.getMinutesSpent() + "m");
 
         putGeneratedIfNotNull("visibility", worklogInput.getVisibility(), res, visibilityGenerator);
         putGeneratedIfNotNull("author", worklogInput.getAuthor(), res, basicUserJsonGenerator);

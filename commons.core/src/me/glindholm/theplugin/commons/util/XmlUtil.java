@@ -28,31 +28,31 @@ import org.jdom2.output.XMLOutputter;
  * @author Jacek Jaroczynski
  */
 public final class XmlUtil {
-	private XmlUtil() {
-	}
+    private XmlUtil() {
+    }
 
-	public static void printXml(Document request) {
-		XMLOutputter o = new XMLOutputter(Format.getPrettyFormat());
-		try {
-			o.output(request, System.out);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public static void printXml(final Document request) {
+        final XMLOutputter o = new XMLOutputter(Format.getPrettyFormat());
+        try {
+            o.output(request, System.out);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static String toPrettyFormatedString(Element element) {
-		XMLOutputter o = new XMLOutputter(Format.getPrettyFormat());
-		StringWriter writer = new StringWriter();
-		try {
-			o.output(element, writer);
-		} catch (IOException e) {
-			return "[" + element.getName() + "] - string representation failed: " + e.getMessage();
-		}
-		return writer.toString();
-	}
+    public static String toPrettyFormatedString(final Element element) {
+        final XMLOutputter o = new XMLOutputter(Format.getPrettyFormat());
+        final StringWriter writer = new StringWriter();
+        try {
+            o.output(element, writer);
+        } catch (final IOException e) {
+            return "[" + element.getName() + "] - string representation failed: " + e.getMessage();
+        }
+        return writer.toString();
+    }
 
-	public static List<Element> getChildElements(Element node, String childName) {
-		return node.getChildren(childName);
-	}
+    public static List<Element> getChildElements(final Element node, final String childName) {
+        return node.getChildren(childName);
+    }
 
 }

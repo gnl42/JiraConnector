@@ -16,18 +16,18 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import me.glindholm.jira.rest.client.api.domain.AssigneeType;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Component;
 import me.glindholm.jira.rest.client.internal.domain.AssigneeTypeConstants;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 public class ComponentJsonParser implements JsonObjectParser<Component> {
     @Override
-    public Component parse(JSONObject json) throws JSONException {
+    public Component parse(final JSONObject json) throws JSONException {
         final BasicComponent basicComponent = BasicComponentJsonParser.parseBasicComponent(json);
         final JSONObject leadJson = json.optJSONObject("lead");
         final BasicUser lead = leadJson != null ? JsonParseUtil.parseBasicUser(leadJson) : null;
@@ -46,11 +46,10 @@ public class ComponentJsonParser implements JsonObjectParser<Component> {
             assigneeInfo = null;
         }
 
-        return new Component(basicComponent.getSelf(), basicComponent.getId(), basicComponent.getName(), basicComponent
-                .getDescription(), lead, assigneeInfo);
+        return new Component(basicComponent.getSelf(), basicComponent.getId(), basicComponent.getName(), basicComponent.getDescription(), lead, assigneeInfo);
     }
 
-    AssigneeType parseAssigneeType(String str) throws JSONException {
+    AssigneeType parseAssigneeType(final String str) throws JSONException {
         // JIRA 4.4+ adds full assignee info to component resource
         if (AssigneeTypeConstants.COMPONENT_LEAD.equals(str)) {
             return AssigneeType.COMPONENT_LEAD;

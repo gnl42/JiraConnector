@@ -24,9 +24,7 @@ import me.glindholm.jira.rest.client.api.domain.Visibility;
 public class VisibilityJsonGenerator implements JsonGenerator<Visibility> {
 
     @Override
-    public JSONObject generate(Visibility visibility) throws JSONException {
-        return new JSONObject()
-                .put("type", visibility.getType().name().toLowerCase())
-                .put("value", visibility.getValue());
+    public JSONObject generate(final Visibility visibility) throws JSONException {
+        return new JSONObject().put("type", visibility.getType().name().toLowerCase()).put("value", visibility.getValue());
     }
 }

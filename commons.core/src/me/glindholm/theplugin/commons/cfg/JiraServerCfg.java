@@ -23,79 +23,80 @@ public class JiraServerCfg extends ServerCfg {
     private UserCfg basicHttpUser;
     private boolean useSessionCookies = false;
 
-    public JiraServerCfg(final String name, final ServerIdImpl serverId, boolean dontUseBasicAuth) {
-		super(true, name, serverId);
+    public JiraServerCfg(final String name, final ServerIdImpl serverId, final boolean dontUseBasicAuth) {
+        super(true, name, serverId);
         this.dontUseBasicAuth = dontUseBasicAuth;
     }
 
-	public JiraServerCfg(final JiraServerCfg other) {
-		super(other);
-        this.dontUseBasicAuth = other.dontUseBasicAuth;
-        this.basicHttpUser = other.basicHttpUser;
-        this.useSessionCookies = other.useSessionCookies;
-	}
+    public JiraServerCfg(final JiraServerCfg other) {
+        super(other);
+        dontUseBasicAuth = other.dontUseBasicAuth;
+        basicHttpUser = other.basicHttpUser;
+        useSessionCookies = other.useSessionCookies;
+    }
 
-	public JiraServerCfg(boolean enabled, String name, ServerIdImpl serverId, boolean dontUseBasicAuth, boolean useSessionCookies) {
-		super(enabled, name, serverId);
+    public JiraServerCfg(final boolean enabled, final String name, final ServerIdImpl serverId, final boolean dontUseBasicAuth,
+            final boolean useSessionCookies) {
+        super(enabled, name, serverId);
         this.dontUseBasicAuth = dontUseBasicAuth;
         this.useSessionCookies = useSessionCookies;
     }
 
-    public JiraServerCfg(boolean enabled, String name, String url, ServerIdImpl serverId, boolean dontUseBasicAuth, boolean useSessionCookies) {
+    public JiraServerCfg(final boolean enabled, final String name, final String url, final ServerIdImpl serverId, final boolean dontUseBasicAuth,
+            final boolean useSessionCookies) {
         super(enabled, name, url, serverId);
         this.dontUseBasicAuth = dontUseBasicAuth;
         this.useSessionCookies = useSessionCookies;
     }
 
     @Override
-	public ServerType getServerType() {
-		return ServerType.JIRA_SERVER;
-	}
+    public ServerType getServerType() {
+        return ServerType.JIRA_SERVER;
+    }
 
-	@Override
-	public JiraServerCfg getClone() {
-		return new JiraServerCfg(this);
-	}
+    @Override
+    public JiraServerCfg getClone() {
+        return new JiraServerCfg(this);
+    }
 
+    @Override
     public boolean isDontUseBasicAuth() {
         return dontUseBasicAuth;
     }
 
-    
-    public void setDontUseBasicAuth(boolean dontUseBasicAuth) {
+    public void setDontUseBasicAuth(final boolean dontUseBasicAuth) {
         this.dontUseBasicAuth = dontUseBasicAuth;
     }
 
-    public void setBasicHttpUser(UserCfg userCfg) {
-        this.basicHttpUser = userCfg;
+    public void setBasicHttpUser(final UserCfg userCfg) {
+        basicHttpUser = userCfg;
     }
 
+    @Override
     public UserCfg getBasicHttpUser() {
         return basicHttpUser;
     }
 
+    @Override
     public boolean isUseSessionCookies() {
         return useSessionCookies;
     }
 
-    public void setUseSessionCookies(boolean useSessionCookies) {
+    public void setUseSessionCookies(final boolean useSessionCookies) {
         this.useSessionCookies = useSessionCookies;
     }
 
     @Override
     public PrivateServerCfgInfo createPrivateProjectConfiguration() {
-		return new PrivateServerCfgInfo(getServerId(), isEnabled(), isUseDefaultCredentials(),
-				getUsername(), isPasswordStored() ? getPassword() : null,  useSessionCookies,
-                !dontUseBasicAuth,
-                basicHttpUser != null ? basicHttpUser.getUsername() : "",
-                basicHttpUser != null ? basicHttpUser.getPassword() : "",
-                isShared());
+        return new PrivateServerCfgInfo(getServerId(), isEnabled(), isUseDefaultCredentials(), getUsername(), isPasswordStored() ? getPassword() : null,
+                useSessionCookies, !dontUseBasicAuth, basicHttpUser != null ? basicHttpUser.getUsername() : "",
+                basicHttpUser != null ? basicHttpUser.getPassword() : "", isShared());
 
     }
 
     @Override
-    public void mergePrivateConfiguration(PrivateServerCfgInfo psci) {
-        super.mergePrivateConfiguration(psci);    
+    public void mergePrivateConfiguration(final PrivateServerCfgInfo psci) {
+        super.mergePrivateConfiguration(psci);
         if (psci != null) {
             setUseSessionCookies(psci.isUseSessionCookies());
             setDontUseBasicAuth(!psci.isUseHttpBasic());
@@ -107,18 +108,15 @@ public class JiraServerCfg extends ServerCfg {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
+        if (o == null || getClass() != o.getClass() || !super.equals(o)) {
             return false;
         }
 
-        JiraServerCfg that = (JiraServerCfg) o;
+        final JiraServerCfg that = (JiraServerCfg) o;
 
         if (useSessionCookies != that.useSessionCookies) {
             return false;

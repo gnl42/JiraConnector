@@ -34,6 +34,7 @@ import me.glindholm.jira.rest.client.api.SearchRestClient;
 import me.glindholm.jira.rest.client.api.SessionRestClient;
 import me.glindholm.jira.rest.client.api.UserRestClient;
 import me.glindholm.jira.rest.client.api.VersionRestClient;
+
 /**
  * Asynchronous implementation of JIRA REST com.atlassian.jira.rest.client.
  *
@@ -56,14 +57,14 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
     private final AuditRestClient auditRestClient;
 
     public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) throws URISyntaxException {
-        //         baseUri = new URIBuilder(serverUri).path("/rest/api/latest").build();
+        // baseUri = new URIBuilder(serverUri).path("/rest/api/latest").build();
         final URI baseUri = new URIBuilder(serverUri).appendPath("/rest/api/latest").build();
         this.httpClient = httpClient;
         metadataRestClient = new AsynchronousMetadataRestClient(baseUri, httpClient);
         sessionRestClient = new AsynchronousSessionRestClient(serverUri, httpClient);
         issueRestClient = new AsynchronousIssueRestClient(baseUri, httpClient, sessionRestClient, metadataRestClient);
         userRestClient = new AsynchronousUserRestClient(baseUri, httpClient);
-        groupRestClient  = new AsynchronousGroupRestClient(baseUri, httpClient);
+        groupRestClient = new AsynchronousGroupRestClient(baseUri, httpClient);
         projectRestClient = new AsynchronousProjectRestClient(baseUri, httpClient);
         componentRestClient = new AsynchronousComponentRestClient(baseUri, httpClient);
         searchRestClient = new AsynchronousSearchRestClient(baseUri, httpClient);
@@ -137,9 +138,8 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
     public void close() throws IOException {
         try {
             httpClient.destroy();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw e instanceof IOException ? (IOException) e : new IOException(e);
         }
     }
 }
-

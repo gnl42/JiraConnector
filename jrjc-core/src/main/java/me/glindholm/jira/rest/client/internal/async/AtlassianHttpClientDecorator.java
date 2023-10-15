@@ -1,5 +1,8 @@
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.net.URI;
+import java.util.regex.Pattern;
+
 import com.atlassian.httpclient.apache.httpcomponents.DefaultRequest;
 import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.Request;
@@ -7,9 +10,6 @@ import com.atlassian.httpclient.api.ResponsePromise;
 import com.atlassian.httpclient.api.ResponseTransformation;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
-
-import java.net.URI;
-import java.util.regex.Pattern;
 
 /**
  * Abstract wrapper for an Atlassian HttpClient.
@@ -19,26 +19,30 @@ public abstract class AtlassianHttpClientDecorator implements DisposableHttpClie
     private final HttpClient httpClient;
     private final AuthenticationHandler authenticationHandler;
 
-    public AtlassianHttpClientDecorator(HttpClient httpClient, AuthenticationHandler authenticationHandler) {
+    public AtlassianHttpClientDecorator(final HttpClient httpClient, final AuthenticationHandler authenticationHandler) {
         this.httpClient = httpClient;
         this.authenticationHandler = authenticationHandler;
     }
 
-    public void flushCacheByUriPattern(Pattern urlPattern) {
+    @Override
+    public void flushCacheByUriPattern(final Pattern urlPattern) {
         httpClient.flushCacheByUriPattern(urlPattern);
     }
 
+    @Override
     public Request.Builder newRequest() {
         return new AuthenticatedRequestBuilder();
     }
 
-    public Request.Builder newRequest(URI uri) {
+    @Override
+    public Request.Builder newRequest(final URI uri) {
         final Request.Builder builder = new AuthenticatedRequestBuilder();
         builder.setUri(uri);
         return builder;
     }
 
-    public Request.Builder newRequest(URI uri, String contentType, String entity) {
+    @Override
+    public Request.Builder newRequest(final URI uri, final String contentType, final String entity) {
         final Request.Builder builder = new AuthenticatedRequestBuilder();
         builder.setUri(uri);
         builder.setContentType(contentType);
@@ -46,13 +50,15 @@ public abstract class AtlassianHttpClientDecorator implements DisposableHttpClie
         return builder;
     }
 
-    public Request.Builder newRequest(String uri) {
+    @Override
+    public Request.Builder newRequest(final String uri) {
         final Request.Builder builder = new AuthenticatedRequestBuilder();
         builder.setUri(URI.create(uri));
         return builder;
     }
 
-    public Request.Builder newRequest(String uri, String contentType, String entity) {
+    @Override
+    public Request.Builder newRequest(final String uri, final String contentType, final String entity) {
         final Request.Builder builder = new AuthenticatedRequestBuilder();
         builder.setUri(URI.create(uri));
         builder.setContentType(contentType);
@@ -66,7 +72,7 @@ public abstract class AtlassianHttpClientDecorator implements DisposableHttpClie
     }
 
     @Override
-    public ResponsePromise execute(Request request) {
+    public ResponsePromise execute(final Request request) {
         return httpClient.execute(request);
     }
 
@@ -76,9 +82,9 @@ public abstract class AtlassianHttpClientDecorator implements DisposableHttpClie
         }
 
         @Override
-        public ResponsePromise execute(Request.Method method) {
+        public ResponsePromise execute(final Request.Method method) {
             if (authenticationHandler != null) {
-                this.setMethod(method);
+                setMethod(method);
                 authenticationHandler.configure(this);
             }
             return super.execute(method);

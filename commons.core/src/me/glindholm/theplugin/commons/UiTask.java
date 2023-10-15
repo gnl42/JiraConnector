@@ -16,27 +16,27 @@
 
 package me.glindholm.theplugin.commons;
 
-import java.awt.*;
+import java.awt.Component;
 
 public interface UiTask {
-	/**
-	 * Invoked in a new thread
-	 * 
-	 * @throws Exception user exception
-	 */
-	void run() throws Exception;
+    /**
+     * Invoked in a new thread
+     * 
+     * @throws Exception user exception
+     */
+    void run() throws Exception;
 
-	/**
-	 * Invoked in UI Thread
-	 */
-	void onSuccess();
+    /**
+     * Invoked in UI Thread
+     */
+    void onSuccess();
 
-	/**
-	 * Invoked in UI Thread
-	 */
-	void onError();
+    /**
+     * Invoked in UI Thread
+     */
+    void onError();
 
-	String getLastAction();
+    String getLastAction();
 
-	Component getComponent();
+    Component getComponent();
 }

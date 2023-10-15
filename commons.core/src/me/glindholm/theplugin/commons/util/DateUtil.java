@@ -16,7 +16,6 @@
 
 package me.glindholm.theplugin.commons.util;
 
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -25,10 +24,8 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 
-
 /**
- * @author lguminski
- *         Taken from the Bamboo project.
+ * @author lguminski Taken from the Bamboo project.
  */
 public abstract class DateUtil {
     private static final String PRIOR_TEXT = "ago";
@@ -38,11 +35,11 @@ public abstract class DateUtil {
     private DateUtil() {
     }
 
-    public static String getRelativePastDate(Instant someDate) {
+    public static String getRelativePastDate(final Instant someDate) {
         return getRelativePastDate(Date.from(someDate));
     }
 
-    public static String getRelativePastDate(Date someDate) {
+    public static String getRelativePastDate(final Date someDate) {
 
         if (someDate != null) {
             return getRelativePastDate(new Date(), someDate);
@@ -50,44 +47,44 @@ public abstract class DateUtil {
         return "Unknown";
     }
 
-    public static String getRelativePastDate(Date comparedTo, Date someDate) {
+    public static String getRelativePastDate(final Date comparedTo, final Date someDate) {
         if (someDate != null) {
-            Period period = Period.between(LocalDate.ofInstant(comparedTo.toInstant(), ZoneId.systemDefault()),
+            final Period period = Period.between(LocalDate.ofInstant(comparedTo.toInstant(), ZoneId.systemDefault()),
                     LocalDate.ofInstant(someDate.toInstant(), ZoneId.systemDefault()));
-            StringBuilder buffer = new StringBuilder();
+            final StringBuilder buffer = new StringBuilder();
 
-            int years = period.getYears();
+            final int years = period.getYears();
             if (years > 0) {
                 return formatRelativeDateItem(buffer, years, " year");
             }
 
-            int months = period.getMonths();
+            final int months = period.getMonths();
             if (months > 0) {
                 return formatRelativeDateItem(buffer, months, " month");
             }
 
-            int weeks = period.getDays() / 7;
+            final int weeks = period.getDays() / 7;
             if (weeks > 0) {
                 return formatRelativeDateItem(buffer, weeks, " week");
             }
 
-            int days = period.getDays();
+            final int days = period.getDays();
             if (days > 0) {
                 return formatRelativeDateItem(buffer, days, " day");
             }
 
-            Duration duration = Duration.between(LocalDateTime.ofInstant(comparedTo.toInstant(), ZoneId.systemDefault()),
+            final Duration duration = Duration.between(LocalDateTime.ofInstant(comparedTo.toInstant(), ZoneId.systemDefault()),
                     LocalDateTime.ofInstant(someDate.toInstant(), ZoneId.systemDefault()));
-            int hours = (int) duration.toHours();
+            final int hours = (int) duration.toHours();
             if (hours > 0) {
                 return formatRelativeDateItem(buffer, hours, " hour");
             }
-            int minutes = (int) duration.toMinutes();
+            final int minutes = (int) duration.toMinutes();
             if (minutes > 0) {
                 return formatRelativeDateItem(buffer, minutes, " minute");
             }
 
-            int seconds = (int) duration.getSeconds();
+            final int seconds = (int) duration.getSeconds();
             if (seconds > 0) {
                 return formatRelativeDateItem(buffer, seconds, " second");
             }
@@ -104,7 +101,7 @@ public abstract class DateUtil {
 
     }
 
-    private static String formatRelativeDateItem(StringBuilder buffer, int numberOfItems, String item) {
+    private static String formatRelativeDateItem(final StringBuilder buffer, final int numberOfItems, final String item) {
         buffer.append(numberOfItems).append(item);
         if (numberOfItems > 1) {
             buffer.append("s");

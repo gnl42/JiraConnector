@@ -32,8 +32,7 @@ import me.glindholm.jira.rest.client.api.domain.Group;
 public interface GroupRestClient {
 
     /**
-     * Find all groups, limited by the system property
-     * "jira.ajax.autocomplete.limit"
+     * Find all groups, limited by the system property "jira.ajax.autocomplete.limit"
      *
      * @return list of groups
      * @throws URISyntaxException
@@ -41,14 +40,12 @@ public interface GroupRestClient {
     Promise<List<Group>> findGroups() throws URISyntaxException;
 
     /**
-     * Returns groups with substrings matching a given query. This is mainly for use
-     * with the group picker, so the returned groups contain html to be used as
-     * picker suggestions. The groups are also wrapped in a single response object
-     * that also contains a header for use in the picker, specifically showing X of
-     * Y matching groups.
+     * Returns groups with substrings matching a given query. This is mainly for use with the group
+     * picker, so the returned groups contain html to be used as picker suggestions. The groups are also
+     * wrapped in a single response object that also contains a header for use in the picker,
+     * specifically showing X of Y matching groups.
      *
-     * The number of groups returned is limited by the system property
-     * "jira.ajax.autocomplete.limit"
+     * The number of groups returned is limited by the system property "jira.ajax.autocomplete.limit"
      *
      * The groups will be unique and sorted.
      *

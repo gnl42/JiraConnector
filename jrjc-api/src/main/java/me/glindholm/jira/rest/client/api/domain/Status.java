@@ -36,7 +36,7 @@ public class Status extends AddressableNamedEntity implements Serializable, Iden
     private final URI iconUrl;
     private final StatusCategory statusCategory;
 
-    public Status(URI self, final Long id, final String name, final String description, final URI iconUrl, final StatusCategory statusCategory) {
+    public Status(final URI self, final Long id, final String name, final String description, final URI iconUrl, final StatusCategory statusCategory) {
         super(self, name);
         this.id = id;
         this.description = description;
@@ -47,17 +47,13 @@ public class Status extends AddressableNamedEntity implements Serializable, Iden
     @Override
     public String toString() {
         return "Status [id=" + id + ", description=" + description + ", iconUrl=" + iconUrl + ", statusCategory=" + statusCategory + ", =" + super.toString()
-        + "]";
+                + "]";
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Status) {
-            Status that = (Status) obj;
-            return super.equals(obj)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.description, that.description)
-                    && Objects.equals(this.iconUrl, that.iconUrl);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Status that) {
+            return super.equals(obj) && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(iconUrl, that.iconUrl);
         }
         return false;
     }

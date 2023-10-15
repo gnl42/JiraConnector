@@ -58,10 +58,9 @@ public class Remotelink {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof Remotelink)) {
+        if (!(obj instanceof final Remotelink other)) {
             return false;
         }
-        final Remotelink other = (Remotelink) obj;
         return Objects.equals(application, other.application) && Objects.equals(globalId, other.globalId) && Objects.equals(id, other.id)
                 && Objects.equals(object, other.object) && Objects.equals(relationship, other.relationship) && Objects.equals(self, other.self);
     }

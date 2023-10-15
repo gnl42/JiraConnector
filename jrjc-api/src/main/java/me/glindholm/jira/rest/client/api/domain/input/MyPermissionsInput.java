@@ -41,8 +41,8 @@ public class MyPermissionsInput {
      * @param issueKey   key of the issue to scope returned permissions for
      * @param issueId    id of the issue to scope returned permissions for
      */
-    public MyPermissionsInput(@Nullable final String projectKey, @Nullable final Integer projectId,
-            @Nullable final String issueKey, @Nullable final Integer issueId) {
+    public MyPermissionsInput(@Nullable final String projectKey, @Nullable final Integer projectId, @Nullable final String issueKey,
+            @Nullable final Integer issueId) {
         this.projectKey = projectKey;
         this.projectId = projectId;
         this.issueKey = issueKey;

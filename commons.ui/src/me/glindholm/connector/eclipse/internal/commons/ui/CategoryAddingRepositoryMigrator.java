@@ -18,27 +18,27 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 @SuppressWarnings("restriction")
 public class CategoryAddingRepositoryMigrator extends AbstractRepositoryMigrator {
 
-	private final String connectorKind;
+    private final String connectorKind;
 
-	private final String targetCategory;
+    private final String targetCategory;
 
-	public CategoryAddingRepositoryMigrator(String connectorKind, String targetCategory) {
-		this.connectorKind = connectorKind;
-		this.targetCategory = targetCategory;
-	}
+    public CategoryAddingRepositoryMigrator(final String connectorKind, final String targetCategory) {
+        this.connectorKind = connectorKind;
+        this.targetCategory = targetCategory;
+    }
 
-	@Override
-	public String getConnectorKind() {
-		return connectorKind;
-	}
+    @Override
+    public String getConnectorKind() {
+        return connectorKind;
+    }
 
-	@Override
-	public boolean migrateRepository(TaskRepository repository) {
-		if (repository.getProperty(IRepositoryConstants.PROPERTY_CATEGORY) == null) {
-			repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, targetCategory);
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean migrateRepository(final TaskRepository repository) {
+        if (repository.getProperty(IRepositoryConstants.PROPERTY_CATEGORY) == null) {
+            repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, targetCategory);
+            return true;
+        }
+        return false;
+    }
 
 }

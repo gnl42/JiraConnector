@@ -31,8 +31,8 @@ public class ProjectRoleJsonParser implements JsonObjectParser<ProjectRole> {
 
     private final RoleActorJsonParser roleActorJsonParser;
 
-    public ProjectRoleJsonParser(URI baseJiraUri) {
-        this.roleActorJsonParser = new RoleActorJsonParser(baseJiraUri);
+    public ProjectRoleJsonParser(final URI baseJiraUri) {
+        roleActorJsonParser = new RoleActorJsonParser(baseJiraUri);
     }
 
     @Override
@@ -42,8 +42,7 @@ public class ProjectRoleJsonParser implements JsonObjectParser<ProjectRole> {
         final String name = json.getString("name");
         final String description = json.getString("description");
         final Optional<JSONArray> roleActorsOpt = JsonParseUtil.getOptionalArray(json, "actors");
-        final List<RoleActor> roleActors = roleActorsOpt.isPresent() ?
-                JsonParseUtil.parseJsonArray(roleActorsOpt.get(), roleActorJsonParser) : List.of();
+        final List<RoleActor> roleActors = roleActorsOpt.isPresent() ? JsonParseUtil.parseJsonArray(roleActorsOpt.get(), roleActorJsonParser) : List.of();
         return new ProjectRole(id, self, name, description, roleActors);
     }
 

@@ -31,7 +31,7 @@ public class BasicProjectRole implements Serializable, AddressableEntity, NamedE
     private final URI self;
     private final String name;
 
-    public BasicProjectRole(URI self, String name) {
+    public BasicProjectRole(final URI self, final String name) {
         this.self = self;
         this.name = name;
     }
@@ -50,11 +50,9 @@ public class BasicProjectRole implements Serializable, AddressableEntity, NamedE
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof BasicProjectRole) {
-            final BasicProjectRole that = (BasicProjectRole) o;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.name, that.name);
+    public boolean equals(final Object o) {
+        if (o instanceof final BasicProjectRole that) {
+            return Objects.equals(self, that.self) && Objects.equals(name, that.name);
         }
         return false;
     }

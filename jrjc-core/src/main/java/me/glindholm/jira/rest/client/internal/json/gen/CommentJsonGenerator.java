@@ -16,26 +16,26 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.internal.json.CommentJsonParser;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 public class CommentJsonGenerator implements JsonGenerator<Comment> {
 
     private final ServerInfo serverInfo;
 
-    public CommentJsonGenerator(ServerInfo serverInfo) {
+    public CommentJsonGenerator(final ServerInfo serverInfo) {
         this.serverInfo = serverInfo;
     }
 
     @Override
-    public JSONObject generate(Comment comment) throws JSONException {
-        JSONObject res = new JSONObject();
+    public JSONObject generate(final Comment comment) throws JSONException {
+        final JSONObject res = new JSONObject();
         if (comment.getBody() != null) {
             res.put("body", comment.getBody());
         }
@@ -45,7 +45,7 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
 
             final int buildNumber = serverInfo.getBuildNumber();
             if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-                JSONObject visibilityJson = new JSONObject();
+                final JSONObject visibilityJson = new JSONObject();
                 final String commentVisibilityType;
                 if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
                     commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "group" : "role";
@@ -55,12 +55,10 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
                 visibilityJson.put("type", commentVisibilityType);
                 visibilityJson.put("value", commentVisibility.getValue());
                 res.put(CommentJsonParser.VISIBILITY_KEY, visibilityJson);
+            } else if (commentVisibility.getType() == Visibility.Type.ROLE) {
+                res.put("role", commentVisibility.getValue());
             } else {
-                if (commentVisibility.getType() == Visibility.Type.ROLE) {
-                    res.put("role", commentVisibility.getValue());
-                } else {
-                    res.put("group", commentVisibility.getValue());
-                }
+                res.put("group", commentVisibility.getValue());
             }
         }
 

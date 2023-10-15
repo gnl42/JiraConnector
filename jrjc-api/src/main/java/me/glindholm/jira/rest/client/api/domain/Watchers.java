@@ -34,7 +34,7 @@ public class Watchers extends BasicWatchers {
 
     private final List<BasicUser> users;
 
-    public Watchers(BasicWatchers basicWatchers, List<BasicUser> users) {
+    public Watchers(final BasicWatchers basicWatchers, final List<BasicUser> users) {
         super(basicWatchers.getSelf(), basicWatchers.isWatching(), basicWatchers.getNumWatchers());
         this.users = users;
     }
@@ -54,10 +54,9 @@ public class Watchers extends BasicWatchers {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Watchers) {
-            final Watchers that = (Watchers) obj;
-            return super.equals(that) && Objects.equals(this.users, that.users);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Watchers that) {
+            return super.equals(that) && Objects.equals(users, that.users);
         }
         return false;
     }

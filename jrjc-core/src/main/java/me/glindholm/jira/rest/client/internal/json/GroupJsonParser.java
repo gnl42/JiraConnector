@@ -16,21 +16,21 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.Group;
 
-import java.net.URI;
-
 /**
  * @since v5.1.0
  */
 public class GroupJsonParser implements JsonObjectParser<Group> {
-	@Override
-	public Group parse(JSONObject json) throws JSONException {
-		final URI uri = JsonParseUtil.optSelfUri(json, null);
-		final String name = json.getString("name");
-		return new Group(uri, name);
-	}
+    @Override
+    public Group parse(final JSONObject json) throws JSONException {
+        final URI uri = JsonParseUtil.optSelfUri(json, null);
+        final String name = json.getString("name");
+        return new Group(uri, name);
+    }
 }

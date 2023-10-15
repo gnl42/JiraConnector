@@ -12,12 +12,12 @@ public class PageJsonParser<T> implements JsonObjectParser<Page<T>> {
 
     private final GenericJsonArrayParser<T> valuesParser;
 
-    public PageJsonParser(GenericJsonArrayParser<T> valuesParser) {
+    public PageJsonParser(final GenericJsonArrayParser<T> valuesParser) {
         this.valuesParser = valuesParser;
     }
 
     @Override
-    public Page<T> parse(JSONObject json) throws JSONException, URISyntaxException {
+    public Page<T> parse(final JSONObject json) throws JSONException, URISyntaxException {
         final long start = json.getLong("startAt");
         final int size = json.getInt("maxResults");
         final long total = json.getLong("total");

@@ -30,7 +30,7 @@ public class Votes extends BasicVotes {
 
     private final List<BasicUser> users;
 
-    public Votes(URI self, int votes, boolean hasVoted, List<BasicUser> users) {
+    public Votes(final URI self, final int votes, final boolean hasVoted, final List<BasicUser> users) {
         super(self, votes, hasVoted);
         this.users = users;
     }
@@ -50,17 +50,16 @@ public class Votes extends BasicVotes {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Votes) {
-            final Votes that = (Votes) obj;
-            return super.equals(that) && Objects.equals(this.users, that.users);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Votes that) {
+            return super.equals(that) && Objects.equals(users, that.users);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), this.users);
+        return Objects.hash(super.hashCode(), users);
     }
 
 }

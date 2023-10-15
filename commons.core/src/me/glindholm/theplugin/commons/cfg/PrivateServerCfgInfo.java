@@ -16,26 +16,26 @@
 package me.glindholm.theplugin.commons.cfg;
 
 public class PrivateServerCfgInfo {
-	protected final ServerIdImpl serverId;
-	protected final boolean isEnabled;
-	protected final String username;
-	protected final String password;
+    protected final ServerIdImpl serverId;
+    protected final boolean isEnabled;
+    protected final String username;
+    protected final String password;
     protected boolean useHttpBasic = false;
     protected boolean useSessionCookies = false;
     protected final String basicUsername;
     protected final String basicPassword;
     protected final boolean useDefaultCredentials;
-	private static final int HASHCODE_MAGIC = 31;
+    private static final int HASHCODE_MAGIC = 31;
     protected boolean shared;
 
-    public PrivateServerCfgInfo(final ServerIdImpl serverId, final boolean enabled, final boolean useDefaultCredentials,
-			final String username, final String password, final boolean useSessionCookies, final boolean useHttpBasic, final String basicUsername,
-            final String basicPassword, final boolean shared) {
-		this.serverId = serverId;
-		isEnabled = enabled;
-		this.useDefaultCredentials = useDefaultCredentials;
-		this.username = username;
-		this.password = password;
+    public PrivateServerCfgInfo(final ServerIdImpl serverId, final boolean enabled, final boolean useDefaultCredentials, final String username,
+            final String password, final boolean useSessionCookies, final boolean useHttpBasic, final String basicUsername, final String basicPassword,
+            final boolean shared) {
+        this.serverId = serverId;
+        isEnabled = enabled;
+        this.useDefaultCredentials = useDefaultCredentials;
+        this.username = username;
+        this.password = password;
 
         this.useSessionCookies = useSessionCookies;
         this.useHttpBasic = useHttpBasic;
@@ -44,17 +44,17 @@ public class PrivateServerCfgInfo {
         this.shared = shared;
     }
 
-	public ServerId getServerId() {
-		return serverId;
-	}
+    public ServerId getServerId() {
+        return serverId;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
     public boolean isUseSessionCookies() {
         return useSessionCookies;
@@ -73,7 +73,7 @@ public class PrivateServerCfgInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -81,8 +81,8 @@ public class PrivateServerCfgInfo {
             return false;
         }
 
-        PrivateServerCfgInfo that = (PrivateServerCfgInfo) o;
-       
+        final PrivateServerCfgInfo that = (PrivateServerCfgInfo) o;
+
         if (serverId != null ? !serverId.equals(that.serverId) : that.serverId != null) {
             return false;
         }
@@ -105,12 +105,12 @@ public class PrivateServerCfgInfo {
     }
 
     public boolean isEnabled() {
-		return isEnabled;
-	}
+        return isEnabled;
+    }
 
-	public boolean isUseDefaultCredentials() {
-		return useDefaultCredentials;
-	}
+    public boolean isUseDefaultCredentials() {
+        return useDefaultCredentials;
+    }
 
     public boolean isShared() {
         return shared;

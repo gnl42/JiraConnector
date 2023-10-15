@@ -35,17 +35,16 @@ public class LinkIssuesInput {
      * @param linkType     name of the link type (e.g. "Duplicate")
      * @param comment      optional comment
      */
-    public LinkIssuesInput(String fromIssueKey, String toIssueKey, String linkType, @Nullable Comment comment) {
+    public LinkIssuesInput(final String fromIssueKey, final String toIssueKey, final String linkType, @Nullable final Comment comment) {
         this.fromIssueKey = fromIssueKey;
         this.toIssueKey = toIssueKey;
         this.comment = comment;
         this.linkType = linkType;
     }
 
-    public LinkIssuesInput(String fromIssueKey, String toIssueKey, String linkType) {
+    public LinkIssuesInput(final String fromIssueKey, final String toIssueKey, final String linkType) {
         this(fromIssueKey, toIssueKey, linkType, null);
     }
-
 
     /**
      * @return source issue key

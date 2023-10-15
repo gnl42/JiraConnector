@@ -37,7 +37,7 @@ public class FieldInput implements Serializable, IdentifiableEntity<String> {
      * @param id    field id
      * @param value new value for this issue field
      */
-    public FieldInput(String id, Object value) {
+    public FieldInput(final String id, final Object value) {
         this.id = id;
         this.value = value;
     }
@@ -46,8 +46,8 @@ public class FieldInput implements Serializable, IdentifiableEntity<String> {
      * @param field issue field
      * @param value new value for this issue field
      */
-    public FieldInput(IssueFieldId field, Object value) {
-        this.id = field.id;
+    public FieldInput(final IssueFieldId field, final Object value) {
+        id = field.id;
         this.value = value;
     }
 
@@ -72,11 +72,9 @@ public class FieldInput implements Serializable, IdentifiableEntity<String> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof FieldInput) {
-            final FieldInput other = (FieldInput) obj;
-            return Objects.equals(this.id, other.id)
-                    && Objects.equals(this.value, other.value);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final FieldInput other) {
+            return Objects.equals(id, other.id) && Objects.equals(value, other.value);
         }
         return false;
     }

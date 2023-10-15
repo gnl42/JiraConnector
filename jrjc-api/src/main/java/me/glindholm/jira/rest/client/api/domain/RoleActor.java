@@ -37,9 +37,9 @@ public class RoleActor implements Serializable, NamedEntity {
     @SuppressWarnings("UnusedDeclaration")
     private static final String TYPE_ATLASSIAN_USER_ROLE = "atlassian-user-role-actor";
 
-
     /**
-     * Type of a role actor which associates a project with a group of users, for instance: administrators, developers.
+     * Type of a role actor which associates a project with a group of users, for instance:
+     * administrators, developers.
      */
     @SuppressWarnings("UnusedDeclaration")
     private static final String TYPE_ATLASSIAN_GROUP_ROLE = "atlassian-group-role-actor";
@@ -50,7 +50,7 @@ public class RoleActor implements Serializable, NamedEntity {
     private final String name;
     private final URI avatarUrl;
 
-    public RoleActor(Long id, String displayName, String type, String name, @Nullable URI avatarUrl) {
+    public RoleActor(final Long id, final String displayName, final String type, final String name, @Nullable final URI avatarUrl) {
         this.id = id;
         this.displayName = displayName;
         this.type = type;
@@ -92,14 +92,10 @@ public class RoleActor implements Serializable, NamedEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof RoleActor) {
-            RoleActor that = (RoleActor) o;
-            return Objects.equals(this.getName(), that.getName())
-                    && Objects.equals(this.id, that.getId())
-                    && Objects.equals(this.getAvatarUri(), that.getAvatarUri())
-                    && Objects.equals(this.getType(), that.getType())
-                    && Objects.equals(this.getDisplayName(), that.getDisplayName());
+    public boolean equals(final Object o) {
+        if (o instanceof final RoleActor that) {
+            return Objects.equals(getName(), that.getName()) && Objects.equals(id, that.getId()) && Objects.equals(getAvatarUri(), that.getAvatarUri())
+                    && Objects.equals(getType(), that.getType()) && Objects.equals(getDisplayName(), that.getDisplayName());
         }
         return false;
     }

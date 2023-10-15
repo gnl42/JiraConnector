@@ -22,21 +22,22 @@ import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-
 public class Permissions {
     /**
-     * Permission key for ability to log work done against an issue. Only useful if Time Tracking is turned on.
+     * Permission key for ability to log work done against an issue. Only useful if Time Tracking is
+     * turned on.
      */
     public static final String WORK_ISSUE = "WORK_ISSUE";
     private final Map<String, Permission> permissionMap;
 
     public Permissions(final List<Permission> permissions) {
-        Map<String, Permission> convert = new HashMap<>();
-        for (Permission permission : permissions) {
+        final Map<String, Permission> convert = new HashMap<>();
+        for (final Permission permission : permissions) {
             convert.put(permission.getId() + "", permission);
         }
-        this.permissionMap = convert;
-        // FIXME real fix permissions.stream().collect(Collectors.toMap(Permission::getId, Function.identity()));
+        permissionMap = convert;
+        // FIXME real fix permissions.stream().collect(Collectors.toMap(Permission::getId,
+        // Function.identity()));
     }
 
     public Map<String, Permission> getPermissionMap() {
@@ -59,9 +60,8 @@ public class Permissions {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof Permissions) {
-            Permissions that = (Permissions) o;
+    public boolean equals(final Object o) {
+        if (o instanceof final Permissions that) {
             return Objects.equals(permissionMap, that.permissionMap);
         }
         return false;

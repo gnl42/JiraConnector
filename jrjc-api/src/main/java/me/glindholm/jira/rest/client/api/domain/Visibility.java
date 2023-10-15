@@ -31,7 +31,7 @@ public class Visibility {
     private final Type type;
     private final String value;
 
-    public Visibility(Type type, String value) {
+    public Visibility(final Type type, final String value) {
         this.type = type;
         this.value = value;
     }
@@ -44,11 +44,11 @@ public class Visibility {
         return value;
     }
 
-    public static Visibility role(String value) {
+    public static Visibility role(final String value) {
         return new Visibility(Type.ROLE, value);
     }
 
-    public static Visibility group(String group) {
+    public static Visibility group(final String group) {
         return new Visibility(Type.GROUP, group);
     }
 
@@ -58,10 +58,9 @@ public class Visibility {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Visibility) {
-            Visibility that = (Visibility) obj;
-            return Objects.equals(this.type, that.type) && Objects.equals(this.value, that.value);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Visibility that) {
+            return Objects.equals(type, that.type) && Objects.equals(value, that.value);
         }
         return false;
     }

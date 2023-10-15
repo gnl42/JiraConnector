@@ -102,9 +102,9 @@ public class FilterDefinitionConverter {
 
     /**
      * @param encoding
-     * @param dateFormat
-     *            date format which has to be used for classic queries; should match the one configured in JIRA; in case
-     *            of JQL format is hard-coded and independent from user settings
+     * @param dateFormat date format which has to be used for classic queries; should match the one
+     *                   configured in JIRA; in case of JQL format is hard-coded and independent from
+     *                   user settings
      */
     public FilterDefinitionConverter(final String encoding, final DateFormat dateFormat) {
         Assert.isNotNull(dateFormat);
@@ -118,8 +118,7 @@ public class FilterDefinitionConverter {
     }
 
     public String toJqlUrl(final String repositoryUrl, final FilterDefinition filter) throws UnsupportedEncodingException {
-        return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX_NEW
-                + URLEncoder.encode(getJqlString(filter), encoding);
+        return repositoryUrl + JiraRepositoryConnector.FILTER_URL_PREFIX_NEW + URLEncoder.encode(getJqlString(filter), encoding);
     }
 
     public FilterDefinition toFilter(final JiraClient client, final String classicUrl, final boolean validate) {
@@ -201,14 +200,12 @@ public class FilterDefinitionConverter {
                 versions.addAll(Arrays.asList(project.getVersions()));
             }
             if (!componentIds.isEmpty()) {
-                filter.setComponentFilter(new ComponentFilter(components.toArray(new JiraComponent[components.size()]),
-                        hasNoComponent));
+                filter.setComponentFilter(new ComponentFilter(components.toArray(new JiraComponent[components.size()]), hasNoComponent));
             }
 
             final JiraVersion[] projectVersions = versions.toArray(new JiraVersion[versions.size()]);
             filter.setFixForVersionFilter(createVersionFilter(getIds(params, jiraField.FIX_VERSION()), projectVersions));
-            filter.setReportedInVersionFilter(createVersionFilter(getIds(params, jiraField.AFFECTED_VERSION()),
-                    projectVersions));
+            filter.setReportedInVersionFilter(createVersionFilter(getIds(params, jiraField.AFFECTED_VERSION()), projectVersions));
         }
 
         final List<String> typeIds = getIds(params, JiraFields.ISSUE_TYPE.getClassic());
@@ -294,8 +291,7 @@ public class FilterDefinitionConverter {
             final boolean searchDescription = getIds(params, jiraField.DESCRIPTION()).contains("true"); //$NON-NLS-1$
             final boolean searchEnvironment = getIds(params, jiraField.ENVIRONMENT()).contains("true"); //$NON-NLS-1$
             final boolean searchComments = getIds(params, jiraField.COMMENT()).contains("true"); //$NON-NLS-1$
-            filter.setContentFilter(new ContentFilter(query, searchSummary, searchDescription, searchEnvironment,
-                    searchComments));
+            filter.setContentFilter(new ContentFilter(query, searchSummary, searchDescription, searchEnvironment, searchComments));
         }
 
         filter.setReportedByFilter(createUserFilter(params, JiraFields.REPORTER.getClassic()));
@@ -323,8 +319,7 @@ public class FilterDefinitionConverter {
         addParameters(sb, jiraField.FIX_VERSION(), classicFilter.extractVersions(filter.getFixForVersionFilter()));
 
         // affects version
-        addParameters(sb, jiraField.AFFECTED_VERSION(),
-                classicFilter.extractVersions(filter.getReportedInVersionFilter()));
+        addParameters(sb, jiraField.AFFECTED_VERSION(), classicFilter.extractVersions(filter.getReportedInVersionFilter()));
 
         // issue type
         addParameters(sb, jiraField.ISSUE_TYPE(), classicFilter.extractIssueTypes(filter.getIssueTypeFilter()));
@@ -360,10 +355,8 @@ public class FilterDefinitionConverter {
         }
 
         // reporter and assignee
-        addUserFilter(sb, filter.getReportedByFilter(), JiraFields.REPORTER.getClassic(),
-                JiraFieldSpecialValue.ISSUE_NO_REPORTER.getClassic());
-        addUserFilter(sb, filter.getAssignedToFilter(), JiraFields.ASSIGNEE.getClassic(),
-                JiraFieldSpecialValue.UNASSIGNED.getClassic());
+        addUserFilter(sb, filter.getReportedByFilter(), JiraFields.REPORTER.getClassic(), JiraFieldSpecialValue.ISSUE_NO_REPORTER.getClassic());
+        addUserFilter(sb, filter.getAssignedToFilter(), JiraFields.ASSIGNEE.getClassic(), JiraFieldSpecialValue.UNASSIGNED.getClassic());
 
         // created, updated, due dates
         addDateFilter(sb, filter.getCreatedDateFilter(), JiraFields.CREATED.getClassic());
@@ -399,35 +392,29 @@ public class FilterDefinitionConverter {
                 jqlFilter.extractProjects(filter.getProjectFilter()).stream().map(element -> "\"" + element + "\"").collect(Collectors.toList()));
 
         // component
-        addJqlInExpression(searchParams, jiraField.COMPONENT(),
-                jqlFilter.extractComponents(filter.getComponentFilter()));
+        addJqlInExpression(searchParams, jiraField.COMPONENT(), jqlFilter.extractComponents(filter.getComponentFilter()));
 
         // fix version
-        addJqlInExpression(searchParams, jiraField.FIX_VERSION(),
-                jqlFilter.extractVersions(filter.getFixForVersionFilter()));
+        addJqlInExpression(searchParams, jiraField.FIX_VERSION(), jqlFilter.extractVersions(filter.getFixForVersionFilter()));
 
         // affects version
-        addJqlInExpression(searchParams, jiraField.AFFECTED_VERSION(),
-                jqlFilter.extractVersions(filter.getReportedInVersionFilter()));
+        addJqlInExpression(searchParams, jiraField.AFFECTED_VERSION(), jqlFilter.extractVersions(filter.getReportedInVersionFilter()));
 
         // issue type
-        addJqlInExpression(searchParams, jiraField.ISSUE_TYPE(),
-                jqlFilter.extractIssueTypes(filter.getIssueTypeFilter()));
+        addJqlInExpression(searchParams, jiraField.ISSUE_TYPE(), jqlFilter.extractIssueTypes(filter.getIssueTypeFilter()));
 
         // status
         addJqlInExpression(searchParams, jiraField.STATUS(), jqlFilter.extractStatuses(filter.getStatusFilter()));
 
         // resolution
-        addJqlInExpression(searchParams, jiraField.RESOLUTION(),
-                jqlFilter.extractResolutions(filter.getResolutionFilter()));
+        addJqlInExpression(searchParams, jiraField.RESOLUTION(), jqlFilter.extractResolutions(filter.getResolutionFilter()));
 
         // priority
         addJqlInExpression(searchParams, jiraField.PRIORITY(), jqlFilter.extractPriorities(filter.getPriorityFilter()));
 
         // content (summary, description, environment, comments)
         final ContentFilter contentFilter = filter.getContentFilter();
-        if (contentFilter != null && contentFilter.getQueryString() != null
-                && contentFilter.getQueryString().length() > 0) {
+        if (contentFilter != null && contentFilter.getQueryString() != null && contentFilter.getQueryString().length() > 0) {
             final String searchedString = " ~ \"" + contentFilter.getQueryString() + "\""; //$NON-NLS-1$ //$NON-NLS-2$
             final List<String> jqlOrQueryParts = new ArrayList<>(4);
             if (contentFilter.isSearchingSummary()) {
@@ -448,24 +435,18 @@ public class FilterDefinitionConverter {
         }
 
         // reporter
-        addJqlInExpression(searchParams, jiraField.REPORTER(),
-                jqlFilter.extractReportedBy(filter.getReportedByFilter()));
+        addJqlInExpression(searchParams, jiraField.REPORTER(), jqlFilter.extractReportedBy(filter.getReportedByFilter()));
 
         // assignee
-        addJqlInExpression(searchParams, jiraField.ASSIGNEE(),
-                jqlFilter.extractAssignedTo(filter.getAssignedToFilter()));
+        addJqlInExpression(searchParams, jiraField.ASSIGNEE(), jqlFilter.extractAssignedTo(filter.getAssignedToFilter()));
 
         // created, updated, due dates
-        addJqlAndExpression(searchParams, jiraField.CREATED(),
-                jqlFilter.extractDates(filter.getCreatedDateFilter(), JQL_DATE_TIME_FORMAT));
-        addJqlAndExpression(searchParams, jiraField.UPDATED(),
-                jqlFilter.extractDates(filter.getUpdatedDateFilter(), JQL_DATE_TIME_FORMAT));
-        addJqlAndExpression(searchParams, jiraField.DUE_DATE(),
-                jqlFilter.extractDates(filter.getDueDateFilter(), JQL_DATE_FORMAT));
+        addJqlAndExpression(searchParams, jiraField.CREATED(), jqlFilter.extractDates(filter.getCreatedDateFilter(), JQL_DATE_TIME_FORMAT));
+        addJqlAndExpression(searchParams, jiraField.UPDATED(), jqlFilter.extractDates(filter.getUpdatedDateFilter(), JQL_DATE_TIME_FORMAT));
+        addJqlAndExpression(searchParams, jiraField.DUE_DATE(), jqlFilter.extractDates(filter.getDueDateFilter(), JQL_DATE_FORMAT));
 
         // estimations
-        addJqlAndExpression(searchParams, jiraField.WORK_RATIO(),
-                jqlFilter.extractWorkRatios(filter.getEstimateVsActualFilter()));
+        addJqlAndExpression(searchParams, jiraField.WORK_RATIO(), jqlFilter.extractWorkRatios(filter.getEstimateVsActualFilter()));
 
         final String whereClause = StringUtils.join(searchParams, " AND "); //$NON-NLS-1$
         final String orderByClause = getJqlOrdering(filter.getOrdering());
@@ -500,8 +481,7 @@ public class FilterDefinitionConverter {
             }
         }
 
-        return new VersionFilter(fixForversions.toArray(new JiraVersion[fixForversions.size()]), hasNoVersions,
-                hasReleasedVersions, hasUnreleasedVersions);
+        return new VersionFilter(fixForversions.toArray(new JiraVersion[fixForversions.size()]), hasNoVersions, hasReleasedVersions, hasUnreleasedVersions);
 
     }
 
@@ -529,14 +509,12 @@ public class FilterDefinitionConverter {
         final String previous = getId(params, key + ":previous"); //$NON-NLS-1$
         final String next = getId(params, key + ":next"); //$NON-NLS-1$
 
-        return afterDate == null && beforeDate == null && previous == null && next == null ? null
-                : new DateRangeFilter(afterDate, beforeDate, previous, next);
+        return afterDate == null && beforeDate == null && previous == null && next == null ? null : new DateRangeFilter(afterDate, beforeDate, previous, next);
     }
 
     private UserFilter createUserFilter(final Map<String, List<String>> params, final String key) {
         final String type = getId(params, key + "Select"); //$NON-NLS-1$
-        if (JiraFieldSpecialValue.ISSUE_NO_REPORTER.getClassic().equals(type)
-                || JiraFieldSpecialValue.UNASSIGNED.getClassic().equals(type)) {
+        if (JiraFieldSpecialValue.ISSUE_NO_REPORTER.getClassic().equals(type) || JiraFieldSpecialValue.UNASSIGNED.getClassic().equals(type)) {
             return new NobodyFilter();
         } else if (JiraFieldSpecialValue.ISSUE_CURRENT_USER.getClassic().equals(type)) {
             return new CurrentUserFilter();
@@ -602,8 +580,7 @@ public class FilterDefinitionConverter {
     }
 
     private void addDateFilter(final StringBuilder sb, final DateFilter filter, final String type) {
-        if (filter instanceof DateRangeFilter) {
-            final DateRangeFilter rangeFilter = (DateRangeFilter) filter;
+        if (filter instanceof final DateRangeFilter rangeFilter) {
             if (rangeFilter.getFromDate() != null) {
                 addParameter(sb, type + ":after", classicQueryOffsetDateTimeFormat.format(Date.from(rangeFilter.getFromDate()))); //$NON-NLS-1$
             }
@@ -616,18 +593,14 @@ public class FilterDefinitionConverter {
             if (rangeFilter.getTo() != null && rangeFilter.getTo().length() > 0) {
                 addParameter(sb, type + ":next", rangeFilter.getTo()); //$NON-NLS-1$
             }
-        } else if (filter instanceof RelativeDateRangeFilter) {
-            final RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) filter;
+        } else if (filter instanceof final RelativeDateRangeFilter rangeFilter) {
             if (rangeFilter.previousMilliseconds() != 0L) {
-                addParameter(
-                        sb,
-                        type + ":previous", FilterDataExtractor.createRelativeDateString(rangeFilter.getPreviousRangeType(), //$NON-NLS-1$
-                                rangeFilter.getPreviousCount()));
+                addParameter(sb, type + ":previous", FilterDataExtractor.createRelativeDateString(rangeFilter.getPreviousRangeType(), //$NON-NLS-1$
+                        rangeFilter.getPreviousCount()));
             }
             if (rangeFilter.nextMilliseconds() != 0L) {
-                addParameter(sb,
-                        type + ":next", FilterDataExtractor.createRelativeDateString(rangeFilter.getNextRangeType(), //$NON-NLS-1$
-                                rangeFilter.getNextCount()));
+                addParameter(sb, type + ":next", FilterDataExtractor.createRelativeDateString(rangeFilter.getNextRangeType(), //$NON-NLS-1$
+                        rangeFilter.getNextCount()));
             }
         }
     }
@@ -647,10 +620,9 @@ public class FilterDefinitionConverter {
     }
 
     /**
-     * Adds list of parameters to classic query, using the same <code>name</code>
-     * key for all <code>values</code>. Something like:
-     * <code>&name=values[0]&name=values[1]...</code>. It applies URL encoding on
-     * values.
+     * Adds list of parameters to classic query, using the same <code>name</code> key for all
+     * <code>values</code>. Something like: <code>&name=values[0]&name=values[1]...</code>. It applies
+     * URL encoding on values.
      *
      * @param sb     output string
      * @param name
@@ -664,8 +636,8 @@ public class FilterDefinitionConverter {
     }
 
     /**
-     * Adds a single parameter to classic query, like <code>&name=value</code>. It
-     * applies URL encoding on the value.
+     * Adds a single parameter to classic query, like <code>&name=value</code>. It applies URL encoding
+     * on the value.
      *
      * @param sb    output string
      * @param name
@@ -680,8 +652,7 @@ public class FilterDefinitionConverter {
     }
 
     /**
-     * Appends new part of JQL query with a "key in (value1, value2, ... )"
-     * expression. Example:
+     * Appends new part of JQL query with a "key in (value1, value2, ... )" expression. Example:
      *
      * <pre>
      *    priority in ( Blocker, Critical, Major )
@@ -708,8 +679,7 @@ public class FilterDefinitionConverter {
     }
 
     /**
-     * Appends new part of JQL query with expressions concatenated with OR operator.
-     * Example:
+     * Appends new part of JQL query with expressions concatenated with OR operator. Example:
      *
      * <pre>
      *    ( expression1 OR expression2 OR expression3 )
@@ -725,8 +695,7 @@ public class FilterDefinitionConverter {
     }
 
     /**
-     * Appends new part of JQL query with expressions concatenated with AND
-     * operator. Example:
+     * Appends new part of JQL query with expressions concatenated with AND operator. Example:
      *
      * <pre>
      *    ( field operatorAndValue1 AND field operatorAndValue2 AND field operatorAndValue3 )

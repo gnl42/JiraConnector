@@ -6,8 +6,8 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * Item that can be associated with Audit Record. Represents additional
- * information about item related to record like user, group or schema.
+ * Item that can be associated with Audit Record. Represents additional information about item
+ * related to record like user, group or schema.
  *
  * @since v2.0
  */
@@ -70,8 +70,7 @@ public class AuditAssociatedItem {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof AuditAssociatedItem) {
-            final AuditAssociatedItem that = (AuditAssociatedItem) o;
+        if (o instanceof final AuditAssociatedItem that) {
             return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(parentId, that.parentId)
                     && Objects.equals(parentName, that.parentName) && Objects.equals(typeName, that.typeName);
         }

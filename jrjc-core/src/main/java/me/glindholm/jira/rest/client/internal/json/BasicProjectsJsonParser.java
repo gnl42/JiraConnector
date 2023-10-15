@@ -29,8 +29,8 @@ public class BasicProjectsJsonParser implements JsonArrayParser<List<BasicProjec
     private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
 
     @Override
-    public List<BasicProject> parse(JSONArray json) throws JSONException {
-        ArrayList<BasicProject> res = new ArrayList<>(json.length());
+    public List<BasicProject> parse(final JSONArray json) throws JSONException {
+        final ArrayList<BasicProject> res = new ArrayList<>(json.length());
         for (int i = 0; i < json.length(); i++) {
             res.add(basicProjectJsonParser.parse(json.getJSONObject(i)));
 

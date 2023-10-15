@@ -66,8 +66,7 @@ public class AuditRecordInput {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof AuditRecordInput) {
-            final AuditRecordInput that = (AuditRecordInput) o;
+        if (o instanceof final AuditRecordInput that) {
             return Objects.equals(summary, that.summary) && Objects.equals(category, that.category) && Objects.equals(objectItem, that.objectItem)
                     && Objects.equals(associatedItem, that.associatedItem) && Objects.equals(changedValues, that.changedValues);
         }

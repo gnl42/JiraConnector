@@ -35,7 +35,7 @@ public class IssueField implements Serializable, NamedEntity, IdentifiableEntity
     private final String type;
     private final Object value;
 
-    public IssueField(String id, String name, String type, Object value) {
+    public IssueField(final String id, final String name, final String type, final Object value) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -71,13 +71,9 @@ public class IssueField implements Serializable, NamedEntity, IdentifiableEntity
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof IssueField) {
-            final IssueField that = (IssueField) obj;
-            return Objects.equals(this.id, that.id)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.type, that.type)
-                    && Objects.equals(this.value, that.value);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final IssueField that) {
+            return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(type, that.type) && Objects.equals(value, that.value);
         }
         return false;
     }

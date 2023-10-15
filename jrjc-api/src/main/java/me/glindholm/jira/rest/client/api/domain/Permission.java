@@ -34,8 +34,7 @@ public class Permission implements Serializable, NamedEntity, IdentifiableEntity
     private final String description;
     private final boolean havePermission;
 
-    public Permission(final int id, final String key, final String name, @Nullable final String description,
-            final boolean havePermission) {
+    public Permission(final int id, final String key, final String name, @Nullable final String description, final boolean havePermission) {
         this.id = id;
         this.key = key;
         this.name = name;
@@ -76,13 +75,9 @@ public class Permission implements Serializable, NamedEntity, IdentifiableEntity
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof Permission) {
-            Permission that = (Permission) o;
-            return id == that.id
-                    && Objects.equals(key, that.key)
-                    && Objects.equals(name, that.name)
-                    && Objects.equals(description, that.description)
+    public boolean equals(final Object o) {
+        if (o instanceof final Permission that) {
+            return id == that.id && Objects.equals(key, that.key) && Objects.equals(name, that.name) && Objects.equals(description, that.description)
                     && havePermission == that.havePermission;
         }
         return false;
@@ -93,10 +88,5 @@ public class Permission implements Serializable, NamedEntity, IdentifiableEntity
         return Objects.hash(id, key, name, description, havePermission);
     }
 
-    public static final Function<Permission, String> TO_KEY = new Function<>() {
-        @Override
-        public String apply(final Permission input) {
-            return input.getKey();
-        }
-    };
+    public static final Function<Permission, String> TO_KEY = Permission::getKey;
 }

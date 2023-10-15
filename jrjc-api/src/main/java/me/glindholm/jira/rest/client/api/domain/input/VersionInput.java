@@ -16,11 +16,10 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import java.time.OffsetDateTime;
 
 /**
  * Input data describing details of a project version to create.
@@ -33,11 +32,11 @@ public class VersionInput {
     @Nullable
     private final String description;
     private final OffsetDateTime releaseDate;
-    private boolean isArchived;
-    private boolean isReleased;
+    private final boolean isArchived;
+    private final boolean isReleased;
 
-    public VersionInput(String projectKey, String name, @Nullable String description, @Nullable OffsetDateTime releaseDate,
-            boolean isArchived, boolean isReleased) {
+    public VersionInput(final String projectKey, final String name, @Nullable final String description, @Nullable final OffsetDateTime releaseDate,
+            final boolean isArchived, final boolean isReleased) {
         this.projectKey = projectKey;
         this.name = name;
         this.description = description;
@@ -46,8 +45,8 @@ public class VersionInput {
         this.isReleased = isReleased;
     }
 
-    public static VersionInput create(String projectKey, String name, @Nullable String description, @Nullable OffsetDateTime releaseDate,
-            boolean archived, boolean release) {
+    public static VersionInput create(final String projectKey, final String name, @Nullable final String description,
+            @Nullable final OffsetDateTime releaseDate, final boolean archived, final boolean release) {
         return new VersionInput(projectKey, name, description, releaseDate, archived, release);
     }
 
@@ -83,14 +82,10 @@ public class VersionInput {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof VersionInput) {
-            VersionInput that = (VersionInput) obj;
-            return Objects.equals(this.projectKey, that.projectKey)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.releaseDate, that.releaseDate)
-                    && Objects.equals(this.isArchived, that.isArchived)
-                    && Objects.equals(this.isReleased, that.isReleased);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final VersionInput that) {
+            return Objects.equals(projectKey, that.projectKey) && Objects.equals(name, that.name) && Objects.equals(releaseDate, that.releaseDate)
+                    && Objects.equals(isArchived, that.isArchived) && Objects.equals(isReleased, that.isReleased);
         }
         return false;
     }
@@ -99,6 +94,5 @@ public class VersionInput {
     public int hashCode() {
         return Objects.hash(name, projectKey, description, releaseDate, isArchived, isReleased);
     }
-
 
 }

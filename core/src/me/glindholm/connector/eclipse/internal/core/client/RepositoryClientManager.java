@@ -10,16 +10,6 @@
  *******************************************************************************/
 package me.glindholm.connector.eclipse.internal.core.client;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.mylyn.commons.core.StatusHandler;
-import org.eclipse.mylyn.tasks.core.IRepositoryListener;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
-import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
-
-import me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,160 +23,172 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.tasks.core.IRepositoryListener;
+import org.eclipse.mylyn.tasks.core.TaskRepository;
+import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
+
+import me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin;
+
 /**
  * @author Steffen Pingel
  * @since 3.1
  */
 public abstract class RepositoryClientManager<T, C extends Serializable> implements IRepositoryListener {
 
-	private final Map<String, T> clientByUrl = new HashMap<String, T>();
+    private final Map<String, T> clientByUrl = new HashMap<>();
 
-	private final Map<String, C> clientDataByUrl = new HashMap<String, C>();
+    private final Map<String, C> clientDataByUrl = new HashMap<>();
 
-	private final File cacheFile;
+    private final File cacheFile;
 
-	private TaskRepositoryLocationFactory taskRepositoryLocationFactory;
+    private TaskRepositoryLocationFactory taskRepositoryLocationFactory;
 
-	public RepositoryClientManager(File cacheFile) {
-		Assert.isNotNull(cacheFile);
-		this.cacheFile = cacheFile;
-		readCache();
-	}
+    public RepositoryClientManager(final File cacheFile) {
+        Assert.isNotNull(cacheFile);
+        this.cacheFile = cacheFile;
+        readCache();
+    }
 
-	public synchronized T getClient(TaskRepository taskRepository) {
-		Assert.isNotNull(taskRepository);
-		T client = clientByUrl.get(taskRepository.getRepositoryUrl());
-		if (client == null) {
-			C data = getClientDataByUrl().get(taskRepository.getRepositoryUrl());
-			if (data == null) {
-				data = createRepositoryConfiguration();
-				getClientDataByUrl().put(taskRepository.getRepositoryUrl(), data);
-			}
+    public synchronized T getClient(final TaskRepository taskRepository) {
+        Assert.isNotNull(taskRepository);
+        T client = clientByUrl.get(taskRepository.getRepositoryUrl());
+        if (client == null) {
+            C data = getClientDataByUrl().get(taskRepository.getRepositoryUrl());
+            if (data == null) {
+                data = createRepositoryConfiguration();
+                getClientDataByUrl().put(taskRepository.getRepositoryUrl(), data);
+            }
 
-			client = createClient(taskRepository, data);
-			clientByUrl.put(taskRepository.getRepositoryUrl(), client);
-		}
-		return client;
-	}
+            client = createClient(taskRepository, data);
+            clientByUrl.put(taskRepository.getRepositoryUrl(), client);
+        }
+        return client;
+    }
 
-	protected abstract C createRepositoryConfiguration();
+    protected abstract C createRepositoryConfiguration();
 
-	protected abstract T createClient(TaskRepository taskRepository, C data);
+    protected abstract T createClient(TaskRepository taskRepository, C data);
 
-	public void repositoriesRead() {
-		// ignore
-	}
+    public void repositoriesRead() {
+        // ignore
+    }
 
-	public synchronized void repositoryAdded(TaskRepository repository) {
-	}
+    @Override
+    public synchronized void repositoryAdded(final TaskRepository repository) {
+    }
 
-	protected void removeClient(TaskRepository repository, Map<String, T> clientByUrl, Map<String, C> clientDataByUrl) {
-		clientByUrl.remove(repository.getRepositoryUrl());
-	}
+    protected void removeClient(final TaskRepository repository, final Map<String, T> clientByUrl, final Map<String, C> clientDataByUrl) {
+        clientByUrl.remove(repository.getRepositoryUrl());
+    }
 
-	public void removeClient(TaskRepository repository) {
-		clientByUrl.remove(repository.getRepositoryUrl());
-	}
+    public void removeClient(final TaskRepository repository) {
+        clientByUrl.remove(repository.getRepositoryUrl());
+    }
 
-	public synchronized void repositoryRemoved(TaskRepository repository) {
-		removeClient(repository, clientByUrl, getClientDataByUrl());
-		getClientDataByUrl().remove(repository.getRepositoryUrl());
-	}
+    @Override
+    public synchronized void repositoryRemoved(final TaskRepository repository) {
+        removeClient(repository, clientByUrl, getClientDataByUrl());
+        getClientDataByUrl().remove(repository.getRepositoryUrl());
+    }
 
-	public synchronized void repositorySettingsChanged(TaskRepository repository) {
-		removeClient(repository, clientByUrl, getClientDataByUrl());
-	}
+    @Override
+    public synchronized void repositorySettingsChanged(final TaskRepository repository) {
+        removeClient(repository, clientByUrl, getClientDataByUrl());
+    }
 
-	protected ObjectInput createObjectInput(File cacheFile) throws FileNotFoundException, IOException {
-		return new ObjectInputStream(new FileInputStream(cacheFile));
-	}
+    protected ObjectInput createObjectInput(final File cacheFile) throws FileNotFoundException, IOException {
+        return new ObjectInputStream(new FileInputStream(cacheFile));
+    }
 
-	protected ObjectOutput createObjectOutput(File cacheFile) throws IOException {
-		return new ObjectOutputStream(new FileOutputStream(cacheFile));
-	}
+    protected ObjectOutput createObjectOutput(final File cacheFile) throws IOException {
+        return new ObjectOutputStream(new FileOutputStream(cacheFile));
+    }
 
-	@SuppressWarnings("unchecked")
-	protected void readCache() {
-		if (getCacheFile() == null || !getCacheFile().exists()) {
-			return;
-		}
+    @SuppressWarnings("unchecked")
+    protected void readCache() {
+        if (getCacheFile() == null || !getCacheFile().exists()) {
+            return;
+        }
 
-		ObjectInput in = null;
-		try {
-			in = createObjectInput(getCacheFile());
-			int size = in.readInt();
-			for (int i = 0; i < size; i++) {
-				String url = (String) in.readObject();
-				C data = (C) in.readObject();
-				if (url != null && data != null) {
-					getClientDataByUrl().put(url, data);
-				}
-			}
-		} catch (Throwable e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraConnectorCorePlugin.PLUGIN_ID,
-					"The repository configuration cache could not be read", e));
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
-	}
+        ObjectInput in = null;
+        try {
+            in = createObjectInput(getCacheFile());
+            final int size = in.readInt();
+            for (int i = 0; i < size; i++) {
+                final String url = (String) in.readObject();
+                final C data = (C) in.readObject();
+                if (url != null && data != null) {
+                    getClientDataByUrl().put(url, data);
+                }
+            }
+        } catch (final Throwable e) {
+            StatusHandler.log(new Status(IStatus.WARNING, JiraConnectorCorePlugin.PLUGIN_ID, "The repository configuration cache could not be read", e));
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (final IOException e) {
+                    // ignore
+                }
+            }
+        }
+    }
 
-	public void writeCache() {
-		updateClientDataMap(clientByUrl, getClientDataByUrl());
-		if (getCacheFile() == null) {
-			return;
-		}
+    public void writeCache() {
+        updateClientDataMap(clientByUrl, getClientDataByUrl());
+        if (getCacheFile() == null) {
+            return;
+        }
 
-		ObjectOutput out = null;
-		try {
-			out = createObjectOutput(getCacheFile());
-			out.writeInt(getClientDataByUrl().size());
-			for (String url : getClientDataByUrl().keySet()) {
-				out.writeObject(url);
-				out.writeObject(getClientDataByUrl().get(url));
-			}
-		} catch (IOException e) {
-			StatusHandler.log(new Status(IStatus.WARNING, JiraConnectorCorePlugin.PLUGIN_ID,
-					"The repository configuration cache could not be written", e));
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
-	}
+        ObjectOutput out = null;
+        try {
+            out = createObjectOutput(getCacheFile());
+            out.writeInt(getClientDataByUrl().size());
+            for (final String url : getClientDataByUrl().keySet()) {
+                out.writeObject(url);
+                out.writeObject(getClientDataByUrl().get(url));
+            }
+        } catch (final IOException e) {
+            StatusHandler.log(new Status(IStatus.WARNING, JiraConnectorCorePlugin.PLUGIN_ID, "The repository configuration cache could not be written", e));
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (final IOException e) {
+                    // ignore
+                }
+            }
+        }
+    }
 
-	/*
-	 * temporary fix for the broken/not-working serialization mechanism 
-	 */
-	protected abstract void updateClientDataMap(Map<String, T> clientByUrl, Map<String, C> clientDataByUrl);
+    /*
+     * temporary fix for the broken/not-working serialization mechanism
+     */
+    protected abstract void updateClientDataMap(Map<String, T> clientByUrl, Map<String, C> clientDataByUrl);
 
-	public TaskRepositoryLocationFactory getTaskRepositoryLocationFactory() {
-		return taskRepositoryLocationFactory;
-	}
+    public TaskRepositoryLocationFactory getTaskRepositoryLocationFactory() {
+        return taskRepositoryLocationFactory;
+    }
 
-	public void setTaskRepositoryLocationFactory(TaskRepositoryLocationFactory taskRepositoryLocationFactory) {
-		this.taskRepositoryLocationFactory = taskRepositoryLocationFactory;
-	}
+    public void setTaskRepositoryLocationFactory(final TaskRepositoryLocationFactory taskRepositoryLocationFactory) {
+        this.taskRepositoryLocationFactory = taskRepositoryLocationFactory;
+    }
 
-	public void repositoryUrlChanged(TaskRepository repository, String oldUrl) {
-		// ignore
-	}
+    @Override
+    public void repositoryUrlChanged(final TaskRepository repository, final String oldUrl) {
+        // ignore
+    }
 
-	protected File getCacheFile() {
-		return cacheFile;
-	}
+    protected File getCacheFile() {
+        return cacheFile;
+    }
 
-	protected Map<String, C> getClientDataByUrl() {
-		return clientDataByUrl;
-	}
+    protected Map<String, C> getClientDataByUrl() {
+        return clientDataByUrl;
+    }
 
 }

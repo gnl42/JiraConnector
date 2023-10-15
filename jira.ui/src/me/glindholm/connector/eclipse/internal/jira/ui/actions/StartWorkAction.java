@@ -77,15 +77,11 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
             final IEditorInput editorInput = taskEditor.getEditorInput();
 
-            if (editorInput instanceof TaskEditorInput) {
-                final TaskEditorInput taskEditorInput = (TaskEditorInput) editorInput;
-
+            if (editorInput instanceof final TaskEditorInput taskEditorInput) {
                 if (taskEditorInput.getTask().equals(task)) {
 
                     final IFormPage formPage = taskEditor.getActivePageInstance();
-                    if (formPage instanceof JiraTaskEditorPage) {
-                        final JiraTaskEditorPage jiraFormPage = (JiraTaskEditorPage) formPage;
-
+                    if (formPage instanceof final JiraTaskEditorPage jiraFormPage) {
                         startWork(jiraFormPage);
 
                         return;
@@ -128,15 +124,13 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
     private static void synchronizeTask(final ITask task, final IProgressMonitor monitor) {
 
-        final SynchronizeTasksJob job = (SynchronizeTasksJob) TasksUiPlugin.getTaskJobFactory().createSynchronizeTasksJob(
-                getConnector(task), asSet(task));
+        final SynchronizeTasksJob job = (SynchronizeTasksJob) TasksUiPlugin.getTaskJobFactory().createSynchronizeTasksJob(getConnector(task), asSet(task));
 
         job.addJobChangeListener(new JobChangeAdapter() {
             @Override
             public void done(final IJobChangeEvent event) {
                 if (task instanceof AbstractTask && ((AbstractTask) task).getStatus() != null) {
-                    TasksUiInternal.asyncDisplayStatus(
-                            org.eclipse.mylyn.internal.tasks.ui.util.Messages.TasksUiInternal_Task_Synchronization_Failed,
+                    TasksUiInternal.asyncDisplayStatus(org.eclipse.mylyn.internal.tasks.ui.util.Messages.TasksUiInternal_Task_Synchronization_Failed,
                             ((AbstractTask) task).getStatus());
                 }
             }
@@ -159,13 +153,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
         job.addJobChangeListener(new JobChangeAdapter() {
             @Override
             public void done(final IJobChangeEvent event) {
-                PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        jiraFormPage.refresh();
-                        //						jiraFormPage.showEditorBusy(false);
-                    }
-                });
+                PlatformUI.getWorkbench().getDisplay().asyncExec(() -> jiraFormPage.refresh());
             }
         });
 
@@ -187,9 +175,8 @@ public class StartWorkAction extends AbstractStartWorkAction {
     }
 
     private static String showSelectActionDialog(final TaskData taskData, final ITask iTask, final boolean start) {
-        final SelectWorkflowActionDialog dialog = new SelectWorkflowActionDialog(PlatformUI.getWorkbench()
-                .getDisplay()
-                .getActiveShell(), taskData, iTask, start);
+        final SelectWorkflowActionDialog dialog = new SelectWorkflowActionDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), taskData, iTask,
+                start);
 
         final int result = dialog.open();
 
@@ -200,21 +187,17 @@ public class StartWorkAction extends AbstractStartWorkAction {
         }
     }
 
-    private static boolean smartAdvanceAction(final boolean start, final JiraClient client, final JiraIssue issue,
-            final TaskData taskData, final ITask task, final IProgressMonitor monitor) throws JiraException {
+    private static boolean smartAdvanceAction(final boolean start, final JiraClient client, final JiraIssue issue, final TaskData taskData, final ITask task,
+            final IProgressMonitor monitor) throws JiraException {
 
         final boolean[] doAdvanceAction = new boolean[1];
         doAdvanceAction[0] = false;
         final String[] selectedAction = new String[1];
-        selectedAction[0] = start ? JiraTaskDataHandler.START_PROGRESS_OPERATION
-                : JiraTaskDataHandler.STOP_PROGRESS_OPERATION;
+        selectedAction[0] = start ? JiraTaskDataHandler.START_PROGRESS_OPERATION : JiraTaskDataHandler.STOP_PROGRESS_OPERATION;
         if (start && !haveStartProgressOperation(taskData) || !start && !haveStopProgressOperation(taskData)) {
-            PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-                @Override
-                public void run() {
-                    selectedAction[0] = showSelectActionDialog(taskData, task, start);
-                    doAdvanceAction[0] = selectedAction[0] != null;
-                }
+            PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
+                selectedAction[0] = showSelectActionDialog(taskData, task, start);
+                doAdvanceAction[0] = selectedAction[0] != null;
             });
         } else {
             doAdvanceAction[0] = true;
@@ -263,12 +246,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
                     }
                     if (shouldActivate) {
                         // activate task
-                        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                            @Override
-                            public void run() {
-                                TasksUi.getTaskActivityManager().activateTask(task);
-                            }
-                        });
+                        PlatformUI.getWorkbench().getDisplay().asyncExec(() -> TasksUi.getTaskActivityManager().activateTask(task));
                     }
                 }
 
@@ -304,12 +282,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
                     synchronizeTask(task, monitor);
 
                     // deactivate task
-                    PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            TasksUi.getTaskActivityManager().deactivateTask(task);
-                        }
-                    });
+                    PlatformUI.getWorkbench().getDisplay().asyncExec(() -> TasksUi.getTaskActivityManager().deactivateTask(task));
 
                 } catch (final CoreException e) {
                     handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
@@ -330,9 +303,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
         task = null;
 
-        if (selection instanceof IStructuredSelection) {
-
-            final IStructuredSelection ss = (IStructuredSelection) selection;
+        if (selection instanceof final IStructuredSelection ss) {
 
             if (!ss.isEmpty()) {
 
@@ -368,8 +339,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
     }
 
     private static String getCurrentUser(final ITask task) {
-        final TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
-                task.getRepositoryUrl());
+        final TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(), task.getRepositoryUrl());
 
         return repository.getUserName();
     }

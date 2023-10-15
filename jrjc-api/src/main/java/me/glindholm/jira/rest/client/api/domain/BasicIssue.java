@@ -36,7 +36,7 @@ public class BasicIssue implements Serializable, AddressableEntity, Identifiable
     private final String key;
     private final Long id;
 
-    public BasicIssue(URI self, String key, Long id) {
+    public BasicIssue(final URI self, final String key, final Long id) {
         this.self = self;
         this.key = key;
         this.id = id;
@@ -75,12 +75,9 @@ public class BasicIssue implements Serializable, AddressableEntity, Identifiable
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof BasicIssue) {
-            BasicIssue that = (BasicIssue) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.key, that.key)
-                    && Objects.equals(this.id, that.id);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final BasicIssue that) {
+            return Objects.equals(self, that.self) && Objects.equals(key, that.key) && Objects.equals(id, that.id);
         }
         return false;
     }

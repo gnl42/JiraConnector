@@ -27,9 +27,9 @@ import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.Worklog;
 
 /**
- * Builder class for WorklogInput. Allows to create new worklogInput instance by
- * using convenient setters. Especially useful are methods to set estimate
- * adjustment options: {@link WorklogInputBuilder#setAdjustEstimateAuto()},
+ * Builder class for WorklogInput. Allows to create new worklogInput instance by using convenient
+ * setters. Especially useful are methods to set estimate adjustment options:
+ * {@link WorklogInputBuilder#setAdjustEstimateAuto()},
  * {@link WorklogInputBuilder#setAdjustEstimateLeave()},
  * {@link WorklogInputBuilder#setAdjustEstimateManual(String)} and
  * {@link WorklogInputBuilder#setAdjustEstimateNew(String)}.
@@ -73,9 +73,8 @@ public class WorklogInputBuilder {
      * Sets AdjustEstimate to NEW - sets estimate to specified value.
      *
      * @param newEstimate new estimate value to set.<br>
-     *                    You can specify a time unit after a time value 'X', such
-     *                    as Xw, Xd, Xh or Xm, to represent weeks (w), days (d),
-     *                    hours (h) and minutes (m), respectively.<br>
+     *                    You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or Xm,
+     *                    to represent weeks (w), days (d), hours (h) and minutes (m), respectively.<br>
      *                    If you do not specify a time unit, minute will be assumed.
      * @return this worklog input builder object
      */
@@ -106,12 +105,10 @@ public class WorklogInputBuilder {
      * Sets AdjustEstimate to MANUAL - reduces remaining estimate by given value.
      *
      * @param reduceEstimateBy the amount to reduce the remaining estimate by<br>
-     *                         You can specify a time unit after a time value 'X',
-     *                         such as Xw, Xd, Xh or Xm, to represent weeks (w),
-     *                         days (d), hours (h) and minutes (m),
+     *                         You can specify a time unit after a time value 'X', such as Xw, Xd, Xh or
+     *                         Xm, to represent weeks (w), days (d), hours (h) and minutes (m),
      *                         respectively.<br>
-     *                         If you do not specify a time unit, minute will be
-     *                         assumed.
+     *                         If you do not specify a time unit, minute will be assumed.
      * @return this worklog input builder object
      */
     public WorklogInputBuilder setAdjustEstimateManual(final String reduceEstimateBy) {
@@ -121,8 +118,7 @@ public class WorklogInputBuilder {
     /**
      * Sets AdjustEstimate to MANUAL - reduces remaining estimate by given value.
      *
-     * @param reduceEstimateByMinutes the amount to reduce the remaining estimate
-     *                                by, in minutes.
+     * @param reduceEstimateByMinutes the amount to reduce the remaining estimate by, in minutes.
      * @return this worklog input builder object
      */
     public WorklogInputBuilder setAdjustEstimateManual(final int reduceEstimateByMinutes) {
@@ -130,8 +126,8 @@ public class WorklogInputBuilder {
     }
 
     /**
-     * Sets AdjustEstimate to AUTO - will automatically adjust the value based on
-     * the minutes spend specified on the worklog input.
+     * Sets AdjustEstimate to AUTO - will automatically adjust the value based on the minutes spend
+     * specified on the worklog input.
      * <p>
      * This is the default option.
      *

@@ -21,17 +21,17 @@ package me.glindholm.theplugin.commons.remoteapi;
  */
 public class RemoteApiLoginException extends RemoteApiException {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -8934096881165492444L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -8934096881165492444L;
 
-	public RemoteApiLoginException(String message) {
-		super(message);
-	}
+    public RemoteApiLoginException(final String message) {
+        super(message);
+    }
 
-	public RemoteApiLoginException(String message, Throwable throwable) {
-		super(message, throwable);
-	}
+    public RemoteApiLoginException(final String message, final Throwable throwable) {
+        super(message, throwable);
+    }
 
 }

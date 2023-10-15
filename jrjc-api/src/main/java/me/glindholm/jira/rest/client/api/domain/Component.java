@@ -16,7 +16,6 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-
 import java.net.URI;
 import java.util.Objects;
 
@@ -35,13 +34,13 @@ public class Component extends BasicComponent {
     @Nullable
     private AssigneeInfo assigneeInfo;
 
-
-    public Component(URI self, @Nullable Long id, String name, String description, BasicUser lead) {
+    public Component(final URI self, @Nullable final Long id, final String name, final String description, final BasicUser lead) {
         super(self, id, name, description);
         this.lead = lead;
     }
 
-    public Component(URI self, @Nullable Long id, String name, String description, BasicUser lead, @Nullable AssigneeInfo assigneeInfo) {
+    public Component(final URI self, @Nullable final Long id, final String name, final String description, final BasicUser lead,
+            @Nullable final AssigneeInfo assigneeInfo) {
         this(self, id, name, description, lead);
         this.assigneeInfo = assigneeInfo;
     }
@@ -51,8 +50,8 @@ public class Component extends BasicComponent {
     }
 
     /**
-     * @return detailed info about auto-assignee for this project component or <code>null</code> if such information is
-     * not available (JIRA prior 4.4)
+     * @return detailed info about auto-assignee for this project component or <code>null</code> if such
+     *         information is not available (JIRA prior 4.4)
      * @since me.glindholm.jira.rest.client.api 0.3, server 4.4
      */
     @Nullable
@@ -65,13 +64,10 @@ public class Component extends BasicComponent {
         return "Component [lead=" + lead + ", assigneeInfo=" + assigneeInfo + ", " + super.toString() + "]";
     }
 
-
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Component) {
-            Component that = (Component) obj;
-            return super.equals(obj) && Objects.equals(this.lead, that.lead)
-                    && Objects.equals(this.assigneeInfo, that.assigneeInfo);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Component that) {
+            return super.equals(obj) && Objects.equals(lead, that.lead) && Objects.equals(assigneeInfo, that.assigneeInfo);
         }
         return false;
     }
@@ -90,7 +86,8 @@ public class Component extends BasicComponent {
         private final AssigneeType realAssigneeType;
         private final boolean isAssigneeTypeValid;
 
-        public AssigneeInfo(BasicUser assignee, AssigneeType assigneeType, @Nullable BasicUser realAssignee, AssigneeType realAssigneeType, boolean assigneeTypeValid) {
+        public AssigneeInfo(final BasicUser assignee, final AssigneeType assigneeType, @Nullable final BasicUser realAssignee,
+                final AssigneeType realAssigneeType, final boolean assigneeTypeValid) {
             this.assignee = assignee;
             this.assigneeType = assigneeType;
             this.realAssignee = realAssignee;
@@ -126,24 +123,19 @@ public class Component extends BasicComponent {
                     + realAssigneeType + ", isAssigneeTypeValid=" + isAssigneeTypeValid + "]";
         }
 
-
         @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof AssigneeInfo) {
-                AssigneeInfo that = (AssigneeInfo) obj;
-                return Objects.equals(this.assignee, that.assignee)
-                        && Objects.equals(this.assigneeType, that.assigneeType)
-                        && Objects.equals(this.realAssignee, that.realAssignee)
-                        && Objects.equals(this.realAssigneeType, that.realAssigneeType)
-                        && Objects.equals(this.isAssigneeTypeValid, that.isAssigneeTypeValid);
+        public boolean equals(final Object obj) {
+            if (obj instanceof final AssigneeInfo that) {
+                return Objects.equals(assignee, that.assignee) && Objects.equals(assigneeType, that.assigneeType)
+                        && Objects.equals(realAssignee, that.realAssignee) && Objects.equals(realAssigneeType, that.realAssigneeType)
+                        && Objects.equals(isAssigneeTypeValid, that.isAssigneeTypeValid);
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(super
-                    .hashCode(), assignee, assigneeType, realAssignee, realAssigneeType, isAssigneeTypeValid);
+            return Objects.hash(super.hashCode(), assignee, assigneeType, realAssignee, realAssigneeType, isAssigneeTypeValid);
         }
 
     }

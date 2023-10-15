@@ -27,7 +27,7 @@ public class AttachmentInput {
     private final InputStream in;
     private final String filename;
 
-    public AttachmentInput(String filename, InputStream in) {
+    public AttachmentInput(final String filename, final InputStream in) {
         this.filename = filename;
         this.in = in;
     }

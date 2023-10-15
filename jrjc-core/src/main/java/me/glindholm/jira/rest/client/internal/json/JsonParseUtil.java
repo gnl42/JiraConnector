@@ -220,8 +220,7 @@ public class JsonParseUtil {
     }
 
     /**
-     * Tries to parse date and time and return that. If fails then tries to parse
-     * date only.
+     * Tries to parse date and time and return that. If fails then tries to parse date only.
      *
      * @param str String contains either date and time or date only
      * @return date and time or date only
@@ -321,10 +320,9 @@ public class JsonParseUtil {
         final Iterator iterator = jsonObject.keys();
         while (iterator.hasNext()) {
             final Object o = iterator.next();
-            if (!(o instanceof String)) {
+            if (!(o instanceof final String key)) {
                 throw new JSONException("Cannot parse URIs: key is expected to be valid String. Got " + (o == null ? "null" : o.getClass()) + " instead.");
             }
-            final String key = (String) o;
             uris.put(key, JsonParseUtil.parseURI(jsonObject.getString(key)));
         }
         return uris;

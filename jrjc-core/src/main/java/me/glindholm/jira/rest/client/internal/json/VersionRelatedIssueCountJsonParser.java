@@ -16,16 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.VersionRelatedIssuesCount;
 
-import java.net.URI;
-
 public class VersionRelatedIssueCountJsonParser implements JsonObjectParser<VersionRelatedIssuesCount> {
     @Override
-    public VersionRelatedIssuesCount parse(JSONObject json) throws JSONException {
+    public VersionRelatedIssuesCount parse(final JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final int issuesFixedCount = json.getInt("issuesFixedCount");
         final int issuesAffectedCount = json.getInt("issuesAffectedCount");

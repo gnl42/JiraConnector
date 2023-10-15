@@ -17,33 +17,32 @@
 package me.glindholm.theplugin.commons;
 
 /**
- * Created by IntelliJ IDEA.
- * User: lguminski
- * Date: Jul 15, 2008
- * Time: 5:36:27 AM
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: lguminski Date: Jul 15, 2008 Time: 5:36:27 AM To change this
+ * template use File | Settings | File Templates.
  */
 public class VirtualFileSystem {
-	private static final int HASH_INT = 31;
+    private static final int HASH_INT = 31;
 
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
 
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
 //		VirtualFileSystem that = (VirtualFileSystem) o;
 
-		return true;
+        return true;
 
-	}
+    }
 
-	public int hashCode() {
-		int result = super.hashCode();
-		result = HASH_INT * result;
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = HASH_INT * result;
+        return result;
+    }
 }

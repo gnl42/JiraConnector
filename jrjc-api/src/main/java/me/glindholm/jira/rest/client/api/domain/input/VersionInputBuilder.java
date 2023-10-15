@@ -28,41 +28,40 @@ public class VersionInputBuilder {
     private boolean archived;
     private boolean released;
 
-    public VersionInputBuilder(String projectKey) {
+    public VersionInputBuilder(final String projectKey) {
         this.projectKey = projectKey;
     }
 
-    public VersionInputBuilder(String projectKey, Version version) {
+    public VersionInputBuilder(final String projectKey, final Version version) {
         this(projectKey);
-        this.name = version.getName();
-        this.description = version.getDescription();
-        this.archived = version.isArchived();
-        this.released = version.isReleased();
-        this.releaseDate = version.getReleaseDate();
+        name = version.getName();
+        description = version.getDescription();
+        archived = version.isArchived();
+        released = version.isReleased();
+        releaseDate = version.getReleaseDate();
     }
 
-
-    public VersionInputBuilder setName(String name) {
+    public VersionInputBuilder setName(final String name) {
         this.name = name;
         return this;
     }
 
-    public VersionInputBuilder setDescription(String description) {
+    public VersionInputBuilder setDescription(final String description) {
         this.description = description;
         return this;
     }
 
-    public VersionInputBuilder setReleaseDate(OffsetDateTime releaseDate) {
+    public VersionInputBuilder setReleaseDate(final OffsetDateTime releaseDate) {
         this.releaseDate = releaseDate;
         return this;
     }
 
-    public VersionInputBuilder setArchived(boolean archived) {
+    public VersionInputBuilder setArchived(final boolean archived) {
         this.archived = archived;
         return this;
     }
 
-    public VersionInputBuilder setReleased(boolean released) {
+    public VersionInputBuilder setReleased(final boolean released) {
         this.released = released;
         return this;
     }

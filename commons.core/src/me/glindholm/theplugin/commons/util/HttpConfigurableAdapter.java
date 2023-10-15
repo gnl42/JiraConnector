@@ -18,13 +18,20 @@ package me.glindholm.theplugin.commons.util;
 
 public interface HttpConfigurableAdapter {
 
-	boolean isKeepProxyPassowrd();
-	boolean isProxyAuthentication();
-	boolean isUseHttpProxy();
-	String getPlainProxyPassword();
-	String getProxyLogin();
-	int	getProxyPort();
-	String getProxyHost();
-	Object getHTTPProxySettingsDialog();
+    boolean isKeepProxyPassowrd();
+
+    boolean isProxyAuthentication();
+
+    boolean isUseHttpProxy();
+
+    String getPlainProxyPassword();
+
+    String getProxyLogin();
+
+    int getProxyPort();
+
+    String getProxyHost();
+
+    Object getHTTPProxySettingsDialog();
 
 }

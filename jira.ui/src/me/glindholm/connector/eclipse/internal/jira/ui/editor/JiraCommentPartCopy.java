@@ -18,8 +18,6 @@ import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
@@ -47,8 +45,6 @@ import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -123,12 +119,9 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
                             return new Point(wHint == SWT.DEFAULT ? 1 : wHint, 1);
                         }
                     };
-                    separator.addPaintListener(new PaintListener() {
-                        @Override
-                        public void paintControl(final PaintEvent e) {
-                            e.gc.setForeground(separator.getForeground());
-                            e.gc.drawLine(0, 0, separator.getSize().x, 0);
-                        }
+                    separator.addPaintListener(e -> {
+                        e.gc.setForeground(separator.getForeground());
+                        e.gc.drawLine(0, 0, separator.getSize().x, 0);
                     });
                     separator.setForeground(toolkit.getColors().getColor(IFormColors.TB_BORDER));
                     GridDataFactory.fillDefaults().grab(true, false).indent(2 * INDENT, 0).applyTo(separator);
@@ -139,9 +132,9 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
         private Section createSection(final Composite parent, final FormToolkit toolkit) {
             final int style = ExpandableComposite.TWISTIE | ExpandableComposite.SHORT_TITLE_BAR;
-            //			if (/*commentGroup.hasIncoming() || */expandAllInProgress) {
-            //				style |= ExpandableComposite.EXPANDED;
-            //			}
+            // if (/*commentGroup.hasIncoming() || */expandAllInProgress) {
+            // style |= ExpandableComposite.EXPANDED;
+            // }
 
             groupSection = toolkit.createSection(parent, style);
             groupSection.clientVerticalSpacing = 0;
@@ -149,8 +142,8 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
                 groupSection.setBackground(getTaskEditorPage().getAttributeEditorToolkit().getColorIncoming());
             }
             groupSection.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-            groupSection.setText(commentGroup.getGroupName() + Messages.TaskEditorCommentPart_0
-                    + commentGroup.getCommentAttributes().size() + Messages.TaskEditorCommentPart_1);
+            groupSection.setText(commentGroup.getGroupName() + Messages.TaskEditorCommentPart_0 + commentGroup.getCommentAttributes().size()
+                    + Messages.TaskEditorCommentPart_1);
 
             if (groupSection.isExpanded()) {
                 final Composite composite = createCommentViewers(groupSection, toolkit);
@@ -165,8 +158,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
                             } else {
                                 // only decorate background with incoming color when collapsed, otherwise
                                 // there is too much decoration in the editor
-                                groupSection.setBackground(getTaskEditorPage().getAttributeEditorToolkit()
-                                        .getColorIncoming());
+                                groupSection.setBackground(getTaskEditorPage().getAttributeEditorToolkit().getColorIncoming());
                             }
                         }
                         if (groupSection.getClient() == null) {
@@ -255,45 +247,45 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
             this.renderedInSubSection = renderedInSubSection;
         }
 
-        //		private void createToolBar(final FormToolkit toolkit) {
-        //		if (section == null) {
-        //			return;
-        //		}
+        // private void createToolBar(final FormToolkit toolkit) {
+        // if (section == null) {
+        // return;
+        // }
         //
-        //		ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
+        // ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         //
-        //		Action collapseAllAction = new Action("") {
-        //			@Override
-        //			public void run() {
-        //				toggleSection(section, false);
-        //			}
-        //		};
-        //		collapseAllAction.setImageDescriptor(CommonImages.COLLAPSE_ALL_SMALL);
-        //		collapseAllAction.setToolTipText("Collapse All Current Comments");
-        //		toolBarManager.add(collapseAllAction);
+        // Action collapseAllAction = new Action("") {
+        // @Override
+        // public void run() {
+        // toggleSection(section, false);
+        // }
+        // };
+        // collapseAllAction.setImageDescriptor(CommonImages.COLLAPSE_ALL_SMALL);
+        // collapseAllAction.setToolTipText("Collapse All Current Comments");
+        // toolBarManager.add(collapseAllAction);
         //
-        //		Action expandAllAction = new Action("") {
-        //			@Override
-        //			public void run() {
-        //				toggleSection(section, true);
-        //			}
-        //		};
-        //		expandAllAction.setImageDescriptor(CommonImages.EXPAND_ALL_SMALL);
-        //		expandAllAction.setToolTipText("Expand All Current Comments");
-        //		toolBarManager.add(expandAllAction);
+        // Action expandAllAction = new Action("") {
+        // @Override
+        // public void run() {
+        // toggleSection(section, true);
+        // }
+        // };
+        // expandAllAction.setImageDescriptor(CommonImages.EXPAND_ALL_SMALL);
+        // expandAllAction.setToolTipText("Expand All Current Comments");
+        // toolBarManager.add(expandAllAction);
         //
-        //		Composite toolbarComposite = toolkit.createComposite(section);
-        //		toolbarComposite.setBackground(null);
-        //		RowLayout rowLayout = new RowLayout();
-        //		rowLayout.marginTop = 0;
-        //		rowLayout.marginBottom = 0;
-        //		rowLayout.marginLeft = 0;
-        //		rowLayout.marginRight = 0;
-        //		toolbarComposite.setLayout(rowLayout);
+        // Composite toolbarComposite = toolkit.createComposite(section);
+        // toolbarComposite.setBackground(null);
+        // RowLayout rowLayout = new RowLayout();
+        // rowLayout.marginTop = 0;
+        // rowLayout.marginBottom = 0;
+        // rowLayout.marginLeft = 0;
+        // rowLayout.marginRight = 0;
+        // toolbarComposite.setLayout(rowLayout);
         //
-        //		toolBarManager.createControl(toolbarComposite);
-        //		section.setTextClient(toolbarComposite);
-        //	}
+        // toolBarManager.createControl(toolbarComposite);
+        // section.setTextClient(toolbarComposite);
+        // }
 
     }
 
@@ -317,8 +309,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
         public Control createControl(final Composite composite, final FormToolkit toolkit) {
             final boolean hasIncomingChanges = getModel().hasIncomingChanges(getCommentAttribute());
             getTaskData().getAttributeMapper().updateTaskComment(taskComment, getCommentAttribute());
-            int style = ExpandableComposite.TREE_NODE | ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT
-                    | ExpandableComposite.COMPACT;
+            int style = ExpandableComposite.TREE_NODE | ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT | ExpandableComposite.COMPACT;
             if (hasIncomingChanges || expandAllInProgress) {
                 style |= ExpandableComposite.EXPANDED;
             }
@@ -332,8 +323,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
             final Composite commentTextComposite = toolkit.createComposite(commentComposite);
             commentComposite.setClient(commentTextComposite);
-            commentTextComposite.setLayout(new FillWidthLayout(EditorUtil.getLayoutAdvisor(getTaskEditorPage()), 15, 0,
-                    0, 3));
+            commentTextComposite.setLayout(new FillWidthLayout(EditorUtil.getLayoutAdvisor(getTaskEditorPage()), 15, 0, 0, 3));
             commentComposite.addExpansionListener(new ExpansionAdapter() {
                 @Override
                 public void expansionStateChanged(final ExpansionEvent event) {
@@ -395,8 +385,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
         }
 
         private void createCommentTitleExtention(final FormToolkit toolkit, final Composite titleComposite) {
-            final TaskAttribute visibleTo = taskComment.getTaskAttribute()
-                    .getAttribute(JiraConstants.COMMENT_SECURITY_LEVEL);
+            final TaskAttribute visibleTo = taskComment.getTaskAttribute().getAttribute(JiraConstants.COMMENT_SECURITY_LEVEL);
 
             if (visibleTo != null && visibleTo.getValue() != null) {
                 final Label l = toolkit.createLabel(titleComposite, Messages.JiraCommetVisible);
@@ -406,19 +395,18 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
                 final Label ll = toolkit.createLabel(titleComposite, visibleTo.getValue());
                 ll.setToolTipText(Messages.JiraCommetVisibleTooltip);
-                //				ll.setForeground(toolkit.getColors().createColor("me.glindholm.connector.jira.black", 0, 0, 0)); //$NON-NLS-1$
+                // ll.setForeground(toolkit.getColors().createColor("me.glindholm.connector.jira.black", 0, 0, 0));
+                // //$NON-NLS-1$
                 ll.setBackground(null);
             }
         }
 
-        private ImageHyperlink createTitleHyperLink(final FormToolkit toolkit, final Composite toolbarComp,
-                final ITaskComment taskComment) {
+        private ImageHyperlink createTitleHyperLink(final FormToolkit toolkit, final Composite toolbarComp, final ITaskComment taskComment) {
             final ImageHyperlink formHyperlink = toolkit.createImageHyperlink(toolbarComp, SWT.NONE);
             formHyperlink.setBackground(null);
             formHyperlink.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
             final IRepositoryPerson author = taskComment.getAuthor();
-            if (author != null
-                    && author.getPersonId().equalsIgnoreCase(getTaskEditorPage().getTaskRepository().getUserName())) {
+            if (author != null && author.getPersonId().equalsIgnoreCase(getTaskEditorPage().getTaskRepository().getUserName())) {
                 formHyperlink.setImage(CommonImages.getImage(CommonImages.PERSON_ME_NARROW));
             } else {
                 formHyperlink.setImage(CommonImages.getImage(CommonImages.PERSON_NARROW));
@@ -438,8 +426,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
             }
             if (taskComment.getCreationDate() != null) {
                 sb.append(", "); //$NON-NLS-1$
-                sb.append(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(
-                        taskComment.getCreationDate()));
+                sb.append(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(taskComment.getCreationDate()));
             }
             formHyperlink.setText(sb.toString());
             formHyperlink.setEnabled(true);
@@ -451,8 +438,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
             buttonComposite.setVisible(expanded);
             if (expanded && composite.getData(KEY_EDITOR) == null) {
                 // create viewer
-                final TaskAttribute textAttribute = getTaskData().getAttributeMapper().getAssoctiatedAttribute(
-                        taskComment.getTaskAttribute());
+                final TaskAttribute textAttribute = getTaskData().getAttributeMapper().getAssoctiatedAttribute(taskComment.getTaskAttribute());
                 editor = createAttributeEditor(textAttribute);
                 if (editor != null) {
                     editor.setDecorationEnabled(false);
@@ -593,14 +579,14 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
                     viewer.setExpanded(false);
                     collapsed = viewer.isRenderedInSubSection();
                     // bug 280152: collapse all groups
-                    //break;
+                    // break;
                 }
             }
 
             // keep section expanded
-            //			if (!collapsed && section != null) {
-            //				CommonFormUtil.setExpanded(section, false);
-            //			}
+            // if (!collapsed && section != null) {
+            // CommonFormUtil.setExpanded(section, false);
+            // }
         } finally {
             getTaskEditorPage().setReflow(true);
         }
@@ -608,8 +594,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
     }
 
     private TaskComment convertToTaskComment(final TaskDataModel taskDataModel, final TaskAttribute commentAttribute) {
-        final TaskComment taskComment = new TaskComment(taskDataModel.getTaskRepository(), taskDataModel.getTask(),
-                commentAttribute);
+        final TaskComment taskComment = new TaskComment(taskDataModel.getTaskRepository(), taskDataModel.getTask(), commentAttribute);
         taskDataModel.getTaskData().getAttributeMapper().updateTaskComment(taskComment, commentAttribute);
         return taskComment;
     }
@@ -623,34 +608,29 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
         final MenuManager menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(true);
-        menuManager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(final IMenuManager manager) {
-                // get comment and add reply action as first item in the menu
-                final ISelection selection = selectionProvider.getSelection();
-                if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
-                    final Object element = ((IStructuredSelection) selection).getFirstElement();
-                    if (element instanceof ITaskComment) {
-                        final ITaskComment comment = (ITaskComment) element;
-                        final AbstractReplyToCommentAction replyAction = new AbstractReplyToCommentAction(
-                                getTaskEditorPage(), comment) {
-                            @Override
-                            protected String getReplyText() {
-                                return comment.getText();
-                            }
-                        };
-                        manager.add(replyAction);
-                    }
+        menuManager.addMenuListener(manager -> {
+            // get comment and add reply action as first item in the menu
+            final ISelection selection = selectionProvider.getSelection();
+            if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
+                final Object element = ((IStructuredSelection) selection).getFirstElement();
+                if (element instanceof final ITaskComment comment) {
+                    final AbstractReplyToCommentAction replyAction = new AbstractReplyToCommentAction(getTaskEditorPage(), comment) {
+                        @Override
+                        protected String getReplyText() {
+                            return comment.getText();
+                        }
+                    };
+                    manager.add(replyAction);
                 }
-                actionGroup.fillContextMenu(manager);
-                actionGroup.setContext(new ActionContext(selectionProvider.getSelection()));
+            }
+            actionGroup.fillContextMenu(manager);
+            actionGroup.setContext(new ActionContext(selectionProvider.getSelection()));
 
-                if (currentViewer != null && currentViewer.getEditor() instanceof RichTextAttributeEditor) {
-                    final RichTextAttributeEditor editor = (RichTextAttributeEditor) currentViewer.getEditor();
-                    if (editor.getViewSourceAction().isEnabled()) {
-                        manager.add(new Separator("planning")); //$NON-NLS-1$
-                        manager.add(editor.getViewSourceAction());
-                    }
+            if (currentViewer != null && currentViewer.getEditor() instanceof RichTextAttributeEditor) {
+                final RichTextAttributeEditor editor = (RichTextAttributeEditor) currentViewer.getEditor();
+                if (editor.getViewSourceAction().isEnabled()) {
+                    manager.add(new Separator("planning")); //$NON-NLS-1$
+                    manager.add(editor.getViewSourceAction());
                 }
             }
         });
@@ -662,28 +642,26 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
         if (commentAttributes.isEmpty()) {
             section.setEnabled(false);
+        } else if (hasIncoming) {
+            expandSection(toolkit, section);
         } else {
-            if (hasIncoming) {
-                expandSection(toolkit, section);
-            } else {
-                section.addExpansionListener(new ExpansionAdapter() {
-                    @Override
-                    public void expansionStateChanged(final ExpansionEvent event) {
-                        if (section.getClient() == null) {
-                            try {
-                                expandAllInProgress = true;
-                                getTaskEditorPage().setReflow(false);
+            section.addExpansionListener(new ExpansionAdapter() {
+                @Override
+                public void expansionStateChanged(final ExpansionEvent event) {
+                    if (section.getClient() == null) {
+                        try {
+                            expandAllInProgress = true;
+                            getTaskEditorPage().setReflow(false);
 
-                                expandSection(toolkit, section);
-                            } finally {
-                                expandAllInProgress = false;
-                                getTaskEditorPage().setReflow(true);
-                            }
-                            getTaskEditorPage().reflow();
+                            expandSection(toolkit, section);
+                        } finally {
+                            expandAllInProgress = false;
+                            getTaskEditorPage().setReflow(true);
                         }
+                        getTaskEditorPage().reflow();
                     }
-                });
-            }
+                }
+            });
         }
         setSection(toolkit, section);
     }
@@ -704,20 +682,20 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
             if (section != null) {
                 // the expandAllInProgress flag will ensure that comments in top-level groups have been
                 // expanded, no need to expand groups explicitly
-                //boolean expandGroups = section.getClient() != null;
+                // boolean expandGroups = section.getClient() != null;
 
                 CommonFormUtil.setExpanded(section, true);
 
-                //if (expandGroups) {
+                // if (expandGroups) {
                 final List<CommentGroupViewer> viewers = getCommentGroupViewers();
                 for (int i = viewers.size() - 1; i >= 0; i--) {
                     if (!viewers.get(i).isFullyExpanded()) {
                         viewers.get(i).setExpanded(true);
                         // bug 280152: expand all groups
-                        //break;
+                        // break;
                     }
                 }
-                //}
+                // }
             }
         } finally {
             expandAllInProgress = false;
@@ -805,8 +783,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
     }
 
     private void initialize() {
-        commentAttributes = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(),
-                TaskAttribute.TYPE_COMMENT);
+        commentAttributes = getTaskData().getAttributeMapper().getAttributesByType(getTaskData(), TaskAttribute.TYPE_COMMENT);
         if (commentAttributes.size() > 0) {
             for (final TaskAttribute commentAttribute : commentAttributes) {
                 if (getModel().hasIncomingChanges(commentAttribute)) {
@@ -819,8 +796,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
 
     @Override
     public boolean setFormInput(final Object input) {
-        if (input instanceof String) {
-            final String text = (String) input;
+        if (input instanceof final String text) {
             if (text.startsWith(TaskAttribute.PREFIX_COMMENT)) {
                 if (commentAttributes != null) {
                     for (final TaskAttribute commentAttribute : commentAttributes) {
@@ -844,7 +820,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
         for (final CommentGroupViewer groupViewer : groupViewers) {
             for (final CommentViewer viewer : groupViewer.getCommentViewers()) {
                 if (viewer.getCommentAttribute().equals(commentAttribute)) {
-                    //					CommonFormUtil.ensureVisible(viewer.getControl());
+                    // CommonFormUtil.ensureVisible(viewer.getControl());
                     // EditorUtil is consistent with behavior of outline
                     EditorUtil.reveal(getTaskEditorPage().getManagedForm().getForm(), commentAttribute.getId());
                     return viewer;
@@ -877,13 +853,13 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
     private void expandAllComments(final boolean expandViewers) {
         try {
             expandAllInProgress = true;
-            //			suppressExpandViewers = !expandViewers;
+            // suppressExpandViewers = !expandViewers;
             getTaskEditorPage().setReflow(false);
 
             if (section != null) {
                 // the expandAllInProgress flag will ensure that comments in top-level groups have been
                 // expanded, no need to expand groups explicitly
-                //boolean expandGroups = section.getClient() != null;
+                // boolean expandGroups = section.getClient() != null;
 
                 CommonFormUtil.setExpanded(section, true);
 
@@ -898,7 +874,7 @@ public class JiraCommentPartCopy extends AbstractTaskEditorPart {
             }
         } finally {
             expandAllInProgress = false;
-            //			suppressExpandViewers = false;
+            // suppressExpandViewers = false;
             getTaskEditorPage().setReflow(true);
         }
         getTaskEditorPage().reflow();

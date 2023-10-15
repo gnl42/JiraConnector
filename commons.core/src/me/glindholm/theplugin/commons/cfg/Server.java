@@ -20,23 +20,23 @@ import me.glindholm.theplugin.commons.ServerType;
 
 public interface Server {
 
-	ServerIdImpl getServerId();
+    ServerIdImpl getServerId();
 
-	String getName();
+    String getName();
 
-	String getUrl();
+    String getUrl();
 
 //	void setPassword(final String password);
 
-	boolean isEnabled();
+    boolean isEnabled();
 
-	boolean isUseDefaultCredentials();
+    boolean isUseDefaultCredentials();
 
-	String getUsername();
+    String getUsername();
 
-	String getPassword();
+    String getPassword();
 
-	ServerType getServerType();
+    ServerType getServerType();
 
     boolean isDontUseBasicAuth();
 

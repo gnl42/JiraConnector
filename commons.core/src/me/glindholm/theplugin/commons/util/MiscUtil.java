@@ -39,15 +39,15 @@ public final class MiscUtil {
         return new HashMap<>();
     }
 
-    public static <K, V> AbstractMap<K, V> buildConcurrentHashMap(int initialCapacity) {
+    public static <K, V> AbstractMap<K, V> buildConcurrentHashMap(final int initialCapacity) {
         return new ConcurrentHashMap<>(initialCapacity);
     }
 
-    public static <T> boolean isModified(@Nullable T a, @Nullable T b) {
+    public static <T> boolean isModified(@Nullable final T a, @Nullable final T b) {
         return a != null ? !a.equals(b) : b != null;
     }
 
-    public static <T> boolean isEqual(@Nullable T a, @Nullable T b) {
+    public static <T> boolean isEqual(@Nullable final T a, @Nullable final T b) {
         return a != null ? a.equals(b) : b == null;
     }
 
@@ -56,17 +56,17 @@ public final class MiscUtil {
     }
 
     @SafeVarargs
-    public static <T> Set<T> buildHashSet(T... elements) {
+    public static <T> Set<T> buildHashSet(final T... elements) {
         return new HashSet<>(Arrays.asList(elements));
     }
 
     @SafeVarargs
-    public static <T> Set<T> buildLinkedHashSet(T... elements) {
+    public static <T> Set<T> buildLinkedHashSet(final T... elements) {
         return new LinkedHashSet<>(Arrays.asList(elements));
     }
 
     @SafeVarargs
-    public static <T> TreeSet<T> buildTreeSet(T... elements) {
+    public static <T> TreeSet<T> buildTreeSet(final T... elements) {
         return new TreeSet<>(Arrays.asList(elements));
     }
 
@@ -78,11 +78,11 @@ public final class MiscUtil {
         return new TreeSet<>();
     }
 
-    public static <T> Set<T> buildHashSet(Collection<T> elements) {
+    public static <T> Set<T> buildHashSet(final Collection<T> elements) {
         return new HashSet<>(elements);
     }
 
-    public static <T> TreeSet<T> buildTreeSet(Collection<T> elements) {
+    public static <T> TreeSet<T> buildTreeSet(final Collection<T> elements) {
         return new TreeSet<>(elements);
     }
 
@@ -90,24 +90,22 @@ public final class MiscUtil {
         return new ArrayList<>();
     }
 
-    public static <T> ArrayList<T> buildArrayList(int initialCapacity) {
+    public static <T> ArrayList<T> buildArrayList(final int initialCapacity) {
         return new ArrayList<>(initialCapacity);
     }
 
     /**
      * Creates mutable {@link java.util.ArrayList} from given elements.
      *
-     * @param elements elements which will be included in the newly created
-     *                 ArrayList
+     * @param elements elements which will be included in the newly created ArrayList
      * @return newly created ArrayList
      */
-    public static <T> List<T> buildArrayList(T... elements) {
-        final List<T> tmp = new ArrayList<>();
-        tmp.addAll(Arrays.asList(elements));
+    public static <T> List<T> buildArrayList(final T... elements) {
+        final List<T> tmp = new ArrayList<>(Arrays.asList(elements));
         return tmp;
     }
 
-    public static <T> ArrayList<T> buildArrayList(Collection<T> collection) {
+    public static <T> ArrayList<T> buildArrayList(final Collection<T> collection) {
         return new ArrayList<>(collection);
     }
 }

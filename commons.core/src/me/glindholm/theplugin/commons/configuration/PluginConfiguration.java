@@ -18,7 +18,6 @@ package me.glindholm.theplugin.commons.configuration;
 
 import me.glindholm.theplugin.commons.util.HttpConfigurableAdapter;
 
-
 public interface PluginConfiguration {
 
     void setConfiguration(PluginConfiguration cfg);
@@ -27,8 +26,9 @@ public interface PluginConfiguration {
 
     void setGeneralConfigurationData(GeneralConfigurationBean generalConfigurationBean);
 
-    //set should be applied either in IDEA an Eclipse environment
+    // set should be applied either in IDEA an Eclipse environment
     void transientSetHttpConfigurable(HttpConfigurableAdapter httpConfigurableAdapter);
+
     HttpConfigurableAdapter transientGetHttpConfigurable();
 
     JiraConfigurationBean getJIRAConfigurationData();

@@ -105,11 +105,9 @@ public class JiraPriority implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if ((obj == null) || !(obj instanceof JiraPriority)) {
+        if (obj == null || !(obj instanceof final JiraPriority that)) {
             return false;
         }
-
-        final JiraPriority that = (JiraPriority) obj;
 
         return id.equals(that.id);
     }

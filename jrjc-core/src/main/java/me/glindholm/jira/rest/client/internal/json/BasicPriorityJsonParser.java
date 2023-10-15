@@ -16,16 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 
-import java.net.URI;
-
 public class BasicPriorityJsonParser implements JsonObjectParser<BasicPriority> {
     @Override
-    public BasicPriority parse(JSONObject json) throws JSONException {
+    public BasicPriority parse(final JSONObject json) throws JSONException {
         final String name = json.getString("name");
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final URI selfUri = JsonParseUtil.getSelfUri(json);

@@ -14,9 +14,9 @@ import me.glindholm.theplugin.commons.exception.HttpProxySettingsException;
  */
 public interface HttpSessionCallback {
 
-	HttpClient getHttpClient(ConnectionCfg server) throws HttpProxySettingsException;
+    HttpClient getHttpClient(ConnectionCfg server) throws HttpProxySettingsException;
 
-	void configureHttpMethod(AbstractHttpSession session, HttpMethod method);
+    void configureHttpMethod(AbstractHttpSession session, HttpMethod method);
 
     void disposeClient(ConnectionCfg server);
 

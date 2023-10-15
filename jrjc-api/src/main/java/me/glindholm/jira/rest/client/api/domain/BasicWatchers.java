@@ -34,7 +34,7 @@ public class BasicWatchers implements Serializable, AddressableEntity {
     private final boolean isWatching;
     private final int numWatchers;
 
-    public BasicWatchers(URI self, boolean watching, int numWatchers) {
+    public BasicWatchers(final URI self, final boolean watching, final int numWatchers) {
         this.self = self;
         isWatching = watching;
         this.numWatchers = numWatchers;
@@ -63,12 +63,9 @@ public class BasicWatchers implements Serializable, AddressableEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof BasicWatchers) {
-            final BasicWatchers that = (BasicWatchers) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.isWatching, that.isWatching)
-                    && Objects.equals(this.numWatchers, that.numWatchers);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final BasicWatchers that) {
+            return Objects.equals(self, that.self) && Objects.equals(isWatching, that.isWatching) && Objects.equals(numWatchers, that.numWatchers);
         }
         return false;
     }

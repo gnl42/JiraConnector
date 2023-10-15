@@ -19,9 +19,9 @@ package me.glindholm.jira.rest.client.api.domain;
 import java.util.Objects;
 
 /**
- * Basic Authentication information of the current user session (if the connection maintains the session)
- * or just authentication info from the last remote call (when the connection is stateless - usually
- * recommended for really RESTful designs).
+ * Basic Authentication information of the current user session (if the connection maintains the
+ * session) or just authentication info from the last remote call (when the connection is stateless
+ * - usually recommended for really RESTful designs).
  *
  * @since v0.1
  */
@@ -29,7 +29,7 @@ public class Authentication {
     private final LoginInfo loginInfo;
     private final SessionCookie sessionCookie;
 
-    public Authentication(LoginInfo loginInfo, SessionCookie sessionCookie) {
+    public Authentication(final LoginInfo loginInfo, final SessionCookie sessionCookie) {
         this.loginInfo = loginInfo;
         this.sessionCookie = sessionCookie;
     }
@@ -48,11 +48,9 @@ public class Authentication {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Authentication) {
-            Authentication that = (Authentication) obj;
-            return Objects.equals(this.loginInfo, that.loginInfo)
-                    && Objects.equals(this.sessionCookie, that.sessionCookie);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Authentication that) {
+            return Objects.equals(loginInfo, that.loginInfo) && Objects.equals(sessionCookie, that.sessionCookie);
         }
         return false;
     }

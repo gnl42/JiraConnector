@@ -21,13 +21,14 @@ import com.atlassian.httpclient.api.Request;
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 
 /**
- * Anonymous handler - no credentials passed to the server. Only anonymously accessible operations will be possible.
+ * Anonymous handler - no credentials passed to the server. Only anonymously accessible operations
+ * will be possible.
  *
  * @since v0.1
  */
 public class AnonymousAuthenticationHandler implements AuthenticationHandler {
 
     @Override
-    public void configure(Request.Builder builder) {
+    public void configure(final Request.Builder builder) {
     }
 }

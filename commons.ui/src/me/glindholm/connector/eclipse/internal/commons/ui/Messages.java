@@ -14,16 +14,16 @@ package me.glindholm.connector.eclipse.internal.commons.ui;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.commons.ui.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "me.glindholm.connector.eclipse.internal.commons.ui.messages"; //$NON-NLS-1$
 
-	public static String RemoteApiLockedDialog_5;
+    public static String RemoteApiLockedDialog_5;
 
-	public static String RemoteApiLockedDialog_permission_denied;
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    public static String RemoteApiLockedDialog_permission_denied;
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	private Messages() {
-	}
+    private Messages() {
+    }
 }

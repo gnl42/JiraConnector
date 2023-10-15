@@ -28,20 +28,18 @@ public class ProjectConfiguration {
 
     private static final int HASHCODE_MAGIC = 31;
 
-
     public ProjectConfiguration(final ProjectConfiguration other) {
         servers = cloneArrayList(other.getServers());
         defaultJiraServerId = other.defaultJiraServerId;
     }
 
     public static Collection<ServerCfg> cloneArrayList(final Collection<ServerCfg> collection) {
-        final ArrayList<ServerCfg> res = new ArrayList<ServerCfg>(collection.size());
-        for (ServerCfg serverCfg : collection) {
+        final ArrayList<ServerCfg> res = new ArrayList<>(collection.size());
+        for (final ServerCfg serverCfg : collection) {
             res.add(serverCfg.getClone());
         }
         return res;
     }
-
 
     public ProjectConfiguration(final Collection<ServerCfg> servers) {
         if (servers == null) {
@@ -51,7 +49,7 @@ public class ProjectConfiguration {
     }
 
     public ProjectConfiguration() {
-        this.servers = MiscUtil.buildArrayList();
+        servers = MiscUtil.buildArrayList();
     }
 
     @Override
@@ -59,20 +57,8 @@ public class ProjectConfiguration {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ProjectConfiguration)) {
-            return false;
-        }
-
-        final ProjectConfiguration that = (ProjectConfiguration) o;
-
-        if (defaultJiraServerId != null
-                ? !defaultJiraServerId.equals(that.defaultJiraServerId)
-                : that.defaultJiraServerId != null) {
-            return false;
-        }
-
         // noinspection RedundantIfStatement
-        if (!servers.equals(that.servers)) {
+        if (!(o instanceof final ProjectConfiguration that) || (defaultJiraServerId != null ? !defaultJiraServerId.equals(that.defaultJiraServerId) : that.defaultJiraServerId != null) || !servers.equals(that.servers)) {
             return false;
         }
 
@@ -91,8 +77,8 @@ public class ProjectConfiguration {
         return servers;
     }
 
-    public ServerCfg getServerCfg(ServerId serverId) {
-        for (ServerCfg serverCfg : servers) {
+    public ServerCfg getServerCfg(final ServerId serverId) {
+        for (final ServerCfg serverCfg : servers) {
             if (serverId.equals(serverCfg.getServerId())) {
                 return serverCfg;
             }
@@ -107,7 +93,6 @@ public class ProjectConfiguration {
     public ProjectConfiguration getClone() {
         return new ProjectConfiguration(this);
     }
-
 
     public ServerId getDefaultJiraServerId() {
         if (defaultJiraServerId == null && getAllJIRAServers().size() == 1) {
@@ -125,7 +110,7 @@ public class ProjectConfiguration {
             return null;
         }
 
-        ServerCfg serverCfg = getServerCfg(getDefaultJiraServerId());
+        final ServerCfg serverCfg = getServerCfg(getDefaultJiraServerId());
 
         // no additional check - let IDE handle such error in a standard way (error dialog)
         // in unlikely event of some fuck-up
@@ -145,7 +130,7 @@ public class ProjectConfiguration {
             return true;
         }
 
-        ServerCfg serverCfg = getServerCfg(getDefaultJiraServerId());
+        final ServerCfg serverCfg = getServerCfg(getDefaultJiraServerId());
 
         // no additional check - let IDE handle such error in a standard way (error dialog)
         // in unlikely event of some fuck-up
@@ -154,9 +139,9 @@ public class ProjectConfiguration {
     }
 
     public Collection<JiraServerCfg> getAllJIRAServers() {
-        Collection<JiraServerCfg> jiraServers = MiscUtil.buildArrayList();
+        final Collection<JiraServerCfg> jiraServers = MiscUtil.buildArrayList();
 
-        for (ServerCfg server : servers) {
+        for (final ServerCfg server : servers) {
             if (server.getServerType() == ServerType.JIRA_SERVER && server instanceof JiraServerCfg) {
                 jiraServers.add((JiraServerCfg) server);
             }
@@ -165,10 +150,9 @@ public class ProjectConfiguration {
         return jiraServers;
     }
 
-
     public Collection<ServerCfg> getAllEnabledServersWithDefaultCredentials() {
-        Collection<ServerCfg> defServers = MiscUtil.buildArrayList();
-        for (ServerCfg server : servers) {
+        final Collection<ServerCfg> defServers = MiscUtil.buildArrayList();
+        for (final ServerCfg server : servers) {
             if (server.isUseDefaultCredentials() && server.isEnabled()) {
                 defServers.add(server);
             }

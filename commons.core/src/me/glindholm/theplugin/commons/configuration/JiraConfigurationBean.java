@@ -18,36 +18,36 @@ package me.glindholm.theplugin.commons.configuration;
 
 public class JiraConfigurationBean {
 
-	private static final int JIRA_DEFAULT_ISSUE_PAGE_SIZE = 25;
+    private static final int JIRA_DEFAULT_ISSUE_PAGE_SIZE = 25;
 
-	private int pageSize = JIRA_DEFAULT_ISSUE_PAGE_SIZE;
+    private int pageSize = JIRA_DEFAULT_ISSUE_PAGE_SIZE;
     private boolean synchronizeWithIntelliJTasks = false;
     private boolean showIssueTooltips = true;
 
-	private static final int HASHCODE_MAGIC = 31;
+    private static final int HASHCODE_MAGIC = 31;
 
-	public JiraConfigurationBean() {
-	}
+    public JiraConfigurationBean() {
+    }
 
-	public JiraConfigurationBean(JiraConfigurationBean cfg) {
-		this.pageSize = cfg.getPageSize();
-        this.synchronizeWithIntelliJTasks = cfg.synchronizeWithIntelliJTasks;
-        this.showIssueTooltips = cfg.showIssueTooltips;
-	}
+    public JiraConfigurationBean(final JiraConfigurationBean cfg) {
+        pageSize = cfg.getPageSize();
+        synchronizeWithIntelliJTasks = cfg.synchronizeWithIntelliJTasks;
+        showIssueTooltips = cfg.showIssueTooltips;
+    }
 
-	public int getPageSize() {
-		return pageSize;
-	}
+    public int getPageSize() {
+        return pageSize;
+    }
 
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
-	}
+    public void setPageSize(final int pageSize) {
+        this.pageSize = pageSize;
+    }
 
     public boolean isShowIssueTooltips() {
         return showIssueTooltips;
     }
 
-    public void setShowIssueTooltips(boolean showIssueTooltips) {
+    public void setShowIssueTooltips(final boolean showIssueTooltips) {
         this.showIssueTooltips = showIssueTooltips;
     }
 
@@ -55,12 +55,12 @@ public class JiraConfigurationBean {
         return synchronizeWithIntelliJTasks;
     }
 
-    public void setSynchronizeWithIntelliJTasks(boolean synchronizeWithIntelliJTasks) {
+    public void setSynchronizeWithIntelliJTasks(final boolean synchronizeWithIntelliJTasks) {
         this.synchronizeWithIntelliJTasks = synchronizeWithIntelliJTasks;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -68,15 +68,9 @@ public class JiraConfigurationBean {
             return false;
         }
 
-        JiraConfigurationBean that = (JiraConfigurationBean) o;
+        final JiraConfigurationBean that = (JiraConfigurationBean) o;
 
-        if (pageSize != that.pageSize) {
-            return false;
-        }
-        if (synchronizeWithIntelliJTasks != that.synchronizeWithIntelliJTasks) {
-            return false;
-        }
-        if (showIssueTooltips != that.showIssueTooltips) {
+        if ((pageSize != that.pageSize) || (synchronizeWithIntelliJTasks != that.synchronizeWithIntelliJTasks) || (showIssueTooltips != that.showIssueTooltips)) {
             return false;
         }
         return true;

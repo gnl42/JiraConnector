@@ -16,27 +16,26 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+import java.time.OffsetDateTime;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.Worklog;
 
-import java.net.URI;
-
 public class WorklogJsonParserV5 implements JsonObjectParser<Worklog> {
 
     private final URI issue;
 
-    public WorklogJsonParserV5(URI issue) {
+    public WorklogJsonParserV5(final URI issue) {
         this.issue = issue;
     }
 
-
     @Override
-    public Worklog parse(JSONObject json) throws JSONException {
+    public Worklog parse(final JSONObject json) throws JSONException {
         final URI self = JsonParseUtil.getSelfUri(json);
         final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
         final BasicUser updateAuthor = JsonParseUtil.parseBasicUser(json.optJSONObject("updateAuthor"));
@@ -48,7 +47,6 @@ public class WorklogJsonParserV5 implements JsonObjectParser<Worklog> {
         // timeSpentSeconds is not required due to bug: JRADEV-8825 (fixed in 5.0, Iteration 14).
         final int secondsSpent = json.optInt("timeSpentSeconds", 0);
         final Visibility visibility = new VisibilityJsonParser().parseVisibility(json);
-        return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate,
-                secondsSpent / 60, visibility);
+        return new Worklog(self, issue, author, updateAuthor, comment, creationDate, updateDate, startDate, secondsSpent / 60, visibility);
     }
 }

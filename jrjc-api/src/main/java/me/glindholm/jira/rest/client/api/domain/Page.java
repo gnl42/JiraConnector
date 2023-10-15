@@ -15,7 +15,7 @@ public class Page<T> {
     private final List<T> values;
     private final boolean isLast;
 
-    public Page(long startAt, int maxResults, long total, List<T> values, boolean isLast) {
+    public Page(final long startAt, final int maxResults, final long total, final List<T> values, final boolean isLast) {
         this.startAt = startAt;
         this.maxResults = maxResults;
         this.total = total;
@@ -44,19 +44,15 @@ public class Page<T> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Page<?> page = (Page<?>) o;
-        return startAt == page.startAt &&
-                maxResults == page.maxResults &&
-                total == page.total &&
-                isLast == page.isLast &&
-                Objects.equals(values, page.values);
+        final Page<?> page = (Page<?>) o;
+        return startAt == page.startAt && maxResults == page.maxResults && total == page.total && isLast == page.isLast && Objects.equals(values, page.values);
     }
 
     @Override
@@ -66,12 +62,6 @@ public class Page<T> {
 
     @Override
     public String toString() {
-        return "Page{" +
-                "startAt=" + startAt +
-                ", maxResults=" + maxResults +
-                ", total=" + total +
-                ", values=" + values +
-                ", isLast=" + isLast +
-                '}';
+        return "Page{" + "startAt=" + startAt + ", maxResults=" + maxResults + ", total=" + total + ", values=" + values + ", isLast=" + isLast + '}';
     }
 }

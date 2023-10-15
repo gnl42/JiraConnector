@@ -340,11 +340,10 @@ public class JiraIssue implements Serializable {
     }
 
     /**
-     * Determines if it is ok for the supplied user to vote on this issue. Users can
-     * not vote on an issue if the issue is resolved or the user is the reporter.
+     * Determines if it is ok for the supplied user to vote on this issue. Users can not vote on an
+     * issue if the issue is resolved or the user is the reporter.
      *
-     * @return <code>true</code> if it is valid for <code>user</code> to vote for
-     *         the issue
+     * @return <code>true</code> if it is valid for <code>user</code> to vote for the issue
      */
     public boolean canUserVote(final String user) {
         return (getResolution() == null || getResolution().getId() == null || "".equals(getResolution() //$NON-NLS-1$
@@ -358,8 +357,8 @@ public class JiraIssue implements Serializable {
     /**
      * Determines if this issue has been voted on by the current user
      *
-     * @return <code>true</code> if the current user is voting for this issue.
-     *         <code>false</code> otherwise.
+     * @return <code>true</code> if the current user is voting for this issue. <code>false</code>
+     *         otherwise.
      */
     public boolean getHasVote() {
         // XXX Required new API to work
@@ -431,8 +430,7 @@ public class JiraIssue implements Serializable {
 
     /**
      * @param field
-     * @return list of field actual values without faked "none" value for combo and
-     *         radio buttons
+     * @return list of field actual values without faked "none" value for combo and radio buttons
      */
     public String[] getFieldValues(final String field) {
         if ("summary".equals(field)) { //$NON-NLS-1$

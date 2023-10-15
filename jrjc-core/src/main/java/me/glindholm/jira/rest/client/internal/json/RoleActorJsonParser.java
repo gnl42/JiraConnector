@@ -24,18 +24,18 @@ import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.RoleActor;
 
-
 public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
 
     private final URI baseJiraUri;
 
-    public RoleActorJsonParser(URI baseJiraUri) {
+    public RoleActorJsonParser(final URI baseJiraUri) {
         this.baseJiraUri = baseJiraUri;
     }
 
     @Override
     public RoleActor parse(final JSONObject json) throws JSONException, URISyntaxException {
-        // Workaround for a bug in API. Id field should not be optional, unfortunately it is not returned for an admin role actor.
+        // Workaround for a bug in API. Id field should not be optional, unfortunately it is not returned
+        // for an admin role actor.
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final String displayName = json.getString("displayName");
         final String type = json.getString("type");

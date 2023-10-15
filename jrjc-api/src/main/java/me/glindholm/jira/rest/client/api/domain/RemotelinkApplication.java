@@ -29,10 +29,9 @@ public class RemotelinkApplication {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof RemotelinkApplication)) {
+        if (!(obj instanceof final RemotelinkApplication other)) {
             return false;
         }
-        final RemotelinkApplication other = (RemotelinkApplication) obj;
         return Objects.equals(name, other.name) && Objects.equals(type, other.type);
     }
 

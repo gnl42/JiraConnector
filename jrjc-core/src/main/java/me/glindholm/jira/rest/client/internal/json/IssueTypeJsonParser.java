@@ -16,16 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 
-import java.net.URI;
-
 public class IssueTypeJsonParser implements JsonObjectParser<IssueType> {
     @Override
-    public IssueType parse(JSONObject json) throws JSONException {
+    public IssueType parse(final JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final long id = json.getLong("id");
         final String name = json.getString("name");

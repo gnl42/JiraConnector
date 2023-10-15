@@ -20,12 +20,11 @@ import org.codehaus.jettison.json.JSONException;
 
 public class JsonWeakParserForString implements JsonWeakParser<String> {
     @Override
-    public String parse(Object o) throws JSONException {
+    public String parse(final Object o) throws JSONException {
         try {
             return (String) o;
-        } catch (ClassCastException e) {
-            throw new JSONException(
-                    "Expected [" + String.class.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]");
+        } catch (final ClassCastException e) {
+            throw new JSONException("Expected [" + String.class.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]");
         }
     }
 

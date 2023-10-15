@@ -51,8 +51,8 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
         return true;
     }
 
-    private InputStream downloadAttachment(final TaskRepository repository, final ITask task, final String attachmentId,
-            final IProgressMonitor monitor) throws CoreException {
+    private InputStream downloadAttachment(final TaskRepository repository, final ITask task, final String attachmentId, final IProgressMonitor monitor)
+            throws CoreException {
         final JiraClient client = JiraClientFactory.getDefault().getJiraClient(repository);
         try {
             final JiraIssue issue = client.getIssueByKey(task.getTaskKey(), monitor);
@@ -68,16 +68,16 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
     }
 
     @Override
-    public InputStream getContent(final TaskRepository repository, final ITask task, final TaskAttribute attachmentAttribute,
-            IProgressMonitor monitor) throws CoreException {
+    public InputStream getContent(final TaskRepository repository, final ITask task, final TaskAttribute attachmentAttribute, IProgressMonitor monitor)
+            throws CoreException {
         monitor = Policy.monitorFor(monitor);
         try {
             monitor.beginTask(Messages.JiraTaskAttachmentHandler_Getting_attachment, IProgressMonitor.UNKNOWN);
             final TaskAttachmentMapper attachment = TaskAttachmentMapper.createFrom(attachmentAttribute);
-            //			ByteArrayOutputStream out = new ByteArrayOutputStream();
+            // ByteArrayOutputStream out = new ByteArrayOutputStream();
             return downloadAttachment(repository, task, attachment.getAttachmentId(), monitor);
-            //			downloadAttachment(repository, task, attachment.getAttachmentId(), out, monitor);
-            //			return new ByteArrayInputStream(out.toByteArray());
+            // downloadAttachment(repository, task, attachment.getAttachmentId(), out, monitor);
+            // return new ByteArrayInputStream(out.toByteArray());
         } finally {
             monitor.done();
         }

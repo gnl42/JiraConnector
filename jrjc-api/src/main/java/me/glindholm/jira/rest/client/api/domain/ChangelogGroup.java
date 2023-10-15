@@ -30,7 +30,7 @@ public class ChangelogGroup {
     private final OffsetDateTime created;
     private final List<ChangelogItem> items;
 
-    public ChangelogGroup(BasicUser author, OffsetDateTime created, List<ChangelogItem> items) {
+    public ChangelogGroup(final BasicUser author, final OffsetDateTime created, final List<ChangelogItem> items) {
         this.author = author;
         this.created = created;
         this.items = items;
@@ -49,12 +49,9 @@ public class ChangelogGroup {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ChangelogGroup) {
-            ChangelogGroup that = (ChangelogGroup) obj;
-            return Objects.equals(this.author, that.author)
-                    && Objects.equals(this.created, that.created)
-                    && Objects.equals(this.items, that.items);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final ChangelogGroup that) {
+            return Objects.equals(author, that.author) && Objects.equals(created, that.created) && Objects.equals(items, that.items);
         }
         return false;
     }

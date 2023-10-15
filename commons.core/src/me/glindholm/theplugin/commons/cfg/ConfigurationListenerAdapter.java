@@ -22,40 +22,50 @@ import me.glindholm.theplugin.commons.remoteapi.ServerData;
  */
 public abstract class ConfigurationListenerAdapter implements ConfigurationListener {
 
-	public void configurationUpdated(ProjectConfiguration aProjectConfiguration) {
-	}
+    @Override
+    public void configurationUpdated(final ProjectConfiguration aProjectConfiguration) {
+    }
 
-	public void projectUnregistered() {
-	}
+    @Override
+    public void projectUnregistered() {
+    }
 
-	public void serverDataChanged(ServerData serverData) {
-	}
+    @Override
+    public void serverDataChanged(final ServerData serverData) {
+    }
 
-	public void serverConnectionDataChanged(ServerId serverId) {
-	}
+    @Override
+    public void serverConnectionDataChanged(final ServerId serverId) {
+    }
 
-	public void serverNameChanged(ServerId serverId) {
-	}
+    @Override
+    public void serverNameChanged(final ServerId serverId) {
+    }
 
 //	public void serverAdded(ServerCfg newServer) {
 //	}
 
-	public void serverAdded(final ServerData serverData) {
-	}
+    @Override
+    public void serverAdded(final ServerData serverData) {
+    }
 
 //	public void serverRemoved(ServerCfg oldServer) {
 //	}
 
-	public void serverRemoved(final ServerData serverData) {
-	}
+    @Override
+    public void serverRemoved(final ServerData serverData) {
+    }
 
-	public void serverEnabled(ServerData serverData) {
-	}
+    @Override
+    public void serverEnabled(final ServerData serverData) {
+    }
 
-	public void serverDisabled(ServerId serverId) {
-	}
+    @Override
+    public void serverDisabled(final ServerId serverId) {
+    }
 
-	public void jiraServersChanged(ProjectConfiguration newConfiguration) {
-	}
+    @Override
+    public void jiraServersChanged(final ProjectConfiguration newConfiguration) {
+    }
 
 }

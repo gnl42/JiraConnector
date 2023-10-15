@@ -18,7 +18,7 @@ package me.glindholm.theplugin.commons.cfg;
 
 public interface ProjectConfigurationDao {
 
-	ProjectConfiguration load() throws ServerCfgFactoryException;
+    ProjectConfiguration load() throws ServerCfgFactoryException;
 
-	void save(ProjectConfiguration projectConfiguration) throws ServerCfgFactoryException;
+    void save(ProjectConfiguration projectConfiguration) throws ServerCfgFactoryException;
 }

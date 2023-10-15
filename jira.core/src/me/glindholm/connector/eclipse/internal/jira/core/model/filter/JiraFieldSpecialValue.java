@@ -12,8 +12,8 @@
 package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 
 /**
- * Representation of special values which can be used for some of standard JIRA fields. The {@link #getClassic()}
- * returns value for classic queries and the {@link #getJql()} for JQL ones.
+ * Representation of special values which can be used for some of standard JIRA fields. The
+ * {@link #getClassic()} returns value for classic queries and the {@link #getJql()} for JQL ones.
  */
 public enum JiraFieldSpecialValue {
 
@@ -32,26 +32,23 @@ public enum JiraFieldSpecialValue {
     UNRESOLVED("-1", "Unresolved"), //$NON-NLS-1$ //$NON-NLS-2$
     COMPONENT_NONE("-1", "EMPTY"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    private String classicValue;
+    private final String classicValue;
 
-    private String jqlValue;
+    private final String jqlValue;
 
     /**
-     * @param classic
-     *            representation of value in classic query
-     * @param jql
-     *            representation of value in JQL query
+     * @param classic representation of value in classic query
+     * @param jql     representation of value in JQL query
      */
-    private JiraFieldSpecialValue(final String classic, final String jql) {
+    JiraFieldSpecialValue(final String classic, final String jql) {
         classicValue = classic;
         jqlValue = jql;
     }
 
     /**
-     * @param classicAndJql
-     *            value is the same for classic and JQL queries
+     * @param classicAndJql value is the same for classic and JQL queries
      */
-    private JiraFieldSpecialValue(final String classicAndJql) {
+    JiraFieldSpecialValue(final String classicAndJql) {
         this(classicAndJql, classicAndJql);
     }
 

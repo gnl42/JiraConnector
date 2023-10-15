@@ -60,8 +60,7 @@ public abstract class SingleCharReader extends Reader {
      * Returns the readable content as string.
      *
      * @return the readable content as string
-     * @exception IOException
-     *                in case reading fails
+     * @exception IOException in case reading fails
      */
     public String getString() throws IOException {
         final StringBuilder buf = new StringBuilder();

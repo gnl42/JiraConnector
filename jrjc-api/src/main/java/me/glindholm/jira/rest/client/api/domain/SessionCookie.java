@@ -32,7 +32,7 @@ public class SessionCookie implements Serializable, NamedEntity {
     private final String name;
     private final String value;
 
-    public SessionCookie(String name, String value) {
+    public SessionCookie(final String name, final String value) {
         this.name = name;
         this.value = value;
     }
@@ -52,11 +52,9 @@ public class SessionCookie implements Serializable, NamedEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof SessionCookie) {
-            SessionCookie that = (SessionCookie) obj;
-            return Objects.equals(this.name, that.name)
-                    && Objects.equals(this.value, that.value);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final SessionCookie that) {
+            return Objects.equals(name, that.name) && Objects.equals(value, that.value);
         }
         return false;
     }

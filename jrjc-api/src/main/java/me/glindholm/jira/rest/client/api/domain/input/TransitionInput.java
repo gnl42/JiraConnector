@@ -24,7 +24,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 
 /**
- * Input data used while transitioning an issue including new values for this issue and the optional comment.
+ * Input data used while transitioning an issue including new values for this issue and the optional
+ * comment.
  *
  * @since v0.1
  */
@@ -37,19 +38,20 @@ public class TransitionInput {
 
     /**
      * @param id     id of the issue transition which should be performed
-     * @param fields new values for the issue fields. Use empty collection if no fields are to be changed
+     * @param fields new values for the issue fields. Use empty collection if no fields are to be
+     *               changed
      */
-    public TransitionInput(int id, List<FieldInput> fields) {
+    public TransitionInput(final int id, final List<FieldInput> fields) {
         this(id, fields, null);
     }
 
-
     /**
      * @param id      id of the issue transition which should be performed
-     * @param fields  new values for the issue fields. Use empty collection if no fields are to be changed
+     * @param fields  new values for the issue fields. Use empty collection if no fields are to be
+     *                changed
      * @param comment optional comment
      */
-    public TransitionInput(int id, List<FieldInput> fields, @Nullable Comment comment) {
+    public TransitionInput(final int id, final List<FieldInput> fields, @Nullable final Comment comment) {
         this.id = id;
         this.comment = comment;
         this.fields = fields;
@@ -59,11 +61,11 @@ public class TransitionInput {
      * @param id      id of the issue transition which should be performed
      * @param comment optional comment
      */
-    public TransitionInput(int id, @Nullable Comment comment) {
+    public TransitionInput(final int id, @Nullable final Comment comment) {
         this(id, Collections.emptyList(), comment);
     }
 
-    public TransitionInput(int id) {
+    public TransitionInput(final int id) {
         this(id, Collections.emptyList(), null);
     }
 

@@ -16,6 +16,8 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -23,15 +25,13 @@ import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 
-import java.net.URI;
-
 public class CommentJsonParser implements JsonObjectParser<Comment> {
 
     public static final String VISIBILITY_KEY = "visibility";
     private final VisibilityJsonParser visibilityJsonParser = new VisibilityJsonParser();
 
     @Override
-    public Comment parse(JSONObject json) throws JSONException {
+    public Comment parse(final JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final String body = json.getString("body");

@@ -17,7 +17,8 @@
 package me.glindholm.jira.rest.client.api.domain.input;
 
 /**
- * Defines a new position for a project version (while moving it) by {@link me.glindholm.jira.rest.client.api.VersionRestClient#moveVersion(java.net.URI, VersionPosition)}
+ * Defines a new position for a project version (while moving it) by
+ * {@link me.glindholm.jira.rest.client.api.VersionRestClient#moveVersion(java.net.URI, VersionPosition)}
  *
  * @since 0.3 me.glindholm.jira.rest.client.api, 4.4 server
  */

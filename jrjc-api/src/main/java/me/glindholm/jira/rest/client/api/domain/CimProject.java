@@ -25,9 +25,11 @@ import me.glindholm.jira.rest.client.api.GetCreateIssueMetadataOptions;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
 
 /**
- * Represents project allowed to choose to create new issue. Also contains issue types allowed for that project described by {@link CimIssueType} class.
+ * Represents project allowed to choose to create new issue. Also contains issue types allowed for
+ * that project described by {@link CimIssueType} class.
  * <p>
- * The CIM prefix stands for CreateIssueMetadata as this class is used in output of {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
+ * The CIM prefix stands for CreateIssueMetadata as this class is used in output of
+ * {@link IssueRestClient#getCreateIssueMetadata(GetCreateIssueMetadataOptions)}
  *
  * @since v1.0
  */
@@ -42,7 +44,8 @@ public class CimProject extends BasicProject {
     private final Map<String, URI> avatarUris;
     private final List<CimIssueType> issueTypes;
 
-    public CimProject(URI self, String key, Long id, String name, Map<String, URI> avatarUris, List<CimIssueType> issueTypes) {
+    public CimProject(final URI self, final String key, final Long id, final String name, final Map<String, URI> avatarUris,
+            final List<CimIssueType> issueTypes) {
         super(self, key, id, name);
         this.avatarUris = avatarUris;
         this.issueTypes = issueTypes;
@@ -70,12 +73,9 @@ public class CimProject extends BasicProject {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof CimProject) {
-            CimProject that = (CimProject) obj;
-            return super.equals(obj)
-                    && Objects.equals(this.avatarUris, that.avatarUris)
-                    && Objects.equals(this.issueTypes, that.issueTypes);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final CimProject that) {
+            return super.equals(obj) && Objects.equals(avatarUris, that.avatarUris) && Objects.equals(issueTypes, that.issueTypes);
         }
         return false;
     }

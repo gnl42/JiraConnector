@@ -41,8 +41,7 @@ public class IssueInputJsonGenerator implements JsonGenerator<IssueInput> {
         if (issue != null && issue.getFields() != null) {
             for (final FieldInput field : issue.getFields().values()) {
                 if (field.getValue() != null) {
-                    fields.put(field.getId(), complexIssueInputFieldValueJsonGenerator.generateFieldValueForJson(field
-                            .getValue()));
+                    fields.put(field.getId(), complexIssueInputFieldValueJsonGenerator.generateFieldValueForJson(field.getValue()));
                 }
             }
         }

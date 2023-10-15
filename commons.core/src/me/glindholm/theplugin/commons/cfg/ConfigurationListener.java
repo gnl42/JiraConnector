@@ -19,88 +19,80 @@ package me.glindholm.theplugin.commons.cfg;
 import me.glindholm.theplugin.commons.remoteapi.ServerData;
 
 public interface ConfigurationListener {
-	void configurationUpdated(final ProjectConfiguration aProjectConfiguration);
+    void configurationUpdated(final ProjectConfiguration aProjectConfiguration);
 
-	void projectUnregistered();
+    void projectUnregistered();
 
-	/**
-	 * Called in case connections data (url, username, password) has changed
-	 *
-	 * @param serverId
-	 *            id of modified server
-	 */
-	void serverConnectionDataChanged(ServerId serverId);
+    /**
+     * Called in case connections data (url, username, password) has changed
+     *
+     * @param serverId id of modified server
+     */
+    void serverConnectionDataChanged(ServerId serverId);
 
-	/**
-	 * Called in case server name (label) has changed
-	 *
-	 * @param serverId
-	 *            id of modified server
-	 */
-	void serverNameChanged(ServerId serverId);
+    /**
+     * Called in case server name (label) has changed
+     *
+     * @param serverId id of modified server
+     */
+    void serverNameChanged(ServerId serverId);
 
-	/**
-	 * Called in case new server has been added. It notifies also about DISABLED servers.
-	 *
-	 * @param newServer
-	 *            added server
-	 */
+    /**
+     * Called in case new server has been added. It notifies also about DISABLED servers.
+     *
+     * @param newServer added server
+     */
 //	void serverAdded(ServerCfg newServer);
 
-	/**
-	 * Called in case new server has been added. It notifies also about DISABLED servers.
-	 *
-	 * @param serverData
-	 *            added server
-	 */
-	void serverAdded(final ServerData serverData);
+    /**
+     * Called in case new server has been added. It notifies also about DISABLED servers.
+     *
+     * @param serverData added server
+     */
+    void serverAdded(final ServerData serverData);
 
-	/**
-	 * Called in case server has been removed from configuration. It notifies also about DISABLED servers.
-	 *
-	 * @param oldServer
-	 *            removed server
-	 */
+    /**
+     * Called in case server has been removed from configuration. It notifies also about DISABLED
+     * servers.
+     *
+     * @param oldServer removed server
+     */
 //	void serverRemoved(ServerCfg oldServer);
 
-	/**
-	 * Called in case server has been removed from configuration. It notifies also about DISABLED servers.
-	 *
-	 * @param serverData
-	 *            removed server
-	 */
-	void serverRemoved(final ServerData serverData);
+    /**
+     * Called in case server has been removed from configuration. It notifies also about DISABLED
+     * servers.
+     *
+     * @param serverData removed server
+     */
+    void serverRemoved(final ServerData serverData);
 
-	/**
-	 * Called in case server has been enabled
-	 *
-	 * @param serverData
-	 *            enabled server
-	 */
-	void serverEnabled(ServerData serverData);
+    /**
+     * Called in case server has been enabled
+     *
+     * @param serverData enabled server
+     */
+    void serverEnabled(ServerData serverData);
 
-	/**
-	 * Called in case server has been disabled
-	 *
-	 * @param serverId
-	 *            id of disabled server
-	 */
-	void serverDisabled(ServerId serverId);
+    /**
+     * Called in case server has been disabled
+     *
+     * @param serverId id of disabled server
+     */
+    void serverDisabled(ServerId serverId);
 
-	/**
-	 * Called in case server has been changed ServerCfg.equals is used to determine the change
-	 *
-	 * @param serverData
-	 *            changed server
-	 */
-	void serverDataChanged(ServerData serverData);
+    /**
+     * Called in case server has been changed ServerCfg.equals is used to determine the change
+     *
+     * @param serverData changed server
+     */
+    void serverDataChanged(ServerData serverData);
 
-	/**
-	 * Called in case something in the JIRA servers list has been changed
-	 *
-	 * @param newConfiguration
-	 *            fresh configuration
-	 */
-	void jiraServersChanged(ProjectConfiguration newConfiguration);
+    /**
+     * Called in case something in the JIRA servers list has been changed
+     *
+     * @param newConfiguration fresh configuration
+     */
+    void jiraServersChanged(ProjectConfiguration newConfiguration);
 
 }

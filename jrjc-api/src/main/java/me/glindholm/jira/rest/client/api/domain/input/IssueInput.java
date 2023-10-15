@@ -32,12 +32,12 @@ public class IssueInput {
     private final Map<String, FieldInput> fields;
     private final List<PropertyInput> properties;
 
-    public static IssueInput createWithFields(FieldInput... fields) {
+    public static IssueInput createWithFields(final FieldInput... fields) {
         return new IssueInput(Map.copyOf(List.of(fields).stream().collect(Collectors.toMap(FieldInput::getId, Function.identity()))),
-                new ArrayList<PropertyInput>());
+                new ArrayList<>());
     }
 
-    public IssueInput(Map<String, FieldInput> fields, List<PropertyInput> properties) {
+    public IssueInput(final Map<String, FieldInput> fields, final List<PropertyInput> properties) {
         this.fields = fields;
         this.properties = properties;
     }
@@ -51,7 +51,7 @@ public class IssueInput {
     }
 
     @SuppressWarnings("unused")
-    public FieldInput getField(String id) {
+    public FieldInput getField(final String id) {
         return fields.get(id);
     }
 

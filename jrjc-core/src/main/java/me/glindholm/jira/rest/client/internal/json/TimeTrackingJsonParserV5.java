@@ -23,13 +23,12 @@ import me.glindholm.jira.rest.client.api.domain.TimeTracking;
 
 public class TimeTrackingJsonParserV5 implements JsonObjectParser<TimeTracking> {
     @Override
-    public TimeTracking parse(JSONObject json) throws JSONException {
+    public TimeTracking parse(final JSONObject json) throws JSONException {
         final Integer originalEstimateMinutes = JsonParseUtil.parseOptionInteger(json, "originalEstimateSeconds");
         final Integer timeRemainingMinutes = JsonParseUtil.parseOptionInteger(json, "remainingEstimateSeconds");
         final Integer timeSpentMinutes = JsonParseUtil.parseOptionInteger(json, "timeSpentSeconds");
         return new TimeTracking(originalEstimateMinutes != null ? originalEstimateMinutes / 60 : null,
-                timeRemainingMinutes != null ? timeRemainingMinutes / 60 : null,
-                timeSpentMinutes != null ? timeSpentMinutes / 60 : null);
+                timeRemainingMinutes != null ? timeRemainingMinutes / 60 : null, timeSpentMinutes != null ? timeSpentMinutes / 60 : null);
     }
 
 }

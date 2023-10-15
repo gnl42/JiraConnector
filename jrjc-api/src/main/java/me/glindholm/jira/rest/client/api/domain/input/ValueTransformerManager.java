@@ -24,8 +24,9 @@ import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * This class allows to register {@link ValueTransformer} objects and then perform value transformation using
- * registered transformers by invoking {@link ValueTransformerManager#apply(Object)}.
+ * This class allows to register {@link ValueTransformer} objects and then perform value
+ * transformation using registered transformers by invoking
+ * {@link ValueTransformerManager#apply(Object)}.
  *
  * @since v1.0
  */
@@ -49,7 +50,8 @@ public class ValueTransformerManager implements Serializable {
     }
 
     /**
-     * Registers new transformer at the beginning of list so it will be processed before existing transformers.
+     * Registers new transformer at the beginning of list so it will be processed before existing
+     * transformers.
      *
      * @param transformer Transformer to register
      * @return this
@@ -65,17 +67,18 @@ public class ValueTransformerManager implements Serializable {
      *
      * @param rawInput Value to transform
      * @return transformed value
-     * @throws CannotTransformValueException when any of available transformers was able to transform given value
+     * @throws CannotTransformValueException when any of available transformers was able to transform
+     *                                       given value
      */
-    public Object apply(@Nullable Object rawInput) {
+    public Object apply(@Nullable final Object rawInput) {
         if (rawInput instanceof List) {
             @SuppressWarnings("unchecked")
             final List<Object> rawInputObjects = (List<Object>) rawInput;
-            return rawInputObjects.stream().map(input -> apply(input)).collect(Collectors.toUnmodifiableList());
-            //            return ImmutableList.copyOf(Lists.transform(rawInputObjects, this));
+            return rawInputObjects.stream().map(this::apply).collect(Collectors.toUnmodifiableList());
+            // return ImmutableList.copyOf(Lists.transform(rawInputObjects, this));
         }
 
-        for (ValueTransformer valueTransformer : valueTransformers) {
+        for (final ValueTransformer valueTransformer : valueTransformers) {
             final Object transformedValue = valueTransformer.apply(rawInput);
             if (!ValueTransformer.CANNOT_HANDLE.equals(transformedValue)) {
                 return transformedValue;

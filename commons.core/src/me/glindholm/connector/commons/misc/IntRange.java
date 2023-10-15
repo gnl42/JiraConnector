@@ -16,78 +16,75 @@
 package me.glindholm.connector.commons.misc;
 
 public final class IntRange {
-	private final int min;
-	private final int max;
-	private static final int MAGIC = 31;
+    private final int min;
+    private final int max;
+    private static final int MAGIC = 31;
 
-	public IntRange(final int number) {
-		this.min = number;
-		this.max = number;
-	}
+    public IntRange(final int number) {
+        min = number;
+        max = number;
+    }
 
-	public boolean isSingleNumber() {
-		return min == max;
-	}
+    public boolean isSingleNumber() {
+        return min == max;
+    }
 
-	public IntRange(final int min, final int max) {
-		if (min > max) {
-			throw new IllegalArgumentException("Lower bound [" + min + "] cannot be greater than upper bound [" + max + "]");
-		}
-		this.max = max;
-		this.min = min;
-	}
+    public IntRange(final int min, final int max) {
+        if (min > max) {
+            throw new IllegalArgumentException("Lower bound [" + min + "] cannot be greater than upper bound [" + max + "]");
+        }
+        this.max = max;
+        this.min = min;
+    }
 
-	public int getMin() {
-		return min;
-	}
+    public int getMin() {
+        return min;
+    }
 
-	public int getMax() {
-		return max;
-	}
+    public int getMax() {
+        return max;
+    }
 
-	@Override
-	public String toString() {
-		if (isSingleNumber()) {
-			return "[" + min + "]";
-		} else {
-			return "[" + min + "-" + max + "]";
-		}
-	}
+    @Override
+    public String toString() {
+        if (isSingleNumber()) {
+            return "[" + min + "]";
+        } else {
+            return "[" + min + "-" + max + "]";
+        }
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-		final IntRange intRange = (IntRange) o;
+        final IntRange intRange = (IntRange) o;
 
-		if (max != intRange.max) {
-			return false;
-		}
-		//noinspection RedundantIfStatement
-		if (min != intRange.min) {
-			return false;
-		}
+        // noinspection RedundantIfStatement
+        if ((max != intRange.max) || (min != intRange.min)) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		int result = min;
-		result = MAGIC * result + max;
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = min;
+        result = MAGIC * result + max;
+        return result;
+    }
 
-	public String toNiceString() {
-		if (isSingleNumber()) {
-			return String.valueOf(min);
-		} else {
-			return min + " - " + max;
-		}
-	}
+    public String toNiceString() {
+        if (isSingleNumber()) {
+            return String.valueOf(min);
+        } else {
+            return min + " - " + max;
+        }
+    }
 }

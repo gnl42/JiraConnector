@@ -47,6 +47,6 @@ public enum IssueFieldId {
      * @return List of string id of each field.
      */
     public static List<String> ids() {
-        return EnumSet.allOf(IssueFieldId.class).stream().map(field -> field.getId()).collect(Collectors.toUnmodifiableList());
+        return EnumSet.allOf(IssueFieldId.class).stream().map(IssueFieldId::getId).collect(Collectors.toUnmodifiableList());
     }
 }

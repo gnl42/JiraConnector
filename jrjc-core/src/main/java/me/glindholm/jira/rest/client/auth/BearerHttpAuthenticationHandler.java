@@ -14,7 +14,7 @@ public class BearerHttpAuthenticationHandler implements AuthenticationHandler {
     }
 
     @Override
-    public void configure(Builder builder) {
+    public void configure(final Builder builder) {
         builder.setHeader(AUTHORIZATION_HEADER, "Bearer " + token);
         builder.setHeader("X-client", "jrjc");
     }

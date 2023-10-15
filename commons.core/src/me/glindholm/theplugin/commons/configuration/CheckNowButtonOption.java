@@ -17,8 +17,7 @@ package me.glindholm.theplugin.commons.configuration;
 
 /**
  * @author Jacek Jaroczynski
-*/
+ */
 public enum CheckNowButtonOption {
-	ONLY_STABLE,
-	STABLE_AND_SNAPSHOT
+    ONLY_STABLE, STABLE_AND_SNAPSHOT
 }

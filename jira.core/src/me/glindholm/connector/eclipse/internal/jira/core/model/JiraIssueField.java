@@ -89,11 +89,9 @@ public class JiraIssueField implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof JiraIssueField)) {
+        if (!(obj instanceof final JiraIssueField other)) {
             return false;
         }
-
-        final JiraIssueField other = (JiraIssueField) obj;
 
         if (!Objects.equals(id, other.id)) {
             return false;

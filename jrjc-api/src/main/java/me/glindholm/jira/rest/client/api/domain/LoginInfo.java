@@ -16,12 +16,10 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import java.time.OffsetDateTime;
-
 
 /**
  * Statistics about logins (successful and failed logins number and last date) for the current user
@@ -36,13 +34,13 @@ public class LoginInfo {
     @Nullable
     private final OffsetDateTime previousLoginDate;
 
-    public LoginInfo(int failedLoginCount, int loginCount, @Nullable OffsetDateTime lastFailedLoginDate, @Nullable OffsetDateTime previousLoginDate) {
+    public LoginInfo(final int failedLoginCount, final int loginCount, @Nullable final OffsetDateTime lastFailedLoginDate,
+            @Nullable final OffsetDateTime previousLoginDate) {
         this.failedLoginCount = failedLoginCount;
         this.loginCount = loginCount;
         this.lastFailedLoginDate = lastFailedLoginDate;
         this.previousLoginDate = previousLoginDate;
     }
-
 
     public int getFailedLoginCount() {
         return failedLoginCount;
@@ -62,7 +60,6 @@ public class LoginInfo {
         return previousLoginDate;
     }
 
-
     @Override
     public String toString() {
         return "LoginInfo [failedLoginCount=" + failedLoginCount + ", loginCount=" + loginCount + ", lastFailedLoginDate=" + lastFailedLoginDate
@@ -70,13 +67,10 @@ public class LoginInfo {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof LoginInfo) {
-            LoginInfo that = (LoginInfo) obj;
-            return Objects.equals(this.failedLoginCount, that.failedLoginCount)
-                    && Objects.equals(this.loginCount, that.loginCount)
-                    && Objects.equals(this.lastFailedLoginDate, that.lastFailedLoginDate)
-                    && Objects.equals(this.previousLoginDate, that.previousLoginDate);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final LoginInfo that) {
+            return Objects.equals(failedLoginCount, that.failedLoginCount) && Objects.equals(loginCount, that.loginCount)
+                    && Objects.equals(lastFailedLoginDate, that.lastFailedLoginDate) && Objects.equals(previousLoginDate, that.previousLoginDate);
         }
         return false;
     }

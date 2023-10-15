@@ -19,55 +19,57 @@ package me.glindholm.theplugin.commons.cfg;
  * User: pmaruszak
  */
 public class UserCfg implements User {
-	private String username = "";
-	private String password = "";
-	private boolean passwordStored;
+    private String username = "";
+    private String password = "";
+    private boolean passwordStored;
 
-	public UserCfg(String username, String password, final boolean passwordStored) {
-		this.username = username;
-		this.password = password;
-		this.passwordStored = passwordStored;
-	}
+    public UserCfg(final String username, final String password, final boolean passwordStored) {
+        this.username = username;
+        this.password = password;
+        this.passwordStored = passwordStored;
+    }
 
-	public UserCfg(String username, String password) {
-		this(username, password, false);
-	}
+    public UserCfg(final String username, final String password) {
+        this(username, password, false);
+    }
 
-	public UserCfg() {
-	}
+    public UserCfg() {
+    }
 
-	public UserCfg getClone() {
-		return new UserCfg(username, password, passwordStored);
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(final String userName) {
-		this.username = userName;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-
-	public void setPasswordStored(final boolean passwordStored) {
-		this.passwordStored = passwordStored;
-
-	}
-
-	public boolean isPasswordStored() {
-		return passwordStored;
-	}
+    public UserCfg getClone() {
+        return new UserCfg(username, password, passwordStored);
+    }
 
     @Override
-    public boolean equals(Object o) {
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(final String userName) {
+        username = userName;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPasswordStored(final boolean passwordStored) {
+        this.passwordStored = passwordStored;
+
+    }
+
+    @Override
+    public boolean isPasswordStored() {
+        return passwordStored;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -75,15 +77,9 @@ public class UserCfg implements User {
             return false;
         }
 
-        UserCfg userCfg = (UserCfg) o;
+        final UserCfg userCfg = (UserCfg) o;
 
-        if (passwordStored != userCfg.passwordStored) {
-            return false;
-        }
-        if (password != null ? !password.equals(userCfg.password) : userCfg.password != null) {
-            return false;
-        }
-        if (username != null ? !username.equals(userCfg.username) : userCfg.username != null) {
+        if ((passwordStored != userCfg.passwordStored) || (password != null ? !password.equals(userCfg.password) : userCfg.password != null) || (username != null ? !username.equals(userCfg.username) : userCfg.username != null)) {
             return false;
         }
 

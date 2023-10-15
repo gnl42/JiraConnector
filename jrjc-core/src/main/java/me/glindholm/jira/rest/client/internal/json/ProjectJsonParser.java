@@ -49,8 +49,8 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
     }
 
     @Override
-    public Project parse(JSONObject json) throws JSONException, URISyntaxException {
-        URI self = JsonParseUtil.getSelfUri(json);
+    public Project parse(final JSONObject json) throws JSONException, URISyntaxException {
+        final URI self = JsonParseUtil.getSelfUri(json);
         final List<String> expandos = parseExpandos(json);
         final BasicUser lead = JsonParseUtil.parseBasicUser(json.getJSONObject("lead"));
         final String key = json.getString("key");
@@ -60,7 +60,7 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
         URI uri;
         try {
             uri = urlStr == null || "".equals(urlStr) ? null : new URI(urlStr);
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             uri = null;
         }
         String description = JsonParseUtil.getOptionalString(json, "description");
@@ -68,14 +68,11 @@ public class ProjectJsonParser implements JsonObjectParser<Project> {
             description = null;
         }
         final List<Version> versions = JsonParseUtil.parseJsonArray(json.getJSONArray("versions"), versionJsonParser);
-        final List<BasicComponent> components = JsonParseUtil.parseJsonArray(json
-                .getJSONArray("components"), componentJsonParser);
+        final List<BasicComponent> components = JsonParseUtil.parseJsonArray(json.getJSONArray("components"), componentJsonParser);
         final JSONArray issueTypesArray = json.optJSONArray("issueTypes");
         final List<IssueType> issueTypes = JsonParseUtil.parseOptionalJsonArray(issueTypesArray, issueTypeJsonParser);
-        final List<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil
-                .getOptionalJsonObject(json, "roles"));
+        final List<BasicProjectRole> projectRoles = basicProjectRoleJsonParser.parse(JsonParseUtil.getOptionalJsonObject(json, "roles"));
         return new Project(expandos, self, key, id, name, description, lead, uri, versions, components, issueTypes, projectRoles);
     }
-
 
 }

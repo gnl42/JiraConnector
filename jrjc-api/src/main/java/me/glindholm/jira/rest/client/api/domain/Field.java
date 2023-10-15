@@ -38,8 +38,8 @@ public class Field implements Serializable, NamedEntity, IdentifiableEntity<Stri
     @Nullable
     private final FieldSchema schema;
 
-    public Field(String id, String name, FieldType fieldType, boolean orderable, boolean navigable, boolean searchable,
-            @Nullable FieldSchema schema) {
+    public Field(final String id, final String name, final FieldType fieldType, final boolean orderable, final boolean navigable, final boolean searchable,
+            @Nullable final FieldSchema schema) {
         this.id = id;
         this.name = name;
         this.fieldType = fieldType;
@@ -91,16 +91,11 @@ public class Field implements Serializable, NamedEntity, IdentifiableEntity<Stri
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Field) {
-            final Field that = (Field) obj;
-            return Objects.equals(this.id, that.id)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.fieldType, that.fieldType)
-                    && Objects.equals(this.orderable, that.orderable)
-                    && Objects.equals(this.navigable, that.navigable)
-                    && Objects.equals(this.searchable, that.searchable)
-                    && Objects.equals(this.schema, that.schema);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Field that) {
+            return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(fieldType, that.fieldType)
+                    && Objects.equals(orderable, that.orderable) && Objects.equals(navigable, that.navigable) && Objects.equals(searchable, that.searchable)
+                    && Objects.equals(schema, that.schema);
         }
         return false;
     }

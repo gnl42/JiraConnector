@@ -119,8 +119,7 @@ public class Comment implements Serializable, AddressableEntity {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Comment) {
-            final Comment that = (Comment) obj;
+        if (obj instanceof final Comment that) {
             return Objects.equals(self, that.self) && Objects.equals(id, that.id) && Objects.equals(body, that.body) && Objects.equals(author, that.author)
                     && Objects.equals(updateAuthor, that.updateAuthor) && Objects.equals(creationDate, that.creationDate)
                     && Objects.equals(updateDate, that.updateDate) && Objects.equals(visibility, that.visibility) && Objects.equals(body, that.body);

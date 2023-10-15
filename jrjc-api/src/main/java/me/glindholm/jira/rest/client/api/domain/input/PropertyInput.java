@@ -10,7 +10,7 @@ public class PropertyInput implements Serializable, IdentifiableEntity<String> {
     private final String key;
     private final String value;
 
-    public PropertyInput(String key, String value) {
+    public PropertyInput(final String key, final String value) {
         this.key = key;
         this.value = value;
     }
@@ -29,7 +29,7 @@ public class PropertyInput implements Serializable, IdentifiableEntity<String> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -37,7 +37,7 @@ public class PropertyInput implements Serializable, IdentifiableEntity<String> {
             return false;
         }
 
-        PropertyInput that = (PropertyInput) o;
+        final PropertyInput that = (PropertyInput) o;
 
         if (key != null ? !key.equals(that.key) : that.key != null) {
             return false;

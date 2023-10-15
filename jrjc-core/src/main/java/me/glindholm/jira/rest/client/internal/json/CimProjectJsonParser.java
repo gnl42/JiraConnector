@@ -37,8 +37,7 @@ import me.glindholm.jira.rest.client.api.domain.CimProject;
  */
 public class CimProjectJsonParser implements JsonObjectParser<CimProject> {
 
-    private final JsonArrayParser<List<CimIssueType>> issueTypesParser = GenericJsonArrayParser
-            .create(new CimIssueTypeJsonParser());
+    private final JsonArrayParser<List<CimIssueType>> issueTypesParser = GenericJsonArrayParser.create(new CimIssueTypeJsonParser());
 
     private final BasicProjectJsonParser basicProjectJsonParser = new BasicProjectJsonParser();
 
@@ -46,11 +45,9 @@ public class CimProjectJsonParser implements JsonObjectParser<CimProject> {
     public CimProject parse(final JSONObject json) throws JSONException, URISyntaxException {
         final BasicProject basicProject = basicProjectJsonParser.parse(json);
         final JSONArray issueTypesArray = json.optJSONArray("issuetypes");
-        final List<CimIssueType> issueTypes = issueTypesArray != null ?
-                issueTypesParser.parse(issueTypesArray) : Collections.emptyList();
+        final List<CimIssueType> issueTypes = issueTypesArray != null ? issueTypesParser.parse(issueTypesArray) : Collections.emptyList();
 
         final Map<String, URI> avatarUris = JsonParseUtil.getAvatarUris(json.getJSONObject("avatarUrls"));
-        return new CimProject(basicProject.getSelf(), basicProject.getKey(), basicProject.getId(),
-                basicProject.getName(), avatarUris, issueTypes);
+        return new CimProject(basicProject.getSelf(), basicProject.getKey(), basicProject.getId(), basicProject.getName(), avatarUris, issueTypes);
     }
 }

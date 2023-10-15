@@ -76,12 +76,9 @@ public class OperationHeader implements Serializable, Operation {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof OperationHeader) {
-            OperationHeader that = (OperationHeader) o;
-            return Objects.equals(id, that.id)
-                    && Objects.equals(label, that.label)
-                    && Objects.equals(title, that.title)
+    public boolean equals(final Object o) {
+        if (o instanceof final OperationHeader that) {
+            return Objects.equals(id, that.id) && Objects.equals(label, that.label) && Objects.equals(title, that.title)
                     && Objects.equals(iconClass, that.iconClass);
         }
         return false;

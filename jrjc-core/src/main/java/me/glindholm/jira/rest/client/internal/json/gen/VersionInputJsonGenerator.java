@@ -16,15 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import me.glindholm.jira.rest.client.api.domain.input.VersionInput;
-import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
-
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import me.glindholm.jira.rest.client.api.domain.input.VersionInput;
+import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
+
 public class VersionInputJsonGenerator implements JsonGenerator<VersionInput> {
     @Override
-    public JSONObject generate(VersionInput version) throws JSONException {
+    public JSONObject generate(final VersionInput version) throws JSONException {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", version.getName());
         jsonObject.put("project", version.getProjectKey());

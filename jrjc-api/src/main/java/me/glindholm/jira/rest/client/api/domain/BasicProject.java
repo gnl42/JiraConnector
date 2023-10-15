@@ -77,13 +77,9 @@ public class BasicProject implements Serializable, AddressableEntity, NamedEntit
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof BasicProject) {
-            BasicProject that = (BasicProject) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.key, that.key);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final BasicProject that) {
+            return Objects.equals(self, that.self) && Objects.equals(name, that.name) && Objects.equals(id, that.id) && Objects.equals(key, that.key);
         }
         return false;
     }

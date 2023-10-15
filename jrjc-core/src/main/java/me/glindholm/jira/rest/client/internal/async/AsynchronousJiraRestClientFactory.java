@@ -36,8 +36,7 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
 
     @Override
     public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) throws URISyntaxException {
-        final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory()
-                .createClient(serverUri, authenticationHandler);
+        final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory().createClient(serverUri, authenticationHandler);
         return new AsynchronousJiraRestClient(serverUri, httpClient);
     }
 
@@ -63,18 +62,19 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
     }
 
     @Override
-    public JiraRestClient createWithBearerHttpAuthentication(URI uri, String token, HttpClientOptions httpOptions) throws URISyntaxException {
+    public JiraRestClient createWithBearerHttpAuthentication(final URI uri, final String token, final HttpClientOptions httpOptions) throws URISyntaxException {
         return create(uri, new BearerHttpAuthenticationHandler(token), httpOptions);
     }
 
     @Override
-    public JiraRestClient create(URI uri, final AuthenticationHandler authenticationHandler, HttpClientOptions httpOptions) throws URISyntaxException {
+    public JiraRestClient create(final URI uri, final AuthenticationHandler authenticationHandler, final HttpClientOptions httpOptions)
+            throws URISyntaxException {
         final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory().createClient(uri, authenticationHandler, httpOptions);
         return new AsynchronousJiraRestClient(uri, httpClient);
     }
 
     @Override
-    public JiraRestClient createWithBasicHttpAuthentication(URI uri, String username, String password, HttpClientOptions httpOptions)
+    public JiraRestClient createWithBasicHttpAuthentication(final URI uri, final String username, final String password, final HttpClientOptions httpOptions)
             throws URISyntaxException {
         return create(uri, new BasicHttpAuthenticationHandler(username, password), httpOptions);
     }

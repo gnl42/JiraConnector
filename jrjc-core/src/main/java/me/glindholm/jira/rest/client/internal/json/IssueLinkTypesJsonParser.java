@@ -12,7 +12,7 @@ public class IssueLinkTypesJsonParser implements JsonObjectParser<List<Issuelink
     private final IssuelinksTypeJsonParserV5 issueLinkTypeJsonParser = new IssuelinksTypeJsonParserV5();
 
     @Override
-    public List<IssuelinksType> parse(JSONObject json) throws JSONException, URISyntaxException {
+    public List<IssuelinksType> parse(final JSONObject json) throws JSONException, URISyntaxException {
         return JsonParseUtil.parseJsonArray(json.optJSONArray("issueLinkTypes"), issueLinkTypeJsonParser);
     }
 }

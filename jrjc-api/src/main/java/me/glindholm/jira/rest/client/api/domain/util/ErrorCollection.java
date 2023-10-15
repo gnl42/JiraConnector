@@ -58,9 +58,9 @@ public class ErrorCollection {
         return errors;
     }
 
-    //    public static Builder builder() {
-    //        return new Builder();
-    //    }
+    // public static Builder builder() {
+    // return new Builder();
+    // }
     //
     @Override
     public String toString() {
@@ -69,11 +69,8 @@ public class ErrorCollection {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof ErrorCollection) {
-            final ErrorCollection that = (ErrorCollection) obj;
-            return Objects.equals(this.status, that.status)
-                    && Objects.equals(this.errors, that.errors)
-                    && Objects.equals(this.errorMessages, that.errorMessages);
+        if (obj instanceof final ErrorCollection that) {
+            return Objects.equals(status, that.status) && Objects.equals(errors, that.errors) && Objects.equals(errorMessages, that.errorMessages);
         }
         return false;
     }
@@ -83,35 +80,35 @@ public class ErrorCollection {
         return Objects.hash(status, errors, errorMessages);
     }
 
-    //    public static class Builder {
+    // public static class Builder {
     //
-    //        private int status;
-    //        private final ImmutableMap.Builder<String, String> errors;
-    //        private final ImmutableList.Builder<String> errorMessages;
+    // private int status;
+    // private final ImmutableMap.Builder<String, String> errors;
+    // private final ImmutableList.Builder<String> errorMessages;
     //
-    //        public Builder() {
-    //            errors = ImmutableMap.builder();
-    //            errorMessages = ImmutableList.builder();
-    //        }
+    // public Builder() {
+    // errors = ImmutableMap.builder();
+    // errorMessages = ImmutableList.builder();
+    // }
     //
-    //        public Builder status(final int status) {
-    //            this.status = status;
-    //            return this;
-    //        }
+    // public Builder status(final int status) {
+    // this.status = status;
+    // return this;
+    // }
     //
-    //        public Builder error(final String key, final String message) {
-    //            errors.put(key, message);
-    //            return this;
+    // public Builder error(final String key, final String message) {
+    // errors.put(key, message);
+    // return this;
     //
-    //        }
+    // }
     //
-    //        public Builder errorMessage(final String message) {
-    //            errorMessages.add(message);
-    //            return this;
-    //        }
+    // public Builder errorMessage(final String message) {
+    // errorMessages.add(message);
+    // return this;
+    // }
     //
-    //        public ErrorCollection build() {
-    //            return new ErrorCollection(status, errorMessages.build(), errors.build());
-    //        }
-    //    }
+    // public ErrorCollection build() {
+    // return new ErrorCollection(status, errorMessages.build(), errors.build());
+    // }
+    // }
 }

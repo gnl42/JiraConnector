@@ -16,27 +16,26 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 
-import java.net.URI;
-
 public class BasicComponentJsonParser implements JsonObjectParser<BasicComponent> {
 
     @Override
-    public BasicComponent parse(JSONObject json) throws JSONException {
+    public BasicComponent parse(final JSONObject json) throws JSONException {
         return parseBasicComponent(json);
     }
 
-    static BasicComponent parseBasicComponent(JSONObject json) throws JSONException {
+    static BasicComponent parseBasicComponent(final JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final String name = json.getString("name");
         final Long id = JsonParseUtil.getOptionalLong(json, "id");
         final String description = JsonParseUtil.getOptionalString(json, "description");
         return new BasicComponent(selfUri, id, name, description);
     }
-
 
 }

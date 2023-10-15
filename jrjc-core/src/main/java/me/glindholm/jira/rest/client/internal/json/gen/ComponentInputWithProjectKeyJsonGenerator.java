@@ -16,19 +16,19 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.AssigneeType;
 import me.glindholm.jira.rest.client.internal.domain.AssigneeTypeConstants;
 import me.glindholm.jira.rest.client.internal.domain.input.ComponentInputWithProjectKey;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 public class ComponentInputWithProjectKeyJsonGenerator implements JsonGenerator<ComponentInputWithProjectKey> {
 
     @Override
-    public JSONObject generate(ComponentInputWithProjectKey componentInput) throws JSONException {
-        JSONObject res = new JSONObject();
+    public JSONObject generate(final ComponentInputWithProjectKey componentInput) throws JSONException {
+        final JSONObject res = new JSONObject();
         if (componentInput.getProjectKey() != null) {
             res.put("project", componentInput.getProjectKey());
         }
@@ -43,23 +43,13 @@ public class ComponentInputWithProjectKeyJsonGenerator implements JsonGenerator<
         }
         final AssigneeType assigneeType = componentInput.getAssigneeType();
         if (assigneeType != null) {
-            final String assigneeTypeStr;
-            switch (assigneeType) {
-                case PROJECT_DEFAULT:
-                    assigneeTypeStr = AssigneeTypeConstants.PROJECT_DEFAULT;
-                    break;
-                case COMPONENT_LEAD:
-                    assigneeTypeStr = AssigneeTypeConstants.COMPONENT_LEAD;
-                    break;
-                case PROJECT_LEAD:
-                    assigneeTypeStr = AssigneeTypeConstants.PROJECT_LEAD;
-                    break;
-                case UNASSIGNED:
-                    assigneeTypeStr = AssigneeTypeConstants.UNASSIGNED;
-                    break;
-                default:
-                    throw new RestClientException("Unexpected assignee type [" + assigneeType + "]", null);
-            }
+            final String assigneeTypeStr = switch (assigneeType) {
+            case PROJECT_DEFAULT -> AssigneeTypeConstants.PROJECT_DEFAULT;
+            case COMPONENT_LEAD -> AssigneeTypeConstants.COMPONENT_LEAD;
+            case PROJECT_LEAD -> AssigneeTypeConstants.PROJECT_LEAD;
+            case UNASSIGNED -> AssigneeTypeConstants.UNASSIGNED;
+            default -> throw new RestClientException("Unexpected assignee type [" + assigneeType + "]", null);
+            };
             res.put("assigneeType", assigneeTypeStr);
         }
         return res;

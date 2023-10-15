@@ -16,7 +16,6 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -40,7 +39,7 @@ public class FieldSchema implements Serializable {
     @Nullable
     private final Long customId;
 
-    public FieldSchema(String type, String items, String system, String custom, Long customId) {
+    public FieldSchema(final String type, final String items, final String system, final String custom, final Long customId) {
         this.type = type;
         this.items = items;
         this.system = system;
@@ -77,7 +76,8 @@ public class FieldSchema implements Serializable {
     }
 
     /**
-     * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+     * Returns ToStringHelper with all fields inserted. Override this method to insert additional
+     * fields.
      *
      * @return ToStringHelper
      */
@@ -91,14 +91,10 @@ public class FieldSchema implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof FieldSchema) {
-            FieldSchema that = (FieldSchema) obj;
-            return Objects.equals(this.type, that.type)
-                    && Objects.equals(this.items, that.items)
-                    && Objects.equals(this.system, that.system)
-                    && Objects.equals(this.custom, that.custom)
-                    && Objects.equals(this.customId, that.customId);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final FieldSchema that) {
+            return Objects.equals(type, that.type) && Objects.equals(items, that.items) && Objects.equals(system, that.system)
+                    && Objects.equals(custom, that.custom) && Objects.equals(customId, that.customId);
         }
         return false;
     }

@@ -63,8 +63,7 @@ public class BasicComponent implements Serializable, AddressableEntity, NamedEnt
     }
 
     /**
-     * @return optional description for this project (as defined by the project
-     *         admin)
+     * @return optional description for this project (as defined by the project admin)
      */
     @Nullable
     public String getDescription() {
@@ -78,8 +77,7 @@ public class BasicComponent implements Serializable, AddressableEntity, NamedEnt
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof BasicComponent) {
-            final BasicComponent that = (BasicComponent) obj;
+        if (obj instanceof final BasicComponent that) {
             return Objects.equals(self, that.self) && Objects.equals(id, that.id) && Objects.equals(name, that.name)
                     && Objects.equals(description, that.description);
         }

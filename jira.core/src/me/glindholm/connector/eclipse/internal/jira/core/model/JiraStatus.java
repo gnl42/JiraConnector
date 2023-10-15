@@ -76,11 +76,9 @@ public class JiraStatus implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if ((obj == null) || !(obj instanceof JiraStatus)) {
+        if (obj == null || !(obj instanceof final JiraStatus that)) {
             return false;
         }
-
-        final JiraStatus that = (JiraStatus) obj;
 
         return id.equals(that.id);
     }

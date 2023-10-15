@@ -34,25 +34,18 @@ public class WatchersJsonParserBuilder {
             private final BasicUserJsonParser userJsonParser = new BasicUserJsonParser();
 
             @Override
-            public Watchers parse(JSONObject json) throws JSONException, URISyntaxException {
-                final List<BasicUser> watchers = JsonParseUtil.parseJsonArray(json
-                        .getJSONArray("watchers"), userJsonParser);
+            public Watchers parse(final JSONObject json) throws JSONException, URISyntaxException {
+                final List<BasicUser> watchers = JsonParseUtil.parseJsonArray(json.getJSONArray("watchers"), userJsonParser);
                 return new Watchers(parseValueImpl(json), watchers);
             }
         };
     }
 
     public static JsonObjectParser<BasicWatchers> createBasicWatchersParser() {
-        return new JsonObjectParser<>() {
-            @Override
-            public BasicWatchers parse(JSONObject json) throws JSONException {
-                return parseValueImpl(json);
-            }
-        };
+        return WatchersJsonParserBuilder::parseValueImpl;
     }
 
-
-    private static BasicWatchers parseValueImpl(JSONObject json) throws JSONException {
+    private static BasicWatchers parseValueImpl(final JSONObject json) throws JSONException {
         final URI self = JsonParseUtil.getSelfUri(json);
         final boolean isWatching = json.getBoolean("isWatching");
         final int numWatchers = json.getInt("watchCount");

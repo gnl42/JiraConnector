@@ -25,10 +25,7 @@ import java.util.Map;
 import me.glindholm.theplugin.commons.util.Version;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Jacek
- * Date: 2008-04-15
- * Time: 10:11:25
+ * Created by IntelliJ IDEA. User: Jacek Date: 2008-04-15 Time: 10:11:25
  */
 public class GeneralConfigurationBean {
 
@@ -38,8 +35,8 @@ public class GeneralConfigurationBean {
     private Boolean anonymousEnhancedFeedbackEnabled;
     private boolean useIdeaProxySettings = true;
     private boolean httpServerEnabled = true;
-    private Collection<String> certs = new HashSet<String>();
-    private Map<String, Integer> statsCountersMap = Collections.synchronizedMap(new HashMap<String, Integer>());
+    private Collection<String> certs = new HashSet<>();
+    private Map<String, Integer> statsCountersMap = Collections.synchronizedMap(new HashMap<>());
 
     private long uid = 0;
     private static final double ID_DISCRIMINATOR = 1e3d;
@@ -55,21 +52,20 @@ public class GeneralConfigurationBean {
 
     }
 
-    public GeneralConfigurationBean(GeneralConfigurationBean generalConfigurationData) {
-        this.anonymousEnhancedFeedbackEnabled = generalConfigurationData.getAnonymousEnhancedFeedbackEnabled();
-        this.rejectedUpgrade = generalConfigurationData.getRejectedUpgrade();
-        this.checkUnstableVersionsEnabled = generalConfigurationData.isCheckUnstableVersionsEnabled();
-        this.autoUpdateEnabled = generalConfigurationData.isAutoUpdateEnabled();
-        this.httpServerEnabled = generalConfigurationData.isHttpServerEnabled();
-        this.httpServerPort = generalConfigurationData.getHttpServerPort();
-        this.uid = generalConfigurationData.getUid();
-        this.useIdeaProxySettings = generalConfigurationData.getUseIdeaProxySettings();
-        this.certs = generalConfigurationData.getCerts();
-        this.statsCountersMap = Collections.synchronizedMap(generalConfigurationData.getStatsCountersMap());
-        this.checkNowButtonOption = generalConfigurationData.getCheckNowButtonOption();
-        this.askedAboutDefaultServers = generalConfigurationData.isAskedAboutDefaultServers();
-        this.informedAboutIdea9TaskExperimentalSupport =
-                generalConfigurationData.isInformedAboutIdea9TaskExperimentalSupport();
+    public GeneralConfigurationBean(final GeneralConfigurationBean generalConfigurationData) {
+        anonymousEnhancedFeedbackEnabled = generalConfigurationData.getAnonymousEnhancedFeedbackEnabled();
+        rejectedUpgrade = generalConfigurationData.getRejectedUpgrade();
+        checkUnstableVersionsEnabled = generalConfigurationData.isCheckUnstableVersionsEnabled();
+        autoUpdateEnabled = generalConfigurationData.isAutoUpdateEnabled();
+        httpServerEnabled = generalConfigurationData.isHttpServerEnabled();
+        httpServerPort = generalConfigurationData.getHttpServerPort();
+        uid = generalConfigurationData.getUid();
+        useIdeaProxySettings = generalConfigurationData.getUseIdeaProxySettings();
+        certs = generalConfigurationData.getCerts();
+        statsCountersMap = Collections.synchronizedMap(generalConfigurationData.getStatsCountersMap());
+        checkNowButtonOption = generalConfigurationData.getCheckNowButtonOption();
+        askedAboutDefaultServers = generalConfigurationData.isAskedAboutDefaultServers();
+        informedAboutIdea9TaskExperimentalSupport = generalConfigurationData.isInformedAboutIdea9TaskExperimentalSupport();
     }
 
     public long getUid() {
@@ -80,7 +76,7 @@ public class GeneralConfigurationBean {
         return uid;
     }
 
-    public void setUid(long uid) {
+    public void setUid(final long uid) {
         this.uid = uid;
     }
 
@@ -88,7 +84,7 @@ public class GeneralConfigurationBean {
         return autoUpdateEnabled;
     }
 
-    public void setAutoUpdateEnabled(boolean autoUpdateEnabled) {
+    public void setAutoUpdateEnabled(final boolean autoUpdateEnabled) {
         this.autoUpdateEnabled = autoUpdateEnabled;
     }
 
@@ -96,7 +92,7 @@ public class GeneralConfigurationBean {
         return httpServerEnabled;
     }
 
-    public void setHttpServerEnabled(boolean httpServerEnabled) {
+    public void setHttpServerEnabled(final boolean httpServerEnabled) {
         this.httpServerEnabled = httpServerEnabled;
     }
 
@@ -104,19 +100,19 @@ public class GeneralConfigurationBean {
         return httpServerPort;
     }
 
-    public void setHttpServerPort(int port) {
-        this.httpServerPort = port;
+    public void setHttpServerPort(final int port) {
+        httpServerPort = port;
     }
 
     public Version getRejectedUpgrade() {
         return rejectedUpgrade;
     }
 
-    public void setRejectedUpgrade(Version rejectedUpgrade) {
+    public void setRejectedUpgrade(final Version rejectedUpgrade) {
         this.rejectedUpgrade = rejectedUpgrade;
     }
 
-    public void setCheckUnstableVersionsEnabled(boolean checkUnstableVersionsEnabled) {
+    public void setCheckUnstableVersionsEnabled(final boolean checkUnstableVersionsEnabled) {
         this.checkUnstableVersionsEnabled = checkUnstableVersionsEnabled;
     }
 
@@ -128,8 +124,8 @@ public class GeneralConfigurationBean {
         return anonymousEnhancedFeedbackEnabled;
     }
 
-    public void setAnonymousEnhancedFeedbackEnabled(Boolean isAnonymousEnhancedFeedbackEnabled) {
-        this.anonymousEnhancedFeedbackEnabled = isAnonymousEnhancedFeedbackEnabled;
+    public void setAnonymousEnhancedFeedbackEnabled(final Boolean isAnonymousEnhancedFeedbackEnabled) {
+        anonymousEnhancedFeedbackEnabled = isAnonymousEnhancedFeedbackEnabled;
     }
 
     public boolean getUseIdeaProxySettings() {
@@ -140,19 +136,19 @@ public class GeneralConfigurationBean {
         return certs;
     }
 
-    public synchronized void setCerts(Collection<String> certs) {
+    public synchronized void setCerts(final Collection<String> certs) {
         this.certs = certs;
     }
 
-    public void setUseIdeaProxySettings(boolean use) {
+    public void setUseIdeaProxySettings(final boolean use) {
         useIdeaProxySettings = use;
     }
 
     public CheckNowButtonOption getCheckNowButtonOption() {
-        return this.checkNowButtonOption;
+        return checkNowButtonOption;
     }
 
-    public void setCheckNowButtonOption(CheckNowButtonOption checkNowButtonOption) {
+    public void setCheckNowButtonOption(final CheckNowButtonOption checkNowButtonOption) {
         this.checkNowButtonOption = checkNowButtonOption;
     }
 
@@ -160,14 +156,14 @@ public class GeneralConfigurationBean {
         return statsCountersMap;
     }
 
-    public synchronized void addCounterIfNotPresent(String counterName) {
+    public synchronized void addCounterIfNotPresent(final String counterName) {
         if (!getStatsCountersMap().containsKey(counterName)) {
             getStatsCountersMap().put(counterName, 0);
         }
     }
 
-    public void bumpCounter(String counterName) {
-        Boolean enabled = getAnonymousEnhancedFeedbackEnabled();
+    public void bumpCounter(final String counterName) {
+        final Boolean enabled = getAnonymousEnhancedFeedbackEnabled();
         if (enabled == null || !enabled) {
             return;
         }
@@ -189,25 +185,24 @@ public class GeneralConfigurationBean {
         return informedAboutIdea9TaskExperimentalSupport;
     }
 
-    public void setInformedAboutIdea9TaskExperimentalSupport(boolean informedAboutIdea9TaskExperimentalSupport) {
+    public void setInformedAboutIdea9TaskExperimentalSupport(final boolean informedAboutIdea9TaskExperimentalSupport) {
         this.informedAboutIdea9TaskExperimentalSupport = informedAboutIdea9TaskExperimentalSupport;
     }
 
-    public void setAskedAboutDefaultServers(boolean askedAboutDefaultServers) {
+    public void setAskedAboutDefaultServers(final boolean askedAboutDefaultServers) {
         this.askedAboutDefaultServers = askedAboutDefaultServers;
     }
 
-
-    public void resetCounter(String counterName) {
+    public void resetCounter(final String counterName) {
         getStatsCountersMap().put(counterName, 0);
     }
 
-    public void setStatsCountersMap(Map<String, Integer> statsCountersMap) {
+    public void setStatsCountersMap(final Map<String, Integer> statsCountersMap) {
         this.statsCountersMap = Collections.synchronizedMap(statsCountersMap);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -215,20 +210,9 @@ public class GeneralConfigurationBean {
             return false;
         }
 
-        GeneralConfigurationBean that = (GeneralConfigurationBean) o;
+        final GeneralConfigurationBean that = (GeneralConfigurationBean) o;
 
-        if (autoUpdateEnabled != that.autoUpdateEnabled) {
-            return false;
-        }
-        if (httpServerEnabled != that.httpServerEnabled) {
-            return false;
-        }
-
-         if (askedAboutDefaultServers != that.askedAboutDefaultServers) {
-            return false;
-        }
-        
-        if (httpServerPort != that.httpServerPort) {
+        if ((autoUpdateEnabled != that.autoUpdateEnabled) || (httpServerEnabled != that.httpServerEnabled) || (askedAboutDefaultServers != that.askedAboutDefaultServers) || (httpServerPort != that.httpServerPort)) {
             return false;
         }
         if (checkUnstableVersionsEnabled != that.checkUnstableVersionsEnabled) {
@@ -240,14 +224,11 @@ public class GeneralConfigurationBean {
         if (useIdeaProxySettings != that.useIdeaProxySettings) {
             return false;
         }
-        if (anonymousEnhancedFeedbackEnabled != null
-                ? !anonymousEnhancedFeedbackEnabled.equals(that.anonymousEnhancedFeedbackEnabled)
+        if (anonymousEnhancedFeedbackEnabled != null ? !anonymousEnhancedFeedbackEnabled.equals(that.anonymousEnhancedFeedbackEnabled)
                 : that.anonymousEnhancedFeedbackEnabled != null) {
             return false;
         }
-        if (checkNowButtonOption != null
-                ? !checkNowButtonOption.equals(that.checkNowButtonOption)
-                : that.checkNowButtonOption != null) {
+        if (checkNowButtonOption != null ? !checkNowButtonOption.equals(that.checkNowButtonOption) : that.checkNowButtonOption != null) {
             return false;
         }
         if (rejectedUpgrade != null ? !rejectedUpgrade.equals(that.rejectedUpgrade) : that.rejectedUpgrade != null) {
@@ -269,7 +250,7 @@ public class GeneralConfigurationBean {
     @Override
     public int hashCode() {
         int result;
-        result = (autoUpdateEnabled ? 1 : 0);
+        result = autoUpdateEnabled ? 1 : 0;
         result = THIRTY_ONE * result + (informedAboutIdea9TaskExperimentalSupport ? 1 : 0);
         result = THIRTY_ONE * result + (askedAboutDefaultServers ? 1 : 0);
         result = THIRTY_ONE * result + (httpServerEnabled ? 1 : 0);
@@ -277,10 +258,9 @@ public class GeneralConfigurationBean {
         result = THIRTY_ONE * result + (rejectedUpgrade != null ? rejectedUpgrade.hashCode() : 0);
         result = THIRTY_ONE * result + (checkUnstableVersionsEnabled ? 1 : 0);
         result = THIRTY_ONE * result + (useIdeaProxySettings ? 1 : 0);
-        result = THIRTY_ONE * result
-                + (anonymousEnhancedFeedbackEnabled != null ? anonymousEnhancedFeedbackEnabled.hashCode() : 0);
+        result = THIRTY_ONE * result + (anonymousEnhancedFeedbackEnabled != null ? anonymousEnhancedFeedbackEnabled.hashCode() : 0);
         result = THIRTY_ONE * result + (checkNowButtonOption != null ? checkNowButtonOption.hashCode() : 0);
-        result = THIRTY_ONE * result + (int) (uid ^ (uid >>> THIRTY_TWO));
+        result = THIRTY_ONE * result + (int) (uid ^ uid >>> THIRTY_TWO);
         result = THIRTY_ONE * result + certs.hashCode();
         result = THIRTY_ONE * result + statsCountersMap.hashCode();
         return result;

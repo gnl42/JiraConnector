@@ -91,13 +91,11 @@ class JiraAttributeEditorFactory extends AttributeEditorFactory {
                             if (!StringUtils.isBlank(repositoryPerson.getPersonId())) {
                                 getControl().setToolTipText(repositoryPerson.getPersonId());
                             }
-                        } else {
-                            // add tooltip with user display name for editbox in which we just display user
-                            // id
-                            if (!StringUtils.isBlank(repositoryPerson.getName())) {
-                                if (getText() != null) {
-                                    getText().setToolTipText(repositoryPerson.getName());
-                                }
+                        } else // add tooltip with user display name for editbox in which we just display user
+                        // id
+                        if (!StringUtils.isBlank(repositoryPerson.getName())) {
+                            if (getText() != null) {
+                                getText().setToolTipText(repositoryPerson.getName());
                             }
                         }
                     }

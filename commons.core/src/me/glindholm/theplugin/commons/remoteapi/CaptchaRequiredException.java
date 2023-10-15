@@ -14,9 +14,9 @@ package me.glindholm.theplugin.commons.remoteapi;
 @SuppressWarnings("serial")
 public class CaptchaRequiredException extends RemoteApiLoginException {
 
-	public CaptchaRequiredException(Throwable throwable) {
-		super("Due to multiple failed login attempts, you have been temporarily banned from using the remote API."
+    public CaptchaRequiredException(final Throwable throwable) {
+        super("Due to multiple failed login attempts, you have been temporarily banned from using the remote API."
                 + " To re-enable the remote API please log into your server via the web interface.", throwable);
-	}
+    }
 
 }

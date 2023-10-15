@@ -48,8 +48,8 @@ public class IssueInputBuilder {
     private final List<PropertyInput> properties = new ArrayList<>();
 
     /**
-     * Creates {@link IssueInputBuilder} without any fields pre-populated. Remember
-     * to fill required fields for the target issue action.
+     * Creates {@link IssueInputBuilder} without any fields pre-populated. Remember to fill required
+     * fields for the target issue action.
      */
     public IssueInputBuilder() {
     }
@@ -126,14 +126,13 @@ public class IssueInputBuilder {
     }
 
     /**
-     * Sets value of field. This method transforms given value to one of
-     * understandable by input generator.
+     * Sets value of field. This method transforms given value to one of understandable by input
+     * generator.
      *
      * @param id    Field's id
      * @param value Field's value
      * @return this
-     * @throws CannotTransformValueException When transformer cannot transform given
-     *                                       value
+     * @throws CannotTransformValueException When transformer cannot transform given value
      */
     public IssueInputBuilder setFieldValue(final String id, final Object value) throws CannotTransformValueException {
         return setFieldInput(new FieldInput(id, valueTransformerManager.apply(value)));
@@ -157,7 +156,7 @@ public class IssueInputBuilder {
 
     @SuppressWarnings("unused")
     public IssueInputBuilder setAffectedVersions(final List<Version> versions) {
-        return setAffectedVersionsNames(versions.stream().map(version -> version.getName()).collect(Collectors.toList()));
+        return setAffectedVersionsNames(versions.stream().map(Version::getName).collect(Collectors.toList()));
     }
 
     public IssueInputBuilder setAffectedVersionsNames(final List<String> names) {
@@ -169,7 +168,7 @@ public class IssueInputBuilder {
     }
 
     public IssueInputBuilder setComponents(final List<BasicComponent> basicComponents) {
-        return setComponentsNames(basicComponents.stream().map(component -> component.getName()).collect(Collectors.toList()));
+        return setComponentsNames(basicComponents.stream().map(BasicComponent::getName).collect(Collectors.toList()));
     }
 
     public IssueInputBuilder setComponents(final BasicComponent... basicComponents) {
@@ -186,7 +185,7 @@ public class IssueInputBuilder {
 
     @SuppressWarnings("unused")
     public IssueInputBuilder setFixVersions(final List<Version> versions) {
-        return setFixVersionsNames(versions.stream().map(version -> version.getName()).collect(Collectors.toList()));
+        return setFixVersionsNames(versions.stream().map(Version::getName).collect(Collectors.toList()));
     }
 
     public IssueInputBuilder setPriority(final BasicPriority priority) {
@@ -212,8 +211,8 @@ public class IssueInputBuilder {
 
     /**
      * This method returns value transformer manager used to transform values by
-     * {@link IssueInputBuilder#setFieldValue(String, Object)}. You may use this
-     * manager if you want register new custom transformer.
+     * {@link IssueInputBuilder#setFieldValue(String, Object)}. You may use this manager if you want
+     * register new custom transformer.
      *
      * @return value transformer manager
      */

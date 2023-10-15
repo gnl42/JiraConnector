@@ -24,30 +24,31 @@ import me.glindholm.theplugin.commons.util.LoggerImpl;
  */
 public class JiraConnectorLogger extends LoggerImpl {
 
-	private final String pluginId;
+    private final String pluginId;
 
-	public JiraConnectorLogger() {
-		this.pluginId = JiraConnectorCorePlugin.PLUGIN_ID;
-	}
+    public JiraConnectorLogger() {
+        pluginId = JiraConnectorCorePlugin.PLUGIN_ID;
+    }
 
-	public JiraConnectorLogger(String pluginId) {
-		if (pluginId == null) {
-			this.pluginId = JiraConnectorCorePlugin.PLUGIN_ID;
-		} else {
-			this.pluginId = pluginId;
-		}
-	}
+    public JiraConnectorLogger(final String pluginId) {
+        if (pluginId == null) {
+            this.pluginId = JiraConnectorCorePlugin.PLUGIN_ID;
+        } else {
+            this.pluginId = pluginId;
+        }
+    }
 
-	public void log(int level, String msg, Throwable t) {
-		if (JiraConnectorCorePlugin.TRACE_COMMONS) {
-			int statusCode = IStatus.ERROR;
-			if (level == LOG_INFO) {
-				statusCode = IStatus.INFO;
-			} else if (level == LOG_WARN) {
-				statusCode = IStatus.WARNING;
-			}
+    @Override
+    public void log(final int level, final String msg, final Throwable t) {
+        if (JiraConnectorCorePlugin.TRACE_COMMONS) {
+            int statusCode = IStatus.ERROR;
+            if (level == LOG_INFO) {
+                statusCode = IStatus.INFO;
+            } else if (level == LOG_WARN) {
+                statusCode = IStatus.WARNING;
+            }
 
-			StatusHandler.log(new Status(statusCode, pluginId, msg, t));
-		}
-	}
+            StatusHandler.log(new Status(statusCode, pluginId, msg, t));
+        }
+    }
 }

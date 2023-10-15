@@ -20,22 +20,21 @@ import org.osgi.framework.Constants;
 import me.glindholm.connector.eclipse.internal.branding.ui.JiraConnectorBrandingPlugin;
 
 public class AtlassianBundlesInfo {
-	private static final String ECLIPSE_CONNECTOR_NAMESPACE = "me.glindholm.connector.eclipse.";
+    private static final String ECLIPSE_CONNECTOR_NAMESPACE = "me.glindholm.connector.eclipse.";
 
-	public static Map<String, String> getAllInstalledBundles() {
-		Map<String, String> featureToVersion = new HashMap<String, String>();
-		for (Bundle bundle : JiraConnectorBrandingPlugin.getDefault().getBundle().getBundleContext().getBundles()) {
-			final String symbolicName = bundle.getSymbolicName();
-			if (symbolicName.startsWith(ECLIPSE_CONNECTOR_NAMESPACE)) {
-				featureToVersion.put(symbolicName.substring(ECLIPSE_CONNECTOR_NAMESPACE.length()), bundle.getHeaders()
-						.get(Constants.BUNDLE_VERSION)
-						.toString());
-			}
-		}
-		return featureToVersion;
-	}
+    public static Map<String, String> getAllInstalledBundles() {
+        final Map<String, String> featureToVersion = new HashMap<>();
+        for (final Bundle bundle : JiraConnectorBrandingPlugin.getDefault().getBundle().getBundleContext().getBundles()) {
+            final String symbolicName = bundle.getSymbolicName();
+            if (symbolicName.startsWith(ECLIPSE_CONNECTOR_NAMESPACE)) {
+                featureToVersion.put(symbolicName.substring(ECLIPSE_CONNECTOR_NAMESPACE.length()),
+                        bundle.getHeaders().get(Constants.BUNDLE_VERSION).toString());
+            }
+        }
+        return featureToVersion;
+    }
 
-	public static boolean isOnlyJiraInstalled() {
-		return true;
-	}
+    public static boolean isOnlyJiraInstalled() {
+        return true;
+    }
 }

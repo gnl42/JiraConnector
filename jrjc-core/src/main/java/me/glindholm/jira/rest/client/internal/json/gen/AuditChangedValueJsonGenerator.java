@@ -10,7 +10,7 @@ import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;
  */
 public class AuditChangedValueJsonGenerator implements JsonGenerator<AuditChangedValue> {
     @Override
-    public JSONObject generate(AuditChangedValue bean) throws JSONException {
+    public JSONObject generate(final AuditChangedValue bean) throws JSONException {
         final JSONObject obj = new JSONObject().put("fieldName", bean.getFieldName());
         if (bean.getChangedTo() != null) {
             obj.put("changedTo", bean.getChangedTo());

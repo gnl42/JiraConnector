@@ -190,22 +190,18 @@ public class WorkLogConverter {
             final TaskAttributeMapper mapper = attribute.getTaskData().getAttributeMapper();
             if (value == null) {
                 attribute.clearValues();
+            } else if (TaskAttribute.TYPE_DATE.equals(taskField.getType()) || TaskAttribute.TYPE_DATETIME.equals(taskField.getType())) {
+                mapper.setDateValue(attribute, Date.from((Instant) value));
+            } else if (TaskAttribute.TYPE_INTEGER.equals(taskField.getType())) {
+                mapper.setIntegerValue(attribute, (Integer) value);
+            } else if (TaskAttribute.TYPE_LONG.equals(taskField.getType())) {
+                mapper.setLongValue(attribute, (Long) value);
+            } else if (TaskAttribute.TYPE_PERSON.equals(taskField.getType())) {
+                final BasicUser user = (BasicUser) value;
+                final ITaskAttributeMapper2 jiraMapper = (ITaskAttributeMapper2) attribute.getTaskData().getAttributeMapper();
+                jiraMapper.setRepositoryUser(attribute, user);
             } else {
-                if (TaskAttribute.TYPE_DATE.equals(taskField.getType())) {
-                    mapper.setDateValue(attribute, Date.from((Instant) value));
-                } else if (TaskAttribute.TYPE_DATETIME.equals(taskField.getType())) {
-                    mapper.setDateValue(attribute, Date.from((Instant) value));
-                } else if (TaskAttribute.TYPE_INTEGER.equals(taskField.getType())) {
-                    mapper.setIntegerValue(attribute, (Integer) value);
-                } else if (TaskAttribute.TYPE_LONG.equals(taskField.getType())) {
-                    mapper.setLongValue(attribute, (Long) value);
-                } else if (TaskAttribute.TYPE_PERSON.equals(taskField.getType())) {
-                    final BasicUser user = (BasicUser) value;
-                    final ITaskAttributeMapper2 jiraMapper = (ITaskAttributeMapper2) attribute.getTaskData().getAttributeMapper();
-                    jiraMapper.setRepositoryUser(attribute, user);
-                } else {
-                    attribute.setValue(value.toString());
-                }
+                attribute.setValue(value.toString());
             }
         } catch (final Exception e) {
             e.printStackTrace();

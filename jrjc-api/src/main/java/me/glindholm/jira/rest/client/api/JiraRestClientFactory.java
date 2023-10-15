@@ -49,8 +49,8 @@ public interface JiraRestClientFactory {
     JiraRestClient createWithBasicHttpAuthentication(final URI serverUri, final String username, final String password) throws URISyntaxException;
 
     /**
-     * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will call the provided
-     * authentication handler prior to making requests.
+     * Creates an instance of JiraRestClient with default HttpClient settings. HttpClient will call the
+     * provided authentication handler prior to making requests.
      *
      * @param serverUri             - URI or JIRA instance.
      * @param authenticationHandler - Authentication handler.
@@ -58,8 +58,8 @@ public interface JiraRestClientFactory {
     JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler) throws URISyntaxException;
 
     /**
-     * Creates an instance of JiraRestClient with given Atlassian HttpClient.
-     * Please note, that this me.glindholm.jira.rest.client.api has to be fully configured to do the request authentication.
+     * Creates an instance of JiraRestClient with given Atlassian HttpClient. Please note, that this
+     * me.glindholm.jira.rest.client.api has to be fully configured to do the request authentication.
      *
      * @param serverUri  - URI of JIRA instance.
      * @param httpClient - instance of Atlassian HttpClient.
@@ -67,8 +67,8 @@ public interface JiraRestClientFactory {
     JiraRestClient create(final URI serverUri, final HttpClient httpClient) throws URISyntaxException;
 
     /**
-     * Creates an instance of JiraRestClient with Bearer HttpClient settings.
-     * HttpClient will conduct a Bearer authentication for given token.
+     * Creates an instance of JiraRestClient with Bearer HttpClient settings. HttpClient will conduct a
+     * Bearer authentication for given token.
      *
      * @param serverUri
      * @param password

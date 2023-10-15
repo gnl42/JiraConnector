@@ -24,57 +24,58 @@ import me.glindholm.theplugin.commons.util.LoggerImpl;
  * @author Shawn Minto
  */
 public class JiraConnectorCorePlugin extends Plugin {
-	// The plug-in ID
-	public static final String PLUGIN_ID = "me.glindholm.connector.eclipse.core";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "me.glindholm.connector.eclipse.core";
 
-	private static final String TRACE_COMMONS_PROPERTY_NAME = "me.glindholm.connector.eclipse.bamboo.core/trace/commons";
+    private static final String TRACE_COMMONS_PROPERTY_NAME = "me.glindholm.connector.eclipse.bamboo.core/trace/commons";
 
-	public static final boolean TRACE_COMMONS = "true".equalsIgnoreCase(Platform.getDebugOption(TRACE_COMMONS_PROPERTY_NAME));
+    public static final boolean TRACE_COMMONS = "true".equalsIgnoreCase(Platform.getDebugOption(TRACE_COMMONS_PROPERTY_NAME));
 
-	// The shared instance
-	private static JiraConnectorCorePlugin plugin;
+    // The shared instance
+    private static JiraConnectorCorePlugin plugin;
 
-	/**
-	 * The constructor
-	 */
-	public JiraConnectorCorePlugin() {
-		// make sure that we 
-		LoggerImpl.setInstance(new JiraConnectorLogger());
-	}
+    /**
+     * The constructor
+     */
+    public JiraConnectorCorePlugin() {
+        // make sure that we
+        LoggerImpl.setInstance(new JiraConnectorLogger());
+    }
 
-	public String getVersion() {
-		Object version = getBundle().getHeaders().get(Constants.BUNDLE_VERSION);
-		return version == null ? "0.0.0" : version.toString();
-	}
+    public String getVersion() {
+        final Object version = getBundle().getHeaders().get(Constants.BUNDLE_VERSION);
+        return version == null ? "0.0.0" : version.toString();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
+     */
+    @Override
+    public void start(final BundleContext context) throws Exception {
+        super.start(context);
+        plugin = this;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        plugin = null;
+        super.stop(context);
+    }
 
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static JiraConnectorCorePlugin getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance
+     * 
+     * @return the shared instance
+     */
+    public static JiraConnectorCorePlugin getDefault() {
+        return plugin;
+    }
 
 }

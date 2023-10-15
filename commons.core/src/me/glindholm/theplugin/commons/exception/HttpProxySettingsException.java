@@ -17,23 +17,20 @@
 package me.glindholm.theplugin.commons.exception;
 
 /**
- * Created by IntelliJ IDEA.
- * User: pmaruszak
- * Date: Apr 30, 2008
- * Time: 3:20:51 PM
- * To change this template use File | Settings | File Templates.
+ * Created by IntelliJ IDEA. User: pmaruszak Date: Apr 30, 2008 Time: 3:20:51 PM To change this
+ * template use File | Settings | File Templates.
  */
 public class HttpProxySettingsException extends Exception {
-		/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2091368578815429676L;
+    /**
+    * 
+    */
+    private static final long serialVersionUID = 2091368578815429676L;
 
-		public HttpProxySettingsException(String message, Throwable throwable) {
-		super(message, throwable);
-	}
+    public HttpProxySettingsException(final String message, final Throwable throwable) {
+        super(message, throwable);
+    }
 
-	public HttpProxySettingsException(String message) {
-		super(message);
-	}
+    public HttpProxySettingsException(final String message) {
+        super(message);
+    }
 }

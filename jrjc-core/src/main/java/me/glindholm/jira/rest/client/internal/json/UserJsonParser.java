@@ -52,12 +52,7 @@ public class UserJsonParser implements JsonObjectParser<User> {
             }
         }
         // optional because groups are not returned for issue->{reporter,assignee}
-        final ExpandableProperty<String> groups = JsonParseUtil.parseOptionalExpandableProperty(json.optJSONObject("groups"), new JsonObjectParser<String>() {
-            @Override
-            public String parse(final JSONObject json) throws JSONException {
-                return json.getString("name");
-            }
-        });
+        final ExpandableProperty<String> groups = JsonParseUtil.parseOptionalExpandableProperty(json.optJSONObject("groups"), json1 -> json1.getString("name"));
         return new User(basicUser, groups, avatarUris, timezone);
     }
 }

@@ -28,11 +28,11 @@ public class ComplexIssueInputFieldValue {
 
     private final Map<String, Object> valuesMap;
 
-    public static ComplexIssueInputFieldValue with(String key, Object value) {
+    public static ComplexIssueInputFieldValue with(final String key, final Object value) {
         return new ComplexIssueInputFieldValue(Map.of(key, value));
     }
 
-    public ComplexIssueInputFieldValue(Map<String, Object> valuesMap) {
+    public ComplexIssueInputFieldValue(final Map<String, Object> valuesMap) {
         this.valuesMap = valuesMap;
     }
 
@@ -51,10 +51,9 @@ public class ComplexIssueInputFieldValue {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ComplexIssueInputFieldValue) {
-            final ComplexIssueInputFieldValue other = (ComplexIssueInputFieldValue) obj;
-            return Objects.equals(this.valuesMap, other.valuesMap);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final ComplexIssueInputFieldValue other) {
+            return Objects.equals(valuesMap, other.valuesMap);
         }
         return false;
     }

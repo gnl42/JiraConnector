@@ -16,24 +16,25 @@
 
 package me.glindholm.jira.rest.client.internal.async;
 
-import io.atlassian.util.concurrent.Promise;
-import me.glindholm.jira.rest.client.api.RestClientException;
-
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import io.atlassian.util.concurrent.Promise;
+import me.glindholm.jira.rest.client.api.RestClientException;
+
 /**
- * This class delegates all calls to given delegate Promise. Additionally it throws new RestClientException
- * with original RestClientException given as a cause, which gives a more useful stack trace.
+ * This class delegates all calls to given delegate Promise. Additionally it throws new
+ * RestClientException with original RestClientException given as a cause, which gives a more useful
+ * stack trace.
  */
 public class DelegatingPromise<T> implements Promise<T> {
 
     private final Promise<T> delegate;
 
-    public DelegatingPromise(Promise<T> delegate) {
+    public DelegatingPromise(final Promise<T> delegate) {
         this.delegate = delegate;
     }
 
@@ -41,48 +42,48 @@ public class DelegatingPromise<T> implements Promise<T> {
     public T claim() {
         try {
             return delegate.claim();
-        } catch (RestClientException e) {
+        } catch (final RestClientException e) {
             throw new RestClientException(e);
         }
     }
 
     @Override
-    public Promise<T> done(Consumer<? super T> e) {
+    public Promise<T> done(final Consumer<? super T> e) {
         return delegate.done(e);
     }
 
     @Override
-    public Promise<T> fail(Consumer<Throwable> e) {
+    public Promise<T> fail(final Consumer<Throwable> e) {
         return delegate.fail(e);
     }
 
     @Override
-    public Promise<T> then(TryConsumer<? super T> consumer) {
+    public Promise<T> then(final TryConsumer<? super T> consumer) {
         return delegate.then(consumer);
     }
 
     @Override
-    public <B> Promise<B> map(Function<? super T, ? extends B> function) {
+    public <B> Promise<B> map(final Function<? super T, ? extends B> function) {
         return delegate.map(function);
     }
 
     @Override
-    public <B> Promise<B> flatMap(Function<? super T, ? extends Promise<? extends B>> function) {
+    public <B> Promise<B> flatMap(final Function<? super T, ? extends Promise<? extends B>> function) {
         return delegate.flatMap(function);
     }
 
     @Override
-    public Promise<T> recover(Function<Throwable, ? extends T> handleThrowable) {
+    public Promise<T> recover(final Function<Throwable, ? extends T> handleThrowable) {
         return delegate.recover(handleThrowable);
     }
 
     @Override
-    public <B> Promise<B> fold(Function<Throwable, ? extends B> handleThrowable, Function<? super T, ? extends B> function) {
+    public <B> Promise<B> fold(final Function<Throwable, ? extends B> handleThrowable, final Function<? super T, ? extends B> function) {
         return delegate.fold(handleThrowable, function);
     }
 
     @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public boolean cancel(final boolean mayInterruptIfRunning) {
         return delegate.cancel(mayInterruptIfRunning);
     }
 
@@ -102,7 +103,7 @@ public class DelegatingPromise<T> implements Promise<T> {
     }
 
     @Override
-    public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return delegate.get(timeout, unit);
     }
 }

@@ -35,7 +35,8 @@ public class ComponentInput {
     @Nullable
     private final AssigneeType assigneeType;
 
-    public ComponentInput(@Nullable String name, @Nullable String description, @Nullable String leadUsername, @Nullable AssigneeType assigneeType) {
+    public ComponentInput(@Nullable final String name, @Nullable final String description, @Nullable final String leadUsername,
+            @Nullable final AssigneeType assigneeType) {
         this.name = name;
         this.description = description;
         this.leadUsername = leadUsername;
@@ -62,5 +63,5 @@ public class ComponentInput {
         return assigneeType;
     }
 
-    //	private final String projectKey;
+    // private final String projectKey;
 }

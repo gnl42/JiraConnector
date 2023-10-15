@@ -30,7 +30,7 @@ import me.glindholm.jira.rest.client.api.domain.SearchResult;
 public class SearchResultJsonParser implements JsonObjectParser<SearchResult> {
 
     @Override
-    public SearchResult parse(JSONObject json) throws JSONException, URISyntaxException {
+    public SearchResult parse(final JSONObject json) throws JSONException, URISyntaxException {
         final int startAt = json.getInt("startAt");
         final int maxResults = json.getInt("maxResults");
         final int total = json.getInt("total");

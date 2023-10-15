@@ -16,7 +16,6 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.Nullable;

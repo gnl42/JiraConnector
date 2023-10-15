@@ -16,8 +16,9 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
-import org.eclipse.jdt.annotation.Nullable;
 import java.util.List;
+
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Details about user to be created or updated;
@@ -40,8 +41,8 @@ public class UserInput {
     @Nullable
     private final List<String> applicationKeys;
 
-    public UserInput(@Nullable String key, @Nullable String name, @Nullable String password, @Nullable String emailAddress,
-            @Nullable String displayName, @Nullable String notification, List<String> applicationKeys) {
+    public UserInput(@Nullable final String key, @Nullable final String name, @Nullable final String password, @Nullable final String emailAddress,
+            @Nullable final String displayName, @Nullable final String notification, final List<String> applicationKeys) {
         this.key = key;
         this.name = name;
         this.password = password;

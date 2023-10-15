@@ -19,7 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.hc.core5.net.URIBuilder;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -31,10 +30,8 @@ import me.glindholm.jira.rest.client.api.domain.Version;
 import me.glindholm.jira.rest.client.api.domain.VersionRelatedIssuesCount;
 import me.glindholm.jira.rest.client.api.domain.input.VersionInput;
 import me.glindholm.jira.rest.client.api.domain.input.VersionPosition;
-import me.glindholm.jira.rest.client.internal.json.JsonObjectParser;
 import me.glindholm.jira.rest.client.internal.json.VersionJsonParser;
 import me.glindholm.jira.rest.client.internal.json.VersionRelatedIssueCountJsonParser;
-import me.glindholm.jira.rest.client.internal.json.gen.JsonGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.VersionInputJsonGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.VersionPositionInputGenerator;
 
@@ -89,25 +86,17 @@ public class AsynchronousVersionRestClient extends AbstractAsynchronousRestClien
     @Override
     public Promise<Integer> getNumUnresolvedIssues(final URI versionUri) throws URISyntaxException {
         final URI unresolvedIssueCountUri = new URIBuilder(versionUri).appendPath("unresolvedIssueCount").build();
-        return getAndParse(unresolvedIssueCountUri, new JsonObjectParser<Integer>() {
-            @Override
-            public Integer parse(final JSONObject json) throws JSONException {
-                return json.getInt("issuesUnresolvedCount");
-            }
-        });
+        return getAndParse(unresolvedIssueCountUri, json -> ((JSONObject) json).getInt("issuesUnresolvedCount"));
     }
 
     @Override
     public Promise<Version> moveVersionAfter(final URI versionUri, final URI afterVersionUri) throws URISyntaxException {
         final URI moveUri = getMoveVersionUri(versionUri);
 
-        return postAndParse(moveUri, afterVersionUri, new JsonGenerator<URI>() {
-            @Override
-            public JSONObject generate(final URI uri) throws JSONException {
-                final JSONObject res = new JSONObject();
-                res.put("after", uri);
-                return res;
-            }
+        return postAndParse(moveUri, afterVersionUri, uri -> {
+            final JSONObject res = new JSONObject();
+            res.put("after", uri);
+            return res;
         }, new VersionJsonParser());
     }
 

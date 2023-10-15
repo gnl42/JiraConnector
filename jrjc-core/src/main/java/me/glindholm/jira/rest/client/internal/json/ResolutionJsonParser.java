@@ -16,19 +16,19 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.Resolution;
-
-import java.net.URI;
 
 /**
  * @since v0.1
  */
 public class ResolutionJsonParser implements JsonObjectParser<Resolution> {
     @Override
-    public Resolution parse(JSONObject json) throws JSONException {
+    public Resolution parse(final JSONObject json) throws JSONException {
         final String name = json.getString("name");
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final Long id = JsonParseUtil.getOptionalLong(json, "id");

@@ -25,7 +25,7 @@ public class IssueLinkTypeJsonParser implements JsonObjectParser<IssueLinkType> 
     private static final String KEY_DIRECTION = "direction";
 
     @Override
-    public IssueLinkType parse(JSONObject json) throws JSONException {
+    public IssueLinkType parse(final JSONObject json) throws JSONException {
         final String name = json.getString("name");
         final String description = json.getString("description");
         final String dirStr = json.getString(KEY_DIRECTION);
@@ -40,4 +40,3 @@ public class IssueLinkTypeJsonParser implements JsonObjectParser<IssueLinkType> 
         return new IssueLinkType(name, description, direction);
     }
 }
-

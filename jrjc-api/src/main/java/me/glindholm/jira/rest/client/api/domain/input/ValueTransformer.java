@@ -16,27 +16,29 @@
 
 package me.glindholm.jira.rest.client.api.domain.input;
 
-
 import java.util.function.Function;
 
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * Implement this interface if you want to provide your own value transformer to ValueTransformerManager.
+ * Implement this interface if you want to provide your own value transformer to
+ * ValueTransformerManager.
  * <p>
- * You should return {@link ValueTransformer#CANNOT_HANDLE} in {@link ValueTransformer#apply(Object)} when implemented
- * transformer cannot transform given value.
+ * You should return {@link ValueTransformer#CANNOT_HANDLE} in
+ * {@link ValueTransformer#apply(Object)} when implemented transformer cannot transform given value.
  *
  * @since v1.0
  */
 public interface ValueTransformer extends Function<Object, Object> {
-    public static final Object CANNOT_HANDLE = new Object();
+    Object CANNOT_HANDLE = new Object();
 
     /**
-     * Transform given object into other representation, that can be used as input for field value generators.
+     * Transform given object into other representation, that can be used as input for field value
+     * generators.
      *
      * @param from Source object.
-     * @return The resulting object or {@link ValueTransformer#CANNOT_HANDLE} when given value cannot be transformed.
+     * @return The resulting object or {@link ValueTransformer#CANNOT_HANDLE} when given value cannot be
+     *         transformed.
      */
     @Override
     Object apply(@Nullable Object from);

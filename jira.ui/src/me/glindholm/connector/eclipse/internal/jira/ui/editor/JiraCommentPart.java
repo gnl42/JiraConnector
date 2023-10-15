@@ -19,19 +19,22 @@ import org.eclipse.mylyn.internal.tasks.ui.editors.TaskEditorCommentPart;
 @SuppressWarnings("restriction")
 public class JiraCommentPart extends TaskEditorCommentPart {
 
-    //	@Override
-    //	protected void createCommentTitleExtention(final FormToolkit toolkit, Composite titleComposite, TaskComment comment) {
-    //		TaskAttribute visibleTo = comment.getTaskAttribute().getAttribute(IJiraConstants.COMMENT_SECURITY_LEVEL);
+    // @Override
+    // protected void createCommentTitleExtention(final FormToolkit toolkit, Composite titleComposite,
+    // TaskComment comment) {
+    // TaskAttribute visibleTo =
+    // comment.getTaskAttribute().getAttribute(IJiraConstants.COMMENT_SECURITY_LEVEL);
     //
-    //		if (visibleTo != null && visibleTo.getValue() != null) {
-    //			Label l = toolkit.createLabel(titleComposite, Messages.JiraCommetVisible);
-    //			l.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-    //			l.setBackground(null);
-    //			l.setToolTipText(Messages.JiraCommetVisibleTooltip);
+    // if (visibleTo != null && visibleTo.getValue() != null) {
+    // Label l = toolkit.createLabel(titleComposite, Messages.JiraCommetVisible);
+    // l.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+    // l.setBackground(null);
+    // l.setToolTipText(Messages.JiraCommetVisibleTooltip);
     //
-    //			Label ll = toolkit.createLabel(titleComposite, visibleTo.getValue());
-    //			ll.setForeground(toolkit.getColors().createColor("me.glindholm.connector.jira.red", 150, 20, 20)); //$NON-NLS-1$
-    //			ll.setToolTipText(Messages.JiraCommetVisibleTooltip);
-    //		}
-    //	}
+    // Label ll = toolkit.createLabel(titleComposite, visibleTo.getValue());
+    // ll.setForeground(toolkit.getColors().createColor("me.glindholm.connector.jira.red", 150, 20,
+    // 20)); //$NON-NLS-1$
+    // ll.setToolTipText(Messages.JiraCommetVisibleTooltip);
+    // }
+    // }
 }

@@ -12,7 +12,8 @@
 package me.glindholm.connector.eclipse.internal.jira.core.service;
 
 /**
- * Indicates that an exception on the repository side has been encountered while processing the request.
+ * Indicates that an exception on the repository side has been encountered while processing the
+ * request.
  *
  * @author Steffen Pingel
  */

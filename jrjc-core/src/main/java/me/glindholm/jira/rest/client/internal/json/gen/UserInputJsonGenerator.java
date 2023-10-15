@@ -30,13 +30,8 @@ import me.glindholm.jira.rest.client.api.domain.input.UserInput;
 public class UserInputJsonGenerator implements JsonGenerator<UserInput> {
     @Override
     public JSONObject generate(final UserInput user) throws JSONException {
-        return new JSONObject()
-                .putOpt("key", user.getKey())
-                .putOpt("name", user.getName())
-                .putOpt("password", user.getPassword())
-                .putOpt("emailAddress", user.getEmailAddress())
-                .putOpt("displayName", user.getDisplayName())
-                .putOpt("notification", user.getNotification())
+        return new JSONObject().putOpt("key", user.getKey()).putOpt("name", user.getName()).putOpt("password", user.getPassword())
+                .putOpt("emailAddress", user.getEmailAddress()).putOpt("displayName", user.getDisplayName()).putOpt("notification", user.getNotification())
                 .putOpt("applicationKeys", new JSONArray(user.getApplicationKeys()));
     }
 }

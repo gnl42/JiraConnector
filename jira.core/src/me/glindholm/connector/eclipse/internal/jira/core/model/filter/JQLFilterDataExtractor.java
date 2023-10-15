@@ -26,6 +26,7 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
 
     /*
      * (non-Javadoc)
+     *
      * @see FilterDataExtractor#extractStatusIds()
      */
     @Override
@@ -34,8 +35,8 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
     }
 
     /**
-     * Extracts and returns list of component IDs (integers) from given component
-     * filter, including special value "No component".
+     * Extracts and returns list of component IDs (integers) from given component filter, including
+     * special value "No component".
      *
      * @param componentFilter
      * @return List&lt;String&gt; with component IDs
@@ -62,8 +63,7 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
     public Collection<String> extractDates(final DateFilter dateFilter, final DateFormat dateFormat) {
         final List<String> dates = new ArrayList<>();
 
-        if (dateFilter instanceof DateRangeFilter) {
-            final DateRangeFilter rangeFilter = (DateRangeFilter) dateFilter;
+        if (dateFilter instanceof final DateRangeFilter rangeFilter) {
             if (rangeFilter.getFromDate() != null) {
                 dates.add(">= " + putInDoubleQuotes(dateFormat.format(Date.from(rangeFilter.getFromDate())))); //$NON-NLS-1$
             }
@@ -76,12 +76,10 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
             if (rangeFilter.getTo() != null && rangeFilter.getTo().length() > 0) {
                 dates.add("<= " + putInDoubleQuotes(rangeFilter.getTo())); //$NON-NLS-1$
             }
-        } else if (dateFilter instanceof RelativeDateRangeFilter) {
-            final RelativeDateRangeFilter rangeFilter = (RelativeDateRangeFilter) dateFilter;
+        } else if (dateFilter instanceof final RelativeDateRangeFilter rangeFilter) {
             if (rangeFilter.previousMilliseconds() != 0L) {
                 dates.add(">= " //$NON-NLS-1$
-                        + putInDoubleQuotes(createRelativeDateString(rangeFilter.getPreviousRangeType(),
-                                rangeFilter.getPreviousCount())));
+                        + putInDoubleQuotes(createRelativeDateString(rangeFilter.getPreviousRangeType(), rangeFilter.getPreviousCount())));
             }
             if (rangeFilter.nextMilliseconds() != 0L) {
                 dates.add("<= " + putInDoubleQuotes(createRelativeDateString(rangeFilter.getNextRangeType(), rangeFilter.getNextCount()))); //$NON-NLS-1$
@@ -92,9 +90,8 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
     }
 
     /**
-     * Extracts and returns a list of issue type names (like Bug, Improvement),
-     * including special cases for "all standard issue types" and "sub-task issue
-     * types".
+     * Extracts and returns a list of issue type names (like Bug, Improvement), including special cases
+     * for "all standard issue types" and "sub-task issue types".
      *
      * @param issueTypeFilter
      * @return List&lt;String&gt; with issue type names
@@ -137,6 +134,7 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
 
     /*
      * (non-Javadoc)
+     *
      * @see FilterDataExtractor#extractStatusIds()
      */
     @Override
@@ -147,6 +145,7 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
 
     /*
      * (non-Javadoc)
+     *
      * @see FilterDataExtractor#extractResolutionIds()
      */
     @Override
@@ -166,9 +165,8 @@ public class JQLFilterDataExtractor extends FilterDataExtractor {
     }
 
     /**
-     * Extracts list of version names (like "3.1.7") from given version filter,
-     * including special values like "No version", "Released versions", "Unreleased
-     * versions".
+     * Extracts list of version names (like "3.1.7") from given version filter, including special values
+     * like "No version", "Released versions", "Unreleased versions".
      *
      * @param filter
      * @return List&lt;String&gt; version names

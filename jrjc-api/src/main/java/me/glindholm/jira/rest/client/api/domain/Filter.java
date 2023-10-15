@@ -91,8 +91,7 @@ public class Filter extends AddressableNamedEntity implements Serializable, Iden
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Filter) {
-            final Filter that = (Filter) obj;
+        if (obj instanceof final Filter that) {
             return super.equals(that) && Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(jql, that.jql)
                     && Objects.equals(viewUrl, that.viewUrl) && Objects.equals(searchUrl, that.searchUrl) && Objects.equals(owner, that.owner)
                     && Objects.equals(favourite, that.favourite);

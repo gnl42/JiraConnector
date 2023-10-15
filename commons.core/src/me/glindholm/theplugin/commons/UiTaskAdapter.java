@@ -15,29 +15,33 @@
  */
 package me.glindholm.theplugin.commons;
 
-import java.awt.*;
+import java.awt.Component;
 
 public abstract class UiTaskAdapter implements UiTask {
 
-	private final String actionName;
-	private final Component component;
+    private final String actionName;
+    private final Component component;
 
-	public UiTaskAdapter(final String actionName, final Component component) {
-		this.actionName = actionName;
-		this.component = component;
-	}
+    public UiTaskAdapter(final String actionName, final Component component) {
+        this.actionName = actionName;
+        this.component = component;
+    }
 
-	public void onSuccess() {
-	}
+    @Override
+    public void onSuccess() {
+    }
 
-	public void onError() {
-	}
+    @Override
+    public void onError() {
+    }
 
-	public String getLastAction() {
-		return actionName;
-	}
+    @Override
+    public String getLastAction() {
+        return actionName;
+    }
 
-	public Component getComponent() {
-		return component;
-	}
+    @Override
+    public Component getComponent() {
+        return component;
+    }
 }

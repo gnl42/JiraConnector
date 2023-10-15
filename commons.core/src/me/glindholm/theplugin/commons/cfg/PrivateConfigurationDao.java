@@ -18,10 +18,9 @@ package me.glindholm.theplugin.commons.cfg;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 public interface PrivateConfigurationDao {
-	@Nullable
-	PrivateServerCfgInfo load(ServerId id) throws ServerCfgFactoryException;
+    @Nullable
+    PrivateServerCfgInfo load(ServerId id) throws ServerCfgFactoryException;
 
-	void save(@NonNull PrivateServerCfgInfo info) throws ServerCfgFactoryException;
+    void save(@NonNull PrivateServerCfgInfo info) throws ServerCfgFactoryException;
 }

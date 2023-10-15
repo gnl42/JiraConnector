@@ -19,8 +19,8 @@ package me.glindholm.jira.rest.client.api.domain;
 import java.net.URI;
 
 /**
- * Information about current user "session" - or in case of the recommended stateless connection (really RESTful design)
- * just the information about the user and the user login data.
+ * Information about current user "session" - or in case of the recommended stateless connection
+ * (really RESTful design) just the information about the user and the user login data.
  *
  * @since v0.1
  */
@@ -29,7 +29,7 @@ public class Session {
     private final String username;
     private final LoginInfo loginInfo;
 
-    public Session(URI userUri, String username, LoginInfo loginInfo) {
+    public Session(final URI userUri, final String username, final LoginInfo loginInfo) {
         this.userUri = userUri;
         this.username = username;
         this.loginInfo = loginInfo;

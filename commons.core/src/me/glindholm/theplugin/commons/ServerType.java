@@ -20,19 +20,20 @@ package me.glindholm.theplugin.commons;
  * Represents server types
  */
 public enum ServerType {
-	JIRA_SERVER("JIRA Servers", "JIRA", "https://www.atlassian.com/software/jira/"),
-	JIRA_CLOUD_SERVER("JIRA Servers", "JIRA Cloud", "https://www.atlassian.com/software/jira/");
+    JIRA_SERVER("JIRA Servers", "JIRA", "https://www.atlassian.com/software/jira/"),
+    JIRA_CLOUD_SERVER("JIRA Servers", "JIRA Cloud", "https://www.atlassian.com/software/jira/");
+
 //
-	private final String name;
-	private String shortName;
-	private final String infoUrl;
-    private boolean pseudoServer;
+    private final String name;
+    private final String shortName;
+    private final String infoUrl;
+    private final boolean pseudoServer;
 
     ServerType(final String name, final String shortName, final String infoUrl) {
         this(name, shortName, infoUrl, false);
-	}
+    }
 
-    ServerType(final String name, final String shortName, final String infoUrl, boolean pseudoServer) {
+    ServerType(final String name, final String shortName, final String infoUrl, final boolean pseudoServer) {
         this.name = name;
         this.shortName = shortName;
         this.infoUrl = infoUrl;
@@ -40,19 +41,19 @@ public enum ServerType {
     }
 
     public String getShortName() {
-		return shortName;
-	}
+        return shortName;
+    }
 
-	public String getInfoUrl() {
-		return infoUrl;
-	}
+    public String getInfoUrl() {
+        return infoUrl;
+    }
 
     public boolean isPseudoServer() {
         return pseudoServer;
     }
 
     @Override
-	public String toString() {
-		return name;
-	}
+    public String toString() {
+        return name;
+    }
 }

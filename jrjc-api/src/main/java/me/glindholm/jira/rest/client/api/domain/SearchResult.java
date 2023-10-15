@@ -31,7 +31,7 @@ public class SearchResult {
     private final int total;
     private final List<Issue> issues;
 
-    public SearchResult(int startIndex, int maxResults, int total, List<Issue> issues) {
+    public SearchResult(final int startIndex, final int maxResults, final int total, final List<Issue> issues) {
         this.startIndex = startIndex;
         this.maxResults = maxResults;
         this.total = total;
@@ -39,8 +39,8 @@ public class SearchResult {
     }
 
     /**
-     * @return 0-based start index of the returned issues (e.g. "3" means that 4th, 5th...maxResults issues matching given query
-     * have been returned.
+     * @return 0-based start index of the returned issues (e.g. "3" means that 4th, 5th...maxResults
+     *         issues matching given query have been returned.
      */
     public int getStartIndex() {
         return startIndex;
@@ -54,8 +54,8 @@ public class SearchResult {
     }
 
     /**
-     * @return total number of issues (regardless of current maxResults and startIndex) matching given criteria.
-     * Query JIRA another time with different startIndex to get subsequent issues
+     * @return total number of issues (regardless of current maxResults and startIndex) matching given
+     *         criteria. Query JIRA another time with different startIndex to get subsequent issues
      */
     public int getTotal() {
         return total;
@@ -71,13 +71,10 @@ public class SearchResult {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof SearchResult) {
-            SearchResult that = (SearchResult) obj;
-            return Objects.equals(this.startIndex, that.startIndex)
-                    && Objects.equals(this.maxResults, that.maxResults)
-                    && Objects.equals(this.total, that.total)
-                    && Objects.equals(this.issues, that.issues);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final SearchResult that) {
+            return Objects.equals(startIndex, that.startIndex) && Objects.equals(maxResults, that.maxResults) && Objects.equals(total, that.total)
+                    && Objects.equals(issues, that.issues);
         }
         return false;
     }

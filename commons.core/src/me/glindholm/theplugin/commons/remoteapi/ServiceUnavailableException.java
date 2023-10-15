@@ -20,7 +20,7 @@ package me.glindholm.theplugin.commons.remoteapi;
  * @date Oct 14, 2010
  */
 public class ServiceUnavailableException extends RemoteApiException {
-    public ServiceUnavailableException(String message) {
+    public ServiceUnavailableException(final String message) {
         super(message);
     }
 }

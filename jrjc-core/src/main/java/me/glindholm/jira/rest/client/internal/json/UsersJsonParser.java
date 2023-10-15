@@ -29,7 +29,7 @@ import me.glindholm.jira.rest.client.api.domain.User;
  */
 public class UsersJsonParser implements JsonArrayParser<List<User>> {
     @Override
-    public List<User> parse(JSONArray json) throws JSONException, URISyntaxException {
+    public List<User> parse(final JSONArray json) throws JSONException, URISyntaxException {
         return JsonParseUtil.parseJsonArray(json, new UserJsonParser());
     }
 }

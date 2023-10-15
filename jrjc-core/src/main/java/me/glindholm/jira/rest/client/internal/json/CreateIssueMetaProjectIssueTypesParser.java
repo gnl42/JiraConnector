@@ -14,7 +14,7 @@ public class CreateIssueMetaProjectIssueTypesParser implements JsonObjectParser<
     private final PageJsonParser<IssueType> pageParser = new PageJsonParser<>(issueTypeParser);
 
     @Override
-    public Page<IssueType> parse(JSONObject json) throws JSONException, URISyntaxException {
+    public Page<IssueType> parse(final JSONObject json) throws JSONException, URISyntaxException {
         return pageParser.parse(json);
     }
 }

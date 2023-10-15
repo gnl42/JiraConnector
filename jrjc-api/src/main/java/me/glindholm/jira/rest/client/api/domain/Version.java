@@ -44,7 +44,8 @@ public class Version implements Serializable, AddressableEntity, NamedEntity {
     @Nullable
     private final OffsetDateTime releaseDate;
 
-    public Version(URI self, @Nullable Long id, String name, String description, boolean archived, boolean released, @Nullable OffsetDateTime releaseDate) {
+    public Version(final URI self, @Nullable final Long id, final String name, final String description, final boolean archived, final boolean released,
+            @Nullable final OffsetDateTime releaseDate) {
         this.self = self;
         this.id = id;
         this.description = description;
@@ -93,16 +94,11 @@ public class Version implements Serializable, AddressableEntity, NamedEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Version) {
-            Version that = (Version) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.description, that.description)
-                    && Objects.equals(this.isArchived, that.isArchived)
-                    && Objects.equals(this.isReleased, that.isReleased)
-                    && Objects.equals(this.releaseDate, that.releaseDate);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final Version that) {
+            return Objects.equals(self, that.self) && Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                    && Objects.equals(description, that.description) && Objects.equals(isArchived, that.isArchived)
+                    && Objects.equals(isReleased, that.isReleased) && Objects.equals(releaseDate, that.releaseDate);
         }
         return false;
     }

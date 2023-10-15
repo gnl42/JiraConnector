@@ -16,13 +16,13 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Filter;
-
-import java.net.URI;
 
 /**
  * JSON parser for Filter.
@@ -32,7 +32,7 @@ import java.net.URI;
 public class FilterJsonParser implements JsonObjectParser<Filter> {
 
     @Override
-    public Filter parse(JSONObject json) throws JSONException {
+    public Filter parse(final JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final long id = json.getLong("id");
         final String name = json.getString("name");

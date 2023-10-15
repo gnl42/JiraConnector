@@ -28,7 +28,7 @@ public class SessionJsonParser implements JsonObjectParser<Session> {
     private final LoginInfoJsonParser loginInfoJsonParser = new LoginInfoJsonParser();
 
     @Override
-    public Session parse(JSONObject json) throws JSONException {
+    public Session parse(final JSONObject json) throws JSONException {
         final URI userUri = JsonParseUtil.getSelfUri(json);
         final String username = json.getString("name");
         final JSONObject loginInfoJson = json.optJSONObject("loginInfo");

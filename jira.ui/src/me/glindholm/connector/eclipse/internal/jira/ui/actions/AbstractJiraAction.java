@@ -102,8 +102,7 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
     }
 
     protected static JiraClient getClient(final ITask task) {
-        final TaskRepository repo = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
-                task.getRepositoryUrl());
+        final TaskRepository repo = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(), task.getRepositoryUrl());
 
         return JiraClientFactory.getDefault().getJiraClient(repo);
     }
@@ -113,60 +112,50 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
     }
 
     protected static void handleError(final String message, final Throwable e) {
-        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                MessageDialog.openError(WorkbenchUtil.getShell(), JiraUiPlugin.PRODUCT_NAME, message);
-                StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, message, e));
-            }
+        PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+            MessageDialog.openError(WorkbenchUtil.getShell(), JiraUiPlugin.PRODUCT_NAME, message);
+            StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, message, e));
         });
     }
 
     protected static void handleInformation(final String message) {
-        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                MessageDialog.openInformation(WorkbenchUtil.getShell(), JiraUiPlugin.PRODUCT_NAME, message);
-                StatusHandler.log(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, message));
-            }
+        PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+            MessageDialog.openInformation(WorkbenchUtil.getShell(), JiraUiPlugin.PRODUCT_NAME, message);
+            StatusHandler.log(new Status(IStatus.INFO, JiraUiPlugin.ID_PLUGIN, message));
         });
     }
 
     protected static void handleErrorWithDetails(final String message, final Throwable e) {
 
-        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
+        PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
 
-                Throwable t = e;
-                String m = message;
+            Throwable t = e;
+            StringBuilder m = new StringBuilder().append(message);
 
-                final String searchDetails_1 = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
-                final String searchDetails_2 = "No workflow action with id"; //$NON-NLS-1$
+            final String searchDetails_1 = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
+            final String searchDetails_2 = "No workflow action with id"; //$NON-NLS-1$
 
-                if (e.getMessage().contains(searchDetails_1)) {
-                    m += " \n" + Messages.JiraAction_Issue_Refresh_Try_Again; //$NON-NLS-1$
-                } else if (e.getMessage().contains(searchDetails_2)) {
-                    m += " \n" + Messages.JiraAction_Issue_Refresh; //$NON-NLS-1$
-                } else if (e instanceof JiraRemoteMessageException) {
-                    final JiraRemoteMessageException jiraException = (JiraRemoteMessageException) e;
-                    if (jiraException.getHtmlMessage().contains(searchDetails_1)) {
-                        m += ". \n" + Messages.JiraAction_Issue_Changed + " \n" //$NON-NLS-1$ //$NON-NLS-2$
-                                + Messages.JiraAction_Issue_Refresh_Try_Again;
-                    } else if (jiraException.getHtmlMessage().contains(searchDetails_2)) {
-                        m += " \n" + Messages.JiraAction_Issue_Refresh; //$NON-NLS-1$
-                    }
+            if (e.getMessage().contains(searchDetails_1)) {
+                m.append(" \n").append(Messages.JiraAction_Issue_Refresh_Try_Again); //$NON-NLS-1$
+            } else if (e.getMessage().contains(searchDetails_2)) {
+                m.append(" \n").append(Messages.JiraAction_Issue_Refresh); //$NON-NLS-1$
+            } else if (e instanceof final JiraRemoteMessageException jiraException) {
+                if (jiraException.getHtmlMessage().contains(searchDetails_1)) {
+                    m.append(". \n").append(Messages.JiraAction_Issue_Changed).append(" \n" //$NON-NLS-1$ //$NON-NLS-2$
+                    ).append(Messages.JiraAction_Issue_Refresh_Try_Again);
+                } else if (jiraException.getHtmlMessage().contains(searchDetails_2)) {
+                    m.append(" \n").append(Messages.JiraAction_Issue_Refresh); //$NON-NLS-1$
                 }
-
-                final int _300 = 300;
-
-                if (e.getMessage().length() > 300) {
-                    t = new Exception(e.getMessage().substring(0, _300) + "...", e); //$NON-NLS-1$
-                }
-
-                final Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, m, t);
-                StatusManager.getManager().handle(status, StatusManager.SHOW | StatusManager.LOG | StatusManager.BLOCK);
             }
+
+            final int _300 = 300;
+
+            if (e.getMessage().length() > 300) {
+                t = new Exception(e.getMessage().substring(0, _300) + "...", e); //$NON-NLS-1$
+            }
+
+            final Status status = new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, m.toString(), t);
+            StatusManager.getManager().handle(status, StatusManager.SHOW | StatusManager.LOG | StatusManager.BLOCK);
         });
     }
 }

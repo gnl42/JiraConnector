@@ -43,8 +43,8 @@ public class OperationLink implements Serializable, Operation {
     @Nullable
     private final String iconClass;
 
-    public OperationLink(@Nullable final String id, @Nullable final String styleClass, final String label, @Nullable final String title,
-            final String href, @Nullable final Integer weight, @Nullable final String iconClass) {
+    public OperationLink(@Nullable final String id, @Nullable final String styleClass, final String label, @Nullable final String title, final String href,
+            @Nullable final Integer weight, @Nullable final String iconClass) {
         this.id = id;
         this.styleClass = styleClass;
         this.iconClass = iconClass;
@@ -94,15 +94,10 @@ public class OperationLink implements Serializable, Operation {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof OperationLink) {
-            OperationLink that = (OperationLink) o;
-            return Objects.equals(id, that.id)
-                    && Objects.equals(styleClass, that.styleClass)
-                    && Objects.equals(label, that.label)
-                    && Objects.equals(title, that.title)
-                    && Objects.equals(href, that.href)
-                    && Objects.equals(weight, that.weight)
+    public boolean equals(final Object o) {
+        if (o instanceof final OperationLink that) {
+            return Objects.equals(id, that.id) && Objects.equals(styleClass, that.styleClass) && Objects.equals(label, that.label)
+                    && Objects.equals(title, that.title) && Objects.equals(href, that.href) && Objects.equals(weight, that.weight)
                     && Objects.equals(iconClass, that.iconClass);
         }
         return false;

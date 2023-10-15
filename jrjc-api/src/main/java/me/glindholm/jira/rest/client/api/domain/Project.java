@@ -26,8 +26,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import me.glindholm.jira.rest.client.api.ExpandableResource;
 
 /**
- * Complete information about single JIRA project.
- * Many REST resources instead include just @{}BasicProject
+ * Complete information about single JIRA project. Many REST resources instead include
+ * just @{}BasicProject
  *
  * @since v0.1
  */
@@ -53,9 +53,9 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     private final List<IssueType> issueTypes;
     private final List<BasicProjectRole> projectRoles;
 
-    public Project(final List<String> expandos, URI self, String key, Long id, String name, String description, BasicUser lead, URI uri,
-            List<Version> versions, List<BasicComponent> components,
-            List<IssueType> issueTypes, List<BasicProjectRole> projectRoles) {
+    public Project(final List<String> expandos, final URI self, final String key, final Long id, final String name, final String description,
+            final BasicUser lead, final URI uri, final List<Version> versions, final List<BasicComponent> components, final List<IssueType> issueTypes,
+            final List<BasicProjectRole> projectRoles) {
         super(self, key, id, name);
         this.expandos = expandos;
         this.description = description;
@@ -68,7 +68,8 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     }
 
     /**
-     * @return description provided for this project or null if there is no description specific for this project.
+     * @return description provided for this project or null if there is no description specific for
+     *         this project.
      */
     @Nullable
     public String getDescription() {
@@ -134,16 +135,10 @@ public class Project extends BasicProject implements Serializable, ExpandableRes
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof Project) {
-            Project that = (Project) o;
-            return super.equals(that)
-                    && Objects.equals(this.lead, that.lead)
-                    && Objects.equals(this.uri, that.uri)
-                    && Objects.equals(this.description, that.description)
-                    && Objects.equals(this.components, that.components)
-                    && Objects.equals(this.issueTypes, that.issueTypes)
-                    && Objects.equals(this.versions, that.versions);
+    public boolean equals(final Object o) {
+        if (o instanceof final Project that) {
+            return super.equals(that) && Objects.equals(lead, that.lead) && Objects.equals(uri, that.uri) && Objects.equals(description, that.description)
+                    && Objects.equals(components, that.components) && Objects.equals(issueTypes, that.issueTypes) && Objects.equals(versions, that.versions);
         }
         return false;
     }

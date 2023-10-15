@@ -68,24 +68,16 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
 
         @Override
         public String toString() {
-            switch (this) {
-            case BUG:
-                return "Bug"; //$NON-NLS-1$
-            case STORY:
-                return "Story"; //$NON-NLS-1$
-            case FEATURE:
-                return "New Feature"; //$NON-NLS-1$
-            case TASK:
-                return "Task"; //$NON-NLS-1$
-            case IMPROVEMENT:
-                return "Improvement"; //$NON-NLS-1$
-            case CUSTOM_ISSUE:
-                return "Custom Issue"; //$NON-NLS-1$
-            case SUB_TASK:
-                return "Sub-task"; //$NON-NLS-1$
-            default:
-                return ""; //$NON-NLS-1$
-            }
+            return switch (this) {
+            case BUG -> "Bug"; //$NON-NLS-1$
+            case STORY -> "Story"; //$NON-NLS-1$
+            case FEATURE -> "New Feature"; //$NON-NLS-1$
+            case TASK -> "Task"; //$NON-NLS-1$
+            case IMPROVEMENT -> "Improvement"; //$NON-NLS-1$
+            case CUSTOM_ISSUE -> "Custom Issue"; //$NON-NLS-1$
+            case SUB_TASK -> "Sub-task"; //$NON-NLS-1$
+            default -> ""; //$NON-NLS-1$
+            };
         }
     }
 
@@ -125,10 +117,8 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
             } else if (JiraTaskKind.TASK.toString().equals(task.getTaskKind())) {
                 return JiraImages.OVERLAY_TASK;
             } else {
-                final TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND,
-                        task.getRepositoryUrl());
-                final JiraClient client = repository != null ? JiraClientFactory.getDefault().getJiraClient(repository)
-                        : null;
+                final TaskRepository repository = TasksUi.getRepositoryManager().getRepository(JiraCorePlugin.CONNECTOR_KIND, task.getRepositoryUrl());
+                final JiraClient client = repository != null ? JiraClientFactory.getDefault().getJiraClient(repository) : null;
                 final JiraClientCache cache = client != null ? client.getCache() : null;
 
                 if (cache != null) {
@@ -213,12 +203,12 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
     @Override
     public String getTaskHistoryUrl(final TaskRepository taskRepository, final ITask task) {
         return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
-        + "?page=me.glindholm.jira.plugin.system.issuetabpanels:changehistory-tabpanel"; //$NON-NLS-1$
+                + "?page=me.glindholm.jira.plugin.system.issuetabpanels:changehistory-tabpanel"; //$NON-NLS-1$
     }
 
     public static String getTaskWorkLogUrl(final TaskRepository taskRepository, final ITask task) {
         return taskRepository.getRepositoryUrl() + JiraRepositoryConnector.ISSUE_URL_PREFIX + task.getTaskKey()
-        + "?page=me.glindholm.jira.plugin.system.issuetabpanels%3Aworklog-tabpanel"; //$NON-NLS-1$
+                + "?page=me.glindholm.jira.plugin.system.issuetabpanels%3Aworklog-tabpanel"; //$NON-NLS-1$
     }
 
     @Override
@@ -226,8 +216,7 @@ public class JiraConnectorUi extends AbstractRepositoryConnectorUi {
         if (taskComment == null) {
             return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_X, task.getTaskKey()) + ":"; //$NON-NLS-1$
         } else if (includeTask) {
-            return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_X_comment_X, task.getTaskKey(),
-                    taskComment.getNumber()) + ":"; //$NON-NLS-1$
+            return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_X_comment_X, task.getTaskKey(), taskComment.getNumber()) + ":"; //$NON-NLS-1$
         } else {
             return MessageFormat.format(Messages.JiraConnectorUi_In_reply_to_comment_X, taskComment.getNumber()) + ":"; //$NON-NLS-1$
         }

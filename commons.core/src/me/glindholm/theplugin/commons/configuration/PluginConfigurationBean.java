@@ -3,9 +3,7 @@ package me.glindholm.theplugin.commons.configuration;
 import me.glindholm.theplugin.commons.util.HttpConfigurableAdapter;
 
 /**
- * User: jgorycki
- * Date: Jan 20, 2009
- * Time: 2:48:30 PM
+ * User: jgorycki Date: Jan 20, 2009 Time: 2:48:30 PM
  */
 public class PluginConfigurationBean implements PluginConfiguration {
     private JiraConfigurationBean jiraConfiguration = new JiraConfigurationBean();
@@ -19,12 +17,13 @@ public class PluginConfigurationBean implements PluginConfiguration {
     }
 
     /**
-     * Copying constructor.<p>
+     * Copying constructor.
+     * <p>
      * Makes a deep copy of provided configuration.
      *
      * @param cfg configuration to be deep copied.
      */
-    public PluginConfigurationBean(PluginConfiguration cfg) {
+    public PluginConfigurationBean(final PluginConfiguration cfg) {
         setConfiguration(cfg);
     }
 
@@ -33,11 +32,12 @@ public class PluginConfigurationBean implements PluginConfiguration {
      *
      * @param cfg configuration to be copied to current configuration object.
      */
-    public void setConfiguration(PluginConfiguration cfg) {
+    @Override
+    public void setConfiguration(final PluginConfiguration cfg) {
 
-        this.setGeneralConfigurationData(new GeneralConfigurationBean(cfg.getGeneralConfigurationData()));
-        this.setJIRAConfigurationData(new JiraConfigurationBean(cfg.getJIRAConfigurationData()));
-        this.transientSetHttpConfigurable(cfg.transientGetHttpConfigurable());
+        setGeneralConfigurationData(new GeneralConfigurationBean(cfg.getGeneralConfigurationData()));
+        setJIRAConfigurationData(new JiraConfigurationBean(cfg.getJIRAConfigurationData()));
+        transientSetHttpConfigurable(cfg.transientGetHttpConfigurable());
     }
 
     /**
@@ -50,6 +50,7 @@ public class PluginConfigurationBean implements PluginConfiguration {
      * <p/>
      * Does not use the JDK1.5 'return a subclass' due to problem with XML serialization.
      */
+    @Override
     public JiraConfigurationBean getJIRAConfigurationData() {
         return jiraConfiguration;
     }
@@ -59,28 +60,32 @@ public class PluginConfigurationBean implements PluginConfiguration {
      * <p/>
      * Does not use the JDK1.5 'return a subclass' due to problem with XML serialization.
      */
-    public void setJIRAConfigurationData(JiraConfigurationBean newConfiguration) {
+    public void setJIRAConfigurationData(final JiraConfigurationBean newConfiguration) {
         jiraConfiguration = newConfiguration;
     }
 
+    @Override
     public GeneralConfigurationBean getGeneralConfigurationData() {
         return generalConfigurationBean;
     }
 
-    public void setGeneralConfigurationData(GeneralConfigurationBean aGeneralConfigurationBean) {
-        this.generalConfigurationBean = aGeneralConfigurationBean;
+    @Override
+    public void setGeneralConfigurationData(final GeneralConfigurationBean aGeneralConfigurationBean) {
+        generalConfigurationBean = aGeneralConfigurationBean;
     }
 
-    public void transientSetHttpConfigurable(HttpConfigurableAdapter aHttpConfigurableAdapter) {
-        this.httpConfigurableAdapter = aHttpConfigurableAdapter;
+    @Override
+    public void transientSetHttpConfigurable(final HttpConfigurableAdapter aHttpConfigurableAdapter) {
+        httpConfigurableAdapter = aHttpConfigurableAdapter;
     }
 
+    @Override
     public HttpConfigurableAdapter transientGetHttpConfigurable() {
         return httpConfigurableAdapter;
     }
 
     @Override
-	public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -88,8 +93,7 @@ public class PluginConfigurationBean implements PluginConfiguration {
             return false;
         }
 
-        PluginConfigurationBean that = (PluginConfigurationBean) o;
-
+        final PluginConfigurationBean that = (PluginConfigurationBean) o;
 
         if (!generalConfigurationBean.equals(that.generalConfigurationBean)) {
             return false;
@@ -101,7 +105,7 @@ public class PluginConfigurationBean implements PluginConfiguration {
     private static final int ONE_EFF = 31;
 
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 0;
         result = ONE_EFF * result + (jiraConfiguration != null ? jiraConfiguration.hashCode() : 0);
         result = ONE_EFF * result + (generalConfigurationBean != null ? generalConfigurationBean.hashCode() : 0);
@@ -109,4 +113,3 @@ public class PluginConfigurationBean implements PluginConfiguration {
         return result;
     }
 }
-

@@ -34,12 +34,11 @@ import me.glindholm.jira.rest.client.api.domain.input.VersionPosition;
  */
 public interface VersionRestClient {
 
-
     /**
      * Retrieves full information about selected project version
      *
-     * @param versionUri URI of the version to retrieve. You can get it for example from Project or it can be
-     *                   referenced from an issue.
+     * @param versionUri URI of the version to retrieve. You can get it for example from Project or it
+     *                   can be referenced from an issue.
      * @return full information about selected project version
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
@@ -65,84 +64,72 @@ public interface VersionRestClient {
     Promise<Version> updateVersion(URI versionUri, VersionInput versionInput);
 
     /**
-     * Removes selected version optionally changing Fix Version(s) and/or Affects
-     * Version(s) fields of related issues.
+     * Removes selected version optionally changing Fix Version(s) and/or Affects Version(s) fields of
+     * related issues.
      *
      * @param versionUri                     full URI to the version to remove
-     * @param moveFixIssuesToVersionUri      URI of the version to which issues
-     *                                       should have now set their Fix
-     *                                       Version(s) field instead of the just
-     *                                       removed version. Use <code>null</code>
-     *                                       to simply clear Fix Version(s) in all
-     *                                       those issues where the version removed
+     * @param moveFixIssuesToVersionUri      URI of the version to which issues should have now set
+     *                                       their Fix Version(s) field instead of the just removed
+     *                                       version. Use <code>null</code> to simply clear Fix
+     *                                       Version(s) in all those issues where the version removed
      *                                       was referenced.
-     * @param moveAffectedIssuesToVersionUri URI of the version to which issues
-     *                                       should have now set their Affects
-     *                                       Version(s) field instead of the just
-     *                                       removed version. Use <code>null</code>
-     *                                       to simply clear Affects Version(s) in
-     *                                       all those issues where the version
-     *                                       removed was referenced.
+     * @param moveAffectedIssuesToVersionUri URI of the version to which issues should have now set
+     *                                       their Affects Version(s) field instead of the just removed
+     *                                       version. Use <code>null</code> to simply clear Affects
+     *                                       Version(s) in all those issues where the version removed
+     *                                       was referenced.
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<Void> removeVersion(URI versionUri, @Nullable URI moveFixIssuesToVersionUri, @Nullable URI moveAffectedIssuesToVersionUri)
             throws URISyntaxException;
 
     /**
-     * Retrieves basic statistics about issues which have their Fix Version(s) or
-     * Affects Version(s) field pointing to given version.
+     * Retrieves basic statistics about issues which have their Fix Version(s) or Affects Version(s)
+     * field pointing to given version.
      *
-     * @param versionUri full URI to the version you want to get related issues
-     *                   count for
+     * @param versionUri full URI to the version you want to get related issues count for
      * @return basic stats about issues related to given version
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<VersionRelatedIssuesCount> getVersionRelatedIssuesCount(URI versionUri) throws URISyntaxException;
 
     /**
-     * Retrieves number of unresolved issues which have their Fix Version(s) field
-     * pointing to given version.
+     * Retrieves number of unresolved issues which have their Fix Version(s) field pointing to given
+     * version.
      *
-     * @param versionUri full URI to the version you want to get the number of
-     *                   unresolved issues for
-     * @return number of unresolved issues having this version included in their Fix
-     *         Version(s) field.
+     * @param versionUri full URI to the version you want to get the number of unresolved issues for
+     * @return number of unresolved issues having this version included in their Fix Version(s) field.
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<Integer> getNumUnresolvedIssues(URI versionUri) throws URISyntaxException;
 
     /**
-     * Moves selected version after another version. Ordering of versions is
-     * important on various reports and whenever input version fields are rendered
-     * by JIRA. If version is already immediately after the other version (defined
-     * by <code>afterVersionUri</code>) then such call has no visual effect.
+     * Moves selected version after another version. Ordering of versions is important on various
+     * reports and whenever input version fields are rendered by JIRA. If version is already immediately
+     * after the other version (defined by <code>afterVersionUri</code>) then such call has no visual
+     * effect.
      *
      * @param versionUri      full URI to the version to move
      * @param afterVersionUri URI of the version to move selected version after
      * @return just moved version
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<Version> moveVersionAfter(URI versionUri, URI afterVersionUri) throws URISyntaxException;
 
     /**
-     * Moves selected version to another position. If version already occupies given
-     * position (e.g. is the last version and we want to move to a later position or
-     * to the last position) then such call does not change anything.
+     * Moves selected version to another position. If version already occupies given position (e.g. is
+     * the last version and we want to move to a later position or to the last position) then such call
+     * does not change anything.
      *
      * @param versionUri      full URI to the version to move
      * @param versionPosition defines a new position of selected version
      * @return just moved version
      * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed
-     *                             messages, etc.)
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
     Promise<Version> moveVersion(URI versionUri, VersionPosition versionPosition) throws URISyntaxException;
 

@@ -20,5 +20,5 @@ package me.glindholm.theplugin.commons;
  * Interface for IDE-specific method to invoke methods in User Interface thread.
  */
 public interface UIActionScheduler {
-	void invokeLater(Runnable action);
+    void invokeLater(Runnable action);
 }

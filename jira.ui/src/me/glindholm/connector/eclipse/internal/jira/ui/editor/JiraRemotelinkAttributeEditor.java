@@ -105,16 +105,13 @@ public class JiraRemotelinkAttributeEditor extends TextAttributeEditor {
                 @Override
                 public void mouseExit(final MouseEvent e) {
                     final int lastVersion = version;
-                    Display.getDefault().timerExec(100, new Runnable() {
-                        @Override
-                        public void run() {
-                            if (version != lastVersion || selfLink.isDisposed()) {
-                                return;
-                            }
-                            selfLink.redraw();
-                            ((GridData) selfLink.getLayoutData()).exclude = true;
-                            composite.layout();
+                    Display.getDefault().timerExec(100, () -> {
+                        if (version != lastVersion || selfLink.isDisposed()) {
+                            return;
                         }
+                        selfLink.redraw();
+                        ((GridData) selfLink.getLayoutData()).exclude = true;
+                        composite.layout();
                     });
                 }
             };

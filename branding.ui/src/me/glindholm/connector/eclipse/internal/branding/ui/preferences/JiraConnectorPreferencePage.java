@@ -11,7 +11,7 @@ import me.glindholm.connector.eclipse.internal.branding.ui.JiraConnectorBranding
 
 public class JiraConnectorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     @Override
-    protected Control createContents(Composite parent) {
+    protected Control createContents(final Composite parent) {
         final Composite composite = new Composite(parent, SWT.NULL);
         return composite;
     }
@@ -21,11 +21,13 @@ public class JiraConnectorPreferencePage extends PreferencePage implements IWork
         setPreferenceStore(JiraConnectorBrandingPlugin.getDefault().getPreferenceStore());
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     @Override
-    public void init(IWorkbench workbench) {
+    public void init(final IWorkbench workbench) {
     }
 
 }

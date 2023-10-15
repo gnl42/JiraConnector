@@ -50,8 +50,7 @@ public class AuditChangedValue {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof AuditChangedValue) {
-            final AuditChangedValue that = (AuditChangedValue) o;
+        if (o instanceof final AuditChangedValue that) {
             return Objects.equals(fieldName, that.fieldName) && Objects.equals(changedFrom, that.changedFrom) && Objects.equals(changedTo, that.changedTo);
         }
         return false;

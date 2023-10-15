@@ -19,7 +19,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Class which allows to extract certain data from Filters which can be used to build a classic query.
+ * Class which allows to extract certain data from Filters which can be used to build a classic
+ * query.
  */
 public class ClassicFilterDataExtractor extends FilterDataExtractor {
 
@@ -29,8 +30,8 @@ public class ClassicFilterDataExtractor extends FilterDataExtractor {
     }
 
     /**
-     * Extracts and returns list of component IDs (integers) from given component filter, including special value for
-     * "No component".
+     * Extracts and returns list of component IDs (integers) from given component filter, including
+     * special value for "No component".
      *
      * @param componentFilter
      * @return List&lt;String&gt; with component IDs
@@ -60,8 +61,8 @@ public class ClassicFilterDataExtractor extends FilterDataExtractor {
     }
 
     /**
-     * Extracts and returns a list of issue type IDs (integers), including special cases for "all standard issue types"
-     * and "sub-task issue types".
+     * Extracts and returns a list of issue type IDs (integers), including special cases for "all
+     * standard issue types" and "sub-task issue types".
      *
      * @param issueTypeFilter
      * @return List&lt;String&gt; with issue type IDs
@@ -72,13 +73,13 @@ public class ClassicFilterDataExtractor extends FilterDataExtractor {
         final List<String> issueTypeNames = new ArrayList<>();
 
         if (issueTypeFilter != null) {
-            //TODO not supported in classic query ?
-            //if (issueTypeFilter.isStandardTypes()) {
-            //	issueTypeNames.add(JiraFieldSpecialValue.ISSUE_TYPE_STANDARD.getClassic());
-            //}
-            //if (issueTypeFilter.isSubTaskTypes()) {
-            //	issueTypeNames.add(JiraFieldSpecialValue.ISSUE_TYPE_SUBTASK.getClassic());
-            //}
+            // TODO not supported in classic query ?
+            // if (issueTypeFilter.isStandardTypes()) {
+            // issueTypeNames.add(JiraFieldSpecialValue.ISSUE_TYPE_STANDARD.getClassic());
+            // }
+            // if (issueTypeFilter.isSubTaskTypes()) {
+            // issueTypeNames.add(JiraFieldSpecialValue.ISSUE_TYPE_SUBTASK.getClassic());
+            // }
             if (issueTypeFilter.getIsueTypes() != null) {
                 issueTypeNames.addAll(getIssueTypeIds(Arrays.asList(issueTypeFilter.getIsueTypes())));
             }
@@ -125,8 +126,8 @@ public class ClassicFilterDataExtractor extends FilterDataExtractor {
     }
 
     /**
-     * Extracts list of version IDs (integers) from given version filter, including special values like "No version",
-     * "Released versions", "Unreleased versions".
+     * Extracts list of version IDs (integers) from given version filter, including special values like
+     * "No version", "Released versions", "Unreleased versions".
      *
      * @param filter
      * @return List&lt;String&gt; version IDs (e.g. -1, 33, 88)

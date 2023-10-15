@@ -29,24 +29,25 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.filter.RelativeDa
 
 /**
  * <p>
- * Class which allows to extract certain data from Filters so that the returned data can be used to build a query. See
- * implementations:
+ * Class which allows to extract certain data from Filters so that the returned data can be used to
+ * build a query. See implementations:
  * <ul>
  * <li>{@link ClassicFilterDataExtractor} for classic GET (?key1=value1&key2=value2 ... )</li>
  * <li>{@link JQLFilterDataExtractor} for JQL queries (key1 = value1 AND key2 = value2 ...)</li>
  * </ul>
  * </p>
  * <p>
- * This abstract class provides set of helper getXxxxYyy() methods which extracts certain Yyy attributes from Xxxx
- * fields. The set of extractXxxx() methods shall return a list of values which can be used in a query (usually integer
- * IDs, keys, names, special values), depending on implementation.
+ * This abstract class provides set of helper getXxxxYyy() methods which extracts certain Yyy
+ * attributes from Xxxx fields. The set of extractXxxx() methods shall return a list of values which
+ * can be used in a query (usually integer IDs, keys, names, special values), depending on
+ * implementation.
  * </p>
  */
 public abstract class FilterDataExtractor {
 
     /**
-     * Extracts list of assignees from UserFilter, including special cases like
-     * 'unassigned', 'current user', 'specific user', 'specific group'.
+     * Extracts list of assignees from UserFilter, including special cases like 'unassigned', 'current
+     * user', 'specific user', 'specific group'.
      *
      * @param userFilter
      * @return Collection&lt;String&gt; exact content depends on implementation
@@ -54,8 +55,8 @@ public abstract class FilterDataExtractor {
     public abstract Collection<String> extractAssignedTo(UserFilter userFilter);
 
     /**
-     * Extracts and returns list of component identifiers from given component
-     * filter, including special value for "No component".
+     * Extracts and returns list of component identifiers from given component filter, including special
+     * value for "No component".
      *
      * @param componentFilter
      * @return Collection&lt;String&gt; exact content depends on implementation
@@ -65,8 +66,8 @@ public abstract class FilterDataExtractor {
     public abstract Collection<String> extractDates(DateFilter dateFilter, DateFormat dateFormat);
 
     /**
-     * Extracts and returns a list of issue types identifiers, including special
-     * cases for "all standard issue types" and "sub-task issue types".
+     * Extracts and returns a list of issue types identifiers, including special cases for "all standard
+     * issue types" and "sub-task issue types".
      *
      * @param issueTypeFilter
      * @return Collection&lt;String&gt; exact content depends on implementation
@@ -96,8 +97,8 @@ public abstract class FilterDataExtractor {
     public abstract Collection<String> extractProjects(ProjectFilter projectFilter);
 
     /**
-     * Extracts list of assignees from user filter, including special cases like 'no
-     * reporter', 'current user', 'specific user', 'specific group'.
+     * Extracts list of assignees from user filter, including special cases like 'no reporter', 'current
+     * user', 'specific user', 'specific group'.
      *
      * @param userFilter
      * @return Collection&lt;String&gt; exact content depends on implementation
@@ -105,8 +106,8 @@ public abstract class FilterDataExtractor {
     public abstract Collection<String> extractReportedBy(UserFilter userFilter);
 
     /**
-     * Extracts list of resolutions from given resolution filter, including special
-     * value for "Unresolved".
+     * Extracts list of resolutions from given resolution filter, including special value for
+     * "Unresolved".
      *
      * @param projectFilter
      * @return Collection&lt;String&gt; exact content depends on implementation
@@ -128,8 +129,8 @@ public abstract class FilterDataExtractor {
     }
 
     /**
-     * Extracts list of versions from given version filter, including special values
-     * like "No version", "Released versions", "Unreleased versions".
+     * Extracts list of versions from given version filter, including special values like "No version",
+     * "Released versions", "Unreleased versions".
      *
      * @param filter
      * @return Collection&lt;String&gt; exact content depends on implementation
@@ -137,8 +138,7 @@ public abstract class FilterDataExtractor {
     public abstract Collection<String> extractVersions(VersionFilter filter);
 
     /**
-     * Extracts work ratio range from filter (logged work effort vs actual
-     * estimation).
+     * Extracts work ratio range from filter (logged work effort vs actual estimation).
      *
      * @param estimateFilter
      * @return Collection&lt;String&gt; exact content depends on implementation
@@ -153,14 +153,14 @@ public abstract class FilterDataExtractor {
      * @return
      */
     protected Collection<String> getComponentIds(final Collection<JiraComponent> components) {
-        return components.stream().map(element -> element.getId()).collect(Collectors.toList());
+        return components.stream().map(JiraComponent::getId).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(components, new Function<JiraComponent, String>() {
-        //            @Override
-        //            public String apply(JiraComponent from) {
-        //                return from.getId();
-        //            }
-        //        });
+        // return Collections2.transform(components, new Function<JiraComponent, String>() {
+        // @Override
+        // public String apply(JiraComponent from) {
+        // return from.getId();
+        // }
+        // });
     }
 
     /**
@@ -171,14 +171,14 @@ public abstract class FilterDataExtractor {
      * @return
      */
     protected Collection<String> getIssueTypeIds(final Collection<JiraIssueType> issueTypes) {
-        return issueTypes.stream().map(element -> element.getId()).collect(Collectors.toList());
+        return issueTypes.stream().map(JiraIssueType::getId).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(issueTypes, new Function<JiraIssueType, String>() {
-        //            @Override
-        //            public String apply(JiraIssueType from) {
-        //                return from.getId();
-        //            }
-        //        });
+        // return Collections2.transform(issueTypes, new Function<JiraIssueType, String>() {
+        // @Override
+        // public String apply(JiraIssueType from) {
+        // return from.getId();
+        // }
+        // });
     }
 
     /**
@@ -191,12 +191,12 @@ public abstract class FilterDataExtractor {
     protected Collection<String> getIssueTypeNames(final Collection<JiraIssueType> issueTypes) {
         return issueTypes.stream().map(element -> putInDoubleQuotes(element.getName())).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(issueTypes, new Function<JiraIssueType, String>() {
-        //            @Override
-        //            public String apply(JiraIssueType from) {
-        //                return putInDoubleQuotes(from.getName());
-        //            }
-        //        });
+        // return Collections2.transform(issueTypes, new Function<JiraIssueType, String>() {
+        // @Override
+        // public String apply(JiraIssueType from) {
+        // return putInDoubleQuotes(from.getName());
+        // }
+        // });
     }
 
     /**
@@ -207,14 +207,14 @@ public abstract class FilterDataExtractor {
      * @return
      */
     protected Collection<String> getPriorityIds(final Collection<JiraPriority> priorities) {
-        return priorities.stream().map(element -> element.getId()).collect(Collectors.toList());
+        return priorities.stream().map(JiraPriority::getId).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(priorities, new Function<JiraPriority, String>() {
-        //            @Override
-        //            public String apply(JiraPriority from) {
-        //                return from.getId();
-        //            }
-        //        });
+        // return Collections2.transform(priorities, new Function<JiraPriority, String>() {
+        // @Override
+        // public String apply(JiraPriority from) {
+        // return from.getId();
+        // }
+        // });
     }
 
     /**
@@ -225,14 +225,14 @@ public abstract class FilterDataExtractor {
      * @return
      */
     protected Collection<String> getResolutionIds(final Collection<JiraResolution> resolutions) {
-        return resolutions.stream().map(element -> element.getId()).collect(Collectors.toList());
+        return resolutions.stream().map(JiraResolution::getId).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(resolutions, new Function<JiraResolution, String>() {
-        //            @Override
-        //            public String apply(JiraResolution from) {
-        //                return from.getId();
-        //            }
-        //        });
+        // return Collections2.transform(resolutions, new Function<JiraResolution, String>() {
+        // @Override
+        // public String apply(JiraResolution from) {
+        // return from.getId();
+        // }
+        // });
     }
 
     /**
@@ -245,12 +245,12 @@ public abstract class FilterDataExtractor {
     protected Collection<? extends String> getResolutionNames(final List<JiraResolution> resolutions) {
         return resolutions.stream().map(element -> putInDoubleQuotes(element.getName())).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(resolutions, new Function<JiraResolution, String>() {
-        //            @Override
-        //            public String apply(JiraResolution from) {
-        //                return putInDoubleQuotes(from.getName());
-        //            }
-        //        });
+        // return Collections2.transform(resolutions, new Function<JiraResolution, String>() {
+        // @Override
+        // public String apply(JiraResolution from) {
+        // return putInDoubleQuotes(from.getName());
+        // }
+        // });
     }
 
     /**
@@ -261,14 +261,14 @@ public abstract class FilterDataExtractor {
      * @return
      */
     protected Collection<String> getStatusIds(final Collection<JiraStatus> jiraStatuses) {
-        return jiraStatuses.stream().map(element -> element.getId()).collect(Collectors.toList());
+        return jiraStatuses.stream().map(JiraStatus::getId).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(jiraStatuses, new Function<JiraStatus, String>() {
-        //            @Override
-        //            public String apply(JiraStatus from) {
-        //                return from.getId();
-        //            }
-        //        });
+        // return Collections2.transform(jiraStatuses, new Function<JiraStatus, String>() {
+        // @Override
+        // public String apply(JiraStatus from) {
+        // return from.getId();
+        // }
+        // });
     }
 
     /**
@@ -279,14 +279,14 @@ public abstract class FilterDataExtractor {
      * @return
      */
     protected Collection<String> getProjectIds(final List<JiraProject> projects) {
-        return projects.stream().map(element -> element.getId()).collect(Collectors.toList());
+        return projects.stream().map(JiraProject::getId).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(projects, new Function<JiraProject, String>() {
-        //            @Override
-        //            public String apply(JiraProject from) {
-        //                return from.getId();
-        //            }
-        //        });
+        // return Collections2.transform(projects, new Function<JiraProject, String>() {
+        // @Override
+        // public String apply(JiraProject from) {
+        // return from.getId();
+        // }
+        // });
     }
 
     /**
@@ -297,14 +297,14 @@ public abstract class FilterDataExtractor {
      * @return
      */
     protected Collection<String> getProjectKeys(final Collection<JiraProject> projects) {
-        return projects.stream().map(element -> element.getKey()).collect(Collectors.toList());
+        return projects.stream().map(JiraProject::getKey).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(projects, new Function<JiraProject, String>() {
-        //            @Override
-        //            public String apply(JiraProject from) {
-        //                return from.getKey();
-        //            }
-        //        });
+        // return Collections2.transform(projects, new Function<JiraProject, String>() {
+        // @Override
+        // public String apply(JiraProject from) {
+        // return from.getKey();
+        // }
+        // });
     }
 
     /**
@@ -315,14 +315,14 @@ public abstract class FilterDataExtractor {
      * @return list of version integer identifiers
      */
     protected Collection<String> getVersionIds(final Collection<JiraVersion> versions) {
-        return versions.stream().map(element -> element.getId()).collect(Collectors.toList());
+        return versions.stream().map(JiraVersion::getId).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(versions, new Function<JiraVersion, String>() {
-        //            @Override
-        //            public String apply(JiraVersion from) {
-        //                return from.getId();
-        //            }
-        //        });
+        // return Collections2.transform(versions, new Function<JiraVersion, String>() {
+        // @Override
+        // public String apply(JiraVersion from) {
+        // return from.getId();
+        // }
+        // });
     }
 
     /**
@@ -335,17 +335,16 @@ public abstract class FilterDataExtractor {
     protected Collection<String> getVersionNames(final Collection<JiraVersion> versions) {
         return versions.stream().map(element -> putInDoubleQuotes(element.getName())).collect(Collectors.toList());
         // TODO Remove
-        //        return Collections2.transform(versions, new Function<JiraVersion, String>() {
-        //            @Override
-        //            public String apply(JiraVersion from) {
-        //                return putInDoubleQuotes(from.getName());
-        //            }
-        //        });
+        // return Collections2.transform(versions, new Function<JiraVersion, String>() {
+        // @Override
+        // public String apply(JiraVersion from) {
+        // return putInDoubleQuotes(from.getName());
+        // }
+        // });
     }
 
     /**
-     * Puts input string into double quotes; double quotes present in input string
-     * are back-slashed.
+     * Puts input string into double quotes; double quotes present in input string are back-slashed.
      *
      * @param input
      * @return

@@ -81,13 +81,11 @@ public class User extends BasicUser {
     }
 
     /**
-     * As of JIRA 5.0 there can be several different user avatar URIs - for
-     * different size.
+     * As of JIRA 5.0 there can be several different user avatar URIs - for different size.
      *
-     * @param sizeDefinition size like "16x16" or "48x48". URI for 48x48 should be
-     *                       always defined.
-     * @return URI for specified size or <code>null</code> when there is no avatar
-     *         image with given dimensions specified for this user
+     * @param sizeDefinition size like "16x16" or "48x48". URI for 48x48 should be always defined.
+     * @return URI for specified size or <code>null</code> when there is no avatar image with given
+     *         dimensions specified for this user
      */
     @SuppressWarnings("UnusedDeclaration")
     @Nullable
@@ -105,8 +103,7 @@ public class User extends BasicUser {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof User) {
-            final User that = (User) obj;
+        if (obj instanceof final User that) {
             return super.equals(obj) && Objects.equals(avatarUris, that.avatarUris);
         }
         return false;
@@ -118,8 +115,8 @@ public class User extends BasicUser {
     }
 
     /**
-     * @return user timezone, like "Europe/Berlin" or <code>null</code> if timezone
-     *         info is not available
+     * @return user timezone, like "Europe/Berlin" or <code>null</code> if timezone info is not
+     *         available
      * @since me.glindholm.jira.rest.client.api 0.5, server 4.4
      */
     @Nullable

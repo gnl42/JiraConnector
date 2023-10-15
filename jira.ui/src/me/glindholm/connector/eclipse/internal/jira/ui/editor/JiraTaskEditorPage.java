@@ -230,15 +230,12 @@ public class JiraTaskEditorPage extends AbstractTaskEditorPage {
         }
 
         private void update(final TaskDataManagerEvent event) {
-            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    if (event.getTask() != null && getModel() != null) {
-                        if (event.getTask().equals(getModel().getTask())) {
-                            if (startWorkAction != null) {
-                                // event.getTaskData() sometimes returns null
-                                startWorkAction.update(getModel().getTaskData(), event.getTask());
-                            }
+            PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+                if (event.getTask() != null && getModel() != null) {
+                    if (event.getTask().equals(getModel().getTask())) {
+                        if (startWorkAction != null) {
+                            // event.getTaskData() sometimes returns null
+                            startWorkAction.update(getModel().getTaskData(), event.getTask());
                         }
                     }
                 }

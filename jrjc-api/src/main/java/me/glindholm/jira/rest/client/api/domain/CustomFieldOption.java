@@ -16,7 +16,6 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-
 import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
@@ -39,7 +38,8 @@ public class CustomFieldOption implements Serializable {
     @Nullable
     private final CustomFieldOption child;
 
-    public CustomFieldOption(Long id, URI self, String value, List<CustomFieldOption> children, @Nullable CustomFieldOption child) {
+    public CustomFieldOption(final Long id, final URI self, final String value, final List<CustomFieldOption> children,
+            @Nullable final CustomFieldOption child) {
         this.value = value;
         this.id = id;
         this.self = self;
@@ -69,7 +69,8 @@ public class CustomFieldOption implements Serializable {
     }
 
     /**
-     * Returns ToStringHelper with all fields inserted. Override this method to insert additional fields.
+     * Returns ToStringHelper with all fields inserted. Override this method to insert additional
+     * fields.
      *
      * @return ToStringHelper
      */
@@ -88,18 +89,12 @@ public class CustomFieldOption implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+    public boolean equals(final Object obj) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         final CustomFieldOption other = (CustomFieldOption) obj;
-        return Objects.equals(this.self, other.self)
-                && Objects.equals(this.id, other.id)
-                && Objects.equals(this.value, other.value)
-                && Objects.equals(this.children, other.children)
-                && Objects.equals(this.child, other.child);
+        return Objects.equals(self, other.self) && Objects.equals(id, other.id) && Objects.equals(value, other.value)
+                && Objects.equals(children, other.children) && Objects.equals(child, other.child);
     }
 }

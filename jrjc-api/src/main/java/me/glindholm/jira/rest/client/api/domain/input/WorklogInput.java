@@ -17,26 +17,27 @@
 package me.glindholm.jira.rest.client.api.domain.input;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 import org.eclipse.jdt.annotation.Nullable;
-
-import java.time.OffsetDateTime;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 
 /**
- * Represents worklog item in JIRA. Is used to create new worklog or update existing one.
- * Contains also estimate adjustment options which are used only to adjust change of remaining
- * estimate (adjustEstimate and adjustEstimateValue).
+ * Represents worklog item in JIRA. Is used to create new worklog or update existing one. Contains
+ * also estimate adjustment options which are used only to adjust change of remaining estimate
+ * (adjustEstimate and adjustEstimateValue).
  * <p>
  * Possible values for adjustEstimate and adjustEstimateValue are:
  * <ul>
- *   <li>When adjustEstimate is set to {@link AdjustEstimate#AUTO} or {@link AdjustEstimate#LEAVE} adjustEstimateValue
- * is not used</li>
- *   <li>When adjustEstimate is set to {@link AdjustEstimate#NEW} then remaining estimate is set to adjustEstimateValue</li>
- *   <li>When adjustEstimate is set to {@link AdjustEstimate#MANUAL} then remaining estimate is reduced by adjustEstimateValue</li>
+ * <li>When adjustEstimate is set to {@link AdjustEstimate#AUTO} or {@link AdjustEstimate#LEAVE}
+ * adjustEstimateValue is not used</li>
+ * <li>When adjustEstimate is set to {@link AdjustEstimate#NEW} then remaining estimate is set to
+ * adjustEstimateValue</li>
+ * <li>When adjustEstimate is set to {@link AdjustEstimate#MANUAL} then remaining estimate is
+ * reduced by adjustEstimateValue</li>
  * </ul>
  */
 public class WorklogInput {
@@ -70,12 +71,12 @@ public class WorklogInput {
      * @param minutesSpent        time spend in minutes
      * @param visibility          visibility settings for this worklog
      * @param adjustEstimate      adjust estimate option
-     * @param adjustEstimateValue value for estimate adjustment. Only used when adjustEstimate is set
-     *                            to {@link AdjustEstimate#NEW} or {@link AdjustEstimate#MANUAL}
+     * @param adjustEstimateValue value for estimate adjustment. Only used when adjustEstimate is set to
+     *                            {@link AdjustEstimate#NEW} or {@link AdjustEstimate#MANUAL}
      */
-    public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
-            @Nullable String comment, OffsetDateTime startDate, int minutesSpent, @Nullable Visibility visibility,
-            AdjustEstimate adjustEstimate, @Nullable String adjustEstimateValue) {
+    public WorklogInput(@Nullable final URI self, final URI issueUri, @Nullable final BasicUser author, @Nullable final BasicUser updateAuthor,
+            @Nullable final String comment, final OffsetDateTime startDate, final int minutesSpent, @Nullable final Visibility visibility,
+            final AdjustEstimate adjustEstimate, @Nullable final String adjustEstimateValue) {
         this.visibility = visibility;
         this.minutesSpent = minutesSpent;
         this.startDate = startDate;
@@ -89,7 +90,8 @@ public class WorklogInput {
     }
 
     /**
-     * Creates new WorklogInput with given values. Sets adjust estimate option to default value - {@link AdjustEstimate#AUTO}.
+     * Creates new WorklogInput with given values. Sets adjust estimate option to default value -
+     * {@link AdjustEstimate#AUTO}.
      *
      * @param self         URI to this worklog, pass null if this is new worklog item.
      * @param issueUri     URI to destination issue
@@ -100,19 +102,18 @@ public class WorklogInput {
      * @param minutesSpent time spend in minutes
      * @param visibility   visibility settings for this worklog
      */
-    public WorklogInput(@Nullable URI self, URI issueUri, @Nullable BasicUser author, @Nullable BasicUser updateAuthor,
-            @Nullable String comment, OffsetDateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
+    public WorklogInput(@Nullable final URI self, final URI issueUri, @Nullable final BasicUser author, @Nullable final BasicUser updateAuthor,
+            @Nullable final String comment, final OffsetDateTime startDate, final int minutesSpent, @Nullable final Visibility visibility) {
         this(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility, AdjustEstimate.AUTO, null);
     }
 
-    public static WorklogInput create(URI issueUri, @Nullable String comment, OffsetDateTime startDate, int minutesSpent) {
-        return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent)
-                .build();
+    public static WorklogInput create(final URI issueUri, @Nullable final String comment, final OffsetDateTime startDate, final int minutesSpent) {
+        return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent).build();
     }
 
-    public static WorklogInput create(URI issueUri, @Nullable String comment, OffsetDateTime startDate, int minutesSpent, @Nullable Visibility visibility) {
-        return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent)
-                .setVisibility(visibility).build();
+    public static WorklogInput create(final URI issueUri, @Nullable final String comment, final OffsetDateTime startDate, final int minutesSpent,
+            @Nullable final Visibility visibility) {
+        return new WorklogInputBuilder(issueUri).setComment(comment).setStartDate(startDate).setMinutesSpent(minutesSpent).setVisibility(visibility).build();
     }
 
     @Nullable
@@ -169,31 +170,22 @@ public class WorklogInput {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof WorklogInput) {
-            final WorklogInput that = (WorklogInput) obj;
-
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.issueUri, that.issueUri)
-                    && Objects.equals(this.author, that.author)
-                    && Objects.equals(this.updateAuthor, that.updateAuthor)
-                    && Objects.equals(this.comment, that.comment)
-                    && Objects.equals(this.startDate, that.startDate)
-                    && Objects.equals(this.minutesSpent, that.minutesSpent)
-                    && Objects.equals(this.visibility, that.visibility)
-                    && Objects.equals(this.adjustEstimate, that.adjustEstimate)
-                    && Objects.equals(this.adjustEstimateValue, that.adjustEstimateValue);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final WorklogInput that) {
+            return Objects.equals(self, that.self) && Objects.equals(issueUri, that.issueUri) && Objects.equals(author, that.author)
+                    && Objects.equals(updateAuthor, that.updateAuthor) && Objects.equals(comment, that.comment) && Objects.equals(startDate, that.startDate)
+                    && Objects.equals(minutesSpent, that.minutesSpent) && Objects.equals(visibility, that.visibility)
+                    && Objects.equals(adjustEstimate, that.adjustEstimate) && Objects.equals(adjustEstimateValue, that.adjustEstimateValue);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility,
-                adjustEstimate, adjustEstimateValue);
+        return Objects.hash(self, issueUri, author, updateAuthor, comment, startDate, minutesSpent, visibility, adjustEstimate, adjustEstimateValue);
     }
 
-    public static enum AdjustEstimate {
+    public enum AdjustEstimate {
         /**
          * Set remaining estimate to given value.
          */
@@ -213,9 +205,8 @@ public class WorklogInput {
 
         public final String restValue;
 
-        private AdjustEstimate() {
-            restValue = this.name().toLowerCase();
+        AdjustEstimate() {
+            restValue = name().toLowerCase();
         }
     }
 }
-

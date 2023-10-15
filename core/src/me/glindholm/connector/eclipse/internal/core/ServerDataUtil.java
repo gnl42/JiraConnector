@@ -19,25 +19,23 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import me.glindholm.connector.commons.api.ConnectionCfg;
 
 public final class ServerDataUtil {
-	private ServerDataUtil() {
+    private ServerDataUtil() {
 
-	}
+    }
 
-	/**
-	 * public for testing
-	 */
-	public static ConnectionCfg getServerData(AbstractWebLocation location, TaskRepository taskRepository,
-			boolean isTemporary) {
+    /**
+     * public for testing
+     */
+    public static ConnectionCfg getServerData(final AbstractWebLocation location, final TaskRepository taskRepository, final boolean isTemporary) {
 
-		AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
-		String username = "";
-		String password = "";
-		if (credentials != null) {
-			username = credentials.getUserName();
-			password = credentials.getPassword();
-		}
+        final AuthenticationCredentials credentials = location.getCredentials(AuthenticationType.REPOSITORY);
+        String username = "";
+        String password = "";
+        if (credentials != null) {
+            username = credentials.getUserName();
+            password = credentials.getPassword();
+        }
 
-		return new ConnectionCfg(taskRepository.getRepositoryLabel() + (isTemporary ? "-temporary" : ""),
-				location.getUrl(), username, password);
-	}
+        return new ConnectionCfg(taskRepository.getRepositoryLabel() + (isTemporary ? "-temporary" : ""), location.getUrl(), username, password);
+    }
 }

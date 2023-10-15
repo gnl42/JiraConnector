@@ -20,30 +20,30 @@ import org.osgi.framework.BundleContext;
  */
 public class JiraConnectorBrandingPlugin extends AbstractUIPlugin {
 
-	public static final String ID_PLUGIN = "me.glindholm.connector.eclipse.branding.ui"; //$NON-NLS-1$
+    public static final String ID_PLUGIN = "me.glindholm.connector.eclipse.branding.ui"; //$NON-NLS-1$
 
-	private static JiraConnectorBrandingPlugin plugin;
+    private static JiraConnectorBrandingPlugin plugin;
 
-	public JiraConnectorBrandingPlugin() {
-		plugin = this;
-	}
+    public JiraConnectorBrandingPlugin() {
+        plugin = this;
+    }
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
+    @Override
+    public void start(final BundleContext context) throws Exception {
+        super.start(context);
+    }
 
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-		plugin = null;
-	}
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        super.stop(context);
+        plugin = null;
+    }
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static JiraConnectorBrandingPlugin getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance.
+     */
+    public static JiraConnectorBrandingPlugin getDefault() {
+        return plugin;
+    }
 
 }

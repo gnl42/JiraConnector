@@ -16,16 +16,15 @@
 
 package me.glindholm.jira.rest.client.auth;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.atlassian.httpclient.api.Request;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 
-import org.apache.commons.codec.binary.Base64;
-
 /**
- * Handler for HTTP basic authentication.
- * Do NOT use it in with unencrypted HTTP protocol over public networks, as credentials are passed
- * effectively in free text.
+ * Handler for HTTP basic authentication. Do NOT use it in with unencrypted HTTP protocol over
+ * public networks, as credentials are passed effectively in free text.
  *
  * @since v0.1
  */
@@ -42,12 +41,12 @@ public class BasicHttpAuthenticationHandler implements AuthenticationHandler {
     }
 
     @Override
-    public void configure(Request.Builder builder) {
+    public void configure(final Request.Builder builder) {
         builder.setHeader(AUTHORIZATION_HEADER, "Basic " + encodeCredentials());
     }
 
     private String encodeCredentials() {
-        byte[] credentials = (username + ':' + password).getBytes();
+        final byte[] credentials = (username + ':' + password).getBytes();
         return new String(Base64.encodeBase64(credentials));
     }
 }

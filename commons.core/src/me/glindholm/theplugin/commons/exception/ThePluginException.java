@@ -18,16 +18,16 @@ package me.glindholm.theplugin.commons.exception;
 
 public class ThePluginException extends Exception {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1809913885448081088L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1809913885448081088L;
 
-	public ThePluginException(String message) {
-		super(message);
-	}
+    public ThePluginException(final String message) {
+        super(message);
+    }
 
-	public ThePluginException(String message, Throwable throwable) {
-		super(message, throwable);
-	}
+    public ThePluginException(final String message, final Throwable throwable) {
+        super(message, throwable);
+    }
 }

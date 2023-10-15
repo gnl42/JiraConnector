@@ -19,7 +19,7 @@ package me.glindholm.theplugin.commons.cfg;
  * @author Jacek Jaroczynski
  */
 public interface ServerId {
-	boolean equals(ServerId o);
+    boolean equals(ServerId o);
 
-	String getId();
+    String getId();
 }

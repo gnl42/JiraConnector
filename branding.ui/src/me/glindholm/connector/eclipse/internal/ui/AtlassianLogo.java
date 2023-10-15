@@ -27,51 +27,51 @@ import me.glindholm.connector.eclipse.internal.branding.ui.JiraConnectorBranding
  */
 public final class AtlassianLogo {
 
-	private static ImageRegistry imageRegistry;
+    private static ImageRegistry imageRegistry;
 
-	private static final URL BASE_URL = JiraConnectorBrandingPlugin.getDefault().getBundle().getEntry("/icons/");
+    private static final URL BASE_URL = JiraConnectorBrandingPlugin.getDefault().getBundle().getEntry("/icons/");
 
-	public static final ImageDescriptor ATLASSIAN_LOGO = create("misc", "Atlassian.png");
+    public static final ImageDescriptor ATLASSIAN_LOGO = create("misc", "Atlassian.png");
 
-	private AtlassianLogo() {
-	}
+    private AtlassianLogo() {
+    }
 
-	private static ImageDescriptor create(String prefix, String name) {
-		try {
-			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
-		} catch (MalformedURLException e) {
-			return ImageDescriptor.getMissingImageDescriptor();
-		}
-	}
+    private static ImageDescriptor create(final String prefix, final String name) {
+        try {
+            return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
+        } catch (final MalformedURLException e) {
+            return ImageDescriptor.getMissingImageDescriptor();
+        }
+    }
 
-	private static URL makeIconFileURL(String prefix, String name) throws MalformedURLException {
-		if (BASE_URL == null) {
-			throw new MalformedURLException();
-		}
+    private static URL makeIconFileURL(final String prefix, final String name) throws MalformedURLException {
+        if (BASE_URL == null) {
+            throw new MalformedURLException();
+        }
 
-		StringBuffer buffer = new StringBuffer(prefix);
-		buffer.append('/');
-		buffer.append(name);
-		return new URL(BASE_URL, buffer.toString());
-	}
+        final StringBuilder buffer = new StringBuilder(prefix);
+        buffer.append('/');
+        buffer.append(name);
+        return new URL(BASE_URL, buffer.toString());
+    }
 
-	private static ImageRegistry getImageRegistry() {
-		if (imageRegistry == null) {
-			imageRegistry = new ImageRegistry();
-		}
+    private static ImageRegistry getImageRegistry() {
+        if (imageRegistry == null) {
+            imageRegistry = new ImageRegistry();
+        }
 
-		return imageRegistry;
-	}
+        return imageRegistry;
+    }
 
-	public static Image getImage(ImageDescriptor imageDescriptor) {
-		ImageRegistry registry = getImageRegistry();
+    public static Image getImage(final ImageDescriptor imageDescriptor) {
+        final ImageRegistry registry = getImageRegistry();
 
-		Image image = registry.get("" + imageDescriptor.hashCode());
-		if (image == null) {
-			image = imageDescriptor.createImage();
-			registry.put("" + imageDescriptor.hashCode(), image);
-		}
-		return image;
-	}
+        Image image = registry.get("" + imageDescriptor.hashCode());
+        if (image == null) {
+            image = imageDescriptor.createImage();
+            registry.put("" + imageDescriptor.hashCode(), image);
+        }
+        return image;
+    }
 
 }

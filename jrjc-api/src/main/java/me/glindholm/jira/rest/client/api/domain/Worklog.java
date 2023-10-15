@@ -26,8 +26,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import me.glindholm.jira.rest.client.api.AddressableEntity;
 
 /**
- * Issue worklog - single worklog entry describing the work logged for selected
- * issue
+ * Issue worklog - single worklog entry describing the work logged for selected issue
  *
  * @since v0.1
  */
@@ -111,8 +110,7 @@ public class Worklog implements Serializable, AddressableEntity {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Worklog) {
-            final Worklog that = (Worklog) obj;
+        if (obj instanceof final Worklog that) {
             return Objects.equals(self, that.self) && Objects.equals(issueUri, that.issueUri) && Objects.equals(author, that.author)
                     && Objects.equals(updateAuthor, that.updateAuthor) && Objects.equals(comment, that.comment) && Objects.equals(visibility, that.visibility)
                     && creationDate.isEqual(that.creationDate) && updateDate.isEqual(that.updateDate) && startDate.isEqual(that.startDate)

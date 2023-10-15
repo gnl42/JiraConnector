@@ -30,15 +30,14 @@ public class IssueLinkType implements Serializable, NamedEntity {
     private static final long serialVersionUID = 1L;
 
     public enum Direction {
-        OUTBOUND,
-        INBOUND
+        OUTBOUND, INBOUND
     }
 
     private final String name;
     private final String description;
     private final Direction direction;
 
-    public IssueLinkType(String name, String description, Direction direction) {
+    public IssueLinkType(final String name, final String description, final Direction direction) {
         this.name = name;
         this.description = description;
         this.direction = direction;
@@ -63,12 +62,9 @@ public class IssueLinkType implements Serializable, NamedEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof IssueLinkType) {
-            IssueLinkType that = (IssueLinkType) obj;
-            return Objects.equals(this.name, that.name)
-                    && Objects.equals(this.description, that.description)
-                    && Objects.equals(this.direction, that.direction);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final IssueLinkType that) {
+            return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(direction, that.direction);
         }
         return false;
     }

@@ -41,8 +41,7 @@ public class JiraSearchHandler extends AbstractSearchHandler {
     }
 
     @Override
-    public boolean queryForText(final TaskRepository taskRepository, final IRepositoryQuery query, final TaskData taskData,
-            final String searchString) {
+    public boolean queryForText(final TaskRepository taskRepository, final IRepositoryQuery query, final TaskData taskData, final String searchString) {
         final String preparedSearchString = prepareJqlSearchString(searchString);
         final FilterDefinition filter = new FilterDefinition();
         filter.setContentFilter(new ContentFilter(preparedSearchString, false, true, false, true));
@@ -54,7 +53,8 @@ public class JiraSearchHandler extends AbstractSearchHandler {
         final StringBuilder sb = new StringBuilder(MAX_LENGTH);
         // on JIRA 4+ you cannot search for :
         // on older JIRAs your search fails if the query is too long
-        // because I don't have a progress monitor here, I can not easily fetch JIRA version (it may be not yet cached)
+        // because I don't have a progress monitor here, I can not easily fetch JIRA version (it may be not
+        // yet cached)
         // so I assume the worst and apply the solution (not perfect but good enough) which should
         // work with all supported JIRA versions
         final StringTokenizer t = new StringTokenizer(searchString, " :\n\t()$"); //$NON-NLS-1$

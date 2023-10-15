@@ -140,8 +140,7 @@ public class AsynchronousHttpClientFactory {
     }
 
     /**
-     * These properties are used to present JRJC as a User-Agent during http
-     * requests.
+     * These properties are used to present JRJC as a User-Agent during http requests.
      */
     private static class RestClientApplicationProperties implements ApplicationProperties {
 

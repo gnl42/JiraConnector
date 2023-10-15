@@ -29,7 +29,7 @@ import me.glindholm.jira.rest.client.api.domain.FieldSchema;
 public class FieldSchemaJsonParser implements JsonObjectParser<FieldSchema> {
 
     @Override
-    public FieldSchema parse(JSONObject json) throws JSONException {
+    public FieldSchema parse(final JSONObject json) throws JSONException {
         final String type = JsonParseUtil.getOptionalString(json, "type");
         final String items = JsonParseUtil.getOptionalString(json, "items");
         final String system = JsonParseUtil.getOptionalString(json, "system");

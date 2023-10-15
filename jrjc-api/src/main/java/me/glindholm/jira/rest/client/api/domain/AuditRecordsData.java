@@ -47,12 +47,9 @@ public class AuditRecordsData {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof AuditRecordsData) {
-            final AuditRecordsData that = (AuditRecordsData) o;
-            return Objects.equals(this.offset, that.offset)
-                    && Objects.equals(this.limit, that.limit)
-                    && Objects.equals(this.total, that.total)
-                    && Objects.equals(this.records, that.records);
+        if (o instanceof final AuditRecordsData that) {
+            return Objects.equals(offset, that.offset) && Objects.equals(limit, that.limit) && Objects.equals(total, that.total)
+                    && Objects.equals(records, that.records);
         }
         return false;
     }

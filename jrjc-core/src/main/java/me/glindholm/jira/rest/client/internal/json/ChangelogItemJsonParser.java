@@ -24,7 +24,7 @@ import me.glindholm.jira.rest.client.api.domain.FieldType;
 
 public class ChangelogItemJsonParser implements JsonObjectParser<ChangelogItem> {
     @Override
-    public ChangelogItem parse(JSONObject json) throws JSONException {
+    public ChangelogItem parse(final JSONObject json) throws JSONException {
         final String fieldTypeStr = JsonParseUtil.getNestedString(json, "fieldtype");
         final FieldType fieldType;
         if ("jira".equalsIgnoreCase(fieldTypeStr)) {

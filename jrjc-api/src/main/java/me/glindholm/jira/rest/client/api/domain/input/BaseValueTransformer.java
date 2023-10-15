@@ -35,7 +35,7 @@ public class BaseValueTransformer implements Serializable, ValueTransformer {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Object apply(Object rawValue) {
+    public Object apply(final Object rawValue) {
         if (rawValue == null) {
             return null;
         } else if (rawValue instanceof String || rawValue instanceof Number || rawValue instanceof ComplexIssueInputFieldValue) {
@@ -46,30 +46,25 @@ public class BaseValueTransformer implements Serializable, ValueTransformer {
             return transformCustomFieldOption((CustomFieldOption) rawValue);
         } else if (rawValue instanceof TimeTracking) {
             return transformTimeTracking((TimeTracking) rawValue);
-        } else if (rawValue instanceof IdentifiableEntity) {
-            final IdentifiableEntity identifiableEntity = (IdentifiableEntity) rawValue;
+        } else if (rawValue instanceof final IdentifiableEntity identifiableEntity) {
             return new ComplexIssueInputFieldValue(Map.<String, Object>of("id", identifiableEntity.getId().toString()));
-        } else if (rawValue instanceof NamedEntity) {
-            final NamedEntity namedEntity = (NamedEntity) rawValue;
+        } else if (rawValue instanceof final NamedEntity namedEntity) {
             return new ComplexIssueInputFieldValue(Map.<String, Object>of("name", namedEntity.getName()));
         }
 
         return CANNOT_HANDLE;
     }
 
-    private ComplexIssueInputFieldValue transformCustomFieldOption(CustomFieldOption cfo) {
+    private ComplexIssueInputFieldValue transformCustomFieldOption(final CustomFieldOption cfo) {
         if (cfo.getChild() != null) {
-            return new ComplexIssueInputFieldValue(Map.<String, Object>of(
-                    "id", cfo.getId().toString(),
-                    "value", cfo.getValue(),
-                    "child", this.apply(cfo.getChild())));
+            return new ComplexIssueInputFieldValue(
+                    Map.<String, Object>of("id", cfo.getId().toString(), "value", cfo.getValue(), "child", apply(cfo.getChild())));
         } else {
-            return new ComplexIssueInputFieldValue(Map.<String, Object>of("id", cfo.getId().toString(), "value", cfo
-                    .getValue()));
+            return new ComplexIssueInputFieldValue(Map.<String, Object>of("id", cfo.getId().toString(), "value", cfo.getValue()));
         }
     }
 
-    private ComplexIssueInputFieldValue transformTimeTracking(TimeTracking timeTracking) {
+    private ComplexIssueInputFieldValue transformTimeTracking(final TimeTracking timeTracking) {
         final Map<String, Object> fields = new HashMap<>();
 
         final Integer originalEstimateMinutes = timeTracking.getOriginalEstimateMinutes();

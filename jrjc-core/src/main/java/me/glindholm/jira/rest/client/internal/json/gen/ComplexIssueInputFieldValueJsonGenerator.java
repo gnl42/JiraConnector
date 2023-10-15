@@ -32,15 +32,15 @@ import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValu
  */
 public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<ComplexIssueInputFieldValue> {
     @Override
-    public JSONObject generate(ComplexIssueInputFieldValue bean) throws JSONException {
+    public JSONObject generate(final ComplexIssueInputFieldValue bean) throws JSONException {
         final JSONObject json = new JSONObject();
-        for (Map.Entry<String, Object> entry : bean.getValuesMap().entrySet()) {
+        for (final Map.Entry<String, Object> entry : bean.getValuesMap().entrySet()) {
             json.put(entry.getKey(), generateFieldValueForJson(entry.getValue()));
         }
         return json;
     }
 
-    public Object generateFieldValueForJson(Object rawValue) throws JSONException {
+    public Object generateFieldValueForJson(final Object rawValue) throws JSONException {
         if (rawValue == null) {
             return JSONObject.NULL;
         } else if (rawValue instanceof ComplexIssueInputFieldValue) {
@@ -48,7 +48,7 @@ public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<C
         } else if (rawValue instanceof List) {
             // array with values
             final JSONArray array = new JSONArray();
-            for (Object value : (List) rawValue) {
+            for (final Object value : (List) rawValue) {
                 array.put(generateFieldValueForJson(value));
             }
             return array;

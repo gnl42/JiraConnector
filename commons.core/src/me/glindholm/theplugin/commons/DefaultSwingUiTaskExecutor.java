@@ -15,39 +15,33 @@
  */
 package me.glindholm.theplugin.commons;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class DefaultSwingUiTaskExecutor implements UiTaskExecutor {
-	public void execute(final UiTask uiTask) {
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					uiTask.run();
-				} catch (Exception e) {
-					//noinspection CallToPrintStackTrace
-					e.printStackTrace();
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							uiTask.onError();
-							JOptionPane.showMessageDialog(uiTask.getComponent(), "Error while " + uiTask.getLastAction(),
-								"Error", JOptionPane.ERROR_MESSAGE);
-						}
-					});	
-					return;
-				}
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							uiTask.onSuccess();
-						} catch (Exception e) {
-							//noinspection CallToPrintStackTrace
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(uiTask.getComponent(), "Error while " + uiTask.getLastAction(),
-								"Error", JOptionPane.ERROR_MESSAGE);
-						}
-					}
-				});
-			}
-		}).start();
-	}
+    @Override
+    public void execute(final UiTask uiTask) {
+        new Thread(() -> {
+            try {
+                uiTask.run();
+            } catch (final Exception e) {
+                // noinspection CallToPrintStackTrace
+                e.printStackTrace();
+                SwingUtilities.invokeLater(() -> {
+                    uiTask.onError();
+                    JOptionPane.showMessageDialog(uiTask.getComponent(), "Error while " + uiTask.getLastAction(), "Error", JOptionPane.ERROR_MESSAGE);
+                });
+                return;
+            }
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    uiTask.onSuccess();
+                } catch (final Exception e) {
+                    // noinspection CallToPrintStackTrace
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(uiTask.getComponent(), "Error while " + uiTask.getLastAction(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+        }).start();
+    }
 }

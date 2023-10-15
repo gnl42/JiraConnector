@@ -16,16 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import java.net.URI;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.IssuelinksType;
 
-import java.net.URI;
-
 public class IssuelinksTypeJsonParserV5 implements JsonObjectParser<IssuelinksType> {
     @Override
-    public IssuelinksType parse(JSONObject json) throws JSONException {
+    public IssuelinksType parse(final JSONObject json) throws JSONException {
         final URI selfUri = JsonParseUtil.getSelfUri(json);
         final String id = json.getString("id");
         final String name = json.getString("name");
@@ -35,4 +35,3 @@ public class IssuelinksTypeJsonParserV5 implements JsonObjectParser<IssuelinksTy
         return new IssuelinksType(selfUri, id, name, inward, outward);
     }
 }
-

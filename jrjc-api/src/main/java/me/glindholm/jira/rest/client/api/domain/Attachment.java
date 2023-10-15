@@ -102,8 +102,7 @@ public class Attachment implements Serializable, AddressableEntity {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Attachment) {
-            final Attachment that = (Attachment) obj;
+        if (obj instanceof final Attachment that) {
             return Objects.equals(self, that.self) && Objects.equals(filename, that.filename) && Objects.equals(author, that.author)
                     && creationDate.isEqual(that.creationDate) && Objects.equals(size, that.size) && Objects.equals(mimeType, that.mimeType)
                     && Objects.equals(contentUri, that.contentUri) && Objects.equals(thumbnailUri, that.thumbnailUri);

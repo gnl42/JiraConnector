@@ -15,42 +15,47 @@
  */
 package me.glindholm.theplugin.commons.cfg;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * @autrhor pmaruszak
  * @date Jun 11, 2010
  */
 public class SharedServerList extends ArrayList<ServerCfg> {
-	public static SharedServerList merge(SharedServerList currentConfig, SharedServerList loadedFromFile, Collection<ServerCfg> allServers) {
-		LinkedList<ServerCfg> sharedList = new LinkedList<ServerCfg>();
-		HashSet<String> storedIds = new HashSet<String>();
-        HashSet<String> deletedIds = new HashSet<String>();
-		SharedServerList newList = new SharedServerList();
+    public static SharedServerList merge(final SharedServerList currentConfig, final SharedServerList loadedFromFile, final Collection<ServerCfg> allServers) {
+        final LinkedList<ServerCfg> sharedList = new LinkedList<>();
+        final HashSet<String> storedIds = new HashSet<>();
+        final HashSet<String> deletedIds = new HashSet<>();
+        final SharedServerList newList = new SharedServerList();
 
-        // it may happen that the user made a server no longer shared. In this case it must not go on the resulting shared server list
-        Set<String> nonShared = new HashSet<String>();
-        for (ServerCfg s : allServers) {
+        // it may happen that the user made a server no longer shared. In this case it must not go on the
+        // resulting shared server list
+        final Set<String> nonShared = new HashSet<>();
+        for (final ServerCfg s : allServers) {
             if (!s.isShared()) {
                 nonShared.add(s.getServerId().getId());
             }
         }
 
-        //current config are priority cfg
+        // current config are priority cfg
         sharedList.addAll(currentConfig);
         sharedList.addAll(loadedFromFile);
 
-		for (ServerCfg server : sharedList) {
-            String uuid = server.getServerId().toString();
-            if (server.getUrl() != null && server.getUrl().length() > 0	&& !storedIds.contains(uuid) && !deletedIds.contains(uuid)) {
+        for (final ServerCfg server : sharedList) {
+            final String uuid = server.getServerId().toString();
+            if (server.getUrl() != null && server.getUrl().length() > 0 && !storedIds.contains(uuid) && !deletedIds.contains(uuid)) {
                 if (server.isDeleted()) {
                     deletedIds.add(uuid);
                 } else if (!nonShared.contains(server.getServerId().getId())) {
                     newList.add(server);
                     storedIds.add(uuid);
                 }
-			}
-		}
-		return newList;
-	}
+            }
+        }
+        return newList;
+    }
 }

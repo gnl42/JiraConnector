@@ -17,5 +17,5 @@
 package me.glindholm.theplugin.commons;
 
 public interface VersionedFileInfo {
-	VersionedVirtualFile getFileDescriptor();
+    VersionedVirtualFile getFileDescriptor();
 }

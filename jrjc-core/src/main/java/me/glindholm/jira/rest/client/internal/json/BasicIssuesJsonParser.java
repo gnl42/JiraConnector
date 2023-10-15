@@ -33,14 +33,11 @@ public class BasicIssuesJsonParser implements JsonObjectParser<BulkOperationResu
 
     @Override
     public BulkOperationResult<BasicIssue> parse(final JSONObject json) throws JSONException, URISyntaxException {
-        final List<BasicIssue> issues =
-                JsonParseUtil.parseJsonArray(json.getJSONArray("issues"), new BasicIssueJsonParser());
+        final List<BasicIssue> issues = JsonParseUtil.parseJsonArray(json.getJSONArray("issues"), new BasicIssueJsonParser());
 
-        final List<BulkOperationErrorResult> errors =
-                JsonParseUtil.parseJsonArray(json.getJSONArray("errors"), new IssueErrorJsonParser());
+        final List<BulkOperationErrorResult> errors = JsonParseUtil.parseJsonArray(json.getJSONArray("errors"), new IssueErrorJsonParser());
 
         return new BulkOperationResult<>(issues, errors);
     }
-
 
 }

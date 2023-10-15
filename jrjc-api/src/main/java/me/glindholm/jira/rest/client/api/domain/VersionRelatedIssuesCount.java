@@ -20,20 +20,21 @@ import java.net.URI;
 import java.util.Objects;
 
 /**
- * Represents number of issues which use given version in their FixVersion(s) and Affects Version fields.
- * This is mostly useful when presenting per-version basic issue stats or when about to remove given version completely.
+ * Represents number of issues which use given version in their FixVersion(s) and Affects Version
+ * fields. This is mostly useful when presenting per-version basic issue stats or when about to
+ * remove given version completely.
  *
  * @since me.glindholm.jira.rest.client.api 0.3, server 4.4
  */
 public class VersionRelatedIssuesCount {
 
-    private URI versionUri;
+    private final URI versionUri;
 
     private final int numFixedIssues;
 
     private final int numAffectedIssues;
 
-    public VersionRelatedIssuesCount(URI versionUri, int numFixedIssues, int numAffectedIssues) {
+    public VersionRelatedIssuesCount(final URI versionUri, final int numFixedIssues, final int numAffectedIssues) {
         this.versionUri = versionUri;
         this.numAffectedIssues = numAffectedIssues;
         this.numFixedIssues = numFixedIssues;
@@ -47,16 +48,16 @@ public class VersionRelatedIssuesCount {
     }
 
     /**
-     * @return number of issues which have this version set in their Fix Version(s) field
-     * (as a solely set version or one of multiple values set)
+     * @return number of issues which have this version set in their Fix Version(s) field (as a solely
+     *         set version or one of multiple values set)
      */
     public int getNumFixedIssues() {
         return numFixedIssues;
     }
 
     /**
-     * @return number of issues which have this version set in their Affects Version(s) field
-     * (as a solely set version or one of multiple values set)
+     * @return number of issues which have this version set in their Affects Version(s) field (as a
+     *         solely set version or one of multiple values set)
      */
     public int getNumAffectedIssues() {
         return numAffectedIssues;
@@ -68,12 +69,10 @@ public class VersionRelatedIssuesCount {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof VersionRelatedIssuesCount) {
-            VersionRelatedIssuesCount that = (VersionRelatedIssuesCount) obj;
-            return Objects.equals(this.numFixedIssues, that.numFixedIssues)
-                    && Objects.equals(this.versionUri, that.versionUri)
-                    && Objects.equals(this.numAffectedIssues, that.numAffectedIssues);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final VersionRelatedIssuesCount that) {
+            return Objects.equals(numFixedIssues, that.numFixedIssues) && Objects.equals(versionUri, that.versionUri)
+                    && Objects.equals(numAffectedIssues, that.numAffectedIssues);
         }
         return false;
     }

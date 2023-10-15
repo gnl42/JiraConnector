@@ -39,7 +39,7 @@ public class IssueType implements Serializable, AddressableEntity, NamedEntity, 
     private final String description;
     private final URI iconUri;
 
-    public IssueType(URI self, Long id, String name, boolean isSubtask, String description, URI iconUri) {
+    public IssueType(final URI self, final Long id, final String name, final boolean isSubtask, final String description, final URI iconUri) {
         this.self = self;
         this.id = id;
         this.name = name;
@@ -86,15 +86,10 @@ public class IssueType implements Serializable, AddressableEntity, NamedEntity, 
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof IssueType) {
-            IssueType that = (IssueType) obj;
-            return Objects.equals(this.self, that.self)
-                    && Objects.equals(this.id, that.id)
-                    && Objects.equals(this.name, that.name)
-                    && Objects.equals(this.isSubtask, that.isSubtask)
-                    && Objects.equals(this.description, that.description)
-                    && Objects.equals(this.iconUri, that.iconUri);
+    public boolean equals(final Object obj) {
+        if (obj instanceof final IssueType that) {
+            return Objects.equals(self, that.self) && Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                    && Objects.equals(isSubtask, that.isSubtask) && Objects.equals(description, that.description) && Objects.equals(iconUri, that.iconUri);
         }
         return false;
     }
