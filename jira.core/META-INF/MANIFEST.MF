@@ -8,7 +8,6 @@ Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlug
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.tasks.core,
- me.glindholm.connector.eclipse.commons.core,
  jira-rest-java-client-api;bundle-version="4.4.0",
  jira-rest-java-client-core;bundle-version="4.4.0",
  org.eclipse.ui.workbench,
@@ -17,17 +16,41 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.annotation,
  org.apache.commons.lang3,
  org.apache.commons.httpclient;bundle-version="3.1.0",
- slf4j.api
+ slf4j.api,
+ org.apache.commons.codec;bundle-version="1.14.0"
 Bundle-ActivationPolicy: lazy
-Export-Package: me.glindholm.connector.commons.jira.cache,
+Export-Package: me.glindholm.connector.cfg,
+ me.glindholm.connector.commons.api,
+ me.glindholm.connector.commons.jira.cache,
+ me.glindholm.connector.commons.misc,
+ me.glindholm.connector.eclipse.internal.core;x-internal:=true,
+ me.glindholm.connector.eclipse.internal.core.client,
+ me.glindholm.connector.eclipse.internal.core.jobs,
  me.glindholm.connector.eclipse.internal.jira.core;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.html;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.model;x-friends:="me.glindholm.connector.eclipse.jira.ui",
  me.glindholm.connector.eclipse.internal.jira.core.model.filter;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service;x-friends:="me.glindholm.connector.eclipse.jira.ui,me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.core.service.rest;x-friends:="me.glindholm.connector.eclipse.jira.tests",
- me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui"
-Bundle-ClassPath: .
+ me.glindholm.connector.eclipse.internal.jira.core.util;x-friends:="me.glindholm.connector.eclipse.jira.ui",
+ me.glindholm.theplugin.commons,
+ me.glindholm.theplugin.commons.cfg,
+ me.glindholm.theplugin.commons.configuration,
+ me.glindholm.theplugin.commons.exception,
+ me.glindholm.theplugin.commons.jira,
+ me.glindholm.theplugin.commons.remoteapi,
+ me.glindholm.theplugin.commons.remoteapi.rest,
+ me.glindholm.theplugin.commons.ssl,
+ me.glindholm.theplugin.commons.thirdparty.apache,
+ me.glindholm.theplugin.commons.util
+Bundle-ClassPath: .,
+ target/lib/commons-discovery.jar,
+ target/lib/commons-io.jar,
+ target/lib/commons-lang3.jar,
+ target/lib/javax.ws.rs-api.jar,
+ target/lib/jaxen.jar,
+ target/lib/jdom.jar,
+ target/lib/velocity.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Localization: plugin
 Import-Package: org.apache.commons.io,

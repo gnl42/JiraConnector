@@ -32,7 +32,7 @@ import org.eclipse.mylyn.commons.net.WebUtil;
 
 import me.glindholm.connector.commons.api.ConnectionCfg;
 import me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin;
-import me.glindholm.connector.eclipse.internal.ui.BrandingConstants;
+import me.glindholm.connector.eclipse.internal.jira.BrandingConstants;
 import me.glindholm.theplugin.commons.exception.HttpProxySettingsException;
 import me.glindholm.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 import me.glindholm.theplugin.commons.remoteapi.rest.HttpSessionCallback;

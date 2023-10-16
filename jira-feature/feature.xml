@@ -28,6 +28,10 @@
       %license
    </license>
 
+   <url>
+      <update label="Mylyn Release Latest" url="https://download.eclipse.org/mylyn/updates/release/latest"/>
+   </url>
+
    <requires>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -47,7 +51,6 @@
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.net"/>
-      <import plugin="me.glindholm.connector.eclipse.branding.ui"/>
    </requires>
 
    <plugin
@@ -65,27 +68,6 @@
          unpack="false"/>
 
    <plugin
-         id="me.glindholm.connector.eclipse.branding.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="me.glindholm.connector.eclipse.commons.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="me.glindholm.connector.eclipse.commons.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="jira-rest-java-client-api"
          download-size="0"
          install-size="0"
@@ -94,6 +76,13 @@
 
    <plugin
          id="jira-rest-java-client-core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="me.glindholm.connector.eclipse.help"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -31,9 +31,4 @@ Require-Bundle: me.glindholm.connector.eclipse.commons.core,
  org.eclipse.jdt.annotation;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Export-Package: me.glindholm.connector.eclipse.ui,
- me.glindholm.connector.eclipse.ui.actions,
- me.glindholm.connector.eclipse.ui.commons,
- me.glindholm.connector.eclipse.ui.dialogs,
- me.glindholm.connector.eclipse.ui.preferences;x-friends:="me.glindholm.connector.eclipse.directclickthrough.ui
 Import-Package: org.apache.commons.lang3

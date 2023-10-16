@@ -16,9 +16,6 @@ Require-Bundle: me.glindholm.connector.eclipse.jira.core,
  org.eclipse.ui.editors,
  org.eclipse.ui.forms,
  org.eclipse.ui.views,
- me.glindholm.connector.eclipse.commons.core,
- me.glindholm.connector.eclipse.commons.ui,
- me.glindholm.connector.eclipse.branding.ui,
  org.eclipse.mylyn.context.core;bundle-version="[3.26.0,5.0.0)",
  org.eclipse.mylyn.commons.core;bundle-version="[3.26.0,5.0.0)",
  org.eclipse.mylyn.tasks.core;bundle-version="[3.26.0,5.0.0)",
@@ -26,17 +23,20 @@ Require-Bundle: me.glindholm.connector.eclipse.jira.core,
  org.eclipse.mylyn.commons.net;bundle-version="[3.26.0,5.0.0)",
  org.eclipse.mylyn.commons.ui;bundle-version="[3.26.0,5.0.0)",
  org.eclipse.mylyn.commons.workbench;bundle-version="[3.26.0,5.0.0)",
- me.glindholm.connector.eclipse.commons.ui,
  org.eclipse.jdt.annotation,
  jira-rest-java-client-api;bundle-version="4.4.0",
- org.eclipse.mylyn.tasks.index.core;bundle-version="[3.26.0,5.0.0)",
- org.eclipse.mylyn.tasks.index.ui;bundle-version="[3.26.0,5.0.0)"
+ org.apache.commons.codec;bundle-version="1.14.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: me.glindholm.connector.eclipse.internal.jira.ui;x-friends:="me.glindholm.connector.eclipse.jira.tests",
  me.glindholm.connector.eclipse.internal.jira.ui.actions;x-internal:=true,
  me.glindholm.connector.eclipse.internal.jira.ui.editor;x-internal:=true,
- me.glindholm.connector.eclipse.internal.jira.ui.wizards;x-internal:=true
+ me.glindholm.connector.eclipse.internal.jira.ui.wizards;x-internal:=true,
+ me.glindholm.connector.eclipse.ui,
+ me.glindholm.connector.eclipse.ui.actions,
+ me.glindholm.connector.eclipse.ui.commons,
+ me.glindholm.connector.eclipse.ui.dialogs,
+ me.glindholm.connector.eclipse.ui.preferences;x-friends:="me.glindholm.connector.eclipse.directclickthrough.ui"
 Import-Package: org.apache.commons.lang3
 Bundle-Localization: plugin
 Bundle-ClassPath: .

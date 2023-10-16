@@ -79,12 +79,12 @@
 	<repositories>
 		<repository>
 			<id>eclipse</id>
-			<url>https://download.eclipse.org/releases/2023-03</url>
+			<url>https://download.eclipse.org/releases/2023-09</url>
 			<layout>p2</layout>
 		</repository>
 		<repository>
 			<id>mylyn</id>
-			<url>https://download.eclipse.org/mylyn/releases/latest</url>
+			<url>https://download.eclipse.org/mylyn/updates/release/latest</url>
 			<layout>p2</layout>
 		</repository>
 		<repository>
@@ -144,14 +144,14 @@
 		<!--         <module>jira.target</module>-->
 		<module>jrjc-api</module>
 		<module>jrjc-core</module>
-		<module>commons-feature</module>
-		<module>commons.core</module>
-		<module>commons.ui</module>
-		<module>eclipse-feature</module>
-		<module>core</module>
-		<module>ui</module>
-		<module>dependencies-feature</module>
-		<module>branding.ui</module>
+
+
+
+
+
+
+
+
 		<module>help</module>
 		<!-- <module>me.glindholm.jira.rest.client</module> -->
 		<module>jira-feature</module>

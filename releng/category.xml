@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="me.glindholm.connector.eclipse_5.0.0.qualifier.jar" id="me.glindholm.connector.eclipse" version="5.0.0.qualifier">
+   <feature id="me.glindholm.connector.eclipse.jira">
       <category name="Connector"/>
    </feature>
    <category-def name="Connector" label="JiraConnector">
@@ -8,5 +8,5 @@
          JiraConnector for Atlassian Jira
       </description>
    </category-def>
-   <repository-reference location="https://download.eclipse.org/mylyn/releases/latest" enabled="true" />
+   <repository-reference location="https://download.eclipse.org/mylyn/updates/release/latest" enabled="true" />
 </site>

@@ -9,7 +9,7 @@
  *     Tasktop Technologies - initial API and implementation
  *******************************************************************************/
 
-package me.glindholm.connector.eclipse.internal.ui;
+package me.glindholm.connector.eclipse.internal.jira;
 
 public abstract class BrandingConstants {
 

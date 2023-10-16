@@ -113,7 +113,7 @@ public class JiraUiPlugin extends AbstractUIPlugin {
     public void stop(final BundleContext context) throws Exception {
         TasksUiPlugin.getTaskActivityManager().removeActivityListener(activityTimeListener);
         TasksUi.getRepositoryManager().removeListener(JiraClientFactory.getDefault());
-        JiraClientFactory.getDefault().logOutFromAll();
+//        JiraClientFactory.getDefault().logOutFromAll();
         instance = null;
         super.stop(context);
     }

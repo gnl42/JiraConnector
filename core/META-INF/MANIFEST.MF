@@ -16,9 +16,6 @@ Require-Bundle:
  me.glindholm.connector.eclipse.commons.core,
  org.apache.commons.httpclient;bundle-version="3.1.0",
  org.eclipse.jdt.annotation;bundle-version="2.0.0"
-Export-Package: me.glindholm.connector.eclipse.internal.core,
- me.glindholm.connector.eclipse.internal.core.client,
- me.glindholm.connector.eclipse.internal.core.jobs
 Bundle-Activator: me.glindholm.connector.eclipse.internal.core.JiraConnectorCorePlugin
 Bundle-ClassPath: .
 Bundle-Vendor: George Lindholm
