@@ -8,8 +8,8 @@ Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlug
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.mylyn.tasks.core,
- jira-rest-java-client-api;bundle-version="4.4.0",
- jira-rest-java-client-core;bundle-version="4.4.0",
+ jira-rest-java-client-api,
+ jira-rest-java-client-core,
  org.eclipse.ui.workbench,
  org.eclipse.swt,
  org.eclipse.jface,

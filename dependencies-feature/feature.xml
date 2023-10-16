@@ -36,18 +36,18 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.mylyn.commons.net" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.identity.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.workbench" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.monitor.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.context.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.monitor.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.search" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.bugs" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.index.ui" version="3.26.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.identity.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.workbench" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.monitor.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.context.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.monitor.ui" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.search" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.bugs" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.index.ui" version="4.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

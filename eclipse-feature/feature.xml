@@ -34,17 +34,17 @@
       <import plugin="me.glindholm.connector.eclipse.commons.core"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.core" version="3.26.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="4.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.mylyn.monitor.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.monitor.core" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.net" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.ui" version="3.26.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.core" version="3.26.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.monitor.ui" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.monitor.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="4.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.eclipse.jface"/>
