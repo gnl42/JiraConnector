@@ -130,7 +130,7 @@ public abstract class AbstractJiraAction extends BaseSelectionListenerAction imp
         PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
 
             Throwable t = e;
-            StringBuilder m = new StringBuilder().append(message);
+            final StringBuilder m = new StringBuilder().append(message);
 
             final String searchDetails_1 = "The likely cause is that somebody has changed the issue recently"; //$NON-NLS-1$
             final String searchDetails_2 = "No workflow action with id"; //$NON-NLS-1$

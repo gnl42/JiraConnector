@@ -159,20 +159,11 @@ public abstract class ServerCfg implements Server {
             return false;
         }
 
-        if ((isEnabled != serverCfg.isEnabled) || (deleted != serverCfg.deleted) || (isPasswordStored != serverCfg.isPasswordStored) || (shared != serverCfg.shared)) {
+        if (isEnabled != serverCfg.isEnabled || deleted != serverCfg.deleted || isPasswordStored != serverCfg.isPasswordStored || shared != serverCfg.shared) {
             return false;
         }
 
-        if (useDefaultCredentials != serverCfg.useDefaultCredentials) {
-            return false;
-        }
-        if (name != null ? !name.equals(serverCfg.name) : serverCfg.name != null) {
-            return false;
-        }
-        if (password != null ? !password.equals(serverCfg.password) : serverCfg.password != null) {
-            return false;
-        }
-        if (serverId != null ? !serverId.equals(serverCfg.serverId) : serverCfg.serverId != null) {
+        if ((useDefaultCredentials != serverCfg.useDefaultCredentials) || (name != null ? !name.equals(serverCfg.name) : serverCfg.name != null) || (password != null ? !password.equals(serverCfg.password) : serverCfg.password != null) || (serverId != null ? !serverId.equals(serverCfg.serverId) : serverCfg.serverId != null)) {
             return false;
         }
         if (url != null ? !url.equals(serverCfg.url) : serverCfg.url != null) {

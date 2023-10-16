@@ -15,20 +15,20 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.text.source.LineRange;
 
 public final class ResourceEditorBean {
-	private final IResource resource;
+    private final IResource resource;
 
-	private final LineRange lineRange;
+    private final LineRange lineRange;
 
-	public ResourceEditorBean(IResource resource, LineRange lineRange) {
-		this.resource = resource;
-		this.lineRange = lineRange;
-	}
+    public ResourceEditorBean(final IResource resource, final LineRange lineRange) {
+        this.resource = resource;
+        this.lineRange = lineRange;
+    }
 
-	public IResource getResource() {
-		return resource;
-	}
+    public IResource getResource() {
+        return resource;
+    }
 
-	public LineRange getLineRange() {
-		return lineRange;
-	}
+    public LineRange getLineRange() {
+        return lineRange;
+    }
 }

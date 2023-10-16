@@ -34,7 +34,7 @@ public abstract class UrlUtil {
     public static String addHttpPrefix(final String address) {
         if (address == null) {
             return null;
-        } else if ((address.trim().length() == 0) || (address.trim().startsWith("http://") || address.trim().startsWith("https://"))) {
+        } else if (address.trim().length() == 0 || address.trim().startsWith("http://") || address.trim().startsWith("https://")) {
             return address;
         } else {
             return "http://" + address.trim();

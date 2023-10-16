@@ -795,7 +795,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
                 final Map<String, String> options = attribute.getOptions();
                 if (JiraFieldType.SELECT.getKey().equals(key) && (options.isEmpty() || properties.isReadOnly())) {
                     properties.setReadOnly(true);
-                } else if ((JiraFieldType.MULTISELECT.getKey().equals(key) && options.isEmpty()) || properties.isReadOnly()) {
+                } else if (JiraFieldType.MULTISELECT.getKey().equals(key) && options.isEmpty() || properties.isReadOnly()) {
                     properties.setReadOnly(true);
                 } else {
                     properties.setReadOnly(!editable);

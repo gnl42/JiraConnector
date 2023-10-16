@@ -154,7 +154,8 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         }
         attachmentsViewer.setContentProvider(new ArrayContentProvider());
         attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider(getJiraTimeFormat()));
-        attachmentsViewer.addOpenListener(event -> TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(), getModel().getTask())));
+        attachmentsViewer
+                .addOpenListener(event -> TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(), getModel().getTask())));
         attachmentsViewer.addSelectionChangedListener(getTaskEditorPage());
         attachmentsViewer.setInput(workLogList);
 

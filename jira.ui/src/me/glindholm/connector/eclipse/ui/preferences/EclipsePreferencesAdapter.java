@@ -36,20 +36,20 @@ import me.glindholm.connector.eclipse.ui.JiraConnectorUiPlugin;
  * Adapts {@link org.eclipse.core.runtime.Preferences} to
  * {@link org.eclipse.jface.preference.IPreferenceStore}.
  *
- * This is almost a clone of
- * org.eclipse.jdt.internal.ui.text.PreferencesAdapter, which unfortunately
- * depend on JDT
+ * This is almost a clone of org.eclipse.jdt.internal.ui.text.PreferencesAdapter, which
+ * unfortunately depend on JDT
  */
 public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentPreferenceStore {
 
     /**
      * Property change listener. Listens for events of type
      * {@link org.eclipse.core.runtime.Preferences.PropertyChangeEvent} and fires a
-     * {@link org.eclipse.jface.util.PropertyChangeEvent} on the adapter with arguments from the received event.
+     * {@link org.eclipse.jface.util.PropertyChangeEvent} on the adapter with arguments from the
+     * received event.
      */
     private class PreferenceChangeListener implements IPreferenceChangeListener {
         @Override
-        public void preferenceChange(PreferenceChangeEvent event) {
+        public void preferenceChange(final PreferenceChangeEvent event) {
             firePropertyChangeEvent(event.getKey(), event.getOldValue(), event.getNewValue());
         }
     }
@@ -77,7 +77,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      *
      * @param preferences The preferences to wrap.
      */
-    public EclipsePreferencesAdapter(IScopeContext context, String qualifier) {
+    public EclipsePreferencesAdapter(final IScopeContext context, final String qualifier) {
         fContext = context;
         fPreferences = fContext.getNode(qualifier);
         defaultQualifier = qualifier;
@@ -88,7 +88,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void addPropertyChangeListener(IPropertyChangeListener listener) {
+    public void addPropertyChangeListener(final IPropertyChangeListener listener) {
         if (fListeners.size() == 0) {
             fPreferences.addPreferenceChangeListener(fListener);
         }
@@ -99,7 +99,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void removePropertyChangeListener(IPropertyChangeListener listener) {
+    public void removePropertyChangeListener(final IPropertyChangeListener listener) {
         fListeners.remove(listener);
         if (fListeners.size() == 0) {
             fPreferences.removePreferenceChangeListener(fListener);
@@ -110,10 +110,10 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public boolean contains(String name) {
+    public boolean contains(final String name) {
         try {
             return ArrayUtils.contains(fPreferences.keys(), name);
-        } catch (BackingStoreException e) {
+        } catch (final BackingStoreException e) {
             return false;
         }
     }
@@ -122,24 +122,19 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void firePropertyChangeEvent(String name, Object oldValue, Object newValue) {
+    public void firePropertyChangeEvent(final String name, final Object oldValue, final Object newValue) {
         if (!fSilent) {
             final PropertyChangeEvent event = new PropertyChangeEvent(this, name, oldValue, newValue);
-            Object[] listeners = fListeners.getListeners();
-            for (Object listener2 : listeners) {
+            final Object[] listeners = fListeners.getListeners();
+            for (final Object listener2 : listeners) {
                 final IPropertyChangeListener listener = (IPropertyChangeListener) listener2;
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.propertyChange(event);
-                    }
-                };
+                final Runnable runnable = () -> listener.propertyChange(event);
 
                 if (Display.getCurrent() != null) {
                     runnable.run();
                 } else {
                     // Post runnable into UI thread
-                    Shell shell = JiraConnectorUiPlugin.getActiveWorkbenchShell();
+                    final Shell shell = JiraConnectorUiPlugin.getActiveWorkbenchShell();
                     Display display;
                     if (shell != null) {
                         display = shell.getDisplay();
@@ -156,7 +151,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public boolean getBoolean(String name) {
+    public boolean getBoolean(final String name) {
         return fPreferences.getBoolean(name, getDefaultBoolean(name));
     }
 
@@ -164,7 +159,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public boolean getDefaultBoolean(String name) {
+    public boolean getDefaultBoolean(final String name) {
         return getDefaultPreferences().getBoolean(name, BOOLEAN_DEFAULT_DEFAULT);
     }
 
@@ -172,7 +167,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public double getDefaultDouble(String name) {
+    public double getDefaultDouble(final String name) {
         return getDefaultPreferences().getDouble(name, DOUBLE_DEFAULT_DEFAULT);
     }
 
@@ -180,7 +175,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public float getDefaultFloat(String name) {
+    public float getDefaultFloat(final String name) {
         return getDefaultPreferences().getFloat(name, FLOAT_DEFAULT_DEFAULT);
     }
 
@@ -188,7 +183,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public int getDefaultInt(String name) {
+    public int getDefaultInt(final String name) {
         return getDefaultPreferences().getInt(name, INT_DEFAULT_DEFAULT);
     }
 
@@ -196,7 +191,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public long getDefaultLong(String name) {
+    public long getDefaultLong(final String name) {
         return getDefaultPreferences().getLong(name, LONG_DEFAULT_DEFAULT);
     }
 
@@ -204,7 +199,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public String getDefaultString(String name) {
+    public String getDefaultString(final String name) {
         return getDefaultPreferences().get(name, STRING_DEFAULT_DEFAULT);
     }
 
@@ -212,7 +207,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public double getDouble(String name) {
+    public double getDouble(final String name) {
         return fPreferences.getDouble(name, getDefaultDouble(name));
     }
 
@@ -220,7 +215,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public float getFloat(String name) {
+    public float getFloat(final String name) {
         return fPreferences.getFloat(name, getDefaultFloat(name));
     }
 
@@ -228,7 +223,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public int getInt(String name) {
+    public int getInt(final String name) {
         return fPreferences.getInt(name, getDefaultInt(name));
     }
 
@@ -236,7 +231,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public long getLong(String name) {
+    public long getLong(final String name) {
         return fPreferences.getLong(name, getDefaultLong(name));
     }
 
@@ -244,7 +239,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public String getString(String name) {
+    public String getString(final String name) {
         return fPreferences.get(name, getDefaultString(name));
     }
 
@@ -252,7 +247,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public boolean isDefault(String name) {
+    public boolean isDefault(final String name) {
         return false;
     }
 
@@ -263,7 +258,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
     public boolean needsSaving() {
         try {
             return fPreferences.keys().length > 0;
-        } catch (BackingStoreException e) {
+        } catch (final BackingStoreException e) {
             // ignore
         }
         return true;
@@ -273,7 +268,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void putValue(String name, String value) {
+    public void putValue(final String name, final String value) {
         try {
             fSilent = true;
             fPreferences.put(name, value);
@@ -286,7 +281,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setDefault(String name, double value) {
+    public void setDefault(final String name, final double value) {
         getDefaultPreferences().putDouble(name, value);
     }
 
@@ -294,7 +289,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setDefault(String name, float value) {
+    public void setDefault(final String name, final float value) {
         getDefaultPreferences().putFloat(name, value);
     }
 
@@ -302,7 +297,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setDefault(String name, int value) {
+    public void setDefault(final String name, final int value) {
         getDefaultPreferences().putInt(name, value);
     }
 
@@ -310,7 +305,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setDefault(String name, long value) {
+    public void setDefault(final String name, final long value) {
         getDefaultPreferences().putLong(name, value);
     }
 
@@ -318,7 +313,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setDefault(String name, String value) {
+    public void setDefault(final String name, final String value) {
         getDefaultPreferences().put(name, value);
     }
 
@@ -326,7 +321,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setDefault(String name, boolean value) {
+    public void setDefault(final String name, final boolean value) {
         getDefaultPreferences().putBoolean(name, value);
     }
 
@@ -334,7 +329,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setToDefault(String name) {
+    public void setToDefault(final String name) {
         fPreferences.put(name, getDefaultString(name));
     }
 
@@ -342,7 +337,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setValue(String name, double value) {
+    public void setValue(final String name, final double value) {
         fPreferences.putDouble(name, value);
     }
 
@@ -350,7 +345,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setValue(String name, float value) {
+    public void setValue(final String name, final float value) {
         fPreferences.putFloat(name, value);
     }
 
@@ -358,7 +353,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setValue(String name, int value) {
+    public void setValue(final String name, final int value) {
         fPreferences.putInt(name, value);
     }
 
@@ -366,7 +361,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setValue(String name, long value) {
+    public void setValue(final String name, final long value) {
         fPreferences.putLong(name, value);
     }
 
@@ -374,7 +369,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setValue(String name, String value) {
+    public void setValue(final String name, final String value) {
         fPreferences.put(name, value);
     }
 
@@ -382,7 +377,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
      * {@inheritDoc}
      */
     @Override
-    public void setValue(String name, boolean value) {
+    public void setValue(final String name, final boolean value) {
         fPreferences.putBoolean(name, value);
     }
 
@@ -390,7 +385,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
     public void save() throws IOException {
         try {
             fPreferences.flush();
-        } catch (BackingStoreException e) {
+        } catch (final BackingStoreException e) {
             throw new IOException(e.getMessage());
         }
     }

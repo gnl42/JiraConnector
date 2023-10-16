@@ -76,19 +76,11 @@ public class JiraLocalConfiguration {
             return false;
         }
         final JiraLocalConfiguration other = (JiraLocalConfiguration) obj;
-        if (!Objects.equals(characterEncoding, other.characterEncoding) || (compressionEnabled != other.compressionEnabled) || !Objects.equals(datePattern, other.datePattern) || !Objects.equals(dateTimePattern, other.dateTimePattern)) {
+        if (!Objects.equals(characterEncoding, other.characterEncoding) || compressionEnabled != other.compressionEnabled
+                || !Objects.equals(datePattern, other.datePattern) || !Objects.equals(dateTimePattern, other.dateTimePattern)) {
             return false;
         }
-        if (followRedirects != other.followRedirects) {
-            return false;
-        }
-        if (!Objects.equals(locale, other.locale)) {
-            return false;
-        }
-        if (workDaysPerWeek != other.workDaysPerWeek) {
-            return false;
-        }
-        if (workHoursPerDay != other.workHoursPerDay) {
+        if ((followRedirects != other.followRedirects) || !Objects.equals(locale, other.locale) || (workDaysPerWeek != other.workDaysPerWeek) || (workHoursPerDay != other.workHoursPerDay)) {
             return false;
         }
         if (useServerTimeTrackingSettings != other.useServerTimeTrackingSettings) {

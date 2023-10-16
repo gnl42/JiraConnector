@@ -79,7 +79,8 @@ public class UserCfg implements User {
 
         final UserCfg userCfg = (UserCfg) o;
 
-        if ((passwordStored != userCfg.passwordStored) || (password != null ? !password.equals(userCfg.password) : userCfg.password != null) || (username != null ? !username.equals(userCfg.username) : userCfg.username != null)) {
+        if (passwordStored != userCfg.passwordStored || (password != null ? !password.equals(userCfg.password) : userCfg.password != null)
+                || (username != null ? !username.equals(userCfg.username) : userCfg.username != null)) {
             return false;
         }
 

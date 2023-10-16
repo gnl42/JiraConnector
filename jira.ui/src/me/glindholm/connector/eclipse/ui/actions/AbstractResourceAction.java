@@ -66,22 +66,18 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
 
     private List<ResourceEditorBean> getData(final ISelection selection) {
         final List<ResourceEditorBean> ret = new ArrayList<>();
-        if (selection instanceof IStructuredSelection) {
-            final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-
+        if (selection instanceof final IStructuredSelection structuredSelection) {
             final Object[] selectedObjects = structuredSelection.toArray();
 
             for (final Object selectedObject : selectedObjects) {
 
-                if (selectedObject instanceof IEditorResource) {
-                    final IEditorResource a = (IEditorResource) selectedObject;
+                if (selectedObject instanceof final IEditorResource a) {
                     ret.add(new ResourceEditorBean(a.getResource(), a.getLineRange()));
 
                 } else if (structuredSelection.getFirstElement() instanceof IAdaptable) {
                     IResource resource = null;
-                    LineRange lineRange = null;
                     resource = ((IAdaptable) structuredSelection.getFirstElement()).getAdapter(IResource.class);
-                    lineRange = getJavaEditorSelection(structuredSelection);
+                    LineRange lineRange = getJavaEditorSelection(structuredSelection);
                     ret.add(new ResourceEditorBean(resource, lineRange));
                 }
             }
@@ -91,7 +87,6 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
                 final IEditorInput editorInput = getEditorInputFromSelection(selection);
                 if (editorInput != null) {
                     IResource resource = null;
-                    LineRange lineRange = null;
                     resource = editorInput.getAdapter(IResource.class);
                     // such call:
                     // lineRange = new LineRange(textSelection.getStartLine(),
@@ -99,7 +94,7 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
                     // - textSelection.getStartLine());
                     // does not work (i.e. it returns previously selected text region rather than
                     // selected now ?!?
-                    lineRange = JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(activeEditor, activeEditor.getEditorInput());
+                    LineRange lineRange = JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(activeEditor, activeEditor.getEditorInput());
                     ret.add(new ResourceEditorBean(resource, lineRange));
                 }
             }
@@ -135,8 +130,7 @@ public abstract class AbstractResourceAction extends BaseSelectionListenerAction
     }
 
     private IEditorInput getEditorInputFromSelection(final ISelection selection) {
-        if (selection instanceof IStructuredSelection) {
-            final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+        if (selection instanceof final IStructuredSelection structuredSelection) {
             if (structuredSelection.getFirstElement() instanceof IEditorInput) {
                 return (IEditorInput) structuredSelection.getFirstElement();
             }

@@ -116,7 +116,7 @@ public class Version implements Serializable {
     }
 
     public boolean greater(final Version other) {
-        if ((other == null) || other.version.equals(SPECIAL_DEV_VERSION)) {
+        if (other == null || other.version.equals(SPECIAL_DEV_VERSION)) {
             return false;
         }
         if (version.equals(SPECIAL_DEV_VERSION)) {
@@ -170,15 +170,13 @@ public class Version implements Serializable {
                 return false;
             }
 
-            if ((major > other.major) || (major == other.major && minor > other.minor)) {
+            if (major > other.major || major == other.major && minor > other.minor) {
+                return true;
+            } else if (major == other.major && minor == other.minor && micro > other.micro) {
                 return true;
             } else {
-                if (major == other.major && minor == other.minor && micro > other.micro) {
-                    return true;
-                } else {
-                    if (major == other.major && minor == other.minor && micro == other.micro) {
-                        return buildNo > other.buildNo;
-                    }
+                if (major == other.major && minor == other.minor && micro == other.micro) {
+                    return buildNo > other.buildNo;
                 }
             }
             return false;
@@ -195,7 +193,7 @@ public class Version implements Serializable {
 
             final VersionNumber that = (VersionNumber) o;
 
-            if ((major != that.major) || (micro != that.micro) || (minor != that.minor) || (alphaNum != that.alphaNum)) {
+            if (major != that.major || micro != that.micro || minor != that.minor || alphaNum != that.alphaNum) {
                 return false;
             }
 

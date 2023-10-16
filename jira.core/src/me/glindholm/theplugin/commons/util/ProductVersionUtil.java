@@ -119,7 +119,7 @@ public class ProductVersionUtil implements Serializable {
     }
 
     public boolean greater(final ProductVersionUtil other) {
-        if ((other == null) || other.version.equals(SPECIAL_DEV_VERSION)) {
+        if (other == null || other.version.equals(SPECIAL_DEV_VERSION)) {
             return false;
         }
         if (version.equals(SPECIAL_DEV_VERSION)) {
@@ -156,15 +156,13 @@ public class ProductVersionUtil implements Serializable {
                 return false;
             }
 
-            if ((major > other.major) || (major == other.major && minor > other.minor)) {
+            if (major > other.major || major == other.major && minor > other.minor) {
+                return true;
+            } else if (major == other.major && minor == other.minor && micro > other.micro) {
                 return true;
             } else {
-                if (major == other.major && minor == other.minor && micro > other.micro) {
+                if (major == other.major && minor == other.minor && micro == other.micro && nano > other.nano) {
                     return true;
-                } else {
-                    if (major == other.major && minor == other.minor && micro == other.micro && nano > other.nano) {
-                        return true;
-                    }
                 }
             }
             return false;
@@ -181,7 +179,7 @@ public class ProductVersionUtil implements Serializable {
 
             final VersionNumber that = (VersionNumber) o;
 
-            if ((major != that.major) || (micro != that.micro) || (minor != that.minor) || (nano != that.nano)) {
+            if (major != that.major || micro != that.micro || minor != that.minor || nano != that.nano) {
                 return false;
             }
 

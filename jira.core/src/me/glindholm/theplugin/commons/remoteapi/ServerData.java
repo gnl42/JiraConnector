@@ -209,11 +209,8 @@ public class ServerData extends ConnectionCfg {
         if (this == o) {
             return true;
         }
-        if (o == null || !(o instanceof final ServerData that)) { // getClass() != o.getClass()) {
-            return false;
-        }
-
-        if ((getServerId() != null ? !getServerId().equals(that.getServerId()) : that.getServerId() != null) || (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null)) {
+        if (o == null || !(o instanceof final ServerData that) || (getServerId() != null ? !getServerId().equals(that.getServerId()) : that.getServerId() != null)
+                || (getUrl() != null ? !getUrl().equals(that.getUrl()) : that.getUrl() != null)) {
             return false;
         }
 

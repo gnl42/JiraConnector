@@ -11,13 +11,13 @@
 
 package me.glindholm.connector.eclipse.ui;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Common class for getting and creating images
@@ -26,71 +26,71 @@ import java.net.URL;
  */
 public final class JiraConnectorImages {
 
-	private static ImageRegistry imageRegistry;
+    private static ImageRegistry imageRegistry;
 
-	private static final URL BASE_URL = JiraConnectorUiPlugin.getDefault().getBundle().getEntry("/icons/");
+    private static final URL BASE_URL = JiraConnectorUiPlugin.getDefault().getBundle().getEntry("/icons/");
 
-	private static final String T_OBJ = "obj16"; //$NON-NLS-1$
+    private static final String T_OBJ = "obj16"; //$NON-NLS-1$
 
-	private static final String T_OVR = "ovr16"; //$NON-NLS-1$
+    private static final String T_OVR = "ovr16"; //$NON-NLS-1$
 
-	private static final String T_ECL = "elcl16";
+    private static final String T_ECL = "elcl16";
 
-	public static final ImageDescriptor IMG_FLAT_MODE = create(T_OBJ, "flatLayout.gif"); //$NON-NLS-1$
+    public static final ImageDescriptor IMG_FLAT_MODE = create(T_OBJ, "flatLayout.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor IMG_TREE_MODE = create(T_OBJ, "treeLayout.gif"); //$NON-NLS-1$
+    public static final ImageDescriptor IMG_TREE_MODE = create(T_OBJ, "treeLayout.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor IMG_COMPRESSED_FOLDER_MODE = create(T_OBJ, "compressedLayout.gif"); //$NON-NLS-1$
+    public static final ImageDescriptor IMG_COMPRESSED_FOLDER_MODE = create(T_OBJ, "compressedLayout.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor IMG_FILE_CHANGED = create(T_OVR, "fileChanged_ov.gif"); //$NON-NLS-1$
+    public static final ImageDescriptor IMG_FILE_CHANGED = create(T_OVR, "fileChanged_ov.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor IMG_LINK_WITH_EDITOR = create(T_ECL, "synced.gif"); //$NON-NLS-1$
+    public static final ImageDescriptor IMG_LINK_WITH_EDITOR = create(T_ECL, "synced.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor IMG_ECLIPSE_INFO = AbstractUIPlugin.imageDescriptorFromPlugin(
-			"org.eclipse.ui.views.log", "$nl$/icons/obj16/info_st_obj.gif");
+    public static final ImageDescriptor IMG_ECLIPSE_INFO = AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.ui.views.log",
+            "$nl$/icons/obj16/info_st_obj.gif");
 
-	private JiraConnectorImages() {
-	}
+    private JiraConnectorImages() {
+    }
 
-	private static ImageDescriptor create(String prefix, String name) {
-		try {
-			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
-		} catch (MalformedURLException e) {
-			return ImageDescriptor.getMissingImageDescriptor();
-		}
-	}
+    private static ImageDescriptor create(final String prefix, final String name) {
+        try {
+            return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
+        } catch (final MalformedURLException e) {
+            return ImageDescriptor.getMissingImageDescriptor();
+        }
+    }
 
-	private static URL makeIconFileURL(String prefix, String name) throws MalformedURLException {
-		if (BASE_URL == null) {
-			throw new MalformedURLException();
-		}
+    private static URL makeIconFileURL(final String prefix, final String name) throws MalformedURLException {
+        if (BASE_URL == null) {
+            throw new MalformedURLException();
+        }
 
-		StringBuffer buffer = new StringBuffer(prefix);
-		buffer.append('/');
-		buffer.append(name);
-		return new URL(BASE_URL, buffer.toString());
-	}
+        final StringBuilder buffer = new StringBuilder(prefix);
+        buffer.append('/');
+        buffer.append(name);
+        return new URL(BASE_URL, buffer.toString());
+    }
 
-	private static ImageRegistry getImageRegistry() {
-		if (imageRegistry == null) {
-			imageRegistry = new ImageRegistry();
-		}
+    private static ImageRegistry getImageRegistry() {
+        if (imageRegistry == null) {
+            imageRegistry = new ImageRegistry();
+        }
 
-		return imageRegistry;
-	}
+        return imageRegistry;
+    }
 
-	public static Image getImage(ImageDescriptor imageDescriptor) {
-		if (imageDescriptor == null) {
-			return null;
-		}
-		ImageRegistry registry = getImageRegistry();
+    public static Image getImage(final ImageDescriptor imageDescriptor) {
+        if (imageDescriptor == null) {
+            return null;
+        }
+        final ImageRegistry registry = getImageRegistry();
 
-		Image image = registry.get("" + imageDescriptor.hashCode());
-		if (image == null) {
-			image = imageDescriptor.createImage();
-			registry.put("" + imageDescriptor.hashCode(), image);
-		}
-		return image;
-	}
+        Image image = registry.get("" + imageDescriptor.hashCode());
+        if (image == null) {
+            image = imageDescriptor.createImage();
+            registry.put("" + imageDescriptor.hashCode(), image);
+        }
+        return image;
+    }
 
 }

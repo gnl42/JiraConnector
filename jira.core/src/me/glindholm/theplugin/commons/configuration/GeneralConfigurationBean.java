@@ -212,20 +212,12 @@ public class GeneralConfigurationBean {
 
         final GeneralConfigurationBean that = (GeneralConfigurationBean) o;
 
-        if ((autoUpdateEnabled != that.autoUpdateEnabled) || (httpServerEnabled != that.httpServerEnabled) || (askedAboutDefaultServers != that.askedAboutDefaultServers) || (httpServerPort != that.httpServerPort)) {
+        if (autoUpdateEnabled != that.autoUpdateEnabled || httpServerEnabled != that.httpServerEnabled
+                || askedAboutDefaultServers != that.askedAboutDefaultServers || httpServerPort != that.httpServerPort) {
             return false;
         }
-        if (checkUnstableVersionsEnabled != that.checkUnstableVersionsEnabled) {
-            return false;
-        }
-        if (uid != that.uid) {
-            return false;
-        }
-        if (useIdeaProxySettings != that.useIdeaProxySettings) {
-            return false;
-        }
-        if (anonymousEnhancedFeedbackEnabled != null ? !anonymousEnhancedFeedbackEnabled.equals(that.anonymousEnhancedFeedbackEnabled)
-                : that.anonymousEnhancedFeedbackEnabled != null) {
+        if ((checkUnstableVersionsEnabled != that.checkUnstableVersionsEnabled) || (uid != that.uid) || (useIdeaProxySettings != that.useIdeaProxySettings) || (anonymousEnhancedFeedbackEnabled != null ? !anonymousEnhancedFeedbackEnabled.equals(that.anonymousEnhancedFeedbackEnabled)
+                : that.anonymousEnhancedFeedbackEnabled != null)) {
             return false;
         }
         if (checkNowButtonOption != null ? !checkNowButtonOption.equals(that.checkNowButtonOption) : that.checkNowButtonOption != null) {

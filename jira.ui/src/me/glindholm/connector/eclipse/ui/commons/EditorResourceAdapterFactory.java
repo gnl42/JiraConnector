@@ -22,97 +22,94 @@ import org.eclipse.ui.PlatformUI;
 
 public class EditorResourceAdapterFactory implements IAdapterFactory {
 
-	private final class BasicEditorResource implements IEditorResource {
-		private final IResource resource;
+    private final class BasicEditorResource implements IEditorResource {
+        private final IResource resource;
 
-		private final LineRange lineRange;
+        private final LineRange lineRange;
 
-		public BasicEditorResource(IResource resource, LineRange lineRange) {
-			this.resource = resource;
-			this.lineRange = lineRange;
-		}
+        public BasicEditorResource(final IResource resource, final LineRange lineRange) {
+            this.resource = resource;
+            this.lineRange = lineRange;
+        }
 
-		private BasicEditorResource(IResource resource) {
-			this(resource, null);
-		}
+        private BasicEditorResource(final IResource resource) {
+            this(resource, null);
+        }
 
-		@Override
+        @Override
         public LineRange getLineRange() {
-			return lineRange;
-		}
+            return lineRange;
+        }
 
-		@Override
+        @Override
         public IResource getResource() {
-			return resource;
-		}
+            return resource;
+        }
 
-		@Override
+        @Override
         @SuppressWarnings("unchecked")
-		public Object getAdapter(Class adapter) {
-			if (!IResource.class.equals(adapter)) {
-				return null;
-			}
+        public Object getAdapter(final Class adapter) {
+            if (!IResource.class.equals(adapter)) {
+                return null;
+            }
 
-			return resource;
-		}
-	}
+            return resource;
+        }
+    }
 
-	private static final Class[] ADAPTERS = { IEditorResource.class };
+    private static final Class[] ADAPTERS = { IEditorResource.class };
 
-	@Override
+    @Override
     @SuppressWarnings("unchecked")
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		if (!IEditorResource.class.equals(adapterType)) {
-			return null;
-		}
+    public Object getAdapter(final Object adaptableObject, final Class adapterType) {
+        if (!IEditorResource.class.equals(adapterType)) {
+            return null;
+        }
 
-		if (adaptableObject instanceof IResource) {
-			return new BasicEditorResource((IResource) adaptableObject);
-		}
+        if (adaptableObject instanceof IResource) {
+            return new BasicEditorResource((IResource) adaptableObject);
+        }
 
-		if (adaptableObject instanceof IEditorInput) {
-			final IEditorInput editorInput = (IEditorInput) adaptableObject;
-			final IResource resource = editorInput.getAdapter(IResource.class);
-			if (resource == null) {
-				return null;
-			}
-			IEditorPart editorPart = getActiveEditor();
+        if (adaptableObject instanceof final IEditorInput editorInput) {
+            final IResource resource = editorInput.getAdapter(IResource.class);
+            if (resource == null) {
+                return null;
+            }
+            final IEditorPart editorPart = getActiveEditor();
 
-			// such call:
-			//				lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
-			//						- textSelection.getStartLine());
-			// does not work (i.e. it returns previously selected text region rather than selected now ?!?
-			final LineRange lineRange = JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart,
-					editorInput);
-			return new BasicEditorResource(resource, lineRange);
-		}
+            // such call:
+            // lineRange = new LineRange(textSelection.getStartLine(), textSelection.getEndLine()
+            // - textSelection.getStartLine());
+            // does not work (i.e. it returns previously selected text region rather than selected now ?!?
+            final LineRange lineRange = JiraConnectorUiUtil.getSelectedLineNumberRangeFromEditorInput(editorPart, editorInput);
+            return new BasicEditorResource(resource, lineRange);
+        }
 
-		if (adaptableObject instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) adaptableObject;
-			final IResource resource = adaptable.getAdapter(IResource.class);
-			if (resource != null) {
-				return new BasicEditorResource(resource);
-			}
-		}
+        if (adaptableObject instanceof final IAdaptable adaptable) {
+            final IResource resource = adaptable.getAdapter(IResource.class);
+            if (resource != null) {
+                return new BasicEditorResource(resource);
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	private IEditorPart getActiveEditor() {
-		IWorkbenchWindow window = null;
-		if (window == null) {
-			window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		}
-		if (window != null && window.getActivePage() != null) {
-			return window.getActivePage().getActiveEditor();
-		}
-		return null;
-	}
+    private IEditorPart getActiveEditor() {
+        IWorkbenchWindow window = null;
+        if (window == null) {
+            window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        }
+        if (window != null && window.getActivePage() != null) {
+            return window.getActivePage().getActiveEditor();
+        }
+        return null;
+    }
 
-	@Override
+    @Override
     @SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return ADAPTERS;
-	}
+    public Class[] getAdapterList() {
+        return ADAPTERS;
+    }
 
 }

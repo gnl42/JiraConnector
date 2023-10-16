@@ -58,7 +58,9 @@ public class ProjectConfiguration {
             return true;
         }
         // noinspection RedundantIfStatement
-        if (!(o instanceof final ProjectConfiguration that) || (defaultJiraServerId != null ? !defaultJiraServerId.equals(that.defaultJiraServerId) : that.defaultJiraServerId != null) || !servers.equals(that.servers)) {
+        if (!(o instanceof final ProjectConfiguration that)
+                || (defaultJiraServerId != null ? !defaultJiraServerId.equals(that.defaultJiraServerId) : that.defaultJiraServerId != null)
+                || !servers.equals(that.servers)) {
             return false;
         }
 

@@ -118,13 +118,7 @@ public class JiraServerCfg extends ServerCfg {
 
         final JiraServerCfg that = (JiraServerCfg) o;
 
-        if (useSessionCookies != that.useSessionCookies) {
-            return false;
-        }
-        if (dontUseBasicAuth != that.dontUseBasicAuth) {
-            return false;
-        }
-        if (basicHttpUser != null ? !basicHttpUser.equals(that.basicHttpUser) : that.basicHttpUser != null) {
+        if ((useSessionCookies != that.useSessionCookies) || (dontUseBasicAuth != that.dontUseBasicAuth) || (basicHttpUser != null ? !basicHttpUser.equals(that.basicHttpUser) : that.basicHttpUser != null)) {
             return false;
         }
 

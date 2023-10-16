@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.source.LineRange;
 
 public interface IEditorResource extends IAdaptable {
-	LineRange getLineRange();
+    LineRange getLineRange();
 
-	IResource getResource();
+    IResource getResource();
 }

@@ -16,28 +16,36 @@ import org.eclipse.ui.IWorkbenchPartReference;
 
 public class PartListenerAdapter implements IPartListener2 {
 
-	public void partActivated(IWorkbenchPartReference partRef) {
-	}
+    @Override
+    public void partActivated(final IWorkbenchPartReference partRef) {
+    }
 
-	public void partBroughtToTop(IWorkbenchPartReference partRef) {
-	}
+    @Override
+    public void partBroughtToTop(final IWorkbenchPartReference partRef) {
+    }
 
-	public void partClosed(IWorkbenchPartReference partRef) {
-	}
+    @Override
+    public void partClosed(final IWorkbenchPartReference partRef) {
+    }
 
-	public void partDeactivated(IWorkbenchPartReference partRef) {
-	}
+    @Override
+    public void partDeactivated(final IWorkbenchPartReference partRef) {
+    }
 
-	public void partOpened(IWorkbenchPartReference partRef) {
-	}
+    @Override
+    public void partOpened(final IWorkbenchPartReference partRef) {
+    }
 
-	public void partHidden(IWorkbenchPartReference partRef) {
-	}
+    @Override
+    public void partHidden(final IWorkbenchPartReference partRef) {
+    }
 
-	public void partVisible(IWorkbenchPartReference partRef) {
-	}
+    @Override
+    public void partVisible(final IWorkbenchPartReference partRef) {
+    }
 
-	public void partInputChanged(IWorkbenchPartReference partRef) {
-	}
+    @Override
+    public void partInputChanged(final IWorkbenchPartReference partRef) {
+    }
 
 }

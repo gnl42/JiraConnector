@@ -52,20 +52,11 @@ public class ConnectionCfg {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final ConnectionCfg other = (ConnectionCfg) obj;
-        if (!Objects.equals(id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(password, other.password)) {
-            return false;
-        }
-        if (!Objects.equals(url, other.url)) {
-            return false;
-        }
-        if (!Objects.equals(username, other.username)) {
+        if (!Objects.equals(id, other.id) || !Objects.equals(password, other.password) || !Objects.equals(url, other.url) || !Objects.equals(username, other.username)) {
             return false;
         }
         return true;

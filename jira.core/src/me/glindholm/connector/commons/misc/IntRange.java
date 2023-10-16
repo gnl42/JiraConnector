@@ -66,7 +66,7 @@ public final class IntRange {
         final IntRange intRange = (IntRange) o;
 
         // noinspection RedundantIfStatement
-        if ((max != intRange.max) || (min != intRange.min)) {
+        if (max != intRange.max || min != intRange.min) {
             return false;
         }
 

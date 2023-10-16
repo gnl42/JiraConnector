@@ -74,7 +74,7 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
         // return true;
         // }
 
-        if ((isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) || isInOpenState(taskData)) {
+        if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData) || isInOpenState(taskData)) {
             return true;
 
         }

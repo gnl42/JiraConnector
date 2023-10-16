@@ -89,11 +89,7 @@ public class JiraIssueField implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof final JiraIssueField other)) {
-            return false;
-        }
-
-        if (!Objects.equals(id, other.id)) {
+        if (!(obj instanceof final JiraIssueField other) || !Objects.equals(id, other.id)) {
             return false;
         }
 

@@ -70,7 +70,7 @@ public class JiraConfigurationBean {
 
         final JiraConfigurationBean that = (JiraConfigurationBean) o;
 
-        if ((pageSize != that.pageSize) || (synchronizeWithIntelliJTasks != that.synchronizeWithIntelliJTasks) || (showIssueTooltips != that.showIssueTooltips)) {
+        if (pageSize != that.pageSize || synchronizeWithIntelliJTasks != that.synchronizeWithIntelliJTasks || showIssueTooltips != that.showIssueTooltips) {
             return false;
         }
         return true;

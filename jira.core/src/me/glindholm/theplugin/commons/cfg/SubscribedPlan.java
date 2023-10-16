@@ -52,7 +52,7 @@ public final class SubscribedPlan {
 
         final SubscribedPlan that = (SubscribedPlan) o;
 
-        if ((grouped != that.grouped) || !key.equals(that.key)) {
+        if (grouped != that.grouped || !key.equals(that.key)) {
             return false;
         }
 

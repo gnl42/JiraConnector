@@ -120,7 +120,7 @@ public class JiraCustomFieldImpl implements JiraCustomField {
             final String type = schema.getString("type");
             id = field.getId();
             values = new ArrayList<>();
-            if ("array".equals(type) || (typeKey == BasicKeyType.UNSUPPORTED)) {
+            if ("array".equals(type) || typeKey == BasicKeyType.UNSUPPORTED) {
                 // try {
                 // JSONArray vals = (JSONArray) field.getValue();
                 values.add("[Custom field not supported]");
