@@ -53,6 +53,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Localization: plugin
 Import-Package: org.apache.commons.io,
  org.apache.hc.core5;version="5.1.4",
+ org.codehaus.jettison.json,
  org.eclipse.mylyn.commons.core,
  org.eclipse.mylyn.commons.net,
  org.eclipse.mylyn.commons.workbench,
