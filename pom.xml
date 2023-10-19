@@ -95,16 +95,16 @@
 			<id>atlassian again</id>
 			<url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
 		</repository>
-		<repository>
-			<id>atlassian</id>
-			<url>
-				https://maven.atlassian.com/content/repositories/atlassian-public/</url>
-		</repository>
-		<repository>
-			<id>atlassian-3rd-party</id>
-			<name>atlassian 3rd party</name>
-			<url>https://maven.atlassian.com/maven-3rdparty/</url>
-		</repository>
+<!--		<repository>-->
+<!--			<id>atlassian</id>-->
+<!--			<url>-->
+<!--				https://maven.atlassian.com/content/repositories/atlassian-public/</url>-->
+<!--		</repository>-->
+<!--		<repository>-->
+<!--			<id>atlassian-3rd-party</id>-->
+<!--			<name>atlassian 3rd party</name>-->
+<!--			<url>https://maven.atlassian.com/maven-3rdparty/</url>-->
+<!--		</repository>-->
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -144,14 +144,6 @@
 		<!--         <module>jira-target</module>-->
 		<module>jrjc-api</module>
 		<module>jrjc-core</module>
-
-
-
-
-
-
-
-
 		<module>help</module>
 		<!-- <module>me.glindholm.jira.rest.client</module> -->
 		<module>jira-feature</module>
