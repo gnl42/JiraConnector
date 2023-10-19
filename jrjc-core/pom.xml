@@ -60,10 +60,6 @@
 			<artifactId>jettison</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>jakarta.ws.rs</groupId>
-			<artifactId>jakarta.ws.rs-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.atlassian.httpclient</groupId>
 			<artifactId>atlassian-httpclient-api</artifactId>
 		</dependency>
@@ -128,7 +124,7 @@
 						<configuration>
 							<includeArtifactIds>
 								sal,sal-api,fugue,atlassian-httpclient-library,atlassian-event,atlassian-httpclient-api,
-								jettison,jakarta.ws.rs-api,spring-beans,
+								jettison,spring-beans,
 								httpcore5,httpclient,httpasyncclient-cache,httpmime,httpcore,httpcore-nio,httpclient-cache,httpasyncclient</includeArtifactIds>
 							<outputDirectory>target/lib</outputDirectory>
 							<stripVersion>true</stripVersion>
