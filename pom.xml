@@ -141,7 +141,7 @@
 
 	</properties>
 	<modules>
-		<!--         <module>jira.target</module>-->
+		<!--         <module>jira-target</module>-->
 		<module>jrjc-api</module>
 		<module>jrjc-core</module>
 
