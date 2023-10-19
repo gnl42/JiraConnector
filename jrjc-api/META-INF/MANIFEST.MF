@@ -7,15 +7,16 @@ Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ClassPath: .,
  target/lib/atlassian-httpclient-api.jar,
- target/lib/atlassian-util-concurrent.jar,
- target/lib/guava.jar
+ target/lib/atlassian-util-concurrent.jar
 Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
-Export-Package: com.atlassian.httpclient.api,
+Export-Package: com.atlassian.httpclient.api;x-friends:="me.glindholm.connector.eclipse.jira.core,me.glindholm.connector.eclipse.jira.ui",
+ com.atlassian.httpclient.api.factory,
  io.atlassian.util.concurrent,
  me.glindholm.jira.rest.client.api;uses:="me.glindholm.jira.rest.client.api.domain,me.glindholm.jira.rest.client.api.domain.input,Request",
  me.glindholm.jira.rest.client.api.domain;uses:="me.glindholm.jira.rest.client.api.domain.util,me.glindholm.jira.rest.client.api",
  me.glindholm.jira.rest.client.api.domain.input;uses:="me.glindholm.jira.rest.client.api.domain,me.glindholm.jira.rest.client.api",
  me.glindholm.jira.rest.client.api.domain.util
+Import-Package: org.slf4j;version="1.7.30"
 Require-Bundle: org.eclipse.jdt.annotation,
  com.google.guava
