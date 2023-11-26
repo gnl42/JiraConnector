@@ -46,6 +46,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.2</version>
@@ -124,7 +130,7 @@
 						<configuration>
 							<includeArtifactIds>
 								sal,sal-api,fugue,atlassian-httpclient-library,atlassian-event,atlassian-httpclient-api,
-								jettison,spring-beans,
+								jettison,spring-beans,javax.ws.rs-api,
 								httpcore5,httpclient,httpasyncclient-cache,httpmime,httpcore,httpcore-nio,httpclient-cache,httpasyncclient</includeArtifactIds>
 							<outputDirectory>target/lib</outputDirectory>
 							<stripVersion>true</stripVersion>
