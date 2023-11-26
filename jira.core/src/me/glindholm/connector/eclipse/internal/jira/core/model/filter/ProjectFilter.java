@@ -19,8 +19,9 @@ import org.eclipse.core.runtime.Assert;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraProject;
 
 /**
- * Filter to restrict returned issues to a specific project. If a project filter is used you can add project specific
- * filters such as {@link ComponentFilter}, {@link ReportedInVersionFilter} and {@link FixForVersionFilter}
+ * Filter to restrict returned issues to a specific project. If a project filter is used you can add
+ * project specific filters such as {@link ComponentFilter}, {@link ReportedInVersionFilter} and
+ * {@link FixForVersionFilter}
  *
  * @see com.gbst.jira.core.model.filter.ComponentFilter
  * @see com.gbst.jira.core.model.filter.ReportedInVersionFilter

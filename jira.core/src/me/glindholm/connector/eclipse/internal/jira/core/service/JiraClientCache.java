@@ -323,9 +323,8 @@ public class JiraClientCache {
     // }
 
     /**
-     * Refresh any cached information with the latest values from the remote server.
-     * This operation may take a long time to complete and should not be called from
-     * a UI thread.
+     * Refresh any cached information with the latest values from the remote server. This operation may
+     * take a long time to complete and should not be called from a UI thread.
      */
     public synchronized void refreshServerInfo(final JiraClientData data, final IProgressMonitor monitor) throws JiraException {
         final SubMonitor submonitor = SubMonitor.convert(monitor, Messages.JiraClientCache_Getting_server_information, 1);
@@ -346,8 +345,7 @@ public class JiraClientCache {
     }
 
     /**
-     * Returns cached ServerInfo if available, updated from the repository
-     * otherwise.
+     * Returns cached ServerInfo if available, updated from the repository otherwise.
      *
      * @param monitor
      * @throws JiraException

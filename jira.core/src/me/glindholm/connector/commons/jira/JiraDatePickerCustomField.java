@@ -29,7 +29,6 @@ public class JiraDatePickerCustomField extends JiraCustomFieldImpl {
         super(builder);
     }
 
-
     @Override
     public String getFormattedValue() {
         String formattedText = "";

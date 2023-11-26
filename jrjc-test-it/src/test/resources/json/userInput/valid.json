@@ -1,0 +1,9 @@
+{
+   "key":"admin",
+   "name":"admin",
+   "emailAddress":"admin@atlassian.com",
+   "displayName":"Administrator",
+   "applicationKeys": [
+      "jira-core"
+   ]
+}

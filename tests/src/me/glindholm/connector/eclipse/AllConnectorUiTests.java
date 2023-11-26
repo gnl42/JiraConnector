@@ -24,8 +24,6 @@ public final class AllConnectorUiTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("Ui Test for me.glindholm.connector.eclipse.tests");
 
-		suite.addTest(AllBambooUiTests.suite());
-
 		return suite;
 	}
 

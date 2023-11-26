@@ -23,7 +23,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 import me.glindholm.jira.rest.client.api.domain.IssueField;
 
-
 /**
  * @autrhor pmaruszak
  * @date Jul 7, 2010
@@ -48,12 +47,11 @@ public class JiraCustomFieldImpl implements JiraCustomField {
         this.name = name;
     }
 
-
     @Override
     public boolean isSupported() {
         return !BasicKeyType.UNSUPPORTED.equals(typeKey)
-                //                && !BasicKeyType.DATE_TIME.equals(typeKey)
-                ;
+        // && !BasicKeyType.DATE_TIME.equals(typeKey)
+        ;
     }
 
     @Override
@@ -66,7 +64,7 @@ public class JiraCustomFieldImpl implements JiraCustomField {
         return typeKey;
     }
 
-    //    @Nullable
+    // @Nullable
     @Override
     public List<String> getValues() {
         return values;
@@ -83,13 +81,10 @@ public class JiraCustomFieldImpl implements JiraCustomField {
     }
 
     public enum BasicKeyType {
-        NUMERIC("com.atlassian.jira.plugin.system.customfieldtypes:float"),
-        TEXT("com.atlassian.jira.plugin.system.customfieldtypes:textfield"),
-        TEXT_AREA("com.atlassian.jira.plugin.system.customfieldtypes:textarea"),
-        URL("com.atlassian.jira.plugin.system.customfieldtypes:url"),
-        //        DATE_TIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime"),
-        DATE_PICKER("com.atlassian.jira.plugin.system.customfieldtypes:datepicker"),
-        UNSUPPORTED("");
+        NUMERIC("com.atlassian.jira.plugin.system.customfieldtypes:float"), TEXT("com.atlassian.jira.plugin.system.customfieldtypes:textfield"),
+        TEXT_AREA("com.atlassian.jira.plugin.system.customfieldtypes:textarea"), URL("com.atlassian.jira.plugin.system.customfieldtypes:url"),
+        // DATE_TIME("com.atlassian.jira.plugin.system.customfieldtypes:datetime"),
+        DATE_PICKER("com.atlassian.jira.plugin.system.customfieldtypes:datepicker"), UNSUPPORTED("");
 
         private final String keyValue;
 
@@ -125,63 +120,54 @@ public class JiraCustomFieldImpl implements JiraCustomField {
             final String type = schema.getString("type");
             id = field.getId();
             values = new ArrayList<>();
-            if ("array".equals(type)) {
-                //                try {
-                //                    JSONArray vals = (JSONArray) field.getValue();
+            if ("array".equals(type) || typeKey == BasicKeyType.UNSUPPORTED) {
+                // try {
+                // JSONArray vals = (JSONArray) field.getValue();
                 values.add("[Custom field not supported]");
-                //                } catch (Exception e) {
-                //                }
+                // } catch (Exception e) {
+                // }
             } else {
-                if (typeKey == BasicKeyType.UNSUPPORTED) {
-                    values.add("[Custom field not supported]");
-                } else {
-                    final Object value = field.getValue();
-                    if (value != null) {
-                        values.add(value.toString());
-                    }
+                final Object value = field.getValue();
+                if (value != null) {
+                    values.add(value.toString());
                 }
             }
         }
 
-        //        public Builder(Element e) {
-        //            if (e != null) {
-        //                Attribute keyAttribute = e.getAttribute("key");
-        //                if (keyAttribute != null && keyAttribute.getValue() != null) {
-        //                    typeKey = BasicKeyType.getValueOf(keyAttribute.getValue());
-        //                }
-        //                Attribute idAttribute = e.getAttribute("id");
-        //                if (idAttribute != null && idAttribute.getValue() != null) {
-        //                    id = idAttribute.getValue();
-        //                }
-        //                Element nameElement = e.getChild("customfieldname");
-        //                if (nameElement != null && nameElement.getText() != null) {
-        //                    name = nameElement.getText();
-        //                }
+        // public Builder(Element e) {
+        // if (e != null) {
+        // Attribute keyAttribute = e.getAttribute("key");
+        // if (keyAttribute != null && keyAttribute.getValue() != null) {
+        // typeKey = BasicKeyType.getValueOf(keyAttribute.getValue());
+        // }
+        // Attribute idAttribute = e.getAttribute("id");
+        // if (idAttribute != null && idAttribute.getValue() != null) {
+        // id = idAttribute.getValue();
+        // }
+        // Element nameElement = e.getChild("customfieldname");
+        // if (nameElement != null && nameElement.getText() != null) {
+        // name = nameElement.getText();
+        // }
         //
-        //                Element valuesElement = e.getChild("customfieldvalues");
-        //                if (valuesElement != null) {
-        //                    for (int i = 0; i < valuesElement.getChildren().size(); i++) {
-        //                        Element singleValueElement = valuesElement.getChildren().get(i);
-        //                        if (singleValueElement != null && singleValueElement.getValue() != null) {
-        //                            values.add(singleValueElement.getValue());
-        //                        }
-        //                    }
-        //                }
-        //            }
+        // Element valuesElement = e.getChild("customfieldvalues");
+        // if (valuesElement != null) {
+        // for (int i = 0; i < valuesElement.getChildren().size(); i++) {
+        // Element singleValueElement = valuesElement.getChildren().get(i);
+        // if (singleValueElement != null && singleValueElement.getValue() != null) {
+        // values.add(singleValueElement.getValue());
+        // }
+        // }
+        // }
+        // }
         //
-        //        }
+        // }
 
         public JiraCustomField build() {
-            switch (typeKey) {
-            case DATE_PICKER:
-                return new JiraDatePickerCustomField(this);
-                //                case DATE_TIME:
-                //                    return new JiraOffsetDateTimeCustomField(this);
-            case URL:
-                return new JiraUrlCustomField(this);
-            default:
-                return new JiraCustomFieldImpl(this);
-            }
+            return switch (typeKey) {
+            case DATE_PICKER -> new JiraDatePickerCustomField(this);
+            case URL -> new JiraUrlCustomField(this);
+            default -> new JiraCustomFieldImpl(this);
+            };
         }
     }
 }

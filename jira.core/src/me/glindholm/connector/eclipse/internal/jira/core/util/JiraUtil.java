@@ -81,7 +81,7 @@ public class JiraUtil {
 
     private static final String SEARCH_RESULTS_TIMEOUT = "jira.searchResultsTimeout"; //$NON-NLS-1$
 
-    //	public static final int DEFAULT_MAX_SEARCH_RESULTS = TaskDataCollector.MAX_HITS;
+    // public static final int DEFAULT_MAX_SEARCH_RESULTS = TaskDataCollector.MAX_HITS;
     public static final int DEFAULT_MAX_SEARCH_RESULTS = 1000;
 
     public static final int DEFAULT_SEARCH_RESULT_TIMEOUT = 20;
@@ -129,8 +129,8 @@ public class JiraUtil {
         return Boolean.parseBoolean(taskRepository.getProperty(COMPRESSION_KEY));
     }
 
-    public static FilterDefinition getFilterDefinition(final TaskRepository taskRepository, final JiraClient client,
-            final IRepositoryQuery query, final boolean validate) {
+    public static FilterDefinition getFilterDefinition(final TaskRepository taskRepository, final JiraClient client, final IRepositoryQuery query,
+            final boolean validate) {
         final String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
         if (customUrl != null && customUrl.length() > 0) {
             final FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
@@ -140,14 +140,13 @@ public class JiraUtil {
         return null;
     }
 
-    public static FilterDefinition getFilterDefinition(final TaskRepository taskRepository, final JiraClient client,
-            final IRepositoryQuery query, final boolean validate, final IProgressMonitor monitor) throws JiraException {
+    public static FilterDefinition getFilterDefinition(final TaskRepository taskRepository, final JiraClient client, final IRepositoryQuery query,
+            final boolean validate, final IProgressMonitor monitor) throws JiraException {
         final String customUrl = query.getAttribute(KEY_FILTER_CUSTOM_URL);
         if (customUrl != null && customUrl.length() > 0) {
             try {
-                final FilterDefinitionConverter converter = new FilterDefinitionConverter(
-                        taskRepository.getCharacterEncoding(), JiraUtil.getLocalConfiguration(taskRepository)
-                        .getDateTimeFormat());
+                final FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+                        JiraUtil.getLocalConfiguration(taskRepository).getDateTimeFormat());
                 return converter.toFilter(client, customUrl, validate, true, monitor);
             } catch (final UnsupportedEncodingException ex) {
                 throw new RuntimeException(ex);
@@ -211,8 +210,7 @@ public class JiraUtil {
         return null;
     }
 
-    public static JiraFilter getQuery(final TaskRepository taskRepository, final JiraClient client, final IRepositoryQuery query,
-            final boolean validate) {
+    public static JiraFilter getQuery(final TaskRepository taskRepository, final JiraClient client, final IRepositoryQuery query, final boolean validate) {
         final JiraFilter filter = getFilterDefinition(taskRepository, client, query, validate);
         if (filter != null) {
             return filter;
@@ -221,8 +219,8 @@ public class JiraUtil {
         }
     }
 
-    public static JiraFilter getQuery(final TaskRepository taskRepository, final JiraClient client, final IRepositoryQuery query,
-            final boolean validate, final IProgressMonitor monitor) throws JiraException {
+    public static JiraFilter getQuery(final TaskRepository taskRepository, final JiraClient client, final IRepositoryQuery query, final boolean validate,
+            final IProgressMonitor monitor) throws JiraException {
         final JiraFilter filter = getFilterDefinition(taskRepository, client, query, validate, monitor);
         if (filter != null) {
             return filter;
@@ -232,8 +230,7 @@ public class JiraUtil {
     }
 
     public static JiraTimeFormat getTimeFormat(final TaskRepository taskRepository) {
-        return new JiraTimeFormat(JiraUtil.getWorkDaysPerWeek(taskRepository),
-                JiraUtil.getWorkHoursPerDay(taskRepository));
+        return new JiraTimeFormat(JiraUtil.getWorkDaysPerWeek(taskRepository), JiraUtil.getWorkHoursPerDay(taskRepository));
     }
 
     public static int getWorkDaysPerWeek(final TaskRepository repository) {
@@ -242,12 +239,13 @@ public class JiraUtil {
     }
 
     public static int getWorkDaysPerWeek(final JiraClient jiraClient) {
-        //		if (isUseServerTimeTrackingSettings(jiraClient.getLocalConfiguration())) {
-        //			JiraConfiguration conf = jiraClient.getCache().getConfiguration();
-        //			return conf != null ? conf.getTimeTrackingDaysPerWeek() : JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK;
-        //		} else {
+        // if (isUseServerTimeTrackingSettings(jiraClient.getLocalConfiguration())) {
+        // JiraConfiguration conf = jiraClient.getCache().getConfiguration();
+        // return conf != null ? conf.getTimeTrackingDaysPerWeek() :
+        // JiraLocalConfiguration.DEFAULT_WORK_DAYS_PER_WEEK;
+        // } else {
         return getWorkDaysPerWeekLocal(jiraClient.getLocalConfiguration());
-        //		}
+        // }
     }
 
     public static int getWorkHoursPerDay(final TaskRepository repository) {
@@ -256,12 +254,13 @@ public class JiraUtil {
     }
 
     public static int getWorkHoursPerDay(final JiraClient jiraClient) {
-        //		if (isUseServerTimeTrackingSettings(jiraClient.getLocalConfiguration())) {
-        //			JiraConfiguration conf = jiraClient.getCache().getConfiguration();
-        //			return conf != null ? conf.getTimeTrackingHoursPerDay() : JiraLocalConfiguration.DEFAULT_WORK_HOURS_PER_DAY;
-        //		} else {
+        // if (isUseServerTimeTrackingSettings(jiraClient.getLocalConfiguration())) {
+        // JiraConfiguration conf = jiraClient.getCache().getConfiguration();
+        // return conf != null ? conf.getTimeTrackingHoursPerDay() :
+        // JiraLocalConfiguration.DEFAULT_WORK_HOURS_PER_DAY;
+        // } else {
         return getWorkHoursPerDayLocal(jiraClient.getLocalConfiguration());
-        //		}
+        // }
     }
 
     public static int getWorkDaysPerWeekLocal(final TaskRepository repository) {
@@ -347,8 +346,7 @@ public class JiraUtil {
     }
 
     public static void setQuery(final TaskRepository taskRepository, final IRepositoryQuery query, final JiraFilter filter) {
-        if (filter instanceof JiraNamedFilter) {
-            final JiraNamedFilter namedFilter = (JiraNamedFilter) filter;
+        if (filter instanceof final JiraNamedFilter namedFilter) {
             query.setAttribute(KEY_FILTER_ID, namedFilter.getId());
             query.setAttribute(KEY_FILTER_NAME, namedFilter.getName());
             query.setAttribute(KEY_FILTER_JQL, namedFilter.getJql());
@@ -356,9 +354,8 @@ public class JiraUtil {
             query.setUrl(namedFilter.getViewUrl());
         } else if (filter instanceof FilterDefinition) {
             try {
-                final FilterDefinitionConverter converter = new FilterDefinitionConverter(
-                        taskRepository.getCharacterEncoding(), JiraUtil.getLocalConfiguration(taskRepository)
-                        .getDateTimeFormat());
+                final FilterDefinitionConverter converter = new FilterDefinitionConverter(taskRepository.getCharacterEncoding(),
+                        JiraUtil.getLocalConfiguration(taskRepository).getDateTimeFormat());
                 final String classicUrl = converter.toUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter);
                 query.setAttribute(KEY_FILTER_CUSTOM_URL, classicUrl);
                 final String jqlUrl = converter.toJqlUrl(taskRepository.getRepositoryUrl(), (FilterDefinition) filter);

@@ -203,11 +203,9 @@ public class JiraProject implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null || !(obj instanceof JiraProject)) {
+        if (obj == null || !(obj instanceof final JiraProject that)) {
             return false;
         }
-
-        final JiraProject that = (JiraProject) obj;
 
         return name.equals(that.name);
     }

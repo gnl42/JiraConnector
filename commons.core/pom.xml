@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>me.glindholm.connector.eclipse</groupId>
 		<artifactId>JiraConnector</artifactId>
-		<version>4.3.0-SNAPSHOT</version>
+		<version>5.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>me.glindholm.connector.eclipse.commons.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
@@ -29,7 +29,7 @@
 						</goals>
 						<configuration>
 							<includeArtifactIds>javax.ws.rs-api,jersey-client,annotations,
-								jdom,jaxen,jsr305,
+								jdom,jaxen,commons-lang3,commons-io,
                                 velocity,javax.xml.rpc-api,commons-discovery</includeArtifactIds>
 							<outputDirectory>target/lib</outputDirectory>
 							<stripVersion>true</stripVersion>
@@ -46,6 +46,15 @@
 		</plugins>
 	</build>
 	<dependencies>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.8.0</version>
+			</dependency>
 		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
@@ -76,10 +85,5 @@
 		</dependency>
 		<!--<dependency> <groupId>org.mortbay.jetty</groupId> <artifactId>jetty</artifactId>
 			<version>6.1.5</version> <version>6.1.5</version> </dependency> -->
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<version>3.0.2</version>
-		</dependency>
 	</dependencies>
 </project>

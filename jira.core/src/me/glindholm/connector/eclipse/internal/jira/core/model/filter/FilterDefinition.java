@@ -162,8 +162,7 @@ public class FilterDefinition implements JiraFilter, Serializable {
     /**
      * Copy constructor for cloning filter definitions
      *
-     * @param copy
-     *            Filter definition to copy
+     * @param copy Filter definition to copy
      */
     public FilterDefinition(final FilterDefinition copy) {
         copyAttributes(copy);

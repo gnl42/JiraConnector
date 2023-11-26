@@ -1,0 +1,2924 @@
+{
+  "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+  "id": "19977",
+  "self": "https://companydomain.atlassian.net/rest/api/latest/issue/19977",
+  "key": "TREG-1438",
+  "renderedFields": {
+    "statuscategorychangedate": "07/Nov/22 12:42 PM",
+    "fixVersions": null,
+    "resolution": null,
+    "customfield_10225": null,
+    "customfield_10227": "",
+    "customfield_10228": "",
+    "lastViewed": "Today 1:12 PM",
+    "customfield_10066": "",
+    "customfield_10067": null,
+    "priority": null,
+    "customfield_10068": null,
+    "customfield_10222": null,
+    "customfield_10069": null,
+    "customfield_10223": null,
+    "customfield_10224": null,
+    "labels": null,
+    "aggregatetimeoriginalestimate": null,
+    "timeestimate": null,
+    "versions": null,
+    "issuelinks": null,
+    "assignee": null,
+    "status": null,
+    "components": null,
+    "customfield_10050": null,
+    "customfield_10051": null,
+    "customfield_10052": null,
+    "customfield_10053": null,
+    "customfield_10054": null,
+    "customfield_10056": [],
+    "customfield_10057": null,
+    "customfield_10049": "",
+    "aggregatetimeestimate": null,
+    "creator": null,
+    "subtasks": null,
+    "customfield_10040": null,
+    "customfield_10041": null,
+    "customfield_10042": "",
+    "customfield_10043": "",
+    "reporter": null,
+    "customfield_10044": "",
+    "aggregateprogress": null,
+    "customfield_10045": null,
+    "customfield_10200": null,
+    "customfield_10046": null,
+    "customfield_10047": null,
+    "customfield_10048": "",
+    "customfield_10038": "",
+    "customfield_10039": null,
+    "progress": null,
+    "votes": null,
+    "worklog": {
+      "startAt": 0,
+      "maxResults": 20,
+      "total": 0,
+      "worklogs": []
+    },
+    "issuetype": null,
+    "timespent": null,
+    "customfield_10030": null,
+    "project": null,
+    "customfield_10031": null,
+    "customfield_10032": null,
+    "customfield_10033": null,
+    "customfield_10034": null,
+    "aggregatetimespent": null,
+    "customfield_10035": null,
+    "customfield_10036": null,
+    "customfield_10037": null,
+    "customfield_10028": null,
+    "customfield_10029": null,
+    "resolutiondate": null,
+    "workratio": null,
+    "watches": null,
+    "issuerestriction": null,
+    "created": "29/Aug/22 10:46 AM",
+    "customfield_10020": null,
+    "customfield_10021": null,
+    "customfield_10022": null,
+    "customfield_10023": null,
+    "customfield_10024": "10/Nov/22 10:32 AM",
+    "customfield_10025": null,
+    "customfield_10016": null,
+    "customfield_10017": "",
+    "customfield_10018": null,
+    "customfield_10019": null,
+    "updated": "Today 10:37 AM",
+    "customfield_10094": null,
+    "timeoriginalestimate": null,
+    "customfield_10095": null,
+    "customfield_10096": null,
+    "description": "<p>blah</p>",
+    "customfield_10010": null,
+    "customfield_10014": null,
+    "customfield_10015": null,
+    "timetracking": {},
+    "customfield_10005": null,
+    "customfield_10006": null,
+    "customfield_10007": null,
+    "security": null,
+    "customfield_10008": null,
+    "attachment": [],
+    "customfield_10009": null,
+    "summary": null,
+    "customfield_10241": null,
+    "customfield_10087": null,
+    "customfield_10088": null,
+    "customfield_10001": null,
+    "customfield_10089": null,
+    "customfield_10002": null,
+    "customfield_10003": null,
+    "customfield_10004": null,
+    "environment": "",
+    "customfield_10119": null,
+    "duedate": null,
+    "comment": {
+      "comments": [
+        {
+          "self": "https://companydomain.atlassian.net/rest/api/2/issue/19977/comment/26316",
+          "id": "26316",
+          "author": {
+            "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+            "accountId": "xxxaccountidxxx",
+            "emailAddress": "m.email@company.com",
+            "avatarUrls": {
+              "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+              "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+              "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+              "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+            },
+            "displayName": "My Name",
+            "active": true,
+            "timeZone": "Europe/Berlin",
+            "accountType": "atlassian"
+          },
+          "body": "blah",
+          "updateAuthor": {
+            "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+            "accountId": "xxxaccountidxxx",
+            "emailAddress": "m.email@company.com",
+            "avatarUrls": {
+              "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+              "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+              "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+              "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+            },
+            "displayName": "My Name",
+            "active": true,
+            "timeZone": "Europe/Berlin",
+            "accountType": "atlassian"
+          },
+          "created": "07/Nov/22 10:57 AM",
+          "updated": "07/Nov/22 10:58 AM",
+          "jsdPublic": true
+        },
+        {
+          "self": "https://companydomain.atlassian.net/rest/api/2/issue/19977/comment/26709",
+          "id": "26709",
+          "author": {
+            "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=yyyaccountidyyy",
+            "accountId": "yyyaccountidyyy",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatarurl",
+              "24x24": "https://secure.gravatar.com/avatarurl",
+              "16x16": "https://secure.gravatar.com/avatarurl",
+              "32x32": "https://secure.gravatar.com/avatarurl"
+            },
+            "displayName": "Other Name",
+            "active": true,
+            "timeZone": "Europe/Berlin",
+            "accountType": "atlassian"
+          },
+          "body": "blah",
+          "updateAuthor": {
+            "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=yyyaccountidyyy",
+            "accountId": "yyyaccountidyyy",
+            "avatarUrls": {
+              "48x48": "https://secure.gravatar.com/avatarurl",
+              "24x24": "https://secure.gravatar.com/avatarurl",
+              "16x16": "https://secure.gravatar.com/avatarurl",
+              "32x32": "https://secure.gravatar.com/avatarurl"
+            },
+            "displayName": "Other Name",
+            "active": true,
+            "timeZone": "Europe/Berlin",
+            "accountType": "atlassian"
+          },
+          "created": "10/Nov/22 10:32 AM",
+          "updated": "10/Nov/22 10:41 AM",
+          "jsdPublic": true
+        },
+        {
+          "self": "https://companydomain.atlassian.net/rest/api/2/issue/19977/comment/27170",
+          "id": "27170",
+          "author": {
+            "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+            "accountId": "xxxaccountidxxx",
+            "emailAddress": "m.email@company.com",
+            "avatarUrls": {
+              "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+              "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+              "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+              "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+            },
+            "displayName": "My Name",
+            "active": true,
+            "timeZone": "Europe/Berlin",
+            "accountType": "atlassian"
+          },
+          "body": "blah",
+          "updateAuthor": {
+            "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+            "accountId": "xxxaccountidxxx",
+            "emailAddress": "m.email@company.com",
+            "avatarUrls": {
+              "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+              "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+              "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+              "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+            },
+            "displayName": "My Name",
+            "active": true,
+            "timeZone": "Europe/Berlin",
+            "accountType": "atlassian"
+          },
+          "created": "Today 10:37 AM",
+          "updated": "Today 10:37 AM",
+          "jsdPublic": true
+        }
+      ],
+      "self": "https://companydomain.atlassian.net/rest/api/2/issue/19977/comment",
+      "maxResults": 3,
+      "total": 3,
+      "startAt": 0
+    }
+  },
+  "names": {
+    "statuscategorychangedate": "Status Category Changed",
+    "fixVersions": "Fix versions",
+    "resolution": "Resolution",
+    "customfield_10225": "Total forms",
+    "customfield_10227": "Previous status",
+    "customfield_10228": "Previous security level",
+    "lastViewed": "Last Viewed",
+    "customfield_10066": "VÖ Redmine Ticket",
+    "customfield_10067": "Work category",
+    "priority": "Priority",
+    "customfield_10068": "Sicherheitsrelevant",
+    "customfield_10222": "Open forms",
+    "customfield_10069": "Genehmigergruppen",
+    "customfield_10223": "Submitted forms",
+    "customfield_10224": "Locked forms",
+    "labels": "Labels",
+    "aggregatetimeoriginalestimate": "Σ Original Estimate",
+    "timeestimate": "Remaining Estimate",
+    "versions": "Affects versions",
+    "issuelinks": "Linked Issues",
+    "assignee": "Assignee",
+    "status": "Status",
+    "components": "Components",
+    "customfield_10050": "Time to resolution",
+    "customfield_10051": "Time to first response",
+    "customfield_10052": "Time to close after resolution",
+    "customfield_10053": "Time to review normal change",
+    "customfield_10054": "Time to resolution",
+    "customfield_10056": "Reagierende",
+    "customfield_10057": "Risiko",
+    "customfield_10049": "Workaround",
+    "aggregatetimeestimate": "Σ Remaining Estimate",
+    "creator": "Creator",
+    "subtasks": "Sub-tasks",
+    "customfield_10040": "Severity",
+    "customfield_10041": "Source",
+    "customfield_10042": "Implementation plan",
+    "customfield_10043": "Backout plan",
+    "reporter": "Reporter",
+    "customfield_10044": "Test plan",
+    "aggregateprogress": "Σ Progress",
+    "customfield_10045": "Planned start",
+    "customfield_10200": "Ansprechpartner",
+    "customfield_10046": "Planned end",
+    "customfield_10047": "Investigation reason",
+    "customfield_10048": "Root cause",
+    "customfield_10038": "Affected hardware",
+    "customfield_10039": "Affected services",
+    "progress": "Progress",
+    "votes": "Votes",
+    "worklog": "Log Work",
+    "issuetype": "Issue Type",
+    "timespent": "Time Spent",
+    "customfield_10030": "Request participants",
+    "project": "Project",
+    "customfield_10031": "Satisfaction",
+    "customfield_10032": "Satisfaction date",
+    "customfield_10033": "Request language",
+    "customfield_10034": "Urgency",
+    "aggregatetimespent": "Σ Time Spent",
+    "customfield_10035": "Pending reason",
+    "customfield_10036": "Product categorization",
+    "customfield_10037": "Operational categorization",
+    "customfield_10028": "Story Points",
+    "customfield_10029": "Approvals",
+    "resolutiondate": "Resolved",
+    "workratio": "Work Ratio",
+    "watches": "Watchers",
+    "issuerestriction": "Restrict to",
+    "created": "Created",
+    "customfield_10020": "Sprint",
+    "customfield_10021": "Flagged",
+    "customfield_10022": "Target start",
+    "customfield_10023": "Target end",
+    "customfield_10024": "[CHART] Date of First Response",
+    "customfield_10025": "[CHART] Time in Status",
+    "customfield_10016": "Story point estimate",
+    "customfield_10017": "Issue color",
+    "customfield_10018": "Parent Link",
+    "customfield_10019": "Rank",
+    "updated": "Updated",
+    "customfield_10094": "Lösungszeit",
+    "timeoriginalestimate": "Original estimate",
+    "customfield_10095": "Zeit bis zur ersten Antwort",
+    "customfield_10096": "Größerer Vorfall",
+    "description": "Description",
+    "customfield_10010": "Request Type",
+    "customfield_10014": "Epic Link",
+    "customfield_10015": "Start date",
+    "timetracking": "Time tracking",
+    "customfield_10005": "Change type",
+    "customfield_10006": "Change risk",
+    "customfield_10007": "Change reason",
+    "security": "Security Level",
+    "customfield_10008": "Change start date",
+    "attachment": "Attachment",
+    "customfield_10009": "Change completion date",
+    "summary": "Summary",
+    "customfield_10241": "Kategorie",
+    "customfield_10087": "Angebot erhalten?",
+    "customfield_10088": "IT-Bereich",
+    "customfield_10001": "Team",
+    "customfield_10089": "Umsetzung geplant am",
+    "customfield_10002": "Organizations",
+    "customfield_10003": "Approvers",
+    "customfield_10004": "Impact",
+    "environment": "Environment",
+    "customfield_10119": "QS Points",
+    "duedate": "Due date",
+    "comment": "Comment"
+  },
+  "schema": {
+    "statuscategorychangedate": {
+      "type": "datetime",
+      "system": "statuscategorychangedate"
+    },
+    "fixVersions": {
+      "type": "array",
+      "items": "version",
+      "system": "fixVersions"
+    },
+    "resolution": {
+      "type": "resolution",
+      "system": "resolution"
+    },
+    "customfield_10225": {
+      "type": "number",
+      "custom": "com.atlassian.jira.plugins.proforma-managed-fields:forms-total-field-cftype",
+      "customId": 10225
+    },
+    "customfield_10227": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+      "customId": 10227
+    },
+    "customfield_10228": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+      "customId": 10228
+    },
+    "lastViewed": {
+      "type": "datetime",
+      "system": "lastViewed"
+    },
+    "customfield_10066": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+      "customId": 10066
+    },
+    "customfield_10067": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugins.work-category-field:work-category-field-cftype",
+      "customId": 10067
+    },
+    "priority": {
+      "type": "priority",
+      "system": "priority"
+    },
+    "customfield_10068": {
+      "type": "array",
+      "items": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiselect",
+      "customId": 10068
+    },
+    "customfield_10222": {
+      "type": "number",
+      "custom": "com.atlassian.jira.plugins.proforma-managed-fields:forms-open-field-cftype",
+      "customId": 10222
+    },
+    "customfield_10069": {
+      "type": "array",
+      "items": "group",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multigrouppicker",
+      "customId": 10069
+    },
+    "customfield_10223": {
+      "type": "number",
+      "custom": "com.atlassian.jira.plugins.proforma-managed-fields:forms-submitted-field-cftype",
+      "customId": 10223
+    },
+    "customfield_10224": {
+      "type": "number",
+      "custom": "com.atlassian.jira.plugins.proforma-managed-fields:forms-locked-field-cftype",
+      "customId": 10224
+    },
+    "labels": {
+      "type": "array",
+      "items": "string",
+      "system": "labels"
+    },
+    "aggregatetimeoriginalestimate": {
+      "type": "number",
+      "system": "aggregatetimeoriginalestimate"
+    },
+    "timeestimate": {
+      "type": "number",
+      "system": "timeestimate"
+    },
+    "versions": {
+      "type": "array",
+      "items": "version",
+      "system": "versions"
+    },
+    "issuelinks": {
+      "type": "array",
+      "items": "issuelinks",
+      "system": "issuelinks"
+    },
+    "assignee": {
+      "type": "user",
+      "system": "assignee"
+    },
+    "status": {
+      "type": "status",
+      "system": "status"
+    },
+    "components": {
+      "type": "array",
+      "items": "component",
+      "system": "components"
+    },
+    "customfield_10050": {
+      "type": "sd-servicelevelagreement",
+      "custom": "com.atlassian.servicedesk:sd-sla-field",
+      "customId": 10050
+    },
+    "customfield_10051": {
+      "type": "sd-servicelevelagreement",
+      "custom": "com.atlassian.servicedesk:sd-sla-field",
+      "customId": 10051
+    },
+    "customfield_10052": {
+      "type": "sd-servicelevelagreement",
+      "custom": "com.atlassian.servicedesk:sd-sla-field",
+      "customId": 10052
+    },
+    "customfield_10053": {
+      "type": "sd-servicelevelagreement",
+      "custom": "com.atlassian.servicedesk:sd-sla-field",
+      "customId": 10053
+    },
+    "customfield_10054": {
+      "type": "sd-servicelevelagreement",
+      "custom": "com.atlassian.servicedesk:sd-sla-field",
+      "customId": 10054
+    },
+    "customfield_10056": {
+      "type": "array",
+      "items": "string",
+      "custom": "com.atlassian.jira.modules.servicemanagement.responders-entity:responders-entity-field-cftype",
+      "customId": 10056
+    },
+    "customfield_10057": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10057
+    },
+    "customfield_10049": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+      "customId": 10049
+    },
+    "aggregatetimeestimate": {
+      "type": "number",
+      "system": "aggregatetimeestimate"
+    },
+    "creator": {
+      "type": "user",
+      "system": "creator"
+    },
+    "subtasks": {
+      "type": "array",
+      "items": "issuelinks",
+      "system": "subtasks"
+    },
+    "customfield_10040": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10040
+    },
+    "customfield_10041": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10041
+    },
+    "customfield_10042": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+      "customId": 10042
+    },
+    "customfield_10043": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+      "customId": 10043
+    },
+    "reporter": {
+      "type": "user",
+      "system": "reporter"
+    },
+    "customfield_10044": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+      "customId": 10044
+    },
+    "aggregateprogress": {
+      "type": "progress",
+      "system": "aggregateprogress"
+    },
+    "customfield_10045": {
+      "type": "datetime",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+      "customId": 10045
+    },
+    "customfield_10200": {
+      "type": "user",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:userpicker",
+      "customId": 10200
+    },
+    "customfield_10046": {
+      "type": "datetime",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+      "customId": 10046
+    },
+    "customfield_10047": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10047
+    },
+    "customfield_10048": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+      "customId": 10048
+    },
+    "customfield_10038": {
+      "type": "string",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+      "customId": 10038
+    },
+    "customfield_10039": {
+      "type": "array",
+      "items": "service-entity-field",
+      "custom": "com.atlassian.jira.plugins.service-entity:service-entity-field-cftype",
+      "customId": 10039
+    },
+    "progress": {
+      "type": "progress",
+      "system": "progress"
+    },
+    "votes": {
+      "type": "votes",
+      "system": "votes"
+    },
+    "worklog": {
+      "type": "array",
+      "items": "worklog",
+      "system": "worklog"
+    },
+    "issuetype": {
+      "type": "issuetype",
+      "system": "issuetype"
+    },
+    "timespent": {
+      "type": "number",
+      "system": "timespent"
+    },
+    "customfield_10030": {
+      "type": "array",
+      "items": "user",
+      "custom": "com.atlassian.servicedesk:sd-request-participants",
+      "customId": 10030
+    },
+    "project": {
+      "type": "project",
+      "system": "project"
+    },
+    "customfield_10031": {
+      "type": "sd-feedback",
+      "custom": "com.atlassian.servicedesk:sd-request-feedback",
+      "customId": 10031
+    },
+    "customfield_10032": {
+      "type": "datetime",
+      "custom": "com.atlassian.servicedesk:sd-request-feedback-date",
+      "customId": 10032
+    },
+    "customfield_10033": {
+      "type": "sd-request-lang",
+      "custom": "com.atlassian.servicedesk.servicedesk-lingo-integration-plugin:sd-request-language",
+      "customId": 10033
+    },
+    "customfield_10034": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10034
+    },
+    "aggregatetimespent": {
+      "type": "number",
+      "system": "aggregatetimespent"
+    },
+    "customfield_10035": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10035
+    },
+    "customfield_10036": {
+      "type": "option-with-child",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect",
+      "customId": 10036
+    },
+    "customfield_10037": {
+      "type": "option-with-child",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect",
+      "customId": 10037
+    },
+    "customfield_10028": {
+      "type": "number",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+      "customId": 10028
+    },
+    "customfield_10029": {
+      "type": "sd-approvals",
+      "custom": "com.atlassian.servicedesk.approvals-plugin:sd-approvals",
+      "customId": 10029
+    },
+    "resolutiondate": {
+      "type": "datetime",
+      "system": "resolutiondate"
+    },
+    "workratio": {
+      "type": "number",
+      "system": "workratio"
+    },
+    "watches": {
+      "type": "watches",
+      "system": "watches"
+    },
+    "issuerestriction": {
+      "type": "issuerestriction",
+      "system": "issuerestriction"
+    },
+    "created": {
+      "type": "datetime",
+      "system": "created"
+    },
+    "customfield_10020": {
+      "type": "array",
+      "items": "json",
+      "custom": "com.pyxis.greenhopper.jira:gh-sprint",
+      "customId": 10020
+    },
+    "customfield_10021": {
+      "type": "array",
+      "items": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+      "customId": 10021
+    },
+    "customfield_10022": {
+      "type": "date",
+      "custom": "com.atlassian.jpo:jpo-custom-field-baseline-start",
+      "customId": 10022
+    },
+    "customfield_10023": {
+      "type": "date",
+      "custom": "com.atlassian.jpo:jpo-custom-field-baseline-end",
+      "customId": 10023
+    },
+    "customfield_10024": {
+      "type": "datetime",
+      "custom": "com.atlassian.jira.ext.charting:firstresponsedate",
+      "customId": 10024
+    },
+    "customfield_10025": {
+      "type": "any",
+      "custom": "com.atlassian.jira.ext.charting:timeinstatus",
+      "customId": 10025
+    },
+    "customfield_10016": {
+      "type": "number",
+      "custom": "com.pyxis.greenhopper.jira:jsw-story-points",
+      "customId": 10016
+    },
+    "customfield_10017": {
+      "type": "string",
+      "custom": "com.pyxis.greenhopper.jira:jsw-issue-color",
+      "customId": 10017
+    },
+    "customfield_10018": {
+      "type": "any",
+      "custom": "com.atlassian.jpo:jpo-custom-field-parent",
+      "customId": 10018
+    },
+    "customfield_10019": {
+      "type": "any",
+      "custom": "com.pyxis.greenhopper.jira:gh-lexo-rank",
+      "customId": 10019
+    },
+    "updated": {
+      "type": "datetime",
+      "system": "updated"
+    },
+    "customfield_10094": {
+      "type": "sd-servicelevelagreement",
+      "custom": "com.atlassian.servicedesk:sd-sla-field",
+      "customId": 10094
+    },
+    "timeoriginalestimate": {
+      "type": "number",
+      "system": "timeoriginalestimate"
+    },
+    "customfield_10095": {
+      "type": "sd-servicelevelagreement",
+      "custom": "com.atlassian.servicedesk:sd-sla-field",
+      "customId": 10095
+    },
+    "customfield_10096": {
+      "type": "string",
+      "custom": "com.atlassian.jira.modules.servicemanagement.major-incident-entity:major-incident-entity-field-cftype",
+      "customId": 10096
+    },
+    "description": {
+      "type": "string",
+      "system": "description"
+    },
+    "customfield_10010": {
+      "type": "sd-customerrequesttype",
+      "custom": "com.atlassian.servicedesk:vp-origin",
+      "customId": 10010
+    },
+    "customfield_10014": {
+      "type": "any",
+      "custom": "com.pyxis.greenhopper.jira:gh-epic-link",
+      "customId": 10014
+    },
+    "customfield_10015": {
+      "type": "date",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datepicker",
+      "customId": 10015
+    },
+    "timetracking": {
+      "type": "timetracking",
+      "system": "timetracking"
+    },
+    "customfield_10005": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10005
+    },
+    "customfield_10006": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10006
+    },
+    "customfield_10007": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10007
+    },
+    "security": {
+      "type": "securitylevel",
+      "system": "security"
+    },
+    "customfield_10008": {
+      "type": "datetime",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+      "customId": 10008
+    },
+    "attachment": {
+      "type": "array",
+      "items": "attachment",
+      "system": "attachment"
+    },
+    "customfield_10009": {
+      "type": "datetime",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datetime",
+      "customId": 10009
+    },
+    "summary": {
+      "type": "string",
+      "system": "summary"
+    },
+    "customfield_10241": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:jwm-category",
+      "customId": 10241
+    },
+    "customfield_10087": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10087
+    },
+    "customfield_10088": {
+      "type": "array",
+      "items": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+      "customId": 10088
+    },
+    "customfield_10001": {
+      "type": "any",
+      "custom": "com.atlassian.teams:rm-teams-custom-field-team",
+      "customId": 10001
+    },
+    "customfield_10089": {
+      "type": "date",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:datepicker",
+      "customId": 10089
+    },
+    "customfield_10002": {
+      "type": "array",
+      "items": "sd-customerorganization",
+      "custom": "com.atlassian.servicedesk:sd-customer-organizations",
+      "customId": 10002
+    },
+    "customfield_10003": {
+      "type": "array",
+      "items": "user",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:multiuserpicker",
+      "customId": 10003
+    },
+    "customfield_10004": {
+      "type": "option",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:select",
+      "customId": 10004
+    },
+    "environment": {
+      "type": "string",
+      "system": "environment"
+    },
+    "customfield_10119": {
+      "type": "number",
+      "custom": "com.atlassian.jira.plugin.system.customfieldtypes:float",
+      "customId": 10119
+    },
+    "duedate": {
+      "type": "date",
+      "system": "duedate"
+    },
+    "comment": {
+      "type": "comments-page",
+      "system": "comment"
+    }
+  },
+  "operations": {
+    "linkGroups": [
+      {
+        "id": "view.issue.opsbar",
+        "links": [],
+        "groups": [
+          {
+            "id": "edit-issue_container",
+            "weight": 1,
+            "links": [
+              {
+                "id": "edit-issue",
+                "styleClass": "issueaction-edit-issue",
+                "iconClass": "aui-icon aui-icon-small aui-iconfont-edit",
+                "label": "Edit",
+                "title": "Edit this issue",
+                "href": "/secure/EditIssue!default.jspa?id=19977",
+                "weight": 1
+              }
+            ],
+            "groups": []
+          },
+          {
+            "id": "comment-issue_container",
+            "weight": 10,
+            "links": [
+              {
+                "id": "comment-issue",
+                "styleClass": "issueaction-comment-issue add-issue-comment",
+                "iconClass": "aui-icon aui-icon-small aui-iconfont-comment icon-comment",
+                "label": "Comment",
+                "title": "Comment on this issue",
+                "href": "/secure/AddComment!default.jspa?id=19977",
+                "weight": 10
+              }
+            ],
+            "groups": []
+          },
+          {
+            "id": "assign-issue_container",
+            "weight": 5,
+            "links": [
+              {
+                "id": "assign-issue",
+                "styleClass": "issueaction-assign-issue",
+                "label": "Assign",
+                "title": "Assign this issue to someone",
+                "href": "/secure/AssignIssue!default.jspa?id=19977",
+                "weight": 5
+              }
+            ],
+            "groups": []
+          },
+          {
+            "id": "opsbar-transitions",
+            "weight": 20,
+            "links": [
+              {
+                "id": "action_id_341",
+                "styleClass": "issueaction-workflow-transition",
+                "label": "Backlog",
+                "href": "/secure/WorkflowUIDispatcher.jspa?id=19977&action=341&atl_token=very-long-token_lin",
+                "weight": 10
+              },
+              {
+                "id": "action_id_351",
+                "styleClass": "issueaction-workflow-transition",
+                "label": "Zu erledigen (2)",
+                "href": "/secure/WorkflowUIDispatcher.jspa?id=19977&action=351&atl_token=very-long-token_lin",
+                "weight": 20
+              }
+            ],
+            "groups": [
+              {
+                "header": {
+                  "id": "opsbar-transitions_more",
+                  "label": "Workflow"
+                },
+                "links": [],
+                "groups": [
+                  {
+                    "id": "transitions-all",
+                    "weight": 70,
+                    "links": [
+                      {
+                        "id": "action_id_361",
+                        "styleClass": "issueaction-workflow-transition",
+                        "label": "In Arbeit (2)",
+                        "href": "/secure/WorkflowUIDispatcher.jspa?id=19977&action=361&atl_token=very-long-token_lin",
+                        "weight": 30
+                      },
+                      {
+                        "id": "action_id_371",
+                        "styleClass": "issueaction-workflow-transition",
+                        "label": "Review",
+                        "href": "/secure/WorkflowUIDispatcher.jspa?id=19977&action=371&atl_token=very-long-token_lin",
+                        "weight": 40
+                      },
+                      {
+                        "id": "action_id_381",
+                        "styleClass": "issueaction-workflow-transition",
+                        "label": "QS",
+                        "href": "/secure/WorkflowUIDispatcher.jspa?id=19977&action=381&atl_token=very-long-token_lin",
+                        "weight": 50
+                      },
+                      {
+                        "id": "action_id_391",
+                        "styleClass": "issueaction-workflow-transition",
+                        "label": "Fertig",
+                        "href": "/secure/WorkflowUIDispatcher.jspa?id=19977&action=391&atl_token=very-long-token_lin",
+                        "weight": 60
+                      },
+                      {
+                        "id": "action_id_261",
+                        "styleClass": "issueaction-workflow-transition",
+                        "label": "Zum Review",
+                        "href": "/secure/WorkflowUIDispatcher.jspa?id=19977&action=261&atl_token=very-long-token_lin",
+                        "weight": 70
+                      },
+                      {
+                        "id": "action_id_301",
+                        "styleClass": "issueaction-workflow-transition",
+                        "label": "Zurück zu erledigen",
+                        "href": "/secure/WorkflowUIDispatcher.jspa?id=19977&action=301&atl_token=very-long-token_lin",
+                        "weight": 80
+                      }
+                    ],
+                    "groups": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "jira.issue.tools",
+        "links": [
+          {
+            "id": "jira-share-trigger",
+            "styleClass": "viewissue-share",
+            "iconClass": "aui-icon aui-icon-small aui-iconfont-share",
+            "label": "",
+            "title": "Share this issue by emailing other users",
+            "href": "",
+            "weight": 10
+          }
+        ],
+        "groups": [
+          {
+            "id": "view.issue.exports",
+            "header": {
+              "id": "viewissue-export",
+              "styleClass": "aui-dropdown2-trigger-arrowless",
+              "iconClass": "icon-default aui-icon aui-icon-small aui-iconfont-export",
+              "label": "Export",
+              "title": "Export this issue in another format"
+            },
+            "links": [
+              {
+                "id": "jira.issueviews:issue-html",
+                "label": "Print",
+                "href": "/si/jira.issueviews:issue-html/TREG-1438/TREG-1438.html"
+              },
+              {
+                "id": "jira.issueviews:issue-xml",
+                "label": "Export XML",
+                "href": "/si/jira.issueviews:issue-xml/TREG-1438/TREG-1438.xml"
+              },
+              {
+                "id": "jira.issueviews:issue-word",
+                "label": "Export Word",
+                "href": "/si/jira.issueviews:issue-word/TREG-1438/TREG-1438.doc"
+              }
+            ],
+            "groups": []
+          },
+          {
+            "id": "jira.issue.tools.more",
+            "header": {
+              "id": "opsbar-operations_more",
+              "styleClass": "aui-dropdown2-trigger-arrowless",
+              "iconClass": "aui-icon aui-icon-small aui-iconfont-more",
+              "label": "More"
+            },
+            "links": [],
+            "groups": [
+              {
+                "id": "operations-top-level",
+                "links": [],
+                "groups": []
+              },
+              {
+                "id": "operations-work",
+                "links": [
+                  {
+                    "id": "jira-slack-integration__connect-channel-web-item",
+                    "styleClass": "ap-dialog ap-target-key-connected-channels-new-connection-dialog ap-plugin-key-jira-slack-integration ap-module-key-connect-channel-web-item ap-link-webitem",
+                    "label": "Connect Slack channel",
+                    "href": "/plugins/servlet/ac/jira-slack-integration/jira-slack-integration__connect-channel-web-item?project.key=TREG&project.id=10079&issue.id=19977&issue.key=TREG-1438&issuetype.id=10016",
+                    "weight": 100
+                  }
+                ],
+                "groups": []
+              },
+              {
+                "id": "greenhopper_issue_dropdown",
+                "links": [
+                  {
+                    "id": "greenhopper-rapidboard-operation",
+                    "styleClass": "issueaction-greenhopper-rapidboard-operation js-rapidboard-operation-issue",
+                    "label": "Agile board",
+                    "title": "View this issue on an Agile board",
+                    "href": "/secure/GHGoToBoard.jspa?issueId=19977",
+                    "weight": 30
+                  },
+                  {
+                    "id": "greenhopper-rank-top-operation",
+                    "styleClass": "issueaction-greenhopper-rank-top-operation",
+                    "label": "Rank to top",
+                    "href": "/secure/RankTop.jspa?issueId=19977",
+                    "weight": 40
+                  },
+                  {
+                    "id": "greenhopper-rank-bottom-operation",
+                    "styleClass": "issueaction-greenhopper-rank-bottom-operation",
+                    "label": "Rank to bottom",
+                    "href": "/secure/RankBottom.jspa?issueId=19977",
+                    "weight": 50
+                  }
+                ],
+                "groups": []
+              },
+              {
+                "id": "operations-attachments",
+                "links": [
+                  {
+                    "id": "attach-file",
+                    "styleClass": "unified-attach-file",
+                    "label": "Attach files",
+                    "title": "Attach one or more files to this issue",
+                    "href": "/secure/AttachFile!default.jspa?id=19977",
+                    "weight": 10
+                  },
+                  {
+                    "id": "attach-screenshot-html5",
+                    "styleClass": "issueaction-attach-screenshot-html5",
+                    "label": "Attach Screenshot",
+                    "href": "/secure/ShowAttachScreenshotFormAction!default.jspa?id=19977",
+                    "weight": 15
+                  }
+                ],
+                "groups": []
+              },
+              {
+                "id": "operations-voteswatchers",
+                "links": [
+                  {
+                    "id": "toggle-watch-issue",
+                    "styleClass": "issueaction-unwatch-issue",
+                    "label": "Stop watching",
+                    "title": "Stop watching this issue",
+                    "href": "/secure/VoteOrWatchIssue.jspa?atl_token=very-long-token_lin&id=19977&watch=unwatch",
+                    "weight": 50
+                  },
+                  {
+                    "id": "manage-watchers",
+                    "styleClass": "issueaction-manage-watchers",
+                    "label": "Watchers",
+                    "title": "Manage the watchers of this issue",
+                    "href": "/secure/ManageWatchers!default.jspa?id=19977",
+                    "weight": 60
+                  }
+                ],
+                "groups": []
+              },
+              {
+                "id": "operations-subtasks",
+                "links": [
+                  {
+                    "id": "create-subtask",
+                    "styleClass": "issueaction-create-subtask",
+                    "label": "Create sub-task",
+                    "title": "Create sub-task for this issue",
+                    "href": "/secure/CreateSubTaskIssue!default.jspa?parentIssueId=19977",
+                    "weight": 10
+                  }
+                ],
+                "groups": []
+              },
+              {
+                "id": "devstatus-cta-list",
+                "links": [],
+                "groups": []
+              },
+              {
+                "id": "operations-operations",
+                "links": [
+                  {
+                    "id": "link-issue",
+                    "styleClass": "issueaction-link-issue",
+                    "label": "Link",
+                    "title": "Link this issue to another issue or item",
+                    "href": "/secure/LinkJiraIssue!default.jspa?id=19977",
+                    "weight": 20
+                  },
+                  {
+                    "id": "clone-issue",
+                    "styleClass": "issueaction-clone-issue",
+                    "label": "Clone",
+                    "title": "Clone this issue",
+                    "href": "/secure/CloneIssueDetails!default.jspa?id=19977",
+                    "weight": 20
+                  },
+                  {
+                    "id": "edit-labels",
+                    "styleClass": "issueaction-edit-labels",
+                    "label": "Labels",
+                    "title": "Edit this issue's labels",
+                    "href": "/secure/EditLabels!default.jspa?id=19977",
+                    "weight": 30
+                  }
+                ],
+                "groups": []
+              },
+              {
+                "id": "operations-delete",
+                "links": [],
+                "groups": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "editmeta": {
+    "fields": {
+      "summary": {
+        "required": true,
+        "schema": {
+          "type": "string",
+          "system": "summary"
+        },
+        "name": "Summary",
+        "key": "summary",
+        "operations": [
+          "set"
+        ]
+      },
+      "parent": {
+        "required": false,
+        "schema": {
+          "type": "issuelink",
+          "system": "parent"
+        },
+        "name": "Parent",
+        "key": "parent",
+        "hasDefaultValue": false,
+        "operations": [
+          "set"
+        ]
+      },
+      "issuetype": {
+        "required": true,
+        "schema": {
+          "type": "issuetype",
+          "system": "issuetype"
+        },
+        "name": "Issue Type",
+        "key": "issuetype",
+        "operations": [],
+        "allowedValues": [
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10011",
+            "id": "10011",
+            "description": "A small, distinct piece of work.",
+            "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium",
+            "name": "Task",
+            "subtask": false,
+            "avatarId": 10318,
+            "hierarchyLevel": 0
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10016",
+            "id": "10016",
+            "description": "Created by Jira Agile - do not edit or delete. Issue type for a user story.",
+            "iconUrl": "https://companydomain.atlassian.net/images/icons/issuetypes/story.svg",
+            "name": "Story",
+            "subtask": false,
+            "hierarchyLevel": 0
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10025",
+            "id": "10025",
+            "description": "A problem or error.",
+            "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium",
+            "name": "Bug",
+            "subtask": false,
+            "avatarId": 10303,
+            "hierarchyLevel": 0
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10000",
+            "id": "10000",
+            "description": "A collection of related bugs, stories, and tasks.",
+            "iconUrl": "https://companydomain.atlassian.net/images/icons/issuetypes/epic.svg",
+            "name": "Epic",
+            "subtask": false,
+            "hierarchyLevel": 1
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10026",
+            "id": "10026",
+            "description": "Ein Meilenstein ergänzt die Issues mit dem Label Standardmeilenstein zur besseren Betrachtung des gesamten Projektablaufs (z. B. Gate-Wechsel).",
+            "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10308?size=medium",
+            "name": "Meilenstein",
+            "subtask": false,
+            "avatarId": 10308,
+            "hierarchyLevel": 0
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10107",
+            "id": "10107",
+            "description": "Vorgangstyp für das Projekt",
+            "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+            "name": "Wartung",
+            "subtask": false,
+            "avatarId": 10300,
+            "hierarchyLevel": 0
+          }
+        ]
+      },
+      "components": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "component",
+          "system": "components"
+        },
+        "name": "Components",
+        "key": "components",
+        "operations": [
+          "add",
+          "set",
+          "remove"
+        ],
+        "allowedValues": []
+      },
+      "customfield_10020": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "json",
+          "custom": "com.pyxis.greenhopper.jira:gh-sprint",
+          "customId": 10020
+        },
+        "name": "Sprint",
+        "key": "customfield_10020",
+        "operations": [
+          "set"
+        ]
+      },
+      "description": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "system": "description"
+        },
+        "name": "Description",
+        "key": "description",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_10033": {
+        "required": false,
+        "schema": {
+          "type": "sd-request-lang",
+          "custom": "com.atlassian.servicedesk.servicedesk-lingo-integration-plugin:sd-request-language",
+          "customId": 10033
+        },
+        "name": "Request language",
+        "key": "customfield_10033",
+        "operations": [],
+        "allowedValues": [
+          {
+            "languageCode": "de",
+            "displayName": "German"
+          }
+        ]
+      },
+      "priority": {
+        "required": false,
+        "schema": {
+          "type": "priority",
+          "system": "priority"
+        },
+        "name": "Priority",
+        "key": "priority",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/priority/10100",
+            "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/major.svg",
+            "name": "Major",
+            "id": "10100"
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/priority/1",
+            "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/highest.svg",
+            "name": "Highest",
+            "id": "1"
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/priority/2",
+            "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/high.svg",
+            "name": "High",
+            "id": "2"
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/priority/3",
+            "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/medium.svg",
+            "name": "Medium",
+            "id": "3"
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/priority/4",
+            "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/low.svg",
+            "name": "Low",
+            "id": "4"
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/priority/5",
+            "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/lowest.svg",
+            "name": "Lowest",
+            "id": "5"
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/priority/10005",
+            "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Transparent_square.svg/12px-Transparent_square.svg.png",
+            "name": "None",
+            "id": "10005"
+          }
+        ]
+      },
+      "customfield_10200": {
+        "required": false,
+        "schema": {
+          "type": "user",
+          "custom": "com.atlassian.jira.plugin.system.customfieldtypes:userpicker",
+          "customId": 10200
+        },
+        "name": "Ansprechpartner",
+        "key": "customfield_10200",
+        "autoCompleteUrl": "https://companydomain.atlassian.net/rest/api/1.0/users/picker?fieldName=customfield_10200&fieldConfigId=10305&projectId=10079&showAvatar=true&query=",
+        "operations": [
+          "set"
+        ]
+      },
+      "customfield_10014": {
+        "required": false,
+        "schema": {
+          "type": "any",
+          "custom": "com.pyxis.greenhopper.jira:gh-epic-link",
+          "customId": 10014
+        },
+        "name": "Epic Link",
+        "key": "customfield_10014",
+        "operations": [
+          "set"
+        ]
+      },
+      "labels": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "string",
+          "system": "labels"
+        },
+        "name": "Labels",
+        "key": "labels",
+        "autoCompleteUrl": "https://companydomain.atlassian.net/rest/api/1.0/labels/19977/suggest?query=",
+        "operations": [
+          "add",
+          "set",
+          "remove"
+        ]
+      },
+      "environment": {
+        "required": false,
+        "schema": {
+          "type": "string",
+          "system": "environment"
+        },
+        "name": "Environment",
+        "key": "environment",
+        "operations": [
+          "set"
+        ]
+      },
+      "security": {
+        "required": false,
+        "schema": {
+          "type": "securitylevel",
+          "system": "security"
+        },
+        "name": "Security Level",
+        "key": "security",
+        "operations": [
+          "set"
+        ],
+        "allowedValues": [
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/securitylevel/10005",
+            "id": "10005",
+            "description": "Vorgänge, welche nur intern und ITS angezeigt werden sollen.",
+            "name": "Intern + ITS"
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/securitylevel/10006",
+            "id": "10006",
+            "description": "Vorgänge, welche intern und extern sichtbar sind.",
+            "name": "intern + extern"
+          }
+        ]
+      },
+      "attachment": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "attachment",
+          "system": "attachment"
+        },
+        "name": "Attachment",
+        "key": "attachment",
+        "operations": [
+          "set"
+        ]
+      },
+      "comment": {
+        "required": false,
+        "schema": {
+          "type": "comments-page",
+          "system": "comment"
+        },
+        "name": "Comment",
+        "key": "comment",
+        "operations": [
+          "add",
+          "edit",
+          "remove"
+        ]
+      },
+      "issuelinks": {
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": "issuelinks",
+          "system": "issuelinks"
+        },
+        "name": "Linked Issues",
+        "key": "issuelinks",
+        "autoCompleteUrl": "https://companydomain.atlassian.net/rest/api/2/issue/picker?currentProjectId=&showSubTaskParent=true&showSubTasks=true&currentIssueKey=TREG-1438&query=",
+        "operations": [
+          "add"
+        ]
+      },
+      "assignee": {
+        "required": false,
+        "schema": {
+          "type": "user",
+          "system": "assignee"
+        },
+        "name": "Assignee",
+        "key": "assignee",
+        "autoCompleteUrl": "https://companydomain.atlassian.net/rest/api/2/user/assignable/search?issueKey=TREG-1438&query=",
+        "operations": [
+          "set"
+        ]
+      }
+    }
+  },
+  "changelog": {
+    "startAt": 0,
+    "maxResults": 19,
+    "total": 19,
+    "histories": [
+      {
+        "id": "129975",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+          "accountId": "xxxaccountidxxx",
+          "emailAddress": "m.email@company.com",
+          "avatarUrls": {
+            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+          },
+          "displayName": "My Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-15T14:15:19.231+0100",
+        "items": [
+          {
+            "field": "RemoteIssueLink",
+            "fieldtype": "jira",
+            "from": null,
+            "fromString": null,
+            "to": "11460",
+            "toString": "This issue links to \"Jenkins Provision Run (Web Link)\""
+          }
+        ]
+      },
+      {
+        "id": "129974",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+          "accountId": "xxxaccountidxxx",
+          "emailAddress": "m.email@company.com",
+          "avatarUrls": {
+            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+          },
+          "displayName": "My Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-15T14:14:52.785+0100",
+        "items": [
+          {
+            "field": "RemoteIssueLink",
+            "fieldtype": "jira",
+            "from": null,
+            "fromString": null,
+            "to": "11459",
+            "toString": "This issue links to \"Pull Request (Web Link)\""
+          }
+        ]
+      },
+      {
+        "id": "127386",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-09T13:54:43.195+0100",
+        "items": [
+          {
+            "field": "Rank",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10019",
+            "from": "",
+            "fromString": "",
+            "to": "",
+            "toString": "Höher eingestuft"
+          }
+        ]
+      },
+      {
+        "id": "127380",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-09T13:54:30.588+0100",
+        "items": [
+          {
+            "field": "Rank",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10019",
+            "from": "",
+            "fromString": "",
+            "to": "",
+            "toString": "Rang reduziert"
+          }
+        ]
+      },
+      {
+        "id": "127379",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-09T13:54:30.294+0100",
+        "items": [
+          {
+            "field": "Sprint",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10020",
+            "from": "179",
+            "fromString": "ITS Sprint 6",
+            "to": "199",
+            "toString": "ITS Sprint 7"
+          }
+        ]
+      },
+      {
+        "id": "125389",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=yyyaccountidyyy",
+          "accountId": "yyyaccountidyyy",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Other Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-07T12:42:30.716+0100",
+        "items": [
+          {
+            "field": "status",
+            "fieldtype": "jira",
+            "fieldId": "status",
+            "from": "10087",
+            "fromString": "Zu erledigen",
+            "to": "3",
+            "toString": "In Arbeit"
+          }
+        ]
+      },
+      {
+        "id": "125387",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=yyyaccountidyyy",
+          "accountId": "yyyaccountidyyy",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Other Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-07T12:42:27.243+0100",
+        "items": [
+          {
+            "field": "assignee",
+            "fieldtype": "jira",
+            "fieldId": "assignee",
+            "from": null,
+            "fromString": null,
+            "to": "yyyaccountidyyy",
+            "toString": "Other Name",
+            "tmpFromAccountId": null,
+            "tmpToAccountId": "yyyaccountidyyy"
+          }
+        ]
+      },
+      {
+        "id": "125233",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=zzzaccountidzzz",
+          "accountId": "zzzaccountidzzz",
+          "avatarUrls": {
+            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png"
+          },
+          "displayName": "Different Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-07T11:52:08.608+0100",
+        "items": [
+          {
+            "field": "status",
+            "fieldtype": "jira",
+            "fieldId": "status",
+            "from": "10037",
+            "fromString": "Backlog",
+            "to": "10087",
+            "toString": "Zu erledigen"
+          }
+        ],
+        "historyMetadata": {}
+      },
+      {
+        "id": "125030",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-07T10:51:06.778+0100",
+        "items": [
+          {
+            "field": "Rank",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10019",
+            "from": "",
+            "fromString": "",
+            "to": "",
+            "toString": "Rang reduziert"
+          }
+        ]
+      },
+      {
+        "id": "125029",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-07T10:51:06.484+0100",
+        "items": [
+          {
+            "field": "Sprint",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10020",
+            "from": "90",
+            "fromString": "Refinement",
+            "to": "179",
+            "toString": "ITS Sprint 6"
+          }
+        ]
+      },
+      {
+        "id": "123490",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-11-02T16:28:26.595+0100",
+        "items": [
+          {
+            "field": "Link",
+            "fieldtype": "jira",
+            "from": null,
+            "fromString": null,
+            "to": "TREG-2074",
+            "toString": "This issue is duplicated by TREG-2074"
+          }
+        ]
+      },
+      {
+        "id": "106309",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-10-06T12:11:16.527+0200",
+        "items": [
+          {
+            "field": "Rank",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10019",
+            "from": "",
+            "fromString": "",
+            "to": "",
+            "toString": "Rang reduziert"
+          }
+        ]
+      },
+      {
+        "id": "106308",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-10-06T12:11:16.287+0200",
+        "items": [
+          {
+            "field": "Sprint",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10020",
+            "from": "101",
+            "fromString": "Technische Schulden",
+            "to": "90",
+            "toString": "Refinement"
+          }
+        ]
+      },
+      {
+        "id": "106307",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=bbbaccountidbbb",
+          "accountId": "bbbaccountidbbb",
+          "avatarUrls": {
+            "48x48": "https://secure.gravatar.com/avatarurl",
+            "24x24": "https://secure.gravatar.com/avatarurl",
+            "16x16": "https://secure.gravatar.com/avatarurl",
+            "32x32": "https://secure.gravatar.com/avatarurl"
+          },
+          "displayName": "Another Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-10-06T12:11:14.272+0200",
+        "items": [
+          {
+            "field": "Rank",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10019",
+            "from": "",
+            "fromString": "",
+            "to": "",
+            "toString": "Höher eingestuft"
+          }
+        ]
+      },
+      {
+        "id": "99259",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=zzzaccountidzzz",
+          "accountId": "zzzaccountidzzz",
+          "avatarUrls": {
+            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png"
+          },
+          "displayName": "Different Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-09-21T09:01:50.690+0200",
+        "items": [
+          {
+            "field": "security",
+            "fieldtype": "jira",
+            "fieldId": "security",
+            "from": "10004",
+            "fromString": "Intern + MBI",
+            "to": "10005",
+            "toString": "Intern + ITS"
+          }
+        ]
+      },
+      {
+        "id": "99258",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=zzzaccountidzzz",
+          "accountId": "zzzaccountidzzz",
+          "avatarUrls": {
+            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png"
+          },
+          "displayName": "Different Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-09-21T09:01:48.289+0200",
+        "items": [
+          {
+            "field": "security",
+            "fieldtype": "jira",
+            "fieldId": "security",
+            "from": "10005",
+            "fromString": "Intern + ITS",
+            "to": "10004",
+            "toString": "Intern + MBI"
+          }
+        ]
+      },
+      {
+        "id": "99257",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=zzzaccountidzzz",
+          "accountId": "zzzaccountidzzz",
+          "avatarUrls": {
+            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png",
+            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/MT-4.png"
+          },
+          "displayName": "Different Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-09-21T09:01:43.913+0200",
+        "items": [
+          {
+            "field": "security",
+            "fieldtype": "jira",
+            "fieldId": "security",
+            "from": "10006",
+            "fromString": "intern + extern",
+            "to": "10005",
+            "toString": "Intern + ITS"
+          }
+        ]
+      },
+      {
+        "id": "88344",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+          "accountId": "xxxaccountidxxx",
+          "emailAddress": "m.email@company.com",
+          "avatarUrls": {
+            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+          },
+          "displayName": "My Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-08-29T10:46:48.920+0200",
+        "items": [
+          {
+            "field": "Rank",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10019",
+            "from": "",
+            "fromString": "",
+            "to": "",
+            "toString": "Höher eingestuft"
+          }
+        ]
+      },
+      {
+        "id": "88343",
+        "author": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+          "accountId": "xxxaccountidxxx",
+          "emailAddress": "m.email@company.com",
+          "avatarUrls": {
+            "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+            "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+            "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+            "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+          },
+          "displayName": "My Name",
+          "active": true,
+          "timeZone": "Europe/Berlin",
+          "accountType": "atlassian"
+        },
+        "created": "2022-08-29T10:46:48.561+0200",
+        "items": [
+          {
+            "field": "Sprint",
+            "fieldtype": "custom",
+            "fieldId": "customfield_10020",
+            "from": "",
+            "fromString": "",
+            "to": "101",
+            "toString": "Technische Schulden"
+          }
+        ]
+      }
+    ]
+  },
+  "versionedRepresentations": {
+    "statuscategorychangedate": {
+      "1": "2022-11-07T12:42:30.679+0100"
+    },
+    "fixVersions": {
+      "1": []
+    },
+    "resolution": {
+      "1": null
+    },
+    "customfield_10225": {
+      "1": null
+    },
+    "customfield_10227": {
+      "1": null
+    },
+    "customfield_10228": {
+      "1": null
+    },
+    "lastViewed": {
+      "1": "2022-11-17T13:12:52.551+0100"
+    },
+    "customfield_10066": {
+      "1": null
+    },
+    "customfield_10067": {
+      "1": null
+    },
+    "priority": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/priority/3",
+        "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/medium.svg",
+        "name": "Medium",
+        "id": "3"
+      }
+    },
+    "customfield_10068": {
+      "1": null
+    },
+    "customfield_10222": {
+      "1": null
+    },
+    "customfield_10069": {
+      "1": null
+    },
+    "customfield_10223": {
+      "1": null
+    },
+    "customfield_10224": {
+      "1": null
+    },
+    "labels": {
+      "1": []
+    },
+    "aggregatetimeoriginalestimate": {
+      "1": null
+    },
+    "timeestimate": {
+      "1": null
+    },
+    "versions": {
+      "1": []
+    },
+    "issuelinks": {
+      "1": [
+        {
+          "id": "27080",
+          "self": "https://companydomain.atlassian.net/rest/api/2/issueLink/27080",
+          "type": {
+            "id": "10002",
+            "name": "Duplicate",
+            "inward": "is duplicated by",
+            "outward": "duplicates",
+            "self": "https://companydomain.atlassian.net/rest/api/2/issueLinkType/10002"
+          },
+          "inwardIssue": {
+            "id": "26866",
+            "key": "TREG-2074",
+            "self": "https://companydomain.atlassian.net/rest/api/2/issue/26866",
+            "fields": {
+              "summary": "summary",
+              "status": {
+                "self": "https://companydomain.atlassian.net/rest/api/2/status/10037",
+                "description": "",
+                "iconUrl": "https://companydomain.atlassian.net/",
+                "name": "Backlog",
+                "id": "10037",
+                "statusCategory": {
+                  "self": "https://companydomain.atlassian.net/rest/api/2/statuscategory/2",
+                  "id": 2,
+                  "key": "new",
+                  "colorName": "blue-gray",
+                  "name": "To Do"
+                }
+              },
+              "priority": {
+                "self": "https://companydomain.atlassian.net/rest/api/2/priority/3",
+                "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/medium.svg",
+                "name": "Medium",
+                "id": "3"
+              },
+              "issuetype": {
+                "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10107",
+                "id": "10107",
+                "description": "Vorgangstyp für das Projekt",
+                "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10300?size=medium",
+                "name": "Wartung",
+                "subtask": false,
+                "avatarId": 10300,
+                "hierarchyLevel": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "assignee": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=yyyaccountidyyy",
+        "accountId": "yyyaccountidyyy",
+        "avatarUrls": {
+          "48x48": "https://secure.gravatar.com/avatarurl",
+          "24x24": "https://secure.gravatar.com/avatarurl",
+          "16x16": "https://secure.gravatar.com/avatarurl",
+          "32x32": "https://secure.gravatar.com/avatarurl"
+        },
+        "displayName": "Other Name",
+        "active": true,
+        "timeZone": "Europe/Berlin",
+        "accountType": "atlassian"
+      }
+    },
+    "status": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/status/3",
+        "description": "",
+        "iconUrl": "https://companydomain.atlassian.net/images/icons/statuses/inprogress.png",
+        "name": "In Arbeit",
+        "id": "3",
+        "statusCategory": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/statuscategory/4",
+          "id": 4,
+          "key": "indeterminate",
+          "colorName": "yellow",
+          "name": "In Progress"
+        }
+      }
+    },
+    "components": {
+      "1": []
+    },
+    "customfield_10050": {
+      "1": null
+    },
+    "customfield_10051": {
+      "1": null
+    },
+    "customfield_10052": {
+      "1": null
+    },
+    "customfield_10053": {
+      "1": null
+    },
+    "customfield_10054": {
+      "1": null
+    },
+    "customfield_10056": {
+      "1": []
+    },
+    "customfield_10057": {
+      "1": null
+    },
+    "customfield_10049": {
+      "1": null
+    },
+    "aggregatetimeestimate": {
+      "1": null
+    },
+    "creator": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+        "accountId": "xxxaccountidxxx",
+        "emailAddress": "m.email@company.com",
+        "avatarUrls": {
+          "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+          "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+          "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+          "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+        },
+        "displayName": "My Name",
+        "active": true,
+        "timeZone": "Europe/Berlin",
+        "accountType": "atlassian"
+      }
+    },
+    "subtasks": {
+      "1": [
+        {
+          "id": "27277",
+          "key": "TREG-2164",
+          "self": "https://companydomain.atlassian.net/rest/api/2/issue/27277",
+          "fields": {
+            "summary": "Ansible-Deployment",
+            "status": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/status/10088",
+              "description": "Wurde während des Workflow-Imports automatisch von Jira Service Management generiert",
+              "iconUrl": "https://companydomain.atlassian.net/images/icons/status_generic.gif",
+              "name": "Fertig",
+              "id": "10088",
+              "statusCategory": {
+                "self": "https://companydomain.atlassian.net/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/medium.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10012",
+              "id": "10012",
+              "description": "A small piece of work that's part of a larger task.",
+              "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10316?size=medium",
+              "name": "Sub-task",
+              "subtask": true,
+              "avatarId": 10316,
+              "hierarchyLevel": -1
+            }
+          }
+        },
+        {
+          "id": "27278",
+          "key": "TREG-2165",
+          "self": "https://companydomain.atlassian.net/rest/api/2/issue/27278",
+          "fields": {
+            "summary": "Deployment und Services starten",
+            "status": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/status/10088",
+              "description": "Wurde während des Workflow-Imports automatisch von Jira Service Management generiert",
+              "iconUrl": "https://companydomain.atlassian.net/images/icons/status_generic.gif",
+              "name": "Fertig",
+              "id": "10088",
+              "statusCategory": {
+                "self": "https://companydomain.atlassian.net/rest/api/2/statuscategory/3",
+                "id": 3,
+                "key": "done",
+                "colorName": "green",
+                "name": "Done"
+              }
+            },
+            "priority": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/medium.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10012",
+              "id": "10012",
+              "description": "A small piece of work that's part of a larger task.",
+              "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10316?size=medium",
+              "name": "Sub-task",
+              "subtask": true,
+              "avatarId": 10316,
+              "hierarchyLevel": -1
+            }
+          }
+        },
+        {
+          "id": "27279",
+          "key": "TREG-2166",
+          "self": "https://companydomain.atlassian.net/rest/api/2/issue/27279",
+          "fields": {
+            "summary": "Basic-Auth",
+            "status": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/status/10010",
+              "description": "This was auto-generated by Jira Service Management during workflow import",
+              "iconUrl": "https://companydomain.atlassian.net/images/icons/status_generic.gif",
+              "name": "Review",
+              "id": "10010",
+              "statusCategory": {
+                "self": "https://companydomain.atlassian.net/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/medium.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10012",
+              "id": "10012",
+              "description": "A small piece of work that's part of a larger task.",
+              "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10316?size=medium",
+              "name": "Sub-task",
+              "subtask": true,
+              "avatarId": 10316,
+              "hierarchyLevel": -1
+            }
+          }
+        },
+        {
+          "id": "27280",
+          "key": "TREG-2167",
+          "self": "https://companydomain.atlassian.net/rest/api/2/issue/27280",
+          "fields": {
+            "summary": "HTTPS aktivieren",
+            "status": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/status/10010",
+              "description": "This was auto-generated by Jira Service Management during workflow import",
+              "iconUrl": "https://companydomain.atlassian.net/images/icons/status_generic.gif",
+              "name": "Review",
+              "id": "10010",
+              "statusCategory": {
+                "self": "https://companydomain.atlassian.net/rest/api/2/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+              }
+            },
+            "priority": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/priority/3",
+              "iconUrl": "https://companydomain.atlassian.net/images/icons/priorities/medium.svg",
+              "name": "Medium",
+              "id": "3"
+            },
+            "issuetype": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10012",
+              "id": "10012",
+              "description": "A small piece of work that's part of a larger task.",
+              "iconUrl": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10316?size=medium",
+              "name": "Sub-task",
+              "subtask": true,
+              "avatarId": 10316,
+              "hierarchyLevel": -1
+            }
+          }
+        }
+      ]
+    },
+    "customfield_10040": {
+      "1": null
+    },
+    "customfield_10041": {
+      "1": null
+    },
+    "customfield_10042": {
+      "1": null
+    },
+    "customfield_10043": {
+      "1": null
+    },
+    "reporter": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+        "accountId": "xxxaccountidxxx",
+        "emailAddress": "m.email@company.com",
+        "avatarUrls": {
+          "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+          "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+          "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+          "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+        },
+        "displayName": "My Name",
+        "active": true,
+        "timeZone": "Europe/Berlin",
+        "accountType": "atlassian"
+      }
+    },
+    "customfield_10044": {
+      "1": null
+    },
+    "aggregateprogress": {
+      "1": {
+        "progress": 0,
+        "total": 0
+      }
+    },
+    "customfield_10045": {
+      "1": null
+    },
+    "customfield_10200": {
+      "1": null
+    },
+    "customfield_10046": {
+      "1": null
+    },
+    "customfield_10047": {
+      "1": null
+    },
+    "customfield_10048": {
+      "1": null
+    },
+    "customfield_10038": {
+      "1": null
+    },
+    "customfield_10039": {
+      "1": null
+    },
+    "progress": {
+      "1": {
+        "progress": 0,
+        "total": 0
+      }
+    },
+    "votes": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/issue/TREG-1438/votes",
+        "votes": 0,
+        "hasVoted": false
+      }
+    },
+    "worklog": {
+      "1": {
+        "startAt": 0,
+        "maxResults": 20,
+        "total": 0,
+        "worklogs": []
+      }
+    },
+    "issuetype": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/issuetype/10016",
+        "id": "10016",
+        "description": "Created by Jira Agile - do not edit or delete. Issue type for a user story.",
+        "iconUrl": "https://companydomain.atlassian.net/images/icons/issuetypes/story.svg",
+        "name": "Story",
+        "subtask": false,
+        "hierarchyLevel": 0
+      }
+    },
+    "timespent": {
+      "1": null
+    },
+    "customfield_10030": {
+      "1": []
+    },
+    "project": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/project/10079",
+        "id": "10079",
+        "key": "TREG",
+        "name": "Treg",
+        "projectTypeKey": "software",
+        "simplified": false,
+        "avatarUrls": {
+          "48x48": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10419",
+          "24x24": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10419?size=small",
+          "16x16": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10419?size=xsmall",
+          "32x32": "https://companydomain.atlassian.net/rest/api/2/universal_avatar/view/type/project/avatar/10419?size=medium"
+        },
+        "projectCategory": {
+          "self": "https://companydomain.atlassian.net/rest/api/2/projectCategory/10001",
+          "id": "10001",
+          "description": "Projekte der Abteilung IT",
+          "name": "TReg"
+        }
+      }
+    },
+    "customfield_10031": {
+      "1": null
+    },
+    "customfield_10032": {
+      "1": null
+    },
+    "customfield_10033": {
+      "1": null,
+      "2": null
+    },
+    "customfield_10034": {
+      "1": null
+    },
+    "aggregatetimespent": {
+      "1": null
+    },
+    "customfield_10035": {
+      "1": null
+    },
+    "customfield_10036": {
+      "1": null
+    },
+    "customfield_10037": {
+      "1": null
+    },
+    "customfield_10028": {
+      "1": null
+    },
+    "customfield_10029": {
+      "1": null
+    },
+    "resolutiondate": {
+      "1": null
+    },
+    "workratio": {
+      "1": -1
+    },
+    "watches": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/issue/TREG-1438/watchers",
+        "watchCount": 2,
+        "isWatching": true
+      }
+    },
+    "issuerestriction": {
+      "1": {
+        "issuerestrictions": {},
+        "shouldDisplay": false
+      }
+    },
+    "created": {
+      "1": "2022-08-29T10:46:39.722+0200"
+    },
+    "customfield_10020": {
+      "1": [
+        {
+          "id": 199,
+          "name": "ITS Sprint 7",
+          "state": "active",
+          "boardId": 93,
+          "goal": "goal",
+          "startDate": "2022-11-10T08:17:16.450Z",
+          "endDate": "2022-11-22T13:14:00.000Z"
+        }
+      ],
+      "2": [
+        {
+          "id": 199,
+          "name": "ITS Sprint 7",
+          "state": "active",
+          "boardId": 93,
+          "goal": "goal",
+          "startDate": "2022-11-10T08:17:16.450Z",
+          "endDate": "2022-11-22T13:14:00.000Z"
+        }
+      ]
+    },
+    "customfield_10021": {
+      "1": null
+    },
+    "customfield_10022": {
+      "1": null
+    },
+    "customfield_10023": {
+      "1": null
+    },
+    "customfield_10024": {
+      "1": "2022-11-10T10:32:50.527+0100"
+    },
+    "customfield_10025": {
+      "1": null
+    },
+    "customfield_10016": {
+      "1": null
+    },
+    "customfield_10017": {
+      "1": null
+    },
+    "customfield_10018": {
+      "1": {
+        "hasEpicLinkFieldDependency": true,
+        "showField": true
+      }
+    },
+    "customfield_10019": {
+      "1": "0|i00zie:xki"
+    },
+    "updated": {
+      "1": "2022-11-17T10:37:21.257+0100"
+    },
+    "customfield_10094": {
+      "1": null
+    },
+    "timeoriginalestimate": {
+      "1": null
+    },
+    "customfield_10095": {
+      "1": null
+    },
+    "customfield_10096": {
+      "1": null
+    },
+    "description": {
+      "1": "desc"
+    },
+    "customfield_10010": {
+      "1": null
+    },
+    "customfield_10014": {
+      "1": null,
+      "2": null
+    },
+    "customfield_10015": {
+      "1": null
+    },
+    "timetracking": {
+      "1": {}
+    },
+    "customfield_10005": {
+      "1": null
+    },
+    "customfield_10006": {
+      "1": null
+    },
+    "customfield_10007": {
+      "1": null
+    },
+    "security": {
+      "1": {
+        "self": "https://companydomain.atlassian.net/rest/api/2/securitylevel/10005",
+        "id": "10005",
+        "description": "Vorgänge, welche nur intern und ITS angezeigt werden sollen.",
+        "name": "Intern + ITS"
+      }
+    },
+    "customfield_10008": {
+      "1": null
+    },
+    "attachment": {
+      "1": []
+    },
+    "customfield_10009": {
+      "1": null
+    },
+    "summary": {
+      "1": "TEST2-Umgebung reparieren"
+    },
+    "customfield_10241": {
+      "1": null
+    },
+    "customfield_10087": {
+      "1": null
+    },
+    "customfield_10088": {
+      "1": null
+    },
+    "customfield_10001": {
+      "1": null
+    },
+    "customfield_10089": {
+      "1": null
+    },
+    "customfield_10002": {
+      "1": null
+    },
+    "customfield_10003": {
+      "1": null
+    },
+    "customfield_10004": {
+      "1": null
+    },
+    "environment": {
+      "1": null
+    },
+    "customfield_10119": {
+      "1": null
+    },
+    "duedate": {
+      "1": null
+    },
+    "comment": {
+      "1": {
+        "comments": [
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issue/19977/comment/26316",
+            "id": "26316",
+            "author": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+              "accountId": "xxxaccountidxxx",
+              "emailAddress": "m.email@company.com",
+              "avatarUrls": {
+                "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+                "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+                "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+                "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+              },
+              "displayName": "My Name",
+              "active": true,
+              "timeZone": "Europe/Berlin",
+              "accountType": "atlassian"
+            },
+            "body": "blah",
+            "updateAuthor": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+              "accountId": "xxxaccountidxxx",
+              "emailAddress": "m.email@company.com",
+              "avatarUrls": {
+                "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+                "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+                "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+                "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+              },
+              "displayName": "My Name",
+              "active": true,
+              "timeZone": "Europe/Berlin",
+              "accountType": "atlassian"
+            },
+            "created": "2022-11-07T10:57:58.769+0100",
+            "updated": "2022-11-07T10:58:21.371+0100",
+            "jsdPublic": true
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issue/19977/comment/26709",
+            "id": "26709",
+            "author": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=yyyaccountidyyy",
+              "accountId": "yyyaccountidyyy",
+              "avatarUrls": {
+                "48x48": "https://secure.gravatar.com/avatarurl",
+                "24x24": "https://secure.gravatar.com/avatarurl",
+                "16x16": "https://secure.gravatar.com/avatarurl",
+                "32x32": "https://secure.gravatar.com/avatarurl"
+              },
+              "displayName": "Other Name",
+              "active": true,
+              "timeZone": "Europe/Berlin",
+              "accountType": "atlassian"
+            },
+            "body": "link",
+            "updateAuthor": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=yyyaccountidyyy",
+              "accountId": "yyyaccountidyyy",
+              "avatarUrls": {
+                "48x48": "https://secure.gravatar.com/avatarurl",
+                "24x24": "https://secure.gravatar.com/avatarurl",
+                "16x16": "https://secure.gravatar.com/avatarurl",
+                "32x32": "https://secure.gravatar.com/avatarurl"
+              },
+              "displayName": "Other Name",
+              "active": true,
+              "timeZone": "Europe/Berlin",
+              "accountType": "atlassian"
+            },
+            "created": "2022-11-10T10:32:50.527+0100",
+            "updated": "2022-11-10T10:41:15.319+0100",
+            "jsdPublic": true
+          },
+          {
+            "self": "https://companydomain.atlassian.net/rest/api/2/issue/19977/comment/27170",
+            "id": "27170",
+            "author": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+              "accountId": "xxxaccountidxxx",
+              "emailAddress": "m.email@company.com",
+              "avatarUrls": {
+                "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+                "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+                "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+                "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+              },
+              "displayName": "My Name",
+              "active": true,
+              "timeZone": "Europe/Berlin",
+              "accountType": "atlassian"
+            },
+            "body": "blah",
+            "updateAuthor": {
+              "self": "https://companydomain.atlassian.net/rest/api/2/user?accountId=xxxaccountidxxx",
+              "accountId": "xxxaccountidxxx",
+              "emailAddress": "m.email@company.com",
+              "avatarUrls": {
+                "48x48": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/48",
+                "24x24": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/24",
+                "16x16": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/16",
+                "32x32": "https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/xxxaccountidxxx/u-u-i-d/32"
+              },
+              "displayName": "My Name",
+              "active": true,
+              "timeZone": "Europe/Berlin",
+              "accountType": "atlassian"
+            },
+            "created": "2022-11-17T10:37:21.257+0100",
+            "updated": "2022-11-17T10:37:21.257+0100",
+            "jsdPublic": true
+          }
+        ],
+        "self": "https://companydomain.atlassian.net/rest/api/2/issue/19977/comment",
+        "maxResults": 3,
+        "total": 3,
+        "startAt": 0
+      }
+    }
+  }
+}

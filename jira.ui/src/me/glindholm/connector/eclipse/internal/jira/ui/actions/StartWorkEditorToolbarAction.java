@@ -27,7 +27,6 @@ public class StartWorkEditorToolbarAction extends StartWorkAction {
     private final JiraTaskEditorPage editorPage;
 
     public StartWorkEditorToolbarAction(final JiraTaskEditorPage editorPage) {
-        super();
         this.editorPage = editorPage;
         setImageDescriptor(JiraImages.START_PROGRESS);
         setId(ID);

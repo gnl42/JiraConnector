@@ -1,0 +1,5 @@
+{
+	"self":"http://localhost:8090/jira/rest/api/latest/priority/3",
+	"id":"3",
+	"name":"XMajor"
+}

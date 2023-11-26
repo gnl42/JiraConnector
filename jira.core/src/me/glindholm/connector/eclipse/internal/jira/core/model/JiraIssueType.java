@@ -97,11 +97,9 @@ public class JiraIssueType implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if ((obj == null) || !(obj instanceof JiraIssueType)) {
+        if (obj == null || !(obj instanceof final JiraIssueType that)) {
             return false;
         }
-
-        final JiraIssueType that = (JiraIssueType) obj;
 
         return id.equals(that.id);
     }

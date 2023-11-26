@@ -1,0 +1,13 @@
+package me.glindholm.theplugin.commons.remoteapi;
+
+/**
+ * User: kalamon Date: Jul 6, 2009 Time: 12:19:34 PM
+ */
+public class RemoteApiBadServerVersionException extends RemoteApiException {
+
+    private static final long serialVersionUID = -2702749713783814931L;
+
+    public RemoteApiBadServerVersionException(final String message) {
+        super(message);
+    }
+}

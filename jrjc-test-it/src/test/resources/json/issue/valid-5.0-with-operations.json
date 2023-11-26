@@ -1,0 +1,603 @@
+{
+	"expand":"html,names,schema",
+	"id":"10000",
+	"self":"http://localhost:2990/jira/rest/api/latest/issue/TST-1",
+	"key":"TST-1",
+	"fields":{
+		"summary":"My sample test",
+		"timetracking": {
+			"originalEstimate": "1w 5h",
+			"remainingEstimate": "4d 5h",
+			"timeSpent": "3h",
+			"originalEstimateSeconds": 162000,
+			"remainingEstimateSeconds": 133200,
+			"timeSpentSeconds": 10800
+		},
+		"issuetype":{
+			"self":"http://localhost:2990/jira/rest/api/2/issuetype/1",
+			"id":"1",
+			"description":"A problem which impairs or prevents the functions of the product.",
+			"iconUrl":"http://localhost:2990/jira/images/icons/bug.gif",
+			"name":"Bug",
+			"subtask":false
+		},
+		"votes":{
+			"self":"http://localhost:2990/jira/rest/api/2/issue/TST-1/votes",
+			"votes":1,
+			"hasVoted":false
+		},
+		"security":null,
+		"fixVersions":[
+
+		],
+		"resolution":null,
+		"resolutiondate":null,
+		"reporter":{
+			"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+			"name":"admin",
+			"emailAddress":"wojciech.seliga@spartez.com",
+			"avatarUrls":{
+				"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+				"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+			},
+			"displayName":"Administrator",
+			"active":true
+		},
+		"created":"2010-07-23T12:16:56.928+0200",
+		"updated":"2010-08-17T16:36:29.180+0200",
+		"priority":{
+			"self":"http://localhost:2990/jira/rest/api/2/priority/3",
+			"iconUrl":"http://localhost:2990/jira/images/icons/priority_major.gif",
+			"name":"Major",
+			"id":"3"
+		},
+		"description":"my description",
+		"customfield_10001":{
+			"self":"http://localhost:2990/jira/rest/api/latest/customFieldOption/10001",
+			"value":"Another"
+		},
+		"duedate":"2010-07-05",
+		"issuelinks":[
+			{
+				"id": "10007",
+				"self": "http://localhost:2990/jira/rest/api/2/issueLink/10007",
+				"type": {
+					"id": "10001",
+					"name": "Duplicate",
+					"inward": "is duplicated by",
+					"outward": "duplicates",
+					"self": "http://localhost:2990/jira/rest/api/2/issueLinkType/10001"
+				},
+				"inwardIssue": {
+					"id": "10020",
+					"key": "MUT-19",
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10020",
+					"fields": {
+						"summary": "My chore",
+						"status": {
+							"self": "http://localhost:2990/jira/rest/api/2/status/10000",
+							"description": "Mapping for IceBox in Pivotal Tracker",
+							"iconUrl": "http://localhost:2990/jira/images/icons/status_generic.gif",
+							"name": "IceBox",
+							"id": "10000"
+						},
+						"issuetype": {
+							"self": "http://localhost:2990/jira/rest/api/2/issuetype/8",
+							"id": "8",
+							"description": "",
+							"iconUrl": "http://localhost:2990/jira/images/icons/task.gif",
+							"name": "Chore",
+							"subtask": false
+						}
+					}
+				}
+			}
+		],
+		"watches":{
+			"self":"http://localhost:2990/jira/rest/api/2/issue/TST-1/watchers",
+			"watchCount":1,
+			"isWatching":false
+		},
+		"worklog": {
+			"startAt": 0,
+			"maxResults": 2,
+			"total": 2,
+			"worklogs": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10001/worklog/10000",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=test+member",
+						"name": "test member",
+						"emailAddress": "elmadir+pivotal@gmail.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+						},
+						"displayName": "Test Member",
+						"active": true
+					},
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=test+member",
+						"name": "test member",
+						"emailAddress": "elmadir+pivotal@gmail.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+						},
+						"displayName": "Test Member",
+						"active": true
+					},
+					"comment": "",
+					"created": "2012-01-17T13:16:39.882+0100",
+					"updated": "2012-01-17T13:16:39.882+0100",
+					"started": "2011-04-21T00:00:00.000+0200",
+					"timeSpent": "8h",
+					"timeSpentSeconds": 28800,
+					"id": "10000",
+					"visibility": {
+						"type": "role",
+						"value": "Developers"
+					}
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10001/worklog/10001",
+					"author": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=test+member",
+						"name": "test member",
+						"emailAddress": "elmadir+pivotal@gmail.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+						},
+						"displayName": "Test Member",
+						"active": true
+					},
+					"updateAuthor": {
+						"self": "http://localhost:2990/jira/rest/api/2/user?username=test+member",
+						"name": "test member",
+						"emailAddress": "elmadir+pivotal@gmail.com",
+						"avatarUrls": {
+							"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+							"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+						},
+						"displayName": "Test Member",
+						"active": true
+					},
+					"comment": "six hours",
+					"created": "2012-01-17T13:16:39.890+0100",
+					"updated": "2012-01-17T13:16:39.890+0100",
+					"started": "2011-04-22T00:00:00.000+0200",
+					"timeSpent": "6h",
+					"timeSpentSeconds": 21600,
+					"id": "10001",
+					"visibility": {
+						"type": "group",
+						"value": "jira-users"
+					}
+				}
+			]
+
+		},
+		"customfield_10000":1.457,
+		"status":{
+			"self":"http://localhost:2990/jira/rest/api/latest/status/1",
+			"iconUrl":"http://localhost:2990/jira/images/icons/status_open.gif",
+			"name":"Open",
+            "description":"The issue is open and ready for the assignee to start work on it.",
+			"id":"1"
+		},
+		"assignee":{
+			"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+			"name":"admin",
+			"emailAddress":"wojciech.seliga@spartez.com",
+			"avatarUrls":{
+				"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+				"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+			},
+			"displayName":"Administrator",
+			"active":true
+		},
+		"attachment":[
+			{
+				"self":"http://localhost:2990/jira/rest/api/latest/attachment/10040",
+				"filename":"dla Paw?a.txt",
+				"author":{
+					"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
+					"name":"admin",
+					"avatarUrls":{
+						"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName":"Administrator",
+					"active":true
+				},
+				"created":"2010-08-04T17:46:45.454+0200",
+				"size":643,
+				"mimeType":"text/plain",
+				"properties":{
+
+				},
+				"content":"http://localhost:2990/jira/secure/attachment/10040/dla+Paw%C5%82a.txt"
+			},
+			{
+				"self":"http://localhost:2990/jira/rest/api/latest/attachment/10020",
+				"filename":"snipe (copy).png",
+				"author":{
+					"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
+					"name":"admin",
+					"avatarUrls":{
+						"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName":"Administrator",
+					"active":true
+				},
+				"created":"2010-07-26T10:41:24.682+0200",
+				"size":31020,
+				"mimeType":"image/png",
+				"properties":{
+
+				},
+				"content":"http://localhost:2990/jira/secure/attachment/10020/snipe+%28copy%29.png"
+			},
+			{
+				"self":"http://localhost:2990/jira/rest/api/latest/attachment/10000",
+				"filename":"snipe.png",
+				"author":{
+					"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
+					"name":"admin",
+					"avatarUrls":{
+						"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName":"Administrator",
+					"active":true
+				},
+				"created":"2010-07-23T12:17:59.643+0200",
+				"size":31020,
+				"mimeType":"image/png",
+				"properties":{
+
+				},
+				"content":"http://localhost:2990/jira/secure/attachment/10000/snipe.png"
+			},
+			{
+				"self":"http://localhost:2990/jira/rest/api/latest/attachment/10037",
+				"filename":"thumb_ScreenSnip.png",
+				"author":{
+					"self":"http://localhost:2990/jira/rest/api/latest/user?username=admin",
+					"name":"admin",
+					"avatarUrls":{
+						"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+						"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+					},
+					"displayName":"Administrator",
+					"active":true
+				},
+				"created":"2010-07-27T08:58:11.452+0200",
+				"size":19974,
+				"mimeType":"image/png",
+				"properties":{
+
+				},
+				"content":"http://localhost:2990/jira/secure/attachment/10037/thumb_ScreenSnip.png"
+			}
+		],
+		"sub-tasks":[
+
+		],
+		"project":{
+			"self":"http://localhost:2990/jira/rest/api/latest/project/TST",
+			"id":"10000",
+			"key":"TST",
+			"name":"Test Project",
+			"roles":{
+
+			},
+			"avatarUrls":{
+				"16x16":"http://localhost:2990/jira/secure/projectavatar?size=small&pid=10000&avatarId=10050",
+				"48x48":"http://localhost:2990/jira/secure/projectavatar?pid=10000&avatarId=10050"
+			}
+		},
+		"versions":[
+
+		],
+		"environment":null,
+		"components":[
+			{
+				"self":"http://localhost:2990/jira/rest/api/2/component/10000",
+				"id":"10000",
+				"name":"Component A",
+				"description":"this is some description of component A"
+			},
+			{
+				"self":"http://localhost:2990/jira/rest/api/2/component/10001",
+				"id":"10001",
+				"name":"Component B",
+				"description":"another description"
+			}
+		],
+		"customfield_10010":null,
+		"comment":{
+			"startAt":0,
+			"maxResults":3,
+			"total":3,
+			"comments":[
+				{
+					"self":"http://localhost:2990/jira/rest/api/2/comment/10000",
+					"id":"10000",
+					"author":{
+						"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name":"admin",
+						"emailAddress":"wojciech.seliga@spartez.com",
+						"avatarUrls":{
+							"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName":"Administrator",
+						"active":true
+					},
+					"body":"abc",
+					"updateAuthor":{
+						"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name":"admin",
+						"emailAddress":"wojciech.seliga@spartez.com",
+						"avatarUrls":{
+							"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName":"Administrator",
+						"active":true
+					},
+					"created":"2010-07-23T12:17:59.676+0200",
+					"updated":"2010-07-23T12:17:59.676+0200"
+				},
+				{
+					"self":"http://localhost:2990/jira/rest/api/2/comment/10010",
+					"id":"10010",
+					"author":{
+						"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name":"admin",
+						"emailAddress":"wojciech.seliga@spartez.com",
+						"avatarUrls":{
+							"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName":"Administrator",
+						"active":true
+					},
+					"body":"another comment",
+					"updateAuthor":{
+						"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name":"admin",
+						"emailAddress":"wojciech.seliga@spartez.com",
+						"avatarUrls":{
+							"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName":"Administrator",
+						"active":true
+					},
+					"created":"2010-07-28T17:58:19.435+0200",
+					"updated":"2010-07-28T17:58:19.435+0200"
+				},
+				{
+					"self":"http://localhost:2990/jira/rest/api/2/comment/10011",
+					"id":"10011",
+					"author":{
+						"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name":"admin",
+						"emailAddress":"wojciech.seliga@spartez.com",
+						"avatarUrls":{
+							"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName":"Administrator",
+						"active":true
+					},
+					"body":"* fd\n* fdsfds",
+					"updateAuthor":{
+						"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+						"name":"admin",
+						"emailAddress":"wojciech.seliga@spartez.com",
+						"avatarUrls":{
+							"16x16":"http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+							"48x48":"http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+						},
+						"displayName":"Administrator",
+						"active":true
+					},
+					"created":"2010-07-28T18:41:34.583+0200",
+					"updated":"2010-07-28T18:41:34.583+0200"
+				}
+			]
+		},
+		"customfield_10011":null
+	},
+	"names":{
+		"summary":"Summary",
+		"timetracking":"Time Tracking",
+		"issuetype":"Issue Type",
+		"votes":"Votes",
+		"security":"Security Level",
+		"fixVersions":"Fix Version/s",
+		"resolution":"Resolution",
+		"resolutiondate":"Resolved",
+		"reporter":"Reporter",
+		"created":"Created",
+		"updated":"Updated",
+		"priority":"Priority",
+		"description":"Description",
+		"customfield_10001":"My Radio buttons",
+		"duedate":"Due Date",
+		"issuelinks":"links",
+		"watches":"Watchers",
+		"worklog":"Log Work",
+		"customfield_10000":"My Number Field New",
+		"status":"Status",
+		"labels":"Labels",
+		"assignee":"Assignee",
+		"attachment":"attachment",
+		"sub-tasks":"sub-tasks",
+		"project":"Project",
+		"versions":"Affects Version/s",
+		"environment":"Environment",
+		"components":"Component/s",
+		"customfield_10010":"project3",
+		"comment":"Comment",
+		"customfield_10011":"project2"
+	},
+	"schema":{
+		"summary":{
+			"type":"string",
+			"system":"summary"
+		},
+		"issuetype":{
+			"type":"issuetype",
+			"system":"issuetype"
+		},
+		"votes":{
+			"type":"array",
+			"items":"votes",
+			"system":"votes"
+		},
+		"security":{
+			"type":"securitylevel",
+			"system":"security"
+		},
+		"fixVersions":{
+			"type":"array",
+			"items":"version",
+			"system":"fixVersions"
+		},
+		"resolution":{
+			"type":"resolution",
+			"system":"resolution"
+		},
+		"resolutiondate":{
+			"type":"datetime",
+			"system":"resolutiondate"
+		},
+		"reporter":{
+			"type":"user",
+			"system":"reporter"
+		},
+		"created":{
+			"type":"datetime",
+			"system":"created"
+		},
+		"updated":{
+			"type":"datetime",
+			"system":"updated"
+		},
+		"priority":{
+			"type":"priority",
+			"system":"priority"
+		},
+		"description":{
+			"type":"string",
+			"system":"description"
+		},
+		"duedate":{
+			"type":"datetime",
+			"system":"duedate"
+		},
+		"customfield_10001":{
+			"type":"array",
+			"items":"string",
+			"custom":"com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+			"customId":10001
+		},
+		"issuelinks":{
+			"type":"array",
+			"items":"issuelinks",
+			"system":"issuelinks"
+		},
+		"watches":{
+			"type":"array",
+			"items":"watches",
+			"system":"watches"
+		},
+		"customfield_10000":{
+			"type":"array",
+			"items":"string",
+			"custom":"com.atlassian.jira.plugin.system.customfieldtypes:float",
+			"customId":10000
+		},
+		"labels":{
+			"type":"array",
+			"items":"string",
+			"system":"labels"
+		},
+		"assignee":{
+			"type":"user",
+			"system":"assignee"
+		},
+		"attachment":{
+			"type":"array",
+			"items":"attachment",
+			"system":"attachment"
+		},
+		"sub-tasks":{
+			"type":"array",
+			"items":"issuelinks",
+			"system":"parent"
+		},
+		"versions":{
+			"type":"array",
+			"items":"version",
+			"system":"versions"
+		},
+		"components":{
+			"type":"array",
+			"items":"component",
+			"system":"components"
+		},
+		"comment":{
+			"type":"array",
+			"items":"comment",
+			"system":"comment"
+		},
+		"customfield_10010":{
+			"type":"array",
+			"items":"string",
+			"custom":"com.atlassian.jira.plugin.system.customfieldtypes:project",
+			"customId":10010
+		},
+		"customfield_10011":{
+			"type":"array",
+			"items":"string",
+			"custom":"com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+			"customId":10011
+		}
+	},
+	"transitions":"http://localhost:2990/jira/rest/api/latest/issue/TST-1/transitions",
+	"editmeta":"TODO",
+	"changelog":"TODO",
+	"operations" : {
+		"linkGroups": [{
+			"id": "opsbar-transitions",
+			"weight": 20,
+			"links": [
+				{
+					"id": "action_id_4",
+					"styleClass": "issueaction-workflow-transition",
+					"label": "Start Progress",
+					"title": "Start work on the issue",
+					"href": "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
+					"weight": 10
+				}
+			],
+			"groups": [
+				{
+					"header": {
+						"id": "opsbar-transitions_more",
+						"label": "Workflow"
+					},
+					"links": [],
+					"groups": []
+				}
+			]
+		}]
+	}
+}

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -579,8 +579,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
     }
 
     /**
-     * Stores user in cache if <code>fullName</code> is provided. Otherwise user is
-     * retrieved from cache.
+     * Stores user in cache if <code>fullName</code> is provided. Otherwise user is retrieved from
+     * cache.
      */
     public static IRepositoryPerson getPerson(final TaskData data, final JiraClient client, String userId, final String fullName) {
         if (userId == null || JiraRepositoryConnector.UNASSIGNED_USER.equals(userId)) {
@@ -795,9 +795,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
                 final Map<String, String> options = attribute.getOptions();
                 if (JiraFieldType.SELECT.getKey().equals(key) && (options.isEmpty() || properties.isReadOnly())) {
                     properties.setReadOnly(true);
-                } else if (JiraFieldType.MULTISELECT.getKey().equals(key) && options.isEmpty()) {
-                    properties.setReadOnly(true);
-                } else if (properties.isReadOnly()) {
+                } else if (JiraFieldType.MULTISELECT.getKey().equals(key) && options.isEmpty() || properties.isReadOnly()) {
                     properties.setReadOnly(true);
                 } else {
                     properties.setReadOnly(!editable);
@@ -894,8 +892,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
     }
 
     /**
-     * Removes attribute values without removing attribute to preserve order of
-     * attributes
+     * Removes attribute values without removing attribute to preserve order of attributes
      */
 // private void removeAttributeValues(TaskData data, String attributeId) {
 // data.getRoot().getAttribute(attributeId).clearValues();

@@ -31,8 +31,7 @@ public class JiraEditorUtil {
 
     private static final String DECORATOR_KEY = "DECORATOR"; //$NON-NLS-1$
 
-    public static void setTimeSpentDecorator(final Text toDecorate, final boolean isZeroValid, final TaskRepository repository,
-            final boolean isEmptyValid) {
+    public static void setTimeSpentDecorator(final Text toDecorate, final boolean isZeroValid, final TaskRepository repository, final boolean isEmptyValid) {
         boolean invalid = false;
 
         if (isEmptyValid && (toDecorate.getText() == null || toDecorate.getText().length() == 0)) {
@@ -50,13 +49,12 @@ public class JiraEditorUtil {
     }
 
     public static void showTimeSpentDecorator(final Text toDecorate, final TaskRepository repository, final boolean show) {
-        final String errorDescription = NLS.bind(Messages.JiraEditorUtil_Time_Spent_Error_Decorator_Hover,
-                JiraUtil.getWorkDaysPerWeek(repository), JiraUtil.getWorkHoursPerDay(repository));
+        final String errorDescription = NLS.bind(Messages.JiraEditorUtil_Time_Spent_Error_Decorator_Hover, JiraUtil.getWorkDaysPerWeek(repository),
+                JiraUtil.getWorkHoursPerDay(repository));
         showTimeSpentDecorator(toDecorate, repository, errorDescription, show);
     }
 
-    public static void showTimeSpentDecorator(final Text toDecorate, final TaskRepository repository, final String errorDescription,
-            final boolean show) {
+    public static void showTimeSpentDecorator(final Text toDecorate, final TaskRepository repository, final String errorDescription, final boolean show) {
         if (toDecorate == null || toDecorate.isDisposed()) {
             return;
         }

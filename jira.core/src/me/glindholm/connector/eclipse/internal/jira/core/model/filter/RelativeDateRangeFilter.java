@@ -29,17 +29,14 @@ public class RelativeDateRangeFilter extends DateFilter {
     /**
      * Creates a date range from now back to the specified range
      *
-     * @param rangeType
-     *            Unit of measure
-     * @param count
-     *            Number of units
+     * @param rangeType Unit of measure
+     * @param count     Number of units
      */
     public RelativeDateRangeFilter(final RangeType rangeType, final long count) {
         this(rangeType, count, RangeType.NONE, 0);
     }
 
-    public RelativeDateRangeFilter(final RangeType previousRangeType, final long previousCount, final RangeType nextRangeType,
-            final long nextCount) {
+    public RelativeDateRangeFilter(final RangeType previousRangeType, final long previousCount, final RangeType nextRangeType, final long nextCount) {
         this.previousRangeType = previousRangeType;
         this.previousCount = previousCount;
         this.nextRangeType = nextRangeType;
@@ -116,13 +113,13 @@ public class RelativeDateRangeFilter extends DateFilter {
 
         @Override
         public String toString() {
-            if (this.equals(HOUR)) {
+            if (equals(HOUR)) {
                 return "h"; //$NON-NLS-1$
-            } else if (this.equals(DAY)) {
+            } else if (equals(DAY)) {
                 return "d"; //$NON-NLS-1$
-            } else if (this.equals(WEEK)) {
+            } else if (equals(WEEK)) {
                 return "w"; //$NON-NLS-1$
-            } else if (this.equals(MINUTE)) {
+            } else if (equals(MINUTE)) {
                 return "m"; //$NON-NLS-1$
             } else {
                 return "none"; //$NON-NLS-1$

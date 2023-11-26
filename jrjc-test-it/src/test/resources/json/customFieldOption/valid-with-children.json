@@ -1,0 +1,23 @@
+{
+	"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10017",
+	"value": "colors",
+	"id": "10017",
+	"children":
+			[
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10019",
+					"value": "red",
+					"id": "10019"
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10020",
+					"value": "blue",
+					"id": "10020"
+				},
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/customFieldOption/10021",
+					"value": "green",
+					"id": "10021"
+				}
+			]
+}

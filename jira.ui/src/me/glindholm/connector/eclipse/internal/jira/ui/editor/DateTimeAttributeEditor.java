@@ -19,8 +19,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.core.data.TaskDataModel;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractAttributeEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -61,13 +59,7 @@ public class DateTimeAttributeEditor extends AbstractAttributeEditor {
         } else {
             text = toolkit.createText(parent, getValue(), SWT.FLAT);
             text.setFont(JFaceResources.getDefaultFont());
-            text.addModifyListener(new ModifyListener() {
-                @Override
-                public void modifyText(final ModifyEvent e) {
-                    setValue(text.getText());
-                    //EditorUtil.ensureVisible(text);
-                }
-            });
+            text.addModifyListener(e -> setValue(text.getText()));
         }
         toolkit.adapt(text, false, false);
         setControl(text);

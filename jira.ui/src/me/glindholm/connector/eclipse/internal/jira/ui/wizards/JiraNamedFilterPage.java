@@ -12,7 +12,6 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.wizards;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -102,15 +101,15 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
     private final JiraClient client;
 
     private enum PredefinedFilter {
-        ASSIGNED_TO_ME(Messages.JiraNamedFilterPage_Predefined_filter_assigned_to_me), REPORTED_BY_ME(
-                Messages.JiraNamedFilterPage_Predefined_filter_reported_by_me), ADDED_RECENTLY(
-                        Messages.JiraNamedFilterPage_Predefined_filter_added_recently), UPDATED_RECENTLY(
-                                Messages.JiraNamedFilterPage_Predefined_filter_updated_recently), RESOLVED_RECENTLY(
-                                        Messages.JiraNamedFilterPage_Predefined_filter_resolved_recently);
+        ASSIGNED_TO_ME(Messages.JiraNamedFilterPage_Predefined_filter_assigned_to_me),
+        REPORTED_BY_ME(Messages.JiraNamedFilterPage_Predefined_filter_reported_by_me),
+        ADDED_RECENTLY(Messages.JiraNamedFilterPage_Predefined_filter_added_recently),
+        UPDATED_RECENTLY(Messages.JiraNamedFilterPage_Predefined_filter_updated_recently),
+        RESOLVED_RECENTLY(Messages.JiraNamedFilterPage_Predefined_filter_resolved_recently);
 
-        private String name;
+        private final String name;
 
-        private PredefinedFilter(final String name) {
+        PredefinedFilter(final String name) {
             this.name = name;
         }
 
@@ -346,8 +345,8 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
                     // download filters
                     downloadFilters();
 
-                    //savedFilterList.setEnabled(buttonSaved.getSelection() && filters != null && filters.length > 0);
-                    //savedFilterList.setSelection(s);
+                    // savedFilterList.setEnabled(buttonSaved.getSelection() && filters != null && filters.length > 0);
+                    // savedFilterList.setSelection(s);
 
                     getContainer().updateButtons();
 
@@ -379,27 +378,24 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
         super.setVisible(visible);
 
         if (visible) {
-            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    if (downloadFilters()) {
-                        if (!client.getCache().hasDetails()) {
+            PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+                if (downloadFilters()) {
+                    if (!client.getCache().hasDetails()) {
 
-                            final boolean projectListEnabled = projectList.getControl().getEnabled();
-                            final boolean updateProjectsButtonEnabled = updateButton.getEnabled();
+                        final boolean projectListEnabled = projectList.getControl().getEnabled();
+                        final boolean updateProjectsButtonEnabled = updateButton.getEnabled();
 
-                            projectList.getControl().setEnabled(false);
-                            updateButton.setEnabled(false);
+                        projectList.getControl().setEnabled(false);
+                        updateButton.setEnabled(false);
 
-                            downloadProjects();
+                        downloadProjects();
 
-                            projectList.getControl().setEnabled(projectListEnabled);
-                            updateButton.setEnabled(updateProjectsButtonEnabled);
+                        projectList.getControl().setEnabled(projectListEnabled);
+                        updateButton.setEnabled(updateProjectsButtonEnabled);
 
-                        }
                     }
-                    projectList.setInput(client.getCache().getProjects());
                 }
+                projectList.setInput(client.getCache().getProjects());
             });
         }
     }
@@ -494,16 +490,13 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
         savedFilterList.showSelection();
         savedFilterList.setEnabled(buttonSaved.getSelection());
         setPageComplete(true);
-        //getContainer().updateButtons();
+        // getContainer().updateButtons();
     }
 
     private void showFilters(final JiraNamedFilter[] loadedFilters) {
-        Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                if (!savedFilterList.isDisposed()) {
-                    displayFilters(loadedFilters);
-                }
+        Display.getDefault().asyncExec(() -> {
+            if (!savedFilterList.isDisposed()) {
+                displayFilters(loadedFilters);
             }
         });
     }
@@ -511,31 +504,22 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
     protected boolean downloadFilters() {
         final boolean[] results = { false };
 
-        final IRunnableWithProgress job = new IRunnableWithProgress() {
-            @Override
-            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                JiraNamedFilter[] loadedFilters = {};
-                try {
-                    monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_list_of_filters,
-                            IProgressMonitor.UNKNOWN);
-                    final JiraClient jiraServer = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
-                    loadedFilters = jiraServer.getNamedFilters(monitor);
-                    filters = loadedFilters;
-                    results[0] = true;
-                } catch (final JiraCaptchaRequiredException e) {
-                    Display.getDefault().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            new RemoteApiLockedDialog(WorkbenchUtil.getShell(), getTaskRepository().getRepositoryUrl()).open();
-                        }
-                    });
-                    handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
-                } catch (final JiraException e) {
-                    handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
-                } finally {
-                    showFilters(loadedFilters);
-                    monitor.done();
-                }
+        final IRunnableWithProgress job = monitor -> {
+            JiraNamedFilter[] loadedFilters = {};
+            try {
+                monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_list_of_filters, IProgressMonitor.UNKNOWN);
+                final JiraClient jiraServer = JiraClientFactory.getDefault().getJiraClient(getTaskRepository());
+                loadedFilters = jiraServer.getNamedFilters(monitor);
+                filters = loadedFilters;
+                results[0] = true;
+            } catch (final JiraCaptchaRequiredException e) {
+                Display.getDefault().asyncExec(() -> new RemoteApiLockedDialog(WorkbenchUtil.getShell(), getTaskRepository().getRepositoryUrl()).open());
+                handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
+            } catch (final JiraException e) {
+                handleError(e, Messages.JiraNamedFilterPage_Could_not_update_filters);
+            } finally {
+                showFilters(loadedFilters);
+                monitor.done();
             }
         };
 
@@ -563,29 +547,20 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
 
         final ISelection selection = projectList.getSelection();
 
-        final IRunnableWithProgress job = new IRunnableWithProgress() {
-
-            @Override
-            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_Projects, IProgressMonitor.UNKNOWN);
-                try {
-                    client.getCache().refreshDetails(monitor);
-                    results[0] = true;
-                } catch (final JiraCaptchaRequiredException e) {
-                    Display.getDefault().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            new RemoteApiLockedDialog(WorkbenchUtil.getShell(), getTaskRepository().getRepositoryUrl()).open();
-                        }
-                    });
-                    handleError(e, Messages.JiraNamedFilterPage_Download_Projects_Failed);
-                } catch (final JiraException e) {
-                    handleError(e, Messages.JiraNamedFilterPage_Download_Projects_Failed);
-                } finally {
-                    monitor.done();
-                }
-
+        final IRunnableWithProgress job = monitor -> {
+            monitor.beginTask(Messages.JiraNamedFilterPage_Downloading_Projects, IProgressMonitor.UNKNOWN);
+            try {
+                client.getCache().refreshDetails(monitor);
+                results[0] = true;
+            } catch (final JiraCaptchaRequiredException e) {
+                Display.getDefault().asyncExec(() -> new RemoteApiLockedDialog(WorkbenchUtil.getShell(), getTaskRepository().getRepositoryUrl()).open());
+                handleError(e, Messages.JiraNamedFilterPage_Download_Projects_Failed);
+            } catch (final JiraException e) {
+                handleError(e, Messages.JiraNamedFilterPage_Download_Projects_Failed);
+            } finally {
+                monitor.done();
             }
+
         };
 
         try {
@@ -601,13 +576,9 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
     }
 
     protected void handleError(final Throwable e, final String message) {
-        Display.getDefault().asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, message, e));
-                setErrorMessage(message + ": " + e.getMessage()); //$NON-NLS-1$
-            }
+        Display.getDefault().asyncExec(() -> {
+            StatusHandler.log(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, message, e));
+            setErrorMessage(message + ": " + e.getMessage()); //$NON-NLS-1$
         });
 
     }
@@ -682,7 +653,7 @@ public class JiraNamedFilterPage extends AbstractRepositoryQueryPage {
             ret = true;
         }
 
-        return ret; //&& super.isPageComplete(); (do not check name duplicates)
+        return ret; // && super.isPageComplete(); (do not check name duplicates)
     }
 
 }

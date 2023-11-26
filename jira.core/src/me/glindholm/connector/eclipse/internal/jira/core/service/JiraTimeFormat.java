@@ -19,9 +19,10 @@ import java.text.ParsePosition;
 import org.eclipse.core.runtime.Assert;
 
 /**
- * JIRA time format to convert Long value in seconds to JIRA time format: <blockquote> The format of this is '*w *d *h
- * *m' (representing weeks, days, hours and minutes - where * can be any number) Examples: 4d, 5h 30m, 60m and 3w. Note:
- * The conversion rates are 1w = 7d and 1d = 24h </blockquote>
+ * JIRA time format to convert Long value in seconds to JIRA time format: <blockquote> The format of
+ * this is '*w *d *h *m' (representing weeks, days, hours and minutes - where * can be any number)
+ * Examples: 4d, 5h 30m, 60m and 3w. Note: The conversion rates are 1w = 7d and 1d = 24h
+ * </blockquote>
  *
  * @author Steffen Pingel
  * @author Thomas Ehrnhoefer
@@ -48,8 +49,7 @@ public class JiraTimeFormat extends Format {
     /**
      * A simplified conversion from seconds to '*h *m' format
      *
-     * @param a
-     *            Long seconds value to format
+     * @param a Long seconds value to format
      */
     @Override
     public StringBuffer format(final Object obj, final StringBuffer sb, final FieldPosition pos) {
@@ -94,10 +94,8 @@ public class JiraTimeFormat extends Format {
     /**
      * Returns the time value of <code>source</code> in seconds.
      *
-     * @param source
-     *            the time string to parse; must not be <code>null</code>
-     * @throws ParseException
-     *             if the string could not be parsed.
+     * @param source the time string to parse; must not be <code>null</code>
+     * @throws ParseException if the string could not be parsed.
      */
     public long parse(final String source) throws ParseException {
         Assert.isNotNull(source);

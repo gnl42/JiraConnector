@@ -11,7 +11,7 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.editor;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.mylyn.internal.tasks.ui.editors.CheckboxMultiSelectAttributeEditor;
 import org.eclipse.mylyn.internal.tasks.ui.editors.PersonAttributeEditor;
 import org.eclipse.mylyn.tasks.core.IRepositoryPerson;
@@ -91,13 +91,11 @@ class JiraAttributeEditorFactory extends AttributeEditorFactory {
                             if (!StringUtils.isBlank(repositoryPerson.getPersonId())) {
                                 getControl().setToolTipText(repositoryPerson.getPersonId());
                             }
-                        } else {
-                            // add tooltip with user display name for editbox in which we just display user
-                            // id
-                            if (!StringUtils.isBlank(repositoryPerson.getName())) {
-                                if (getText() != null) {
-                                    getText().setToolTipText(repositoryPerson.getName());
-                                }
+                        } else // add tooltip with user display name for editbox in which we just display user
+                        // id
+                        if (!StringUtils.isBlank(repositoryPerson.getName())) {
+                            if (getText() != null) {
+                                getText().setToolTipText(repositoryPerson.getName());
                             }
                         }
                     }

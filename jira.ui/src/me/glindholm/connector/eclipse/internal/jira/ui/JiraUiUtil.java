@@ -44,16 +44,14 @@ public class JiraUiUtil {
             try {
                 localTimeTicks = Long.parseLong(stringLoggedTime);
             } catch (final NumberFormatException e) {
-                StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.PRODUCT_NAME,
-                        Messages.JiraUiUtil_Cannot_parse_logged_activity_time, e));
+                StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.PRODUCT_NAME, Messages.JiraUiUtil_Cannot_parse_logged_activity_time, e));
             }
         }
 
         if (mylynTimeTicks >= localTimeTicks) {
             return (mylynTimeTicks - localTimeTicks) / 1000;
         } else {
-            StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.PRODUCT_NAME,
-                    Messages.JiraUiUtil_Logged_activity_time_problem + iTask.getTaskKey()));
+            StatusHandler.log(new Status(IStatus.WARNING, JiraUiPlugin.PRODUCT_NAME, Messages.JiraUiUtil_Logged_activity_time_problem + iTask.getTaskKey()));
             return mylynTimeTicks / 1000;
         }
     }
@@ -68,8 +66,7 @@ public class JiraUiUtil {
      * @param task
      */
     public static void setLoggedActivityTime(final ITask task) {
-        task.setAttribute(JiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME,
-                Long.toString(TasksUiPlugin.getTaskActivityManager().getElapsedTime(task)));
+        task.setAttribute(JiraConstants.ATTRIBUTE_JIRA_LOGGED_ACTIVITY_TIME, Long.toString(TasksUiPlugin.getTaskActivityManager().getElapsedTime(task)));
     }
 
     public static void updateAdjustEstimateOption(final AdjustEstimateMethod adjustEstimate, final TaskRepository repository) {

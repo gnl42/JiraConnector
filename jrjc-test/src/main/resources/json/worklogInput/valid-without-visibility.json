@@ -1,0 +1,16 @@
+{
+	"self":"http://localhost:8090/jira/rest/api/latest/worklog/10010",
+	"comment":"my first work",
+	"started":"2010-08-15T16:35:00.000+0200",
+	"timeSpent":"43m",
+	"author":{
+		"self":"http://localhost:2990/jira/rest/api/2/user?username=admin",
+		"name":"admin",
+		"displayName":"Administrator"
+	},
+	"updateAuthor":{
+		"self":"http://localhost:2990/jira/rest/api/2/user?username=wseliga",
+		"name":"wseliga",
+		"displayName":"Wojciech Seliga"
+	}
+}

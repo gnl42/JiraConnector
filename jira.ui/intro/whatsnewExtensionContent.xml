@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<introContent>
+	<extensionContent id="me.glindholm.connector.eclipse" name="Mylyn Atlassian Jira Connector for Eclipse"
+		style="css/whatsnew.css" alt-style="css/whatsnew.properties" path="whatsnew/@">
+		<group id="content-group" style-id="content-group">
+			<link label="Mylyn Atlassian Jira Connector for Eclipse"
+				id="atlassian-eclipse-connector-noteworthy" style-id="content-link">
+				<text>
+					Add Jira to the Eclipse workflow
+				</text>
+			</link>
+		</group>
+	</extensionContent>
+</introContent>
+

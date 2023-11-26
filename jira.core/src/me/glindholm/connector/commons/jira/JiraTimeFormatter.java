@@ -6,9 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
- * User: kalamon
- * Date: May 12, 2009
- * Time: 1:26:22 PM
+ * User: kalamon Date: May 12, 2009 Time: 1:26:22 PM
  */
 public final class JiraTimeFormatter {
 

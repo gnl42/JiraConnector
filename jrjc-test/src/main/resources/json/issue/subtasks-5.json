@@ -1,0 +1,290 @@
+{
+
+	"expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog",
+	"id": "10000",
+	"self": "http://localhost:2990/jira/rest/api/latest/issue/10000",
+	"key": "SAM-1",
+	"fields": {
+		"summary": "Parent case",
+		"issuetype": {
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/1",
+			"id": "1",
+			"description": "A problem which impairs or prevents the functions of the product.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/bug.gif",
+			"name": "Bug",
+			"subtask": false
+		},
+		"votes": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/SAM-1/votes",
+			"votes": 0,
+			"hasVoted": false
+		},
+		"resolution": null,
+		"fixVersions": [ ],
+		"resolutiondate": null,
+		"reporter": {
+			"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+			"name": "admin",
+			"emailAddress": "admin@example.com",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10142",
+				"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10142"
+			},
+			"displayName": "Administrator",
+			"active": true
+		},
+		"created": "2012-03-30T15:44:26.402+0200",
+		"updated": "2012-04-01T15:44:26.402+0200",
+		"description": null,
+		"priority": null,
+		"duedate": null,
+		"customfield_10001": null,
+		"issuelinks": [ ],
+		"watches": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/SAM-1/watchers",
+			"watchCount": 0,
+			"isWatching": false
+		},
+		"customfield_10000": null,
+		"subtasks": [
+			{
+				"id": "10001",
+				"key": "SAM-2",
+				"self": "http://localhost:2990/jira/rest/api/2/issue/10001",
+				"fields": {
+					"summary": "Sub-task",
+					"status": {
+						"self": "http://localhost:2990/jira/rest/api/2/status/1",
+						"description": "The issue is open and ready for the assignee to start work on it.",
+						"iconUrl": "http://localhost:2990/jira/images/icons/status_open.gif",
+						"name": "Open",
+						"id": "1"
+					},
+					"issuetype": {
+						"self": "http://localhost:2990/jira/rest/api/2/issuetype/8",
+						"id": "8",
+						"description": "",
+						"iconUrl": "http://localhost:2990/jira/images/icons/issue_subtask.gif",
+						"name": "Subtask",
+						"subtask": true
+					}
+				}
+			}
+		],
+		"status": {
+			"self": "http://localhost:2990/jira/rest/api/2/status/1",
+			"description": "The issue is open and ready for the assignee to start work on it.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/status_open.gif",
+			"name": "Open",
+			"id": "1"
+		},
+		"labels": [ ],
+		"customfield_10005": "1",
+		"workratio": -1,
+		"assignee": null,
+		"attachment": [ ],
+		"project": {
+			"self": "http://localhost:2990/jira/rest/api/2/project/SAM",
+			"id": "10010",
+			"key": "SAM",
+			"name": "Sample data",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10010&avatarId=10011",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10010&avatarId=10011"
+			}
+		},
+		"versions": [ ],
+		"environment": null,
+		"components": [ ],
+		"comment": {
+			"startAt": 0,
+			"maxResults": 0,
+			"total": 0,
+			"comments": [ ]
+		}
+	},
+	"names": {
+		"summary": "Summary",
+		"issuetype": "Issue Type",
+		"votes": "Votes",
+		"resolution": "Resolution",
+		"fixVersions": "Fix Version/s",
+		"resolutiondate": "Resolved",
+		"reporter": "Reporter",
+		"created": "Created",
+		"updated": "Updated",
+		"description": "Description",
+		"priority": "Priority",
+		"duedate": "Due Date",
+		"customfield_10001": "Epic/Theme",
+		"issuelinks": "Linked Issues",
+		"watches": "Watchers",
+		"customfield_10000": "Flagged",
+		"subtasks": "Sub-Tasks",
+		"status": "Status",
+		"labels": "Labels",
+		"customfield_10005": "External issue ID",
+		"workratio": "Work Ratio",
+		"assignee": "Assignee",
+		"attachment": "Attachment",
+		"project": "Project",
+		"versions": "Affects Version/s",
+		"environment": "Environment",
+		"components": "Component/s",
+		"comment": "Comment"
+	},
+	"schema": {
+		"summary": {
+			"type": "string",
+			"system": "summary"
+		},
+		"issuetype": {
+			"type": "issuetype",
+			"system": "issuetype"
+		},
+		"votes": {
+			"type": "array",
+			"items": "votes",
+			"system": "votes"
+		},
+		"resolution": {
+			"type": "resolution",
+			"system": "resolution"
+		},
+		"fixVersions": {
+			"type": "array",
+			"items": "version",
+			"system": "fixVersions"
+		},
+		"resolutiondate": {
+			"type": "datetime",
+			"system": "resolutiondate"
+		},
+		"reporter": {
+			"type": "user",
+			"system": "reporter"
+		},
+		"created": {
+			"type": "datetime",
+			"system": "created"
+		},
+		"updated": {
+			"type": "datetime",
+			"system": "updated"
+		},
+		"description": {
+			"type": "string",
+			"system": "description"
+		},
+		"priority": {
+			"type": "priority",
+			"system": "priority"
+		},
+		"duedate": {
+			"type": "date",
+			"system": "duedate"
+		},
+		"customfield_10001": {
+			"type": "array",
+			"items": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:labels",
+			"customId": 10001
+		},
+		"issuelinks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "issuelinks"
+		},
+		"watches": {
+			"type": "array",
+			"items": "watches",
+			"system": "watches"
+		},
+		"customfield_10000": {
+			"type": "array",
+			"items": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes",
+			"customId": 10000
+		},
+		"subtasks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "subtasks"
+		},
+		"status": {
+			"type": "status",
+			"system": "status"
+		},
+		"labels": {
+			"type": "array",
+			"items": "string",
+			"system": "labels"
+		},
+		"customfield_10005": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:textfield",
+			"customId": 10005
+		},
+		"workratio": {
+			"type": "number",
+			"system": "workratio"
+		},
+		"assignee": {
+			"type": "user",
+			"system": "assignee"
+		},
+		"attachment": {
+			"type": "array",
+			"items": "attachment",
+			"system": "attachment"
+		},
+		"project": {
+			"type": "project",
+			"system": "project"
+		},
+		"versions": {
+			"type": "array",
+			"items": "version",
+			"system": "versions"
+		},
+		"environment": {
+			"type": "string",
+			"system": "environment"
+		},
+		"components": {
+			"type": "array",
+			"items": "component",
+			"system": "components"
+		},
+		"comment": {
+			"type": "array",
+			"items": "comment",
+			"system": "comment"
+		}
+	},
+	"transitions": [
+		{
+			"id": "5",
+			"name": "Resolve Issue",
+			"to": {
+				"self": "http://localhost:2990/jira/rest/api/2/status/5",
+				"description": "A resolution has been taken, and it is awaiting verification by reporter. From here issues are either reopened, or are closed.",
+				"iconUrl": "http://localhost:2990/jira/images/icons/status_resolved.gif",
+				"name": "Resolved",
+				"id": "5"
+			}
+		},
+		{
+			"id": "2",
+			"name": "Close Issue",
+			"to": {
+				"self": "http://localhost:2990/jira/rest/api/2/status/6",
+				"description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+				"iconUrl": "http://localhost:2990/jira/images/icons/status_closed.gif",
+				"name": "Closed",
+				"id": "6"
+			}
+		}
+	]
+
+}

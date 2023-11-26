@@ -89,11 +89,9 @@ public class JiraVersion implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if ((obj == null) || !(obj instanceof JiraVersion)) {
+        if (obj == null || !(obj instanceof final JiraVersion that)) {
             return false;
         }
-
-        final JiraVersion that = (JiraVersion) obj;
 
         return id.equals(that.id);
     }

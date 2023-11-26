@@ -72,32 +72,15 @@ public class JiraLocalConfiguration {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final JiraLocalConfiguration other = (JiraLocalConfiguration) obj;
-        if (!Objects.equals(characterEncoding, other.characterEncoding)) {
+        if (!Objects.equals(characterEncoding, other.characterEncoding) || compressionEnabled != other.compressionEnabled
+                || !Objects.equals(datePattern, other.datePattern) || !Objects.equals(dateTimePattern, other.dateTimePattern)) {
             return false;
         }
-        if (compressionEnabled != other.compressionEnabled) {
-            return false;
-        }
-        if (!Objects.equals(datePattern, other.datePattern)) {
-            return false;
-        }
-        if (!Objects.equals(dateTimePattern, other.dateTimePattern)) {
-            return false;
-        }
-        if (followRedirects != other.followRedirects) {
-            return false;
-        }
-        if (!Objects.equals(locale, other.locale)) {
-            return false;
-        }
-        if (workDaysPerWeek != other.workDaysPerWeek) {
-            return false;
-        }
-        if (workHoursPerDay != other.workHoursPerDay) {
+        if ((followRedirects != other.followRedirects) || !Objects.equals(locale, other.locale) || (workDaysPerWeek != other.workDaysPerWeek) || (workHoursPerDay != other.workHoursPerDay)) {
             return false;
         }
         if (useServerTimeTrackingSettings != other.useServerTimeTrackingSettings) {
@@ -164,7 +147,8 @@ public class JiraLocalConfiguration {
 
     @Override
     public synchronized int hashCode() {
-        return Objects.hash(characterEncoding, compressionEnabled, datePattern, dateTimePattern, followRedirects, locale, workDaysPerWeek, workHoursPerDay, maxSearchResults, searchResultsTimeout);
+        return Objects.hash(characterEncoding, compressionEnabled, datePattern, dateTimePattern, followRedirects, locale, workDaysPerWeek, workHoursPerDay,
+                maxSearchResults, searchResultsTimeout);
     }
 
     public synchronized void setCharacterEncoding(final String characterEncoding) {

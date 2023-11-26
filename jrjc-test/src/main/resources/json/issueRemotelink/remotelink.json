@@ -1,0 +1,91 @@
+[
+    {
+        "id": 101446,
+        "self": "https://jira.localhost/rest/api/latest/issue/SISSTB-3/remotelink/101446",
+        "globalId": "appId=3dd6af0e-0d01-3cc0-8640-9b94d4cd8dcc&planKey=SIS-SBD762",
+        "application": {
+            "type": "com.atlassian.bamboo",
+            "name": "UBC IT Production Bamboo"
+        },
+        "relationship": "Bamboo Branches",
+        "object": {
+            "url": "https://bamboo.localhost:8443/browse/SIS-SBD762/latest",
+            "title": "SIS › 1.5 Stage Env - Build And Deploy › feature-SISSTB-3",
+            "summary": "SIS-SBD762",
+            "icon": {
+                "url16x16": "https://jira.localhost/download/resources/com.atlassian.jira.plugin.ext.bamboo:bamboo-version-tabpanel/images/icon_bamboo.png",
+                "title": "Plan Status"
+            },
+            "status": {
+                "icon": {
+                }
+            }
+        }
+    },
+    {
+        "id": 101447,
+        "self": "https://jira.localhost/rest/api/latest/issue/SISSTB-3/remotelink/101447",
+        "globalId": "appId=3dd6af0e-0d01-3cc0-8640-9b94d4cd8dcc&planKey=SIS-SIAD55",
+        "application": {
+            "type": "com.atlassian.bamboo",
+            "name": "UBC IT Production Bamboo"
+        },
+        "relationship": "Bamboo Branches",
+        "object": {
+            "url": "https://bamboo.localhost:8443/browse/SIS-SIAD55/latest",
+            "title": "SIS › SIS Application Deploy › feature-SISSTB-3",
+            "summary": "SIS-SIAD55",
+            "icon": {
+                "url16x16": "https://jira.localhost/download/resources/com.atlassian.jira.plugin.ext.bamboo:bamboo-version-tabpanel/images/icon_bamboo.png",
+                "title": "Plan Status"
+            },
+            "status": {
+                "icon": {
+                }
+            }
+        }
+    },
+    {
+        "id": 101440,
+        "self": "https://jira.localhost/rest/api/latest/issue/SISSTB-3/remotelink/101440",
+        "globalId": "appId=3dd6af0e-0d01-3cc0-8640-9b94d4cd8dcc&planKey=SIS-SIS636",
+        "application": {
+            "type": "com.atlassian.bamboo",
+            "name": "UBC IT Production Bamboo"
+        },
+        "relationship": "Bamboo Branches",
+        "object": {
+            "url": "https://bamboo.localhost:8443/browse/SIS-SIS636/latest",
+            "title": "SIS › SIS_Sonar_Scan › feature-SISSTB-3",
+            "summary": "SIS-SIS636",
+            "icon": {
+                "url16x16": "https://jira.localhost/download/resources/com.atlassian.jira.plugin.ext.bamboo:bamboo-version-tabpanel/images/icon_bamboo.png",
+                "title": "Plan Status"
+            },
+            "status": {
+                "icon": {
+                }
+            }
+        }
+    },
+    {
+        "id": 100163,
+        "self": "https://jira.localhost/rest/api/latest/issue/SISSTB-3/remotelink/100163",
+        "globalId": "appId=beeec374-c2e4-3b05-9af1-5ca4431b1e12&pageId=267105525",
+        "application": {
+            "type": "com.atlassian.confluence",
+            "name": "UBC IT Confluence"
+        },
+        "relationship": "mentioned in",
+        "object": {
+            "url": "https://confluence.localhost/pages/viewpage.action?pageId=267105525",
+            "title": "Page",
+            "icon": {
+            },
+            "status": {
+                "icon": {
+                }
+            }
+        }
+    }
+]

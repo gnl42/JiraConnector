@@ -54,7 +54,6 @@ public class JiraCorePlugin extends Plugin {
      * The constructor.
      */
     public JiraCorePlugin() {
-        super();
         plugin = this;
     }
 
@@ -131,8 +130,7 @@ public class JiraCorePlugin extends Plugin {
     private static String rootCause(final Throwable t) {
         if (t.getCause() == null) {
             final List<String> errorMsg = new ArrayList<>();
-            if (t instanceof RestClientException) {
-                final RestClientException restException = (RestClientException) t;
+            if (t instanceof final RestClientException restException) {
                 for (final ErrorCollection errors : restException.getErrorCollections()) {
                     if (errors.getErrorMessages() != null) {
                         for (final String msg : errors.getErrorMessages()) {

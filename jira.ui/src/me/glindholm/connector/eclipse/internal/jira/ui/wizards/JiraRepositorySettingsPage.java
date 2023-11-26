@@ -78,8 +78,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 import me.glindholm.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 
 /**
- * Wizard page used to specify a JIRA repository address, username, and
- * password.
+ * Wizard page used to specify a JIRA repository address, username, and password.
  *
  * @author Mik Kersten
  * @author Wesley Coelho (initial integration patch)
@@ -425,8 +424,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     }
 
     /**
-     * Helper method for distinguishing between hitting Finish and Validate (because
-     * Validation leads to calling applyTo in the superclass)
+     * Helper method for distinguishing between hitting Finish and Validate (because Validation leads to
+     * calling applyTo in the superclass)
      */
     public TaskRepository applyToValidate(final TaskRepository repository) {
         MigrateToSecureStorageJob.migrateToSecureStorage(repository);
@@ -535,12 +534,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
             try {
                 serverInfo = JiraClientFactory.getDefault().validateConnection(location, configuration, monitor);
             } catch (final JiraCaptchaRequiredException e) {
-                Display.getDefault().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open();
-                    }
-                });
+                Display.getDefault().asyncExec(() -> new RemoteApiLockedDialog(WorkbenchUtil.getShell(), repository.getRepositoryUrl()).open());
                 throw new CoreException(RepositoryStatus.createStatus(repository.getRepositoryUrl(), IStatus.ERROR, JiraUiPlugin.ID_PLUGIN,
                         Messages.JiraRepositorySettingsPage_remote_api_locked));
             } catch (final JiraAuthenticationException e) {
@@ -650,8 +644,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     }
 
     /**
-     * Inserts a checkbox into the page where the user can specify that token
-     * authentication shall be used for the task repository.
+     * Inserts a checkbox into the page where the user can specify that token authentication shall be
+     * used for the task repository.
      *
      * @param userOptional whether or not a user name is optional
      */
@@ -718,8 +712,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     /**
      * Tells whether the task repository uses token authentication.
      *
-     * @return {@code true} if token authentication shall be used; {@code false}
-     *         otherwise
+     * @return {@code true} if token authentication shall be used; {@code false} otherwise
      */
     protected boolean useTokenAuth() {
         return useToken != null && useToken.getSelection();

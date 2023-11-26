@@ -12,7 +12,7 @@
 <feature
       id="me.glindholm.connector.eclipse.jira"
       label="%featureName"
-      version="4.3.0.qualifier"
+      version="5.0.0.qualifier"
       provider-name="%providerName"
       plugin="me.glindholm.connector.eclipse.branding.ui">
 
@@ -28,6 +28,10 @@
       %license
    </license>
 
+   <url>
+      <update label="Mylyn Release Latest" url="https://download.eclipse.org/mylyn/updates/release/latest"/>
+   </url>
+
    <requires>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -37,18 +41,16 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.mylyn.context.core" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.core" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.tasks.core" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.tasks.ui" version="3.0.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.tasks.search" version="3.2.0" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.net" version="3.2.0" match="compatible"/>
+      <import plugin="org.eclipse.mylyn.context.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.core" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.ui" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.tasks.search" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.net" version="4.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.mylyn.commons.ui" version="4.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.net"/>
-      <import feature="org.eclipse.mylyn_feature" version="3.3.0.I20091013" match="compatible"/>
-      <import plugin="org.eclipse.mylyn.commons.ui" version="3.2.0" match="compatible"/>
-      <import plugin="me.glindholm.connector.eclipse.branding.ui"/>
    </requires>
 
    <plugin
@@ -66,27 +68,6 @@
          unpack="false"/>
 
    <plugin
-         id="me.glindholm.connector.eclipse.branding.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="me.glindholm.connector.eclipse.commons.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="me.glindholm.connector.eclipse.commons.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="jira-rest-java-client-api"
          download-size="0"
          install-size="0"
@@ -95,6 +76,13 @@
 
    <plugin
          id="jira-rest-java-client-core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="me.glindholm.connector.eclipse.help"
          download-size="0"
          install-size="0"
          version="0.0.0"

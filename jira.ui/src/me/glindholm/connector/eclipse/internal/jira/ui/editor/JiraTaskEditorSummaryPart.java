@@ -41,8 +41,7 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
             addAttribute(composite, toolkit, attribute, true);
 
             final Layout layout = composite.getLayout();
-            if (layout instanceof GridLayout) {
-                final GridLayout gl = (GridLayout) layout;
+            if (layout instanceof final GridLayout gl) {
                 gl.numColumns = composite.getChildren().length;
 
                 if (gl.numColumns == 0) {
@@ -53,9 +52,7 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
         }
 
         final Layout layout = composite.getLayout();
-        if (layout instanceof GridLayout) {
-            final GridLayout gLayout = (GridLayout) layout;
-
+        if (layout instanceof final GridLayout gLayout) {
             final Composite secondLineComposite = new Composite(composite, SWT.NONE);
             final RowLayout rowLayout = new RowLayout();
             rowLayout.center = true;
@@ -65,14 +62,12 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
             GridDataFactory.fillDefaults().span(gLayout.numColumns, 1).applyTo(secondLineComposite);
             toolkit.adapt(secondLineComposite);
 
-            final TaskAttribute reporterAttribute = getTaskData().getRoot().getMappedAttribute(
-                    JiraAttribute.USER_REPORTER.id());
+            final TaskAttribute reporterAttribute = getTaskData().getRoot().getMappedAttribute(JiraAttribute.USER_REPORTER.id());
             if (reporterAttribute != null) {
                 addAttribute(secondLineComposite, toolkit, reporterAttribute, false);
             }
 
-            final TaskAttribute assigneeAttribute = getTaskData().getRoot().getMappedAttribute(
-                    JiraAttribute.USER_ASSIGNED.id());
+            final TaskAttribute assigneeAttribute = getTaskData().getRoot().getMappedAttribute(JiraAttribute.USER_ASSIGNED.id());
             if (assigneeAttribute != null) {
                 addAttribute(secondLineComposite, toolkit, assigneeAttribute, false);
             }
@@ -82,8 +77,7 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
         return composite;
     }
 
-    private void addAttribute(final Composite composite, final FormToolkit toolkit, final TaskAttribute attribute,
-            final boolean shouldInitializeGridData) {
+    private void addAttribute(final Composite composite, final FormToolkit toolkit, final TaskAttribute attribute, final boolean shouldInitializeGridData) {
         final AbstractAttributeEditor editor = createAttributeEditor(attribute);
         if (editor != null) {
             editor.setReadOnly(true);
@@ -91,9 +85,7 @@ public class JiraTaskEditorSummaryPart extends TaskEditorSummaryPart {
 
             editor.createLabelControl(composite, toolkit);
             if (shouldInitializeGridData) {
-                GridDataFactory.defaultsFor(editor.getLabelControl())
-                .indent(EditorUtil.HEADER_COLUMN_MARGIN, 0)
-                .applyTo(editor.getLabelControl());
+                GridDataFactory.defaultsFor(editor.getLabelControl()).indent(EditorUtil.HEADER_COLUMN_MARGIN, 0).applyTo(editor.getLabelControl());
             }
 
             editor.createControl(composite, toolkit);

@@ -1,0 +1,542 @@
+{"expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog", "id": "93813", "self": "https://ecosystem.atlassian.net/rest/api/2/issue/93813", "key": "JRJC-182", "fields": {
+	"progress": {
+		"progress": 0,
+		"total": 0
+	},
+	"summary": "Add Expandos.OPERATIONS",
+	"timetracking": {},
+	"issuetype": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/issuetype/2",
+		"id": "2",
+		"description": "A new feature of the product, which has yet to be developed.",
+		"iconUrl": "https://ecosystem.atlassian.net/images/icons/issuetypes/newfeature.png",
+		"name": "New Feature",
+		"subtask": false
+	},
+	"customfield_12080": null,
+	"customfield_12180": null,
+	"timespent": null,
+	"reporter": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/user?username=czawadka",
+		"name": "czawadka",
+		"emailAddress": "czawadka@atlassian.com",
+		"avatarUrls": {
+			"16x16": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=16",
+			"24x24": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=24",
+			"32x32": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=32",
+			"48x48": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=48"
+		},
+		"displayName": "Cezary Zawadka",
+		"active": true
+	},
+	"updated": "2014-05-24T07:28:14.472+1000",
+	"created": "2014-05-24T07:28:14.472+1000",
+	"priority": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/priority/3",
+		"iconUrl": "https://ecosystem.atlassian.net/images/icons/priorities/major.png",
+		"name": "Major",
+		"id": "3"
+	},
+	"description": "There is missing support for expand 'operations' which brings additional information about permissions eg. if worklog can be added. Add support for it ass additional Expandos.OPERATIONS",
+	"issuelinks": [],
+	"subtasks": [],
+	"customfield_12984": null,
+	"status": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/status/1",
+		"description": "The issue is open and ready for the assignee to start work on it.",
+		"iconUrl": "https://ecosystem.atlassian.net/images/icons/statuses/open.png",
+		"name": "Open",
+		"id": "1",
+		"statusCategory": {
+			"self": "https://ecosystem.atlassian.net/rest/api/2/statuscategory/2",
+			"id": 2,
+			"key": "new",
+			"colorName": "blue-gray",
+			"name": "New"
+		}
+	},
+	"customfield_12985": null,
+	"customfield_12982": null,
+	"labels": [],
+	"customfield_12983": null,
+	"workratio": -1,
+	"project": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/project/13571",
+		"id": "13571",
+		"key": "JRJC",
+		"name": "JIRA REST Java Client Library",
+		"avatarUrls": {
+			"16x16": "https://ecosystem.atlassian.net/secure/projectavatar?size=xsmall&pid=13571&avatarId=10011",
+			"24x24": "https://ecosystem.atlassian.net/secure/projectavatar?size=small&pid=13571&avatarId=10011",
+			"32x32": "https://ecosystem.atlassian.net/secure/projectavatar?size=medium&pid=13571&avatarId=10011",
+			"48x48": "https://ecosystem.atlassian.net/secure/projectavatar?pid=13571&avatarId=10011"
+		},
+		"projectCategory": {
+			"self": "https://ecosystem.atlassian.net/rest/api/2/projectCategory/10170",
+			"id": "10170",
+			"description": "",
+			"name": "JIRA Plugins"
+		}
+	},
+	"customfield_12480": null,
+	"customfield_11585": null,
+	"environment": null,
+	"customfield_10980": null,
+	"customfield_11584": null,
+	"customfield_12380": null,
+	"customfield_11583": null,
+	"customfield_12381": null,
+	"customfield_11582": null,
+	"customfield_12382": null,
+	"customfield_11581": null,
+	"customfield_11580": null,
+	"customfield_12281": null,
+	"aggregateprogress": {
+		"progress": 0,
+		"total": 0
+	},
+	"lastViewed": "2014-05-24T07:28:58.697+1000",
+	"components": [],
+	"comment": {
+		"startAt": 0,
+		"maxResults": 0,
+		"total": 0,
+		"comments": []
+	},
+	"timeoriginalestimate": null,
+	"customfield_13180": "0|107hmw:",
+	"customfield_12280": null,
+	"customfield_12880": null,
+	"customfield_12781": null,
+	"customfield_12680": null,
+	"votes": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/issue/JRJC-182/votes",
+		"votes": 0,
+		"hasVoted": false
+	},
+	"fixVersions": [],
+	"resolution": null,
+	"resolutiondate": null,
+	"customfield_11080": "9223372036854775807",
+	"customfield_11681": null,
+	"creator": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/user?username=czawadka",
+		"name": "czawadka",
+		"emailAddress": "czawadka@atlassian.com",
+		"avatarUrls": {
+			"16x16": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=16",
+			"24x24": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=24",
+			"32x32": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=32",
+			"48x48": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=48"
+		},
+		"displayName": "Cezary Zawadka",
+		"active": true
+	},
+	"customfield_10880": null,
+	"aggregatetimeoriginalestimate": null,
+	"customfield_10160": null,
+	"duedate": null,
+	"customfield_10785": null,
+	"customfield_10784": "9223372036854775807",
+	"watches": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/issue/JRJC-182/watchers",
+		"watchCount": 1,
+		"isWatching": true
+	},
+	"worklog": {
+		"startAt": 0,
+		"maxResults": 20,
+		"total": 0,
+		"worklogs": []
+	},
+	"customfield_10786": null,
+	"assignee": {
+		"self": "https://ecosystem.atlassian.net/rest/api/2/user?username=czawadka",
+		"name": "czawadka",
+		"emailAddress": "czawadka@atlassian.com",
+		"avatarUrls": {
+			"16x16": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=16",
+			"24x24": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=24",
+			"32x32": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=32",
+			"48x48": "https://secure.gravatar.com/avatar/f6ac957fddf22181c67eec94f5c9e961?d=mm&s=48"
+		},
+		"displayName": "Cezary Zawadka",
+		"active": true
+	},
+	"attachment": [],
+	"aggregatetimeestimate": null,
+	"versions": [],
+	"customfield_10170": null,
+	"customfield_10133": null,
+	"customfield_11880": null,
+	"timeestimate": null,
+	"customfield_10032": null,
+	"customfield_11980": "Not Started",
+	"aggregatetimespent": null
+}, "operations": {
+	"linkGroups": [
+		{
+			"id": "view.issue.opsbar",
+			"links": [],
+			"groups": [
+				{
+					"id": "edit-issue_container",
+					"weight": 1,
+					"links": [
+						{
+							"id": "edit-issue",
+							"styleClass": "issueaction-edit-issue",
+							"iconClass": "jira-icon-edit",
+							"label": "Edit",
+							"title": "Edit this issue",
+							"href": "/secure/EditIssue!default.jspa?id=93813",
+							"weight": 1
+						}
+					],
+					"groups": []
+				},
+				{
+					"id": "comment-issue_container",
+					"weight": 10,
+					"links": [
+						{
+							"id": "comment-issue",
+							"styleClass": "issueaction-comment-issue add-issue-comment",
+							"iconClass": "aui-icon aui-icon-small aui-iconfont-comment icon-comment",
+							"label": "Comment",
+							"title": "Comment on this issue",
+							"href": "/secure/AddComment!default.jspa?id=93813",
+							"weight": 10
+						}
+					],
+					"groups": []
+				},
+				{
+					"id": "opsbar-operations",
+					"weight": 10,
+					"links": [
+						{
+							"id": "assign-issue",
+							"styleClass": "issueaction-assign-issue",
+							"label": "Assign",
+							"title": "Assign this issue to someone",
+							"href": "/secure/AssignIssue!default.jspa?id=93813",
+							"weight": 5
+						}
+					],
+					"groups": [
+						{
+							"header": {
+								"id": "opsbar-operations_more",
+								"label": "More"
+							},
+							"links": [],
+							"groups": [
+								{
+									"id": "greenhopper_issue_dropdown",
+									"weight": 20,
+									"links": [
+										{
+											"id": "greenhopper-rapidboard-operation",
+											"styleClass": "issueaction-greenhopper-rapidboard-operation js-rapidboard-operation-issue",
+											"label": "Agile Board",
+											"title": "View this issue on an Agile board",
+											"href": "/secure/GHGoToBoard.jspa?issueId=93813",
+											"weight": 30
+										},
+										{
+											"id": "greenhopper-rank-top-operation",
+											"styleClass": "issueaction-greenhopper-rank-top-operation",
+											"label": "Rank to Top",
+											"href": "/secure/RankTop.jspa?issueId=93813",
+											"weight": 40
+										},
+										{
+											"id": "greenhopper-rank-bottom-operation",
+											"styleClass": "issueaction-greenhopper-rank-bottom-operation",
+											"label": "Rank to Bottom",
+											"href": "/secure/RankBottom.jspa?issueId=93813",
+											"weight": 50
+										}
+									],
+									"groups": []
+								},
+								{
+									"id": "operations-work",
+									"weight": 20,
+									"links": [
+										{
+											"id": "log-work",
+											"styleClass": "issueaction-log-work",
+											"label": "Log Work",
+											"title": "Log work against this issue",
+											"href": "/secure/CreateWorklog!default.jspa?id=93813",
+											"weight": 10
+										}
+									],
+									"groups": []
+								},
+								{
+									"id": "operations-attachments",
+									"weight": 30,
+									"links": [
+										{
+											"id": "attach-file",
+											"styleClass": "issueaction-attach-file",
+											"label": "Attach Files",
+											"title": "Attach one or more files to this issue",
+											"href": "/secure/AttachFile!default.jspa?id=93813",
+											"weight": 10
+										},
+										{
+											"id": "attach-screenshot-html5",
+											"styleClass": "issueaction-attach-image",
+											"label": "Attach Screenshot",
+											"href": "/secure/ShowAttachScreenshotFormAction!default.jspa?id=93813",
+											"weight": 15
+										},
+										{
+											"id": "add-edit-gliffy-diagram",
+											"styleClass": "",
+											"label": "Add Gliffy Diagram",
+											"title": "Add Gliffy Diagram",
+											"href": "/secure/ShowGliffyEditorAction.jspa?issue=JRJC-182",
+											"weight": 25
+										},
+										{
+											"id": "add-edit-mockup",
+											"styleClass": "",
+											"label": "Add/Edit UI Mockup",
+											"title": "Launch the Balsamiq Mockups editor",
+											"href": "/plugins/servlet/com.balsamiq.mockups?do=add&issue=JRJC-182",
+											"weight": 30
+										}
+									],
+									"groups": []
+								},
+								{
+									"id": "operations-voteswatchers",
+									"weight": 40,
+									"links": [
+										{
+											"id": "view-voters",
+											"styleClass": "issueaction-view-voters",
+											"label": "Voters",
+											"title": "View voters for this issue",
+											"href": "/secure/ViewVoters!default.jspa?id=93813",
+											"weight": 30
+										},
+										{
+											"id": "toggle-watch-issue",
+											"styleClass": "issueaction-unwatch-issue",
+											"label": "Stop Watching",
+											"title": "Stop watching this issue",
+											"href": "/secure/VoteOrWatchIssue.jspa?atl_token=AG87-S37R-QM8W-6VWE|ef860674d15a3fa41e64c4a7a9a021c24c9f26ca|lin&id=93813&watch=unwatch",
+											"weight": 50
+										},
+										{
+											"id": "manage-watchers",
+											"styleClass": "issueaction-manage-watchers",
+											"label": "Watchers",
+											"title": "Manage the watchers of this issue",
+											"href": "/secure/ManageWatchers!default.jspa?id=93813",
+											"weight": 60
+										}
+									],
+									"groups": []
+								},
+								{
+									"id": "operations-subtasks",
+									"weight": 50,
+									"links": [
+										{
+											"id": "create-subtask",
+											"styleClass": "issueaction-create-subtask",
+											"label": "Create Sub-Task",
+											"title": "Create sub-task for this issue",
+											"href": "/secure/CreateSubTaskIssue!default.jspa?parentIssueId=93813",
+											"weight": 10
+										},
+										{
+											"id": "issue-to-subtask",
+											"styleClass": "issueaction-issue-to-subtask",
+											"label": "Convert to Sub-Task",
+											"title": "Convert this issue to sub-task",
+											"href": "/secure/ConvertIssue.jspa?id=93813",
+											"weight": 20
+										}
+									],
+									"groups": []
+								},
+								{
+									"id": "devstatus-cta-list",
+									"weight": 55,
+									"links": [
+										{
+											"id": "cta-create-branch",
+											"styleClass": "devstatus-cta-link",
+											"iconClass": "aui-iconfont-devtools-branch",
+											"label": "Create branch",
+											"href": "#devstatus.cta.createbranch",
+											"weight": 10
+										}
+									],
+									"groups": []
+								},
+								{
+									"id": "operations-operations",
+									"weight": 60,
+									"links": [
+										{
+											"id": "move-issue",
+											"styleClass": "issueaction-move-issue",
+											"label": "Move",
+											"title": "Move this issue to another project or issue type.",
+											"href": "/secure/MoveIssue!default.jspa?id=93813",
+											"weight": 10
+										},
+										{
+											"id": "link-issue",
+											"styleClass": "issueaction-link-issue",
+											"label": "Link",
+											"title": "Link this issue to another issue or item",
+											"href": "/secure/LinkJiraIssue!default.jspa?id=93813",
+											"weight": 20
+										},
+										{
+											"id": "clone-issue",
+											"styleClass": "issueaction-clone-issue",
+											"label": "Clone",
+											"title": "Clone this issue",
+											"href": "/secure/CloneIssueDetails!default.jspa?id=93813",
+											"weight": 20
+										},
+										{
+											"id": "clone-issue-ric",
+											"styleClass": "issueaction-clone-issue-ric",
+											"label": "Remote Copy",
+											"title": "Remote Copy",
+											"href": "/secure/SelectTargetProject!default.jspa?id=93813",
+											"weight": 20
+										},
+										{
+											"id": "edit-labels",
+											"styleClass": "issueaction-edit-labels",
+											"label": "Labels",
+											"title": "Edit this issue's labels",
+											"href": "/secure/EditLabels!default.jspa?id=93813",
+											"weight": 30
+										},
+										{
+											"id": "create-test-session",
+											"styleClass": "issueaction-create-test-session",
+											"label": "Create Test Session",
+											"href": "/secure/CreateSession.jspa?issueId=93813",
+											"weight": 1000
+										}
+									],
+									"groups": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"id": "opsbar-transitions",
+					"weight": 20,
+					"links": [
+						{
+							"id": "action_id_4",
+							"styleClass": "issueaction-workflow-transition",
+							"label": "Start Progress",
+							"href": "/secure/WorkflowUIDispatcher.jspa?id=93813&action=4&atl_token=",
+							"weight": 10
+						},
+						{
+							"id": "action_id_5",
+							"styleClass": "issueaction-workflow-transition",
+							"label": "Resolve Issue",
+							"href": "/secure/WorkflowUIDispatcher.jspa?id=93813&action=5&atl_token=",
+							"weight": 20
+						},
+						{
+							"id": "action_id_2",
+							"styleClass": "issueaction-workflow-transition",
+							"label": "Close Issue",
+							"href": "/secure/WorkflowUIDispatcher.jspa?id=93813&action=2&atl_token=",
+							"weight": 30
+						}
+					],
+					"groups": [
+						{
+							"header": {
+								"id": "opsbar-transitions_more",
+								"label": "Workflow"
+							},
+							"links": [],
+							"groups": []
+						}
+					]
+				},
+				{
+					"id": "opsbar-admin",
+					"weight": 30,
+					"links": [],
+					"groups": [
+						{
+							"header": {
+								"id": "opsbar-admin_more",
+								"label": "Admin"
+							},
+							"links": [],
+							"groups": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "jira.issue.tools",
+			"links": [
+				{
+					"id": "jira-share-trigger",
+					"styleClass": "icon-share viewissue-share",
+					"iconClass": "icon-share icon-viewissue-share",
+					"label": "",
+					"title": "Share this issue by emailing other users",
+					"href": "",
+					"weight": 10
+				}
+			],
+			"groups": [
+				{
+					"id": "view.issue.exports",
+					"header": {
+						"id": "viewissue-export",
+						"iconClass": "icon-export viewissue-export",
+						"label": "Export",
+						"title": "Export this issue in another format"
+					},
+					"links": [
+						{
+							"id": "jira.issueviews:issue-xml",
+							"label": "XML",
+							"href": "/si/jira.issueviews:issue-xml/JRJC-182/JRJC-182.xml"
+						},
+						{
+							"id": "jira.issueviews:issue-word",
+							"label": "Word",
+							"href": "/si/jira.issueviews:issue-word/JRJC-182/JRJC-182.doc"
+						},
+						{
+							"id": "jira.issueviews:issue-html",
+							"label": "Printable",
+							"href": "/si/jira.issueviews:issue-html/JRJC-182/JRJC-182.html"
+						}
+					],
+					"groups": []
+				}
+			]
+		}
+	]
+}}

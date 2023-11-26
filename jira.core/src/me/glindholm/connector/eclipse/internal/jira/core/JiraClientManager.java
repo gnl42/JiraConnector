@@ -90,12 +90,7 @@ public class JiraClientManager {
                 }
             } catch (final Throwable e) {
                 final String msg = "Update JIRA repository(ies) configuration due to format change";
-                PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        MessageDialog.openError(WorkbenchUtil.getShell(), "JiraConnector JIRA Connector", msg);
-                    }
-                });
+                PlatformUI.getWorkbench().getDisplay().asyncExec(() -> MessageDialog.openError(WorkbenchUtil.getShell(), "JiraConnector JIRA Connector", msg));
 
                 StatusHandler.log(new Status(IStatus.INFO, JiraCorePlugin.ID_PLUGIN, msg)); // $NON-NLS-1$
             }
@@ -123,17 +118,15 @@ public class JiraClientManager {
     }
 
     /**
-     * Tests the connection to a server. If the URL is invalid ot the username and
-     * password are invalid this method will return with a exceptions carrying the
-     * failure reason.
+     * Tests the connection to a server. If the URL is invalid ot the username and password are invalid
+     * this method will return with a exceptions carrying the failure reason.
      *
      * @param monitor
      * @param baseUrl  Base URL of the jira installation
      * @param username username to connect with
      * @param password Password to connect with
      * @return Short string describing the server information
-     * @throws JiraAuthenticationException     URL was valid but username and
-     *                                         password were incorrect
+     * @throws JiraAuthenticationException     URL was valid but username and password were incorrect
      * @throws JiraServiceUnavailableException URL was not valid
      */
     public JiraServerInfo validateConnection(final AbstractWebLocation location, final JiraLocalConfiguration configuration, final IProgressMonitor monitor)

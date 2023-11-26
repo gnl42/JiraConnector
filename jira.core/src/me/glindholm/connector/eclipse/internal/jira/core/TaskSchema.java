@@ -65,9 +65,9 @@ public class TaskSchema {
             this.label = label;
             this.type = type;
             if (firstFlag == null) {
-                this.flags = NO_FLAGS;
+                flags = NO_FLAGS;
             } else {
-                this.flags = EnumSet.of(firstFlag, moreFlags);
+                flags = EnumSet.of(firstFlag, moreFlags);
             }
         }
 

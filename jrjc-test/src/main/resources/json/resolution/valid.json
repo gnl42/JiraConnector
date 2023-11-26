@@ -1,0 +1,6 @@
+{
+	"self":"http://localhost:8090/jira/rest/api/latest/resolution/4",
+	"description":"The problem is not completely described.",
+	"name":"Incomplete",
+	"id":"4"
+}

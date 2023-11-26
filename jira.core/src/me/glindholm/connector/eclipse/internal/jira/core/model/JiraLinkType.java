@@ -34,9 +34,9 @@ public class JiraLinkType implements Serializable {
 
     private String outwardsDescription;
 
-    //	private boolean isSubTaskLinkType;
+    // private boolean isSubTaskLinkType;
     //
-    //	private boolean isSystemLinkType;
+    // private boolean isSystemLinkType;
 
     public String getId() {
         return id;

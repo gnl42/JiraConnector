@@ -1,0 +1,348 @@
+{
+	"expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog",
+	"id": "10050",
+	"self": "http://localhost:2990/jira/rest/api/latest/issue/10050",
+	"key": "ANNON-1",
+	"fields": {
+		"summary": "An anonymously accessible issue",
+		"progress": {
+			"progress": 0,
+			"total": 144000,
+			"percent": 0
+		},
+		"timetracking": {
+			"originalEstimate": "1w 5h",
+			"remainingEstimate": "1w",
+			"originalEstimateSeconds": 162000,
+			"remainingEstimateSeconds": 144000
+		},
+		"issuetype": {
+			"self": "http://localhost:2990/jira/rest/api/2/issuetype/4",
+			"id": "4",
+			"description": "An improvement or enhancement to an existing feature or task.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/improvement.gif",
+			"name": "Improvement",
+			"subtask": false
+		},
+		"votes": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/ANNON-1/votes",
+			"votes": 0,
+			"hasVoted": false
+		},
+		"resolution": null,
+		"fixVersions": [],
+		"resolutiondate": null,
+		"timespent": null,
+		"reporter": {
+			"self": "http://localhost:2990/jira/rest/api/2/user?username=admin",
+			"name": "admin",
+			"emailAddress": "wojciech.seliga@spartez.com",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054",
+				"48x48": "http://localhost:2990/jira/secure/useravatar?ownerId=admin&avatarId=10054"
+			},
+			"displayName": "Administrator",
+			"active": true
+		},
+		"aggregatetimeoriginalestimate": 162000,
+		"created": "2010-10-01T18:02:06.178+0200",
+		"updated": "2010-12-06T13:09:30.662+0100",
+		"description": null,
+		"priority": {
+			"self": "http://localhost:2990/jira/rest/api/2/priority/1",
+			"iconUrl": "http://localhost:2990/jira/images/icons/priority_blocker.gif",
+			"name": "Blocker",
+			"id": "1"
+		},
+		"duedate": "2010-10-21",
+		"customfield_10001": null,
+		"issuelinks": [],
+		"watches": {
+			"self": "http://localhost:2990/jira/rest/api/2/issue/ANNON-1/watchers",
+			"watchCount": 1,
+			"isWatching": true
+		},
+		"worklog": {
+			"startAt": 0,
+			"maxResults": 0,
+			"total": 0,
+			"worklogs": []
+		},
+		"subtasks": [],
+		"status": {
+			"self": "http://localhost:2990/jira/rest/api/2/status/1",
+			"description": "The issue is open and ready for the assignee to start work on it.",
+			"iconUrl": "http://localhost:2990/jira/images/icons/status_open.gif",
+			"name": "Open",
+			"id": "1"
+		},
+		"labels": [
+			"a"
+		],
+		"workratio": 0,
+		"assignee": {
+			"self": "http://localhost:2990/jira/rest/api/2/user?username=user",
+			"name": "user",
+			"emailAddress": "testmail@example.com",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+				"48x48": "http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+			},
+			"displayName": "My Test User",
+			"active": true
+		},
+		"attachment": [],
+		"aggregatetimeestimate": 144000,
+		"project": {
+			"self": "http://localhost:2990/jira/rest/api/2/project/ANNON",
+			"id": "10020",
+			"key": "ANNON",
+			"name": "Anonymously Accessible Project",
+			"avatarUrls": {
+				"16x16": "http://localhost:2990/jira/secure/projectavatar?size=small&pid=10020&avatarId=10011",
+				"48x48": "http://localhost:2990/jira/secure/projectavatar?pid=10020&avatarId=10011"
+			}
+		},
+		"versions": [],
+		"environment": null,
+		"timeestimate": 144000,
+		"aggregateprogress": {
+			"progress": 0,
+			"total": 144000,
+			"percent": 0
+		},
+		"components": [],
+		"comment": {
+			"startAt": 0,
+			"maxResults": 1,
+			"total": 1,
+			"comments": [
+				{
+					"self": "http://localhost:2990/jira/rest/api/2/issue/10050/comment/10040",
+					"id": "10040",
+					"body": "Comment from anonymous user",
+					"created": "2010-12-06T13:09:30.661+0100",
+					"updated": "2010-12-06T13:09:30.661+0100"
+				}
+			]
+		},
+		"customfield_10010": null,
+		"timeoriginalestimate": 162000,
+		"customfield_10011": null,
+		"aggregatetimespent": null
+	},
+	"names": {
+		"summary": "Summary",
+		"progress": "Progress",
+		"timetracking": "Time Tracking",
+		"issuetype": "Issue Type",
+		"votes": "Votes",
+		"resolution": "Resolution",
+		"fixVersions": "Fix Version/s",
+		"resolutiondate": "Resolved",
+		"timespent": "Time Spent",
+		"reporter": "Reporter",
+		"aggregatetimeoriginalestimate": "Σ Original Estimate",
+		"created": "Created",
+		"updated": "Updated",
+		"description": "Description",
+		"priority": "Priority",
+		"duedate": "Due Date",
+		"customfield_10001": "My Radio buttons",
+		"issuelinks": "Linked Issues",
+		"watches": "Watchers",
+		"worklog": "Log Work",
+		"subtasks": "Sub-Tasks",
+		"status": "Status",
+		"labels": "Labels",
+		"workratio": "Work Ratio",
+		"assignee": "Assignee",
+		"attachment": "Attachment",
+		"aggregatetimeestimate": "Σ Remaining Estimate",
+		"project": "Project",
+		"versions": "Affects Version/s",
+		"environment": "Environment",
+		"timeestimate": "Remaining Estimate",
+		"aggregateprogress": "Σ Progress",
+		"components": "Component/s",
+		"comment": "Comment",
+		"customfield_10010": "project3",
+		"timeoriginalestimate": "Original Estimate",
+		"customfield_10011": "project2",
+		"aggregatetimespent": "Σ Time Spent"
+	},
+	"schema": {
+		"summary": {
+			"type": "string",
+			"system": "summary"
+		},
+		"progress": {
+			"type": "progress",
+			"system": "progress"
+		},
+		"timetracking": {
+			"type": "timetracking",
+			"system": "timetracking"
+		},
+		"issuetype": {
+			"type": "issuetype",
+			"system": "issuetype"
+		},
+		"votes": {
+			"type": "array",
+			"items": "votes",
+			"system": "votes"
+		},
+		"resolution": {
+			"type": "resolution",
+			"system": "resolution"
+		},
+		"fixVersions": {
+			"type": "array",
+			"items": "version",
+			"system": "fixVersions"
+		},
+		"resolutiondate": {
+			"type": "datetime",
+			"system": "resolutiondate"
+		},
+		"timespent": {
+			"type": "number",
+			"system": "timespent"
+		},
+		"reporter": {
+			"type": "user",
+			"system": "reporter"
+		},
+		"aggregatetimeoriginalestimate": {
+			"type": "number",
+			"system": "aggregatetimeoriginalestimate"
+		},
+		"created": {
+			"type": "datetime",
+			"system": "created"
+		},
+		"updated": {
+			"type": "datetime",
+			"system": "updated"
+		},
+		"description": {
+			"type": "string",
+			"system": "description"
+		},
+		"priority": {
+			"type": "priority",
+			"system": "priority"
+		},
+		"duedate": {
+			"type": "date",
+			"system": "duedate"
+		},
+		"customfield_10001": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons",
+			"customId": 10001
+		},
+		"issuelinks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "issuelinks"
+		},
+		"watches": {
+			"type": "array",
+			"items": "watches",
+			"system": "watches"
+		},
+		"worklog": {
+			"type": "array",
+			"items": "worklog",
+			"system": "worklog"
+		},
+		"subtasks": {
+			"type": "array",
+			"items": "issuelinks",
+			"system": "subtasks"
+		},
+		"status": {
+			"type": "status",
+			"system": "status"
+		},
+		"labels": {
+			"type": "array",
+			"items": "string",
+			"system": "labels"
+		},
+		"workratio": {
+			"type": "number",
+			"system": "workratio"
+		},
+		"assignee": {
+			"type": "user",
+			"system": "assignee"
+		},
+		"attachment": {
+			"type": "array",
+			"items": "attachment",
+			"system": "attachment"
+		},
+		"aggregatetimeestimate": {
+			"type": "number",
+			"system": "aggregatetimeestimate"
+		},
+		"project": {
+			"type": "project",
+			"system": "project"
+		},
+		"versions": {
+			"type": "array",
+			"items": "version",
+			"system": "versions"
+		},
+		"environment": {
+			"type": "string",
+			"system": "environment"
+		},
+		"timeestimate": {
+			"type": "number",
+			"system": "timeestimate"
+		},
+		"aggregateprogress": {
+			"type": "progress",
+			"system": "aggregateprogress"
+		},
+		"components": {
+			"type": "array",
+			"items": "component",
+			"system": "components"
+		},
+		"comment": {
+			"type": "array",
+			"items": "comment",
+			"system": "comment"
+		},
+		"customfield_10010": {
+			"type": "project",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:project",
+			"customId": 10010
+		},
+		"timeoriginalestimate": {
+			"type": "number",
+			"system": "timeoriginalestimate"
+		},
+		"customfield_10011": {
+			"type": "string",
+			"custom": "com.atlassian.jira.plugin.system.customfieldtypes:textarea",
+			"customId": 10011
+		},
+		"aggregatetimespent": {
+			"type": "number",
+			"system": "aggregatetimespent"
+		}
+	},
+	"changelog": {
+		"startAt": 0,
+		"maxResults": 0,
+		"total": 0,
+		"histories": []
+	}
+}

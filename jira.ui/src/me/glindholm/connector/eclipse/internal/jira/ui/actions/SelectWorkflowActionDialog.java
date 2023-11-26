@@ -49,8 +49,8 @@ public class SelectWorkflowActionDialog extends MessageDialog {
     private Combo actionsComboBox;
 
     public SelectWorkflowActionDialog(final Shell parentShell, final TaskData taskData, final ITask iTask, final boolean startWork) {
-        super(parentShell, NLS.bind(startWork ? Messages.SelectWorkflowAction_Start_Title
-                : Messages.SelectWorkflowAction_Stop_Title, iTask.getTaskKey()), null, null, SWT.NONE, buttons, 0);
+        super(parentShell, NLS.bind(startWork ? Messages.SelectWorkflowAction_Start_Title : Messages.SelectWorkflowAction_Stop_Title, iTask.getTaskKey()), null,
+                null, SWT.NONE, buttons, 0);
         this.taskData = taskData;
         this.startWork = startWork;
         repository = TasksUi.getRepositoryManager().getRepository(iTask.getConnectorKind(), iTask.getRepositoryUrl());
@@ -83,7 +83,8 @@ public class SelectWorkflowActionDialog extends MessageDialog {
                 Integer.parseInt(operation.getOperationId());
                 items.add(operation.getLabel());
             } catch (final NumberFormatException e) {
-                // there are some built-in Mylyn ops that don't have numeric IDs (like "leave unchanged" or whatever)
+                // there are some built-in Mylyn ops that don't have numeric IDs (like "leave unchanged" or
+                // whatever)
             }
         }
         actionsComboBox.setItems(items.toArray(new String[items.size()]));

@@ -46,8 +46,7 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
             return false;
         }
 
-        final TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(),
-                task.getRepositoryUrl());
+        final TaskRepository repository = TasksUi.getRepositoryManager().getRepository(task.getConnectorKind(), task.getRepositoryUrl());
 
         if (repository == null) {
             return false;
@@ -59,7 +58,7 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
             return false;
         }
 
-        //		TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
+        // TaskAttribute assigneeAttribute = rootAttribute.getAttribute(JiraAttribute.USER_ASSIGNED.id());
 
         return repository.getUserName() != null && repository.getUserName().equals(task.getOwner());
     }
@@ -69,17 +68,15 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
     }
 
     protected static boolean isTaskInStop(final TaskData taskData, final ITask task) {
-        //		if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
-        //			return true;
-        //		} else if (!isAssignedToMe(taskData, task) && isInOpenState(taskData)) {
-        //			return true;
-        //		}
+        // if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
+        // return true;
+        // } else if (!isAssignedToMe(taskData, task) && isInOpenState(taskData)) {
+        // return true;
+        // }
 
-        if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData)) {
+        if (isAssignedToMe(taskData, task) && haveStartProgressOperation(taskData) || isInOpenState(taskData)) {
             return true;
 
-        } else if (isInOpenState(taskData)) {
-            return true;
         }
 
         return false;
@@ -120,8 +117,7 @@ public abstract class AbstractStartWorkAction extends AbstractJiraAction {
 
         final String statusId = taskData.getRoot().getAttribute(JiraAttribute.STATUS.id()).getValue();
 
-        return statusId != null
-                && (statusId.equals(JiraTaskDataHandler.OPEN_STATUS) || statusId.equals(JiraTaskDataHandler.REOPEN_STATUS));
+        return statusId != null && (statusId.equals(JiraTaskDataHandler.OPEN_STATUS) || statusId.equals(JiraTaskDataHandler.REOPEN_STATUS));
     }
 
     private static boolean isInProgressState(final TaskData taskData) {

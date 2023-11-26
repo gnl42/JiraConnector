@@ -23,9 +23,13 @@ import java.util.List;
  */
 public interface JiraCustomField {
     String getId();
+
     JiraCustomFieldImpl.BasicKeyType getTypeKey();
+
     List<String> getValues();
+
     String getName();
+
     String getFormattedValue();
 
     boolean isSupported();

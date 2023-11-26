@@ -14,7 +14,8 @@ package me.glindholm.connector.eclipse.internal.jira.core.model.filter;
 public class JiraFieldsNames {
 
     /**
-     * Factory method which returns an instance of JiraFieldName which returns field names for classic query.
+     * Factory method which returns an instance of JiraFieldName which returns field names for classic
+     * query.
      *
      * @return JiraFieldName for classic query
      */
@@ -23,7 +24,8 @@ public class JiraFieldsNames {
     }
 
     /**
-     * Factory method which returns an instance of JiraFieldName which returns field names for JQL query.
+     * Factory method which returns an instance of JiraFieldName which returns field names for JQL
+     * query.
      *
      * @return JiraFieldName for JQL query
      */
@@ -110,8 +112,7 @@ public class JiraFieldsNames {
     private final boolean isClassic;
 
     /**
-     * @param isClassic
-     *            true - will return classic field values, false - will return JQL field values
+     * @param isClassic true - will return classic field values, false - will return JQL field values
      */
     private JiraFieldsNames(final boolean isClassic) {
         this.isClassic = isClassic;

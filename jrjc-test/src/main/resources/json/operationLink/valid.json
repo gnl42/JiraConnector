@@ -1,0 +1,9 @@
+{
+	"id": "comment-issue",
+	"styleClass": "issueaction-comment-issue add-issue-comment",
+	"iconClass": "aui-icon aui-icon-small aui-iconfont-comment icon-comment",
+	"label": "Comment",
+	"title": "Comment on this issue",
+	"href": "/secure/AddComment!default.jspa?id=10100",
+	"weight": 10
+}

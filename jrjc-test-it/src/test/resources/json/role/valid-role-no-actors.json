@@ -1,0 +1,6 @@
+{
+	"self":"http://localhost:2990/jira/rest/api/2/project/TST/role/10000",
+	"name":"Users",
+	"id":10000,
+	"description":"A project role that represents users in a project"
+}

@@ -79,10 +79,8 @@ public class HTML2TextReader extends SubstitutionTextReader implements AutoClose
     /**
      * Transforms the HTML text from the reader to formatted text.
      *
-     * @param reader
-     *            the reader
-     * @param presentation
-     *            If not <code>null</code>, formattings will be applied to the presentation.
+     * @param reader       the reader
+     * @param presentation If not <code>null</code>, formattings will be applied to the presentation.
      */
     public HTML2TextReader(final Reader reader) {
         super(new PushbackReader(reader));
@@ -102,12 +100,12 @@ public class HTML2TextReader extends SubstitutionTextReader implements AutoClose
 
     protected void startPreformattedText() {
         fIsPreformattedText = true;
-        //setSkipWhitespace(false);
+        // setSkipWhitespace(false);
     }
 
     protected void stopPreformattedText() {
         fIsPreformattedText = false;
-        //setSkipWhitespace(true);
+        // setSkipWhitespace(true);
     }
 
     protected void stopBold() {
@@ -128,9 +126,9 @@ public class HTML2TextReader extends SubstitutionTextReader implements AutoClose
         } else if (fIsPreformattedText) {
             return processPreformattedText(c);
         }
-        //		else if (c == '\n') {
-        //			return EMPTY_STRING;
-        //		}
+        // else if (c == '\n') {
+        // return EMPTY_STRING;
+        // }
 
         return null;
     }
@@ -265,7 +263,7 @@ public class HTML2TextReader extends SubstitutionTextReader implements AutoClose
             final int tagLen = buf.length();
             // needs special treatment for comments
             if (tagLen >= 3 && "!--".equals(buf.substring(0, 3)) //$NON-NLS-1$
-                    && ((tagLen < 5) || !"--".equals(buf.substring(tagLen - 2)))) { //$NON-NLS-1$
+                    && (tagLen < 5 || !"--".equals(buf.substring(tagLen - 2)))) { //$NON-NLS-1$
                 // unfinished comment
                 buf.append(ch);
             } else {

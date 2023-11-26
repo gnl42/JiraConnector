@@ -1,0 +1,28 @@
+{
+	"self": "http://localhost:2990/jira/rest/api/2/project/TST/role/10000",
+	"name": "Users",
+	"id": 10000,
+	"description": "A project role that represents users in a project",
+	"actors": [
+		{
+			"displayName": "Administrator",
+			"type": "atlassian-user-role-actor",
+			"name": "admin",
+			"avatarUrl": "/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"
+		},
+		{
+			"id": 10020,
+			"displayName": "jira-users",
+			"type": "atlassian-group-role-actor",
+			"name": "jira-users",
+			"avatarUrl": "/jira/secure/useravatar?size=small&avatarId=10083"
+		},
+		{
+			"id": 10030,
+			"displayName": "Wojciech Seliga",
+			"type": "atlassian-user-role-actor",
+			"name": "wseliga",
+			"avatarUrl": "/jira/secure/useravatar?size=small&avatarId=10082"
+		}
+	]
+}

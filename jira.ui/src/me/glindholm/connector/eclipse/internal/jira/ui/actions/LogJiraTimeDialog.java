@@ -34,8 +34,6 @@ import org.eclipse.mylyn.tasks.core.data.TaskData;
 import org.eclipse.mylyn.tasks.ui.TasksUi;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -138,12 +136,7 @@ public class LogJiraTimeDialog extends MessageDialog {
 
         new Label(c1, SWT.NONE).setText(""); //$NON-NLS-1$
 
-        timeSpentText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateSettings();
-            }
-        });
+        timeSpentText.addModifyListener(e -> validateSettings());
 
         timeSpentText.setToolTipText(getTimeSpentTooltipText(wdhmTime));
 
@@ -231,12 +224,7 @@ public class LogJiraTimeDialog extends MessageDialog {
         setRemainigEstimateText = new Text(adjustComposite, SWT.BORDER);
         setRemainigEstimateText.setEnabled(setRemainingTimeButton.getSelection());
         setRemainigEstimateText.setToolTipText(getTimeSpentTooltipText());
-        setRemainigEstimateText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateSettings();
-            }
-        });
+        setRemainigEstimateText.addModifyListener(e -> validateSettings());
         GridDataFactory.fillDefaults().indent(10, SWT.DEFAULT).applyTo(setRemainigEstimateText);
 
         final Button reduceRemainingTimeButton = new Button(adjustComposite, SWT.RADIO);
@@ -256,12 +244,7 @@ public class LogJiraTimeDialog extends MessageDialog {
         reduceRemainigEstimateText = new Text(adjustComposite, SWT.BORDER);
         reduceRemainigEstimateText.setEnabled(reduceRemainingTimeButton.getSelection());
         reduceRemainigEstimateText.setToolTipText(getTimeSpentTooltipText());
-        reduceRemainigEstimateText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(final ModifyEvent e) {
-                validateSettings();
-            }
-        });
+        reduceRemainigEstimateText.addModifyListener(e -> validateSettings());
         GridDataFactory.fillDefaults().indent(10, SWT.DEFAULT).applyTo(reduceRemainigEstimateText);
 
         // work description

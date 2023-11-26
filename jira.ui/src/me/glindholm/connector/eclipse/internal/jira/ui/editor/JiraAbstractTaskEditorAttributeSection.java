@@ -43,9 +43,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -102,8 +100,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
 
     @Override
     public boolean setFormInput(final Object input) {
-        if (input instanceof String) {
-            final String text = (String) input;
+        if (input instanceof final String text) {
             final Collection<TaskAttribute> attributes = getAttributes();
             for (final TaskAttribute attribute : attributes) {
                 if (text.equals(attribute.getId())) {
@@ -118,9 +115,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
         int currentColumn = 1;
         int currentPriority = 0;
         for (final AbstractAttributeEditor attributeEditor : attributeEditors) {
-            final int priority = attributeEditor.getLayoutHint() != null
-                    ? attributeEditor.getLayoutHint().getPriority()
-                            : LayoutHint.DEFAULT_PRIORITY;
+            final int priority = attributeEditor.getLayoutHint() != null ? attributeEditor.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
             if (priority != currentPriority) {
                 currentPriority = priority;
                 if (currentColumn > 1) {
@@ -141,10 +136,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
                 if (!text.equals(shortenText)) {
                     label.setToolTipText(text);
                 }
-                final GridData gd = GridDataFactory.fillDefaults()
-                        .align(SWT.RIGHT, SWT.CENTER)
-                        .hint(LABEL_WIDTH, SWT.DEFAULT)
-                        .create();
+                final GridData gd = GridDataFactory.fillDefaults().align(SWT.RIGHT, SWT.CENTER).hint(LABEL_WIDTH, SWT.DEFAULT).create();
                 if (currentColumn > 1) {
                     gd.horizontalIndent = COLUMN_GAP;
                     gd.widthHint = LABEL_WIDTH + COLUMN_GAP;
@@ -157,9 +149,7 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
             final LayoutHint layoutHint = attributeEditor.getLayoutHint();
             final GridData gd = new GridData(SWT.FILL, SWT.CENTER, false, false);
             final RowSpan rowSpan = layoutHint != null && layoutHint.rowSpan != null ? layoutHint.rowSpan : RowSpan.SINGLE;
-            final ColumnSpan columnSpan = layoutHint != null && layoutHint.columnSpan != null
-                    ? layoutHint.columnSpan
-                            : ColumnSpan.SINGLE;
+            final ColumnSpan columnSpan = layoutHint != null && layoutHint.columnSpan != null ? layoutHint.columnSpan : ColumnSpan.SINGLE;
             gd.horizontalIndent = 1;// prevent clipping of decorators on Windows
             if (rowSpan == RowSpan.SINGLE && columnSpan == ColumnSpan.SINGLE) {
                 gd.widthHint = COLUMN_WIDTH;
@@ -207,32 +197,27 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
     }
 
     /**
-     * Create a comparator by which attribute editors will be sorted. By default attribute editors are sorted by layout
-     * hint priority. Subclasses may override this method to sort attribute editors in a custom way.
+     * Create a comparator by which attribute editors will be sorted. By default attribute editors are
+     * sorted by layout hint priority. Subclasses may override this method to sort attribute editors in
+     * a custom way.
      *
      * @return comparator for {@link AbstractAttributeEditor} objects
      */
     protected Comparator<AbstractAttributeEditor> createAttributeEditorSorter() {
-        return new Comparator<>() {
-            @Override
-            public int compare(final AbstractAttributeEditor o1, final AbstractAttributeEditor o2) {
-                final int p1 = o1.getLayoutHint() != null ? o1.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
-                final int p2 = o2.getLayoutHint() != null ? o2.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
-                return p1 - p2;
-            }
+        return (o1, o2) -> {
+            final int p1 = o1.getLayoutHint() != null ? o1.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
+            final int p2 = o2.getLayoutHint() != null ? o2.getLayoutHint().getPriority() : LayoutHint.DEFAULT_PRIORITY;
+            return p1 - p2;
         };
     }
 
     @Override
     protected Control createContent(final FormToolkit toolkit, final Composite parent) {
         attributesComposite = toolkit.createComposite(parent);
-        attributesComposite.addListener(SWT.MouseDown, new Listener() {
-            @Override
-            public void handleEvent(final Event event) {
-                final Control focus = event.display.getFocusControl();
-                if (focus instanceof Text && !((Text) focus).getEditable()) {
-                    getManagedForm().getForm().setFocus();
-                }
+        attributesComposite.addListener(SWT.MouseDown, event -> {
+            final Control focus = event.display.getFocusControl();
+            if (focus instanceof Text && !((Text) focus).getEditable()) {
+                getManagedForm().getForm().setFocus();
             }
         });
 
@@ -258,23 +243,19 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
             @Override
             public void run() {
                 getTaskEditorPage().showEditorBusy(true);
-                final TaskJob job = TasksUiInternal.getJobFactory().createUpdateRepositoryConfigurationJob(
-                        getTaskEditorPage().getConnector(), getTaskEditorPage().getTaskRepository(),
-                        getTaskEditorPage().getTask());
+                final TaskJob job = TasksUiInternal.getJobFactory().createUpdateRepositoryConfigurationJob(getTaskEditorPage().getConnector(),
+                        getTaskEditorPage().getTaskRepository(), getTaskEditorPage().getTask());
                 job.addJobChangeListener(new JobChangeAdapter() {
                     @Override
                     public void done(final IJobChangeEvent event) {
-                        PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-                            @Override
-                            public void run() {
-                                getTaskEditorPage().showEditorBusy(false);
-                                if (job.getStatus() != null) {
-                                    getTaskEditorPage().getTaskEditor().setStatus(
-                                            org.eclipse.mylyn.internal.tasks.ui.editors.Messages.TaskEditorAttributePart_Updating_of_repository_configuration_failed,
-                                            org.eclipse.mylyn.internal.tasks.ui.editors.Messages.TaskEditorAttributePart_Update_Failed, job.getStatus());
-                                } else {
-                                    getTaskEditorPage().refresh();
-                                }
+                        PlatformUI.getWorkbench().getDisplay().asyncExec(() -> {
+                            getTaskEditorPage().showEditorBusy(false);
+                            if (job.getStatus() != null) {
+                                getTaskEditorPage().getTaskEditor().setStatus(
+                                        org.eclipse.mylyn.internal.tasks.ui.editors.Messages.TaskEditorAttributePart_Updating_of_repository_configuration_failed,
+                                        org.eclipse.mylyn.internal.tasks.ui.editors.Messages.TaskEditorAttributePart_Update_Failed, job.getStatus());
+                            } else {
+                                getTaskEditorPage().refresh();
                             }
                         });
                     }
@@ -337,7 +318,8 @@ public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTas
     }
 
     /**
-     * Integrator requested the ability to control whether the attributes section is expanded on creation.
+     * Integrator requested the ability to control whether the attributes section is expanded on
+     * creation.
      */
     @Override
     protected boolean shouldExpandOnCreate() {

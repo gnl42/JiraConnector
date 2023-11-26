@@ -21,7 +21,7 @@ import java.io.Serializable;
 public class CustomFieldFilter implements Filter, Serializable {
     private static final long serialVersionUID = 1L;
 
-    //	private String customField;
+    // private String customField;
     //
-    //	private String[] values;
+    // private String[] values;
 }

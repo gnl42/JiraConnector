@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -51,12 +51,11 @@ import me.glindholm.jira.rest.client.api.domain.Session;
 import me.glindholm.jira.rest.client.api.domain.User;
 
 /**
- * JIRA server implementation that caches information that is unlikely to change
- * during the session. This server uses a {@link JiraClientData} object to
- * persist the repository configuration. It has life-cycle methods to allow data
- * in the cache to be reloaded. This interface exposes the full set of services
- * available from a Jira installation. It provides a unified interface for the
- * SOAP and Web/RSS services available.
+ * JIRA server implementation that caches information that is unlikely to change during the session.
+ * This server uses a {@link JiraClientData} object to persist the repository configuration. It has
+ * life-cycle methods to allow data in the cache to be reloaded. This interface exposes the full set
+ * of services available from a Jira installation. It provides a unified interface for the SOAP and
+ * Web/RSS services available.
  *
  * @author Brock Janiczak
  * @author Steffen Pingel
@@ -74,8 +73,7 @@ public class JiraClient {
     private static final String PROXY_TYPE_HTTPS = "HTTPS"; //$NON-NLS-1$
 
     /**
-     * Leave the assignee field as is (this does not apply when performing an assign
-     * to action)
+     * Leave the assignee field as is (this does not apply when performing an assign to action)
      */
     public final static int ASSIGNEE_CURRENT = 2;
 
@@ -95,8 +93,7 @@ public class JiraClient {
     public final static int ASSIGNEE_SELF = 5;
 
     /**
-     * Assign to a specific user. To get the name of the assignee call
-     * {@link #getAssignee()}
+     * Assign to a specific user. To get the name of the assignee call {@link #getAssignee()}
      */
     public final static int ASSIGNEE_USER = 4;
 
@@ -228,8 +225,8 @@ public class JiraClient {
 
     public void assignIssueTo(final JiraIssue issue, final String user, final String comment, final IProgressMonitor monitor) throws JiraException {
         /*
-         * PLE-1188 soapClient.assignIssueTo(issue.getKey(), getAssigneeParam(issue,
-         * assigneeType, user), monitor);
+         * PLE-1188 soapClient.assignIssueTo(issue.getKey(), getAssigneeParam(issue, assigneeType, user),
+         * monitor);
          */
 
         // webClient.assignIssueTo(issue, assigneeType, user, comment, monitor);
@@ -281,8 +278,8 @@ public class JiraClient {
     }
 
     /**
-     * Creates an issue with the details specified in <code>issue</code>. The
-     * following fields are mandatory:
+     * Creates an issue with the details specified in <code>issue</code>. The following fields are
+     * mandatory:
      * <ul>
      * <li>Project</li>
      * <li>Issue Type</li>
@@ -303,8 +300,8 @@ public class JiraClient {
      *
      * @param issue Prototype issue used to create the new issue
      * @return A fully populated
-     *         {@link me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue}
-     *         containing the details of the new issue
+     *         {@link me.glindholm.connector.eclipse.internal.jira.core.model.JiraIssue} containing the
+     *         details of the new issue
      */
     public JiraIssue createIssue(final JiraIssue issue, final IProgressMonitor monitor) throws JiraException {
         if (issue.getProject().getKey() == null) {
@@ -328,8 +325,8 @@ public class JiraClient {
     }
 
     /**
-     * See {@link #createIssue(JiraIssue)} for mandatory attributes of
-     * <code>issue</code>. Additionally the <code>parentIssueId</code> must be set.
+     * See {@link #createIssue(JiraIssue)} for mandatory attributes of <code>issue</code>. Additionally
+     * the <code>parentIssueId</code> must be set.
      */
     // public JiraIssue createSubTask(JiraIssue issue, IProgressMonitor monitor)
     // throws JiraException {
@@ -415,8 +412,7 @@ public class JiraClient {
      * Returns available operations for <code>issueKey</code>
      *
      * @param issueKey Unique key of the issue to find
-     * @return corresponding array of <code>RepositoryOperation</code> objects or
-     *         <code>null</code>.
+     * @return corresponding array of <code>RepositoryOperation</code> objects or <code>null</code>.
      */
     public List<JiraAction> getAvailableActions(final String issueKey, final IProgressMonitor monitor) throws JiraException {
         try {
@@ -472,8 +468,7 @@ public class JiraClient {
      * Returns editable attributes for <code>issueKey</code>
      *
      * @param issueKey Unique key of the issue to find
-     * @return corresponding array of <code>RepositoryTaskAttribute</code> objects
-     *         or <code>null</code>.
+     * @return corresponding array of <code>RepositoryTaskAttribute</code> objects or <code>null</code>.
      */
     // public IssueField[] getEditableAttributes(final String issueKey,
     // IProgressMonitor monitor) throws JiraException {
@@ -486,8 +481,7 @@ public class JiraClient {
      * Retrieve an issue using its unique key
      *
      * @param issueKey Unique key of the issue to find
-     * @return Matching issue or <code>null</code> if no matching issue could be
-     *         found
+     * @return Matching issue or <code>null</code> if no matching issue could be found
      */
     public JiraIssue getIssueByKey(final String issueKey, final IProgressMonitor monitor) throws JiraException {
         try {
@@ -569,9 +563,8 @@ public class JiraClient {
     }
 
     /**
-     * Retrieves all filters that are stored and run on the server. The client will
-     * never be aware of the definition for the filter, only its name and
-     * description
+     * Retrieves all filters that are stored and run on the server. The client will never be aware of
+     * the definition for the filter, only its name and description
      *
      * @return List of all filters taht are stored and executed on the server
      */
@@ -683,8 +676,7 @@ public class JiraClient {
     }
 
     /**
-     * Returns a sorted list of versions for the specified project in descended
-     * order.
+     * Returns a sorted list of versions for the specified project in descended order.
      *
      * @param key the project key
      */
@@ -709,9 +701,9 @@ public class JiraClient {
     }
 
     /**
-     * Force a login to the remote repository. There is no need to call this method
-     * as all services should automatically login when the session is about to
-     * expire. If you need to check if the credentials are valid, call
+     * Force a login to the remote repository. There is no need to call this method as all services
+     * should automatically login when the session is about to expire. If you need to check if the
+     * credentials are valid, call
      * {@link me.glindholm.connector.eclipse.internal.jira.core.JiraClientManager#testConnection(String, String, String)}
      */
     // public void login(IProgressMonitor monitor) throws JiraException {
@@ -720,9 +712,9 @@ public class JiraClient {
     // }
 
     /**
-     * Force the current session to be closed. This method should only be called
-     * during application shutdown and then only out of courtesy to the server. Jira
-     * will automatically expire sessions after a set amount of time.
+     * Force the current session to be closed. This method should only be called during application
+     * shutdown and then only out of courtesy to the server. Jira will automatically expire sessions
+     * after a set amount of time.
      */
     public void logout(final IProgressMonitor monitor) throws JiraException {
         // JiraCorePlugin.getMonitoring().logJob("logout", null); //$NON-NLS-1$
@@ -840,20 +832,14 @@ public class JiraClient {
     }
 
     public String getAssigneeParam(final JiraIssue issue, final int assigneeType, final String user) {
-        switch (assigneeType) {
-        case JiraClient.ASSIGNEE_CURRENT:
-            return issue.getAssignee().getDisplayName();
-        case JiraClient.ASSIGNEE_DEFAULT:
-            return "-1"; //$NON-NLS-1$
-        case JiraClient.ASSIGNEE_NONE:
-            return ""; //$NON-NLS-1$
-        case JiraClient.ASSIGNEE_SELF:
-            return getUserName();
-        case JiraClient.ASSIGNEE_USER:
-            return user;
-        default:
-            return user;
-        }
+        return switch (assigneeType) {
+        case JiraClient.ASSIGNEE_CURRENT -> issue.getAssignee().getDisplayName();
+        case JiraClient.ASSIGNEE_DEFAULT -> "-1"; //$NON-NLS-1$
+        case JiraClient.ASSIGNEE_NONE -> ""; //$NON-NLS-1$
+        case JiraClient.ASSIGNEE_SELF -> getUserName();
+        case JiraClient.ASSIGNEE_USER -> user;
+        default -> user;
+        };
     }
 
     public SimpleDateFormat getDateTimeFormat() {

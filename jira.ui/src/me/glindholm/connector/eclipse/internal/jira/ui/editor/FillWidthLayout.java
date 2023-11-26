@@ -27,10 +27,12 @@ import org.eclipse.ui.forms.widgets.ILayoutExtension;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * A layout that uses the width hint or client area of a composite to recommend the width of its children, allowing
- * children to fill the width and specify their preferred height for a given width.
+ * A layout that uses the width hint or client area of a composite to recommend the width of its
+ * children, allowing children to fill the width and specify their preferred height for a given
+ * width.
  *
- * Intended for use with a composite that contains a single child that should fill available horizontal space.
+ * Intended for use with a composite that contains a single child that should fill available
+ * horizontal space.
  *
  * @author David Green
  */
@@ -63,14 +65,10 @@ class FillWidthLayout extends Layout implements ILayoutExtension {
     /**
      * create while specifying margins
      *
-     * @param marginLeft
-     *            the left margin in pixels, or 0 if there should be none
-     * @param marginRight
-     *            the right margin in pixels, or 0 if there should be none
-     * @param marginTop
-     *            the top margin in pixels, or 0 if there should be none
-     * @param marginBottom
-     *            the bottom margin in pixels, or 0 if there should be none
+     * @param marginLeft   the left margin in pixels, or 0 if there should be none
+     * @param marginRight  the right margin in pixels, or 0 if there should be none
+     * @param marginTop    the top margin in pixels, or 0 if there should be none
+     * @param marginBottom the bottom margin in pixels, or 0 if there should be none
      */
     public FillWidthLayout(final int marginLeft, final int marginRight, final int marginTop, final int marginBottom) {
         this(null, marginLeft, marginRight, marginTop, marginBottom);
@@ -79,17 +77,12 @@ class FillWidthLayout extends Layout implements ILayoutExtension {
     /**
      * create specifying margins and a {@link #getLayoutAdvisor() layout advisor}.
      *
-     * @param layoutAdvisor
-     *            the composite that is used to advise on layout based on its {@link Composite#getClientArea() client
-     *            area}.
-     * @param marginLeft
-     *            the left margin in pixels, or 0 if there should be none
-     * @param marginRight
-     *            the right margin in pixels, or 0 if there should be none
-     * @param marginTop
-     *            the top margin in pixels, or 0 if there should be none
-     * @param marginBottom
-     *            the bottom margin in pixels, or 0 if there should be none
+     * @param layoutAdvisor the composite that is used to advise on layout based on its
+     *                      {@link Composite#getClientArea() client area}.
+     * @param marginLeft    the left margin in pixels, or 0 if there should be none
+     * @param marginRight   the right margin in pixels, or 0 if there should be none
+     * @param marginTop     the top margin in pixels, or 0 if there should be none
+     * @param marginBottom  the bottom margin in pixels, or 0 if there should be none
      */
     public FillWidthLayout(final Composite layoutAdvisor, final int marginLeft, final int marginRight, final int marginTop, final int marginBottom) {
         this.layoutAdvisor = layoutAdvisor;
@@ -124,20 +117,16 @@ class FillWidthLayout extends Layout implements ILayoutExtension {
             clientArea.width = calculateWidthHint(container.getParent(), layoutAdvisorHit);
         }
         final Layout bodyLayout = container.getLayout();
-        if (bodyLayout instanceof GridLayout) {
-            final GridLayout gridLayout = (GridLayout) bodyLayout;
+        if (bodyLayout instanceof final GridLayout gridLayout) {
             horizontalMargin = gridLayout.marginWidth * 2 + gridLayout.marginLeft + gridLayout.marginRight;
-        } else if (bodyLayout instanceof FillLayout) {
-            final FillLayout fillLayout = (FillLayout) bodyLayout;
+        } else if (bodyLayout instanceof final FillLayout fillLayout) {
             horizontalMargin = fillLayout.marginWidth * 2;
         } else if (container instanceof Section) {
             horizontalMargin = ((Section) container).marginWidth * 2;
-        } else if (container instanceof CTabFolder) {
-            final CTabFolder folder = (CTabFolder) container;
+        } else if (container instanceof final CTabFolder folder) {
             horizontalMargin = folder.marginWidth * 2;
         }
-        if (container instanceof ScrolledComposite) {
-            final ScrolledComposite composite = (ScrolledComposite) container;
+        if (container instanceof final ScrolledComposite composite) {
             final ScrollBar verticalBar = composite.getVerticalBar();
             if (verticalBar != null) {
                 final int verticalBarWidth = verticalBar.getSize().x;
@@ -198,7 +187,8 @@ class FillWidthLayout extends Layout implements ILayoutExtension {
     }
 
     /**
-     * the composite that is used to advise on layout based on its {@link Composite#getClientArea() client area}.
+     * the composite that is used to advise on layout based on its {@link Composite#getClientArea()
+     * client area}.
      *
      * @return the layout advisor, or null if there is none
      */
@@ -207,10 +197,10 @@ class FillWidthLayout extends Layout implements ILayoutExtension {
     }
 
     /**
-     * the composite that is used to advise on layout based on its {@link Composite#getClientArea() client area}.
+     * the composite that is used to advise on layout based on its {@link Composite#getClientArea()
+     * client area}.
      *
-     * @param layoutAdvisor
-     *            the layout advisor, or null if there is none
+     * @param layoutAdvisor the layout advisor, or null if there is none
      */
     public void setLayoutAdvisor(final Composite layoutAdvisor) {
         this.layoutAdvisor = layoutAdvisor;
@@ -236,10 +226,11 @@ class FillWidthLayout extends Layout implements ILayoutExtension {
     @Override
     public int computeMinimumWidth(final Composite parent, final boolean changed) {
         final int width = marginLeft + marginRight;
-        //		Control[] children = parent.getChildren();
-        //		for (Control control : children) {
-        //			width = Math.max(control.computeSize(0, SWT.DEFAULT, changed).x + marginLeft + marginRight, width);
-        //		}
+        // Control[] children = parent.getChildren();
+        // for (Control control : children) {
+        // width = Math.max(control.computeSize(0, SWT.DEFAULT, changed).x + marginLeft + marginRight,
+        // width);
+        // }
         return width;
     }
 

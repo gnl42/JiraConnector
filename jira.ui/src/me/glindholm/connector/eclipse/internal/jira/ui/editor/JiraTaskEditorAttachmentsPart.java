@@ -20,16 +20,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.IOpenListener;
-import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -167,35 +163,25 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
                 final TaskAttachment element = (TaskAttachment) cell.getElement();
                 final String text;
                 final int columnIndex = cell.getColumnIndex();
-                switch (columnIndex) {
-                case 0:
-                    text = element.getFileName();
-                    break;
-                case 1:
+                text = switch (columnIndex) {
+                case 0 -> element.getFileName();
+                case 1 -> {
                     final long length = element.getLength();
-                    text = sizeFormatter.format(length);
-                    break;
-                case 2:
-                    text = element.getAuthor().getPersonId();
-                    break;
-                case 3:
-                    text = dateFormat.format(element.getCreationDate().toInstant().atOffset(ZoneOffset.UTC));
-                    break;
-                default:
-                    text = "Unexpected column: " + columnIndex;
+                    yield sizeFormatter.format(length);
                 }
+                case 2 -> element.getAuthor().getPersonId();
+                case 3 -> dateFormat.format(element.getCreationDate().toInstant().atOffset(ZoneOffset.UTC));
+                default -> "Unexpected column: " + columnIndex;
+                };
                 cell.setText(text);
             }
         });
 
-        attachmentsViewer.addOpenListener(new IOpenListener() {
-            @Override
-            public void open(final OpenEvent event) {
-                if (!event.getSelection().isEmpty()) {
-                    final StructuredSelection selection = (StructuredSelection) event.getSelection();
-                    final ITaskAttachment attachment = (ITaskAttachment) selection.getFirstElement();
-                    TasksUiUtil.openUrl(attachment.getUrl());
-                }
+        attachmentsViewer.addOpenListener(event -> {
+            if (!event.getSelection().isEmpty()) {
+                final StructuredSelection selection = (StructuredSelection) event.getSelection();
+                final ITaskAttachment attachment = (ITaskAttachment) selection.getFirstElement();
+                TasksUiUtil.openUrl(attachment.getUrl());
             }
         });
         attachmentsViewer.addSelectionChangedListener(getTaskEditorPage());
@@ -203,12 +189,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 
         menuManager = new MenuManager();
         menuManager.setRemoveAllWhenShown(true);
-        menuManager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(final IMenuManager manager) {
-                TasksUiMenus.fillTaskAttachmentMenu(manager);
-            }
-        });
+        menuManager.addMenuListener(TasksUiMenus::fillTaskAttachmentMenu);
         getTaskEditorPage().getEditorSite().registerContextMenu(ID_POPUP_MENU, menuManager, attachmentsViewer, true);
         final Menu menu = menuManager.createContextMenu(attachmentsTable);
         attachmentsTable.setMenu(menu);
@@ -333,8 +314,7 @@ public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 
     @Override
     public boolean setFormInput(final Object input) {
-        if (input instanceof String) {
-            final String text = (String) input;
+        if (input instanceof final String text) {
             if (text.startsWith(TaskAttribute.PREFIX_ATTACHMENT)) {
                 if (attachments != null) {
                     for (final TaskAttribute attachmentAttribute : attachments) {

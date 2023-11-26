@@ -1,0 +1,20 @@
+{
+   "self":"http://localhost:2990/jira/rest/api/latest/user?username=wseliga",
+   "id":"wseliga",
+   "name":"wseliga",
+   "emailAddress":"wseliga@atlassian.com",
+   "avatarUrls":{
+      "16x16":"http://localhost:2990/jira/secure/useravatar?size=small&avatarId=10082",
+      "48x48":"http://localhost:2990/jira/secure/useravatar?avatarId=10082"
+   },
+   "displayName":"Wojciech Seliga",
+   "active":true,
+   "timeZone":"Europe/Warsaw",
+   "groups":{
+      "size":1,
+      "items":[
+
+      ]
+   },
+   "expand":"groups"
+}

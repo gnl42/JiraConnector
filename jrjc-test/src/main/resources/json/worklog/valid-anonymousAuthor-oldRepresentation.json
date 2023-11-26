@@ -1,0 +1,15 @@
+{
+	"self": "http://localhost:2990/jira/rest/api/latest/worklog/10030",
+	"issue": "http://localhost:2990/jira/rest/api/latest/issue/ANONEDIT-2",
+	"author": {
+		"name": "Anonymous"
+	},
+	"updateAuthor": {
+		"name": "Anonymous"
+	},
+	"comment": "Anonymous work log entry.",
+	"created": "2012-05-10T14:37:37.764+0200",
+	"updated": "2012-05-10T14:37:37.764+0200",
+	"started": "2012-05-10T14:37:00.000+0200",
+	"minutesSpent": 180
+}

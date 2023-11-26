@@ -19,11 +19,6 @@
    </license>
 
    <includes
-         id="me.glindholm.connector.eclipse.bamboo"
-         version="0.0.0"
-         name="Bamboo Integration"/>
-
-   <includes
          id="me.glindholm.connector.eclipse.jira"
          version="0.0.0"
          name="Jira Integration"/>
@@ -36,14 +31,9 @@
       <import plugin="org.junit"/>
       <import plugin="me.glindholm.connector.eclipse.core"/>
       <import plugin="me.glindholm.connector.eclipse.ui"/>
-      <import plugin="me.glindholm.connector.eclipse.bamboo.core"/>
-      <import plugin="me.glindholm.connector.eclipse.bamboo.ui"/>
-      <import plugin="me.glindholm.connector.eclipse.fisheye.core"/>
-      <import plugin="me.glindholm.connector.eclipse.fisheye.ui"/>
       <import plugin="me.glindholm.connector.eclipse.jira.core"/>
       <import plugin="me.glindholm.connector.eclipse.jira.ui"/>
       <import plugin="me.glindholm.connector.commons"/>
-      <import plugin="me.glindholm.connector.eclipse.directclickthrough.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.mylyn.tasks.ui"/>
       <import plugin="org.eclipse.jface"/>
