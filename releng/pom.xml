@@ -42,15 +42,35 @@
         <profile>
             <!-- Activate this profile to perform the release to GitHub Pages -->
             <id>release-composite</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <!-- sets the following properties that we use in
+                            our Ant scripts
+                parsedVersion.majorVersion
+                parsedVersion.minorVersion
+                bound by default to the validate phase
+              -->
+                            <execution>
+                                <id>parse-version</id>
+                                <goals>
+                                    <goal>parse-version</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.1.0</version>
                         <configuration>
                             <executable>git</executable>
-                            <skip>true</skip>
                         </configuration>
                         <executions>
                             <execution>
@@ -63,8 +83,8 @@
                                     <arguments>
                                         <argument>clone</argument>
                                         <argument>--depth=1</argument>
-                                        <!-- <argument>-b</argument> -->
-                                        <!-- <argument>master</argument> -->
+                                        <argument>-b</argument>
+                                        <argument>main</argument>
                                         <argument>${github-update-repo}</argument>
                                         <argument>${github-local-clone}</argument>
                                     </arguments>
@@ -112,8 +132,8 @@
                                         <argument>-C</argument>
                                         <argument>${github-local-clone}</argument>
                                         <argument>push</argument>
-                                        <!-- <argument>origin</argument> -->
-                                        <!-- <argument>master</argument> -->
+                                        <argument>origin</argument>
+                                        <argument>main</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -129,10 +149,12 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${current-release-directory}</outputDirectory>
+                                    <outputDirectory>
+                                        ${current-release-directory}</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${project.build.directory}/repository</directory>
+                                            <directory>
+                                                ${project.build.directory}/repository</directory>
                                         </resource>
                                     </resources>
                                 </configuration>
@@ -142,13 +164,13 @@
                     <plugin>
                         <groupId>org.eclipse.tycho.extras</groupId>
                         <artifactId>tycho-eclipserun-plugin</artifactId>
-                        <version>3.1.0-SNAPSHOT</version>
                         <configuration>
                             <repositories>
                                 <repository>
-                                    <id>eclipse</id>
+                                    <id>eclipse-version</id>
                                     <layout>p2</layout>
-                                    <url>https://download.eclipse.org/releases/latest</url>
+                                    <url>
+                                        https://download.eclipse.org/releases/2023-09</url>
                                 </repository>
                             </repositories>
                             <dependencies>
@@ -161,15 +183,22 @@
                                     <type>eclipse-plugin</type>
                                 </dependency>
                                 <dependency>
-                                    <artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
+                                    <artifactId>
+                                        org.eclipse.equinox.p2.repository.tools</artifactId>
                                     <type>eclipse-plugin</type>
                                 </dependency>
                                 <dependency>
-                                    <artifactId>org.eclipse.equinox.p2.core.feature</artifactId>
+                                    <artifactId>
+                                        org.eclipse.equinox.p2.core.feature</artifactId>
                                     <type>eclipse-feature</type>
                                 </dependency>
                                 <dependency>
-                                    <artifactId>org.eclipse.equinox.p2.extras.feature</artifactId>
+                                    <artifactId>
+                                        org.eclipse.equinox.p2.extras.feature</artifactId>
+                                    <type>eclipse-feature</type>
+                                </dependency>
+                                <dependency>
+                                    <artifactId>org.eclipse.rcp</artifactId>
                                     <type>eclipse-feature</type>
                                 </dependency>
                             </dependencies>
@@ -184,20 +213,21 @@
                                 </goals>
                                 <configuration>
                                     <applicationsArgs>
-                                        <args>-v</args>
-                                        <args>-debug</args>
                                         <args>-application</args>
                                         <args>org.eclipse.ant.core.antRunner</args>
                                         <args>-buildfile</args>
                                         <args>packaging-p2composite.ant</args>
                                         <args>p2.composite.add</args>
-                                        <args>-Djava.security.manager=allow</args>
                                         <args>-Dsite.label="${site.label}"</args>
-                                        <args>-Dcomposite.base.dir=${github-local-clone}</args>
-                                        <args>-DunqualifiedVersion=${unqualifiedVersion}</args>
+                                        <args>
+                                            -Dcomposite.base.dir=${github-local-clone}</args>
+                                        <args>
+                                            -DunqualifiedVersion=${unqualifiedVersion}</args>
                                         <args>-DbuildQualifier=${buildQualifier}</args>
-                                        <args>-DparsedVersion.majorVersion=${parsedVersion.majorVersion}</args>
-                                        <args>-DparsedVersion.minorVersion=${parsedVersion.minorVersion}</args>
+                                        <args>
+                                            -DparsedVersion.majorVersion=${parsedVersion.majorVersion}</args>
+                                        <args>
+                                            -DparsedVersion.minorVersion=${parsedVersion.minorVersion}</args>
                                     </applicationsArgs>
                                 </configuration>
                             </execution>

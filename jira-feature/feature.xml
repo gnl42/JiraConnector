@@ -29,7 +29,7 @@
    </license>
 
    <url>
-      <update label="Mylyn Release Latest" url="https://download.eclipse.org/mylyn/updates/release/latest"/>
+      <update label="JiraConnector update site" url="https://gnl42.github.io/JiraConnector-update/"/>
    </url>
 
    <requires>

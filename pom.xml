@@ -124,7 +124,7 @@
 		<current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
 		<!-- The label for the Composite sites -->
 		<site.label>JiraConnector</site.label>
-		<tycho.version>4.0.3</tycho.version>
+		<tycho.version>4.0.4</tycho.version>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<platform.version>5.2.1</platform.version>
