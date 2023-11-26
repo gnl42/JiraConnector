@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>me.glindholm.jira</groupId>
-		<artifactId>jira-rest-java-client-parent</artifactId>
-		<version>4.4.0-SNAPSHOT</version>
+		<groupId>me.glindholm.connector.eclipse</groupId>
+		<artifactId>JiraConnector</artifactId>
+		<version>5.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>jira-rest-java-client-test</artifactId>
+	<artifactId>jrjc-test</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<name>JIRA REST Java Client - Tests</name>

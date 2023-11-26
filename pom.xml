@@ -151,8 +151,8 @@
 		<module>jira.ui</module>
 		<!-- Will have to real life tests for now
 		<module>me.glindholm.connector.commons.tests.dependencies</module>
-			<module>test-feature</module> <module>tests</module>
-		<module>jira.tests</module> -->
+			<module>test-feature</module> <module>tests</module> -->
+<!--		<module>jira.tests</module>-->
 		<module>releng</module>
 	</modules>
 	<build>
