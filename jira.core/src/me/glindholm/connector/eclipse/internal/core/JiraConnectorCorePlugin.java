@@ -20,14 +20,14 @@ import me.glindholm.theplugin.commons.util.LoggerImpl;
 
 /**
  * The activator class controls the plug-in life cycle
- * 
+ *
  * @author Shawn Minto
  */
 public class JiraConnectorCorePlugin extends Plugin {
     // The plug-in ID
     public static final String PLUGIN_ID = "me.glindholm.connector.eclipse.core";
 
-    private static final String TRACE_COMMONS_PROPERTY_NAME = "me.glindholm.connector.eclipse.bamboo.core/trace/commons";
+    private static final String TRACE_COMMONS_PROPERTY_NAME = "me.glindholm.connector.eclipse.jira.core/trace/commons";
 
     public static final boolean TRACE_COMMONS = "true".equalsIgnoreCase(Platform.getDebugOption(TRACE_COMMONS_PROPERTY_NAME));
 
@@ -49,7 +49,7 @@ public class JiraConnectorCorePlugin extends Plugin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
      */
     @Override
@@ -71,7 +71,7 @@ public class JiraConnectorCorePlugin extends Plugin {
 
     /**
      * Returns the shared instance
-     * 
+     *
      * @return the shared instance
      */
     public static JiraConnectorCorePlugin getDefault() {

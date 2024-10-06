@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.glindholm.connector.eclipse</groupId>
 	<artifactId>JiraConnector</artifactId>
-	<version>5.0.0-SNAPSHOT</version>
+	<version>5.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<developers>
 		<developer>
@@ -124,7 +124,7 @@
 		<current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
 		<!-- The label for the Composite sites -->
 		<site.label>JiraConnector</site.label>
-		<tycho.version>4.0.3</tycho.version>
+		<tycho.version>4.0.9</tycho.version>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<platform.version>5.2.1</platform.version>
