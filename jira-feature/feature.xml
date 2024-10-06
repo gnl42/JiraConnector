@@ -12,7 +12,7 @@
 <feature
       id="me.glindholm.connector.eclipse.jira"
       label="%featureName"
-      version="5.0.1.qualifier"
+      version="5.1.0.qualifier"
       provider-name="%providerName"
       plugin="me.glindholm.connector.eclipse.branding.ui">
 
