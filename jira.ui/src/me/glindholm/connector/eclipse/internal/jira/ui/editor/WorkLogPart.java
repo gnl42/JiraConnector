@@ -31,6 +31,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.mylyn.commons.ui.CommonImages;
+import org.eclipse.mylyn.commons.workbench.WorkbenchUtil;
+import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
+import org.eclipse.mylyn.internal.tasks.ui.preferences.TasksUiPreferencePage;
 import org.eclipse.mylyn.tasks.core.data.TaskAttribute;
 import org.eclipse.mylyn.tasks.ui.TasksUiUtil;
 import org.eclipse.mylyn.tasks.ui.editors.AbstractTaskEditorPart;
@@ -44,10 +47,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -60,6 +65,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog.Adjus
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
 import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 import me.glindholm.connector.eclipse.internal.jira.ui.JiraConnectorUi;
+import me.glindholm.connector.eclipse.internal.jira.ui.JiraUiUtil;
 
 /**
  * @author Steffen Pingel
@@ -135,11 +141,13 @@ public class WorkLogPart extends AbstractTaskEditorPart {
                 final JiraWorkLog item2 = (JiraWorkLog) e2;
                 final Instant created1 = item1.getCreated();
                 final Instant created2 = item2.getCreated();
-                if (created1 != null && created2 != null) {
+                if ((created1 != null) && (created2 != null)) {
                     return created1.compareTo(created2);
-                } else if (created1 == null && created2 != null) {
+                }
+                if ((created1 == null) && (created2 != null)) {
                     return -1;
-                } else if (created1 != null && created2 == null) {
+                }
+                if ((created1 != null) && (created2 == null)) {
                     return 1;
                 } else {
                     return 0;
@@ -155,7 +163,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         attachmentsViewer.setContentProvider(new ArrayContentProvider());
         attachmentsViewer.setLabelProvider(new WorkLogTableLabelProvider(getJiraTimeFormat()));
         attachmentsViewer
-                .addOpenListener(event -> TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(), getModel().getTask())));
+        .addOpenListener(event -> TasksUiUtil.openUrl(JiraConnectorUi.getTaskWorkLogUrl(getModel().getTaskRepository(), getModel().getTask())));
         attachmentsViewer.addSelectionChangedListener(getTaskEditorPage());
         attachmentsViewer.setInput(workLogList);
 
@@ -248,7 +256,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
             log = new WorkLogConverter().createFrom(newWorkLogAttribute);
         }
 
-        if (newWorkLogAttribute != null && log != null) {
+        if ((newWorkLogAttribute != null) && (log != null)) {
             newWorkDoneAmount = log.getTimeSpent();
             newWorkDoneDate = new GregorianCalendar();
             if (log.getStartDate() != null) {
@@ -257,7 +265,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
             newWorkDoneDescription = log.getComment();
             newWorkDoneAdjustEstimate = log.getAdjustEstimate();
             final TaskAttribute newWorkLogSubmitAttribute = newWorkLogAttribute.getAttribute(WorkLogConverter.ATTRIBUTE_WORKLOG_NEW_SUBMIT_FLAG);
-            if (newWorkLogSubmitAttribute != null && newWorkLogSubmitAttribute.getValue().equals(String.valueOf(true))) {
+            if ((newWorkLogSubmitAttribute != null) && newWorkLogSubmitAttribute.getValue().equals(String.valueOf(true))) {
                 includeWorklog = true;
             }
         }
@@ -292,6 +300,21 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         final Composite newWorkLogComposite = toolkit.createComposite(newWorkLogSection, SWT.NONE);
         newWorkLogSection.setClient(newWorkLogComposite);
         newWorkLogComposite.setLayout(GridLayoutFactory.swtDefaults().spacing(10, 5).numColumns(3).create());
+
+        if (!MonitorUiPlugin.getDefault().getPreferenceStore().getBoolean(MonitorUiPlugin.ACTIVITY_TRACKING_ENABLED)) {
+            final Link timeTrackingDisabled = new Link(newWorkLogComposite, SWT.NONE);
+            timeTrackingDisabled.setText(Messages.WorkLogPart_Enable_Automatic_Tracking);
+            GridDataFactory.fillDefaults().span(3, 1).applyTo(timeTrackingDisabled);
+            timeTrackingDisabled.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(final SelectionEvent e) {
+                    PreferencesUtil
+                    .createPreferenceDialogOn(WorkbenchUtil.getShell(), TasksUiPreferencePage.ID, null, null)
+                    .open();
+                }
+            });
+            toolkit.adapt(timeTrackingDisabled, true, true);
+        }
 
         final String timeSpendTooltip = getTimeSpentTooltipText();
 
@@ -381,12 +404,27 @@ public class WorkLogPart extends AbstractTaskEditorPart {
         includeWorklog = createNewWorkLog.getSelection();
         setSubmitWorklog();
 
+        if (createNewWorkLog.getSelection() && MonitorUiPlugin.getDefault().isActivityTrackingEnabled()) {
+            final long time = JiraUiUtil.getLoggedActivityTime(getTaskEditorPage().getTask());
+
+            final String wdhmTime = JiraUtil.getTimeFormat(getTaskEditorPage().getTaskRepository())
+                    .format(Long.valueOf(time));
+            if ((wdhmTime != null) && (wdhmTime.length() > 0)) {
+                timeSpentText.setText(wdhmTime);
+
+                final StringBuilder tooltip = new StringBuilder(getTimeSpentTooltipText());
+
+                tooltip.append("\n\n"); //$NON-NLS-1$
+                tooltip.append(NLS.bind(Messages.WorkLogPart_Auto_Filled, wdhmTime));
+
+                timeSpentText.setToolTipText(tooltip.toString());
+            }
+        }
     }
 
     private String getTimeSpentTooltipText() {
-        final String timeSpendTooltip = NLS.bind(Messages.WorkLogPart_Time_Spent_Explanation_Tooltip,
+        return NLS.bind(Messages.WorkLogPart_Time_Spent_Explanation_Tooltip,
                 JiraUtil.getWorkDaysPerWeek(getTaskEditorPage().getTaskRepository()), JiraUtil.getWorkHoursPerDay(getTaskEditorPage().getTaskRepository()));
-        return timeSpendTooltip;
     }
 
     protected void collectDate() {
@@ -402,7 +440,7 @@ public class WorkLogPart extends AbstractTaskEditorPart {
      */
     private boolean updateNewWorkLog() {
         final JiraWorkLog tempworkLog = new JiraWorkLog();
-        tempworkLog.setAuthor(null); // TODO Check this
+        tempworkLog.setAuthor(null); // getTaskEditorPage().getTaskRepository().getUserName());
         tempworkLog.setComment(newWorkDoneDescription);
         tempworkLog.setStartDate(newWorkDoneDate.getTime().toInstant());
         tempworkLog.setTimeSpent(newWorkDoneAmount);

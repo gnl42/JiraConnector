@@ -11,6 +11,13 @@
  -->
 
 <plugin>
+   <extension
+         point="org.eclipse.mylyn.tasks.core.activityMonitor">
+      <activityMonitor
+            class="org.eclipse.mylyn.internal.context.tasks.ui.TaskActivityMonitor"
+            id="org.eclipse.mylyn.context.tasks.ui.activityMonitor">
+      </activityMonitor>
+   </extension>
 
    <extension
          point="org.eclipse.mylyn.tasks.ui.editors">
