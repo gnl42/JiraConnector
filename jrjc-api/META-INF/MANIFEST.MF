@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jira Rest Java Client
 Automatic-Module-Name: ira-rest-java-client-api
 Bundle-SymbolicName: jira-rest-java-client-api
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 5.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ClassPath: .,
  target/lib/atlassian-httpclient-api.jar,
