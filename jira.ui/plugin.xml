@@ -47,6 +47,39 @@
 	   <repositoryMigrator class="me.glindholm.connector.eclipse.internal.jira.ui.JiraRepositoryMigrator"/>
 
    </extension>
+     <extension
+           point="org.eclipse.ui.themes">
+        <fontDefinition
+              categoryId="org.eclipse.mylyn.tasks.ui.presentation"
+              id="org.eclipse.mylyn.wikitext.tasks.ui.monospaceFont"
+              isEditable="true"
+              label="%fontDefinition.monospace.label"
+              value="Courier New-regular-10">
+           <description>
+              %fontDefinition.monospace.description
+           </description>
+           <fontValue
+                os="linux"
+                value="Monospace-regular-10"/>
+           <fontValue
+                os="macosx"
+                value="Courier-regular-11"/>
+        </fontDefinition>
+     </extension>
+
+   <extension
+         point="org.eclipse.mylyn.tasks.ui.taskEditorExtensions">
+      <taskEditorExtension
+            class="org.eclipse.mylyn.internal.wikitext.tasks.ui.editor.ConfluenceMarkupTaskEditorExtension"
+            id="org.eclipse.mylyn.wikitext.tasks.ui.editor.confluenceTaskEditorExtension"
+            name="Confluence">
+      </taskEditorExtension>
+      <repositoryAssociation
+            connectorKind="jira"
+            taskEditorExtension="org.eclipse.mylyn.wikitext.tasks.ui.editor.confluenceTaskEditorExtension">
+      </repositoryAssociation>
+   </extension>
+
 
    <extension
           point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">

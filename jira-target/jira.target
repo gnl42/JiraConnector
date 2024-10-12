@@ -19,14 +19,16 @@
         </location>
         <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
             <repository location="https://download.eclipse.org/mylyn/updates/release/latest"/>
-            <unit id="org.eclipse.mylyn.commons.feature.feature.group" version="4.4.0.v20240828-0218"/>
-            <unit id="org.eclipse.mylyn.commons.repositories.feature.feature.group" version="4.4.0.v20240719-0621"/>
-            <unit id="org.eclipse.mylyn.tasks.feature.feature.group" version="4.4.0.v20240828-0218"/>
-            <unit id="org.eclipse.mylyn.commons.activity.feature.feature.group" version="4.4.0.v20240617-1534"/>
-            <unit id="org.eclipse.mylyn.commons.notifications.feature.feature.group" version="4.4.0.v20240828-0218"/>
-            <unit id="org.eclipse.mylyn.monitor.feature.feature.group" version="4.4.0.v20240617-1534"/>
-            <unit id="org.eclipse.mylyn.ide.feature.feature.group" version="4.4.0.v20240617-1534"/>
-        </location>
+            <unit id="org.eclipse.mylyn.commons.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.mylyn.commons.repositories.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.mylyn.tasks.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.mylyn.commons.activity.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.mylyn.commons.notifications.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.mylyn.monitor.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.mylyn.ide.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.mylyn.wikitext.feature.feature.group" version="0.0.0"/>
+       </location>
+        <location path="C:\Users\George\.m2\repository\org\eclipse\mylyn\docs\org.eclipse.mylyn.wikitext.tasks.ui\4.5.0-SNAPSHOT" type="Directory"/>
         <location includeDependencyDepth="none" includeDependencyScopes="compile" includeSource="true" missingManifest="generate" type="Maven">
             <dependencies>
                 <dependency>
