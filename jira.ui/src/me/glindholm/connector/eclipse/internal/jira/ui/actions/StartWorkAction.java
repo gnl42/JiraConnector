@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.mylyn.commons.core.StatusHandler;
+import org.eclipse.mylyn.internal.monitor.ui.MonitorUiPlugin;
 import org.eclipse.mylyn.internal.tasks.core.AbstractTask;
 import org.eclipse.mylyn.internal.tasks.core.sync.SynchronizeTasksJob;
 import org.eclipse.mylyn.internal.tasks.ui.TasksUiPlugin;
@@ -77,15 +78,13 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
             final IEditorInput editorInput = taskEditor.getEditorInput();
 
-            if (editorInput instanceof final TaskEditorInput taskEditorInput) {
-                if (taskEditorInput.getTask().equals(task)) {
+            if ((editorInput instanceof final TaskEditorInput taskEditorInput) && taskEditorInput.getTask().equals(task)) {
 
-                    final IFormPage formPage = taskEditor.getActivePageInstance();
-                    if (formPage instanceof final JiraTaskEditorPage jiraFormPage) {
-                        startWork(jiraFormPage);
+                final IFormPage formPage = taskEditor.getActivePageInstance();
+                if (formPage instanceof final JiraTaskEditorPage jiraFormPage) {
+                    startWork(jiraFormPage);
 
-                        return;
-                    }
+                    return;
                 }
             }
         }
@@ -129,7 +128,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
         job.addJobChangeListener(new JobChangeAdapter() {
             @Override
             public void done(final IJobChangeEvent event) {
-                if (task instanceof AbstractTask && ((AbstractTask) task).getStatus() != null) {
+                if ((task instanceof AbstractTask) && (((AbstractTask) task).getStatus() != null)) {
                     TasksUiInternal.asyncDisplayStatus(org.eclipse.mylyn.internal.tasks.ui.util.Messages.TasksUiInternal_Task_Synchronization_Failed,
                             ((AbstractTask) task).getStatus());
                 }
@@ -171,6 +170,23 @@ public class StartWorkAction extends AbstractStartWorkAction {
      * @return false if the process of stopping work should be broken
      */
     private boolean showLogWorkDialog(final TaskData taskData, final ITask iTask) {
+        if (MonitorUiPlugin.getDefault().isActivityTrackingEnabled()) {
+
+            final long seconds = JiraUiUtil.getLoggedActivityTime(iTask);
+
+            final LogJiraTimeDialog dialog = new LogJiraTimeDialog(
+                    PlatformUI.getWorkbench().getDisplay().getActiveShell(), taskData, iTask, seconds);
+
+            final int result = dialog.open();
+
+            if (result == Window.OK) {
+                workLog = dialog.getWorkLog();
+            } else if (result == LogJiraTimeDialog.SKIP_LOGGING) {
+                workLog = null;
+            } else {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -182,9 +198,8 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
         if (result == Window.OK) {
             return dialog.getSelectedAction();
-        } else {
-            return null;
         }
+        return null;
     }
 
     private static boolean smartAdvanceAction(final boolean start, final JiraClient client, final JiraIssue issue, final TaskData taskData, final ITask task,
@@ -194,7 +209,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
         doAdvanceAction[0] = false;
         final String[] selectedAction = new String[1];
         selectedAction[0] = start ? JiraTaskDataHandler.START_PROGRESS_OPERATION : JiraTaskDataHandler.STOP_PROGRESS_OPERATION;
-        if (start && !haveStartProgressOperation(taskData) || !start && !haveStopProgressOperation(taskData)) {
+        if ((start && !haveStartProgressOperation(taskData)) || (!start && !haveStopProgressOperation(taskData))) {
             PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
                 selectedAction[0] = showSelectActionDialog(taskData, task, start);
                 doAdvanceAction[0] = selectedAction[0] != null;
@@ -211,7 +226,7 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
     private static Job getStartWorkJob(final TaskData taskData, final ITask task) {
 
-        final Job startProgressJob = new Job(Messages.StartWorkAction_Start_Work) {
+        return new Job(Messages.StartWorkAction_Start_Work) {
 
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
@@ -253,12 +268,10 @@ public class StartWorkAction extends AbstractStartWorkAction {
                 return Status.OK_STATUS;
             }
         };
-
-        return startProgressJob;
     }
 
     private static Job getStopWorkJob(final TaskData taskData, final ITask task, final JiraWorkLog jiraWorkLog) {
-        final Job stopProgressJob = new Job(Messages.StartWorkAction_Stop_Work) {
+        return new Job(Messages.StartWorkAction_Stop_Work) {
 
             @Override
             protected IStatus run(final IProgressMonitor monitor) {
@@ -293,8 +306,6 @@ public class StartWorkAction extends AbstractStartWorkAction {
                 return Status.OK_STATUS;
             }
         };
-
-        return stopProgressJob;
     }
 
     @Override
@@ -303,23 +314,20 @@ public class StartWorkAction extends AbstractStartWorkAction {
 
         task = null;
 
-        if (selection instanceof final IStructuredSelection ss) {
+        if ((selection instanceof final IStructuredSelection ss) && !ss.isEmpty()) {
 
-            if (!ss.isEmpty()) {
-
-                final Iterator<?> iter = ss.iterator();
-                while (iter.hasNext()) {
-                    final Object sel = iter.next();
-                    if (sel instanceof IJiraTask) {
-                        task = ((IJiraTask) sel).getTask();
-                        try {
-                            taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
-                        } catch (final CoreException e) {
-                            handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
-                        }
-
-                        break;
+            final Iterator<?> iter = ss.iterator();
+            while (iter.hasNext()) {
+                final Object sel = iter.next();
+                if (sel instanceof IJiraTask) {
+                    task = ((IJiraTask) sel).getTask();
+                    try {
+                        taskData = TasksUiPlugin.getTaskDataManager().getTaskData(task);
+                    } catch (final CoreException e) {
+                        handleError(Messages.JiraConnectorUiActions_Cannot_get_task_data + task.getTaskKey(), e);
                     }
+
+                    break;
                 }
             }
         }
