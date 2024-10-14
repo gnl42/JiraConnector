@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Automatic-Module-Name: %Bundle-Name
 Bundle-SymbolicName: me.glindholm.connector.jira.ui;singleton:=true
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 5.1.1.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.internal.jira.ui.JiraUiPlugin
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: me.glindholm.connector.jira.core;bundle-version="5.1.0",
