@@ -46,7 +46,6 @@ Export-Package: me.glindholm.connector.cfg,
  me.glindholm.theplugin.commons.thirdparty.apache,
  me.glindholm.theplugin.commons.util
 Bundle-ClassPath: .,
- target/lib/javax.ws.rs-api.jar,
  target/lib/jaxen.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Localization: plugin

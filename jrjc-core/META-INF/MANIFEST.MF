@@ -19,8 +19,7 @@ Bundle-ClassPath: .,
  target/lib/httpcore-nio.jar,
  target/lib/httpmime.jar,
  target/lib/sal-api.jar,
- target/lib/spring-beans.jar,
- target/lib/javax.ws.rs-api.jar
+ target/lib/spring-beans.jar
 Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
 Require-Bundle: jira-rest-java-client-api,
