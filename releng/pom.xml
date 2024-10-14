@@ -7,14 +7,8 @@
         <artifactId>JiraConnector</artifactId>
         <version>5.1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>me.glindholm.connector.eclipse.releng</artifactId>
+    <artifactId>me.glindholm.connector.jira.releng</artifactId>
     <packaging>eclipse-repository</packaging>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>tycho-snapshots</id>
-            <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>

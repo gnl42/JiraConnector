@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JiraConnector for Eclipse
-Automatic-Module-Name: JiraConnector for Eclipse
+Bundle-Name: Mylyn Tasks Connector: Jira
+Automatic-Module-Name: Mylyn Tasks Connector: Jira
 Bundle-SymbolicName: me.glindholm.connector.eclipse.ui;singleton:=true
 Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: me.glindholm.connector.eclipse.ui.JiraConnectorUiPlugin

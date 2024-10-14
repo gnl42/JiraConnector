@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="JiraConnector for Eclipse" link_to="../com.tasktop.help.ui/toc-connectors.xml#additions">
-	<topic label="JiraConnector for Eclipse" href="html/main.html"> 
+<toc label="Mylyn Tasks Connector: Jira" link_to="../com.tasktop.help.ui/toc-connectors.xml#additions">
+	<topic label="Mylyn Tasks Connector: Jira" href="html/main.html"> 
 		<topic label="Support"  href="html/support.html"> 
 		</topic>
 	</topic>

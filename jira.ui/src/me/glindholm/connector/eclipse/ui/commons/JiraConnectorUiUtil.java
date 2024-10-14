@@ -29,7 +29,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import me.glindholm.connector.eclipse.ui.JiraConnectorUiPlugin;
 
 /**
- * Provides utility methods for the JiraConnector for Eclipse
+ * Provides utility methods for the Mylyn Tasks Connector: Jira
  * 
  * @author Thomas Ehrnhoefer
  */

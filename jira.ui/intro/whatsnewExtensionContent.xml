@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <introContent>
-	<extensionContent id="me.glindholm.connector.eclipse" name="Mylyn Atlassian Jira Connector for Eclipse"
-		style="css/whatsnew.css" alt-style="css/whatsnew.properties" path="whatsnew/@">
-		<group id="content-group" style-id="content-group">
-			<link label="Mylyn Atlassian Jira Connector for Eclipse"
-				id="atlassian-eclipse-connector-noteworthy" style-id="content-link">
-				<text>
-					Add Jira to the Eclipse workflow
-				</text>
-			</link>
-		</group>
-	</extensionContent>
+  <extensionContent id="me.glindholm.connector.eclipse.jira" name="Mylyn Tasks Connector: Jira"
+    style="css/whatsnew.css" alt-style="css/whatsnew.properties" path="whatsnew/@">
+    <group id="content-group" style-id="content-group">
+      <link label="Mylyn Tasks Connector: Jira"
+        id="atlassian-eclipse-connector-noteworthy" style-id="content-link">
+        <text>
+          Log Work Done: You can now log work on JIRA tasks from the Eclipse IDE. This feature is available in the Task Editor and the Task List.
+        </text>
+      </link>
+    </group>
+  </extensionContent>
 </introContent>
 

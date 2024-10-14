@@ -5,7 +5,7 @@
    </feature>
    <category-def name="Connector" label="JiraConnector">
       <description>
-         JiraConnector for Atlassian Jira
+         Mylyn Taks Connector: Jira
       </description>
    </category-def>
    <repository-reference location="https://download.eclipse.org/mylyn/updates/release/latest" enabled="true" />

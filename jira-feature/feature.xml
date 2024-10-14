@@ -16,7 +16,7 @@
       provider-name="%providerName"
       plugin="me.glindholm.connector.eclipse.branding.ui">
 
-   <description url="http://www.atlassian.com/software/jira">
+   <description url="https://www.atlassian.com/software/jira">
       %description
    </description>
 
@@ -41,24 +41,18 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.mylyn.context.core" version="4.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.core" version="4.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.core" version="4.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.ui" version="4.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.tasks.search" version="4.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.net" version="4.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.mylyn.commons.ui" version="4.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.commons.httpclient" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.net"/>
+      <import feature="org.eclipse.mylyn.tasks.feature"/>
    </requires>
 
    <plugin
-         id="me.glindholm.connector.eclipse.jira.ui"
+         id="me.glindholm.connector.jira.ui"
          version="0.0.0"/>
 
    <plugin
-         id="me.glindholm.connector.eclipse.jira.core"
+         id="me.glindholm.connector.jira.core"
          version="0.0.0"/>
 
    <plugin
@@ -70,7 +64,7 @@
          version="0.0.0"/>
 
    <plugin
-         id="me.glindholm.connector.eclipse.help"
+         id="me.glindholm.connector.jira.help"
          version="0.0.0"/>
 
    <plugin
