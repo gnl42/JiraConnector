@@ -50,8 +50,7 @@ Bundle-ClassPath: .,
  target/lib/commons-discovery.jar,
  target/lib/commons-io.jar,
  target/lib/javax.ws.rs-api.jar,
- target/lib/jaxen.jar,
- target/lib/jdom.jar
+ target/lib/jaxen.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Localization: plugin
 Import-Package: org.apache.commons.io,
