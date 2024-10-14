@@ -9,7 +9,7 @@
 		<artifactId>JiraConnector</artifactId>
 		<version>5.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>me.glindholm.connector.eclipse.commons.core</artifactId>
+	<artifactId>me.glindholm.connector.jira.commons.core</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<properties>
 		<version.jersey>1.8</version.jersey>

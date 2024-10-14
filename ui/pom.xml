@@ -7,6 +7,6 @@
     <artifactId>JiraConnector</artifactId>
     <version>5.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>me.glindholm.connector.eclipse.ui</artifactId>
+  <artifactId>me.glindholm.connector.jira.ui</artifactId>
   <packaging>eclipse-plugin</packaging>
 </project>

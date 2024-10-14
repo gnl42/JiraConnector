@@ -7,9 +7,9 @@
   <parent>
     <groupId>me.glindholm.connector.jira</groupId>
     <artifactId>JiraConnector</artifactId>
-    <version>5.1.0-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
   </parent>
-  <artifactId>me.glindholm.connector.eclipse.jira.core</artifactId>
+  <artifactId>me.glindholm.connector.jira.core</artifactId>
   <packaging>eclipse-plugin</packaging>
   <properties>
     <version.jersey>1.8</version.jersey>

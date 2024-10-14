@@ -159,7 +159,7 @@ public class JiraRestClientAdapter {
             // }
             // });
             final HttpClientOptions httpOptions = new HttpClientOptions();
-            httpOptions.setUserAgent("JiraConnector for Eclipse");
+            httpOptions.setUserAgent("Mylyn Tasks Connector: Jira");
             httpOptions.setConnectionTimeout(TIMEOUT_CONNECTION_IN_MS, TimeUnit.MILLISECONDS);
             httpOptions.setSocketTimeout(TIMEOUT_READ_IN_MS, TimeUnit.MILLISECONDS);
             if (userName.isEmpty()) {

@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.glindholm.connector.jira</groupId>
     <artifactId>JiraConnector</artifactId>
-    <version>5.1.0-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <developers>
         <developer>
@@ -311,20 +311,23 @@
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-packaging-plugin</artifactId>
                     <version>${tycho.version}</version>
-                    <configuration>
-                        <format>'v'yyyyMMdd'-'HHmm</format>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.4.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.eclipse.tycho.extras</groupId>
                     <artifactId>tycho-eclipserun-plugin</artifactId>
                     <version>${tycho.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-eclipse-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -481,7 +484,7 @@
                         <artifact>
                             <groupId>me.glindholm.connector.jira</groupId>
                             <artifactId>jira.target</artifactId>
-                            <version>5.1.0-SNAPSHOT</version>
+                            <version>5.1.1-SNAPSHOT</version>
                         </artifact>
                     </target>
                 </configuration>
