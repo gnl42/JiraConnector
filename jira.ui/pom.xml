@@ -7,7 +7,7 @@
     <parent>
         <groupId>me.glindholm.connector.jira</groupId>
         <artifactId>JiraConnector</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>5.1.2-SNAPSHOT</version>
     </parent>
     <artifactId>me.glindholm.connector.jira.ui</artifactId>
     <packaging>eclipse-plugin</packaging>
