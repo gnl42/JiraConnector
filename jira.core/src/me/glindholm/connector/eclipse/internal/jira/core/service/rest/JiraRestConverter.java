@@ -172,7 +172,7 @@ public class JiraRestConverter {
 
         final JiraProject project = cache.getProjectByKey(rawIssue.getProject().getKey());
         issue.setProject(project);
-        if (project != null && !project.hasDetails()) {
+        if ((project != null) && !project.hasDetails()) {
             cache.refreshProjectDetails(project, monitor);
         } else if (project == null) {
             throw new JiraException(NLS.bind("Project with key {0} not found in local cache. Please refresh repository configuration.", //$NON-NLS-1$
@@ -228,7 +228,7 @@ public class JiraRestConverter {
 
         // TODO Find some way to check this
         final IssueField security = rawIssue.getField(JiraRestFields.SECURITY);
-        if (security != null && security.getValue() != null && security.getValue() instanceof JSONObject) {
+        if ((security != null) && (security.getValue() != null) && (security.getValue() instanceof JSONObject)) {
             final JSONObject json = (JSONObject) security.getValue();
 
             try {
@@ -247,7 +247,7 @@ public class JiraRestConverter {
         issue.setCreated(rawIssue.getCreationDate().toInstant());
         issue.setUpdated(rawIssue.getUpdateDate().toInstant());
 
-        if (project != null && project.getIssueTypeById(rawIssue.getIssueType().getId().toString()) != null) {
+        if ((project != null) && (project.getIssueTypeById(rawIssue.getIssueType().getId().toString()) != null)) {
             issue.setType(project.getIssueTypeById(rawIssue.getIssueType().getId().toString()));
         } else {
             issue.setType(cache.getIssueTypeById(rawIssue.getIssueType().getId().toString()));
@@ -265,7 +265,7 @@ public class JiraRestConverter {
         }
 
         final IssueField env = rawIssue.getField(JiraRestFields.ENVIRONMENT);
-        if (env != null && env.getValue() != null) {
+        if ((env != null) && (env.getValue() != null)) {
             issue.setEnvironment(env.getValue().toString());
         } else {
             // hack: empty value is necessary to display environment field in the issue
@@ -319,7 +319,7 @@ public class JiraRestConverter {
         }
 
         final BasicWatchers watched = rawIssue.getWatched();
-        issue.setWatched(watched.isWatching());
+        issue.setWatched((watched != null) && watched.isWatching());
 
         if (issue.isWatched()) {
             try {
@@ -388,7 +388,7 @@ public class JiraRestConverter {
         for (final IssueField issueField : issue.getFields()) {
 
             final String fieldId = issueField.getId();
-            if (fieldId.startsWith("customfield") && issueField.getValue() != null) { //$NON-NLS-1$
+            if (fieldId.startsWith("customfield") && (issueField.getValue() != null)) { //$NON-NLS-1$
                 final Map<String, CimFieldInfo> metadata = issue.getMetadata();
                 final CimFieldInfo cim = metadata.get(fieldId);
 
@@ -431,7 +431,7 @@ public class JiraRestConverter {
                         if (allowedValue instanceof final CustomFieldOption value) {
                             final String optionalId = value.getId() + "";
                             final String optionalValue = value.getValue();
-                            if (optionalValue != null && optionalId != null) {
+                            if ((optionalValue != null) && (optionalId != null)) {
                                 allowedValues.add(new JiraAllowedValue(optionalId, optionalValue));
                             }
                         } else if (allowedValue instanceof final IssueType issueType) {
@@ -543,7 +543,7 @@ public class JiraRestConverter {
                 }
             }
 
-            if (values != null && !values.isEmpty()) {
+            if ((values != null) && !values.isEmpty()) {
 
                 final JiraCustomField customField = new JiraCustomField(field.getId(), longType, field.getName(), values);
                 customField.setReadOnly(readonly);
@@ -559,7 +559,7 @@ public class JiraRestConverter {
 
     private static Long getRankFromIssue(final Issue issue) throws JiraException {
         for (final IssueField issueField : issue.getFields()) {
-            if (issueField.getId().startsWith("customfield") && issueField.getValue() != null) { //$NON-NLS-1$
+            if (issueField.getId().startsWith("customfield") && (issueField.getValue() != null)) { //$NON-NLS-1$
                 final CimFieldInfo cim = issue.getMetadata().get(issueField.getId());
                 if (cim != null) {
                     if (JiraAttribute.RANK.getType().getKey().equals(cim.getSchema().getCustom())) {
@@ -636,11 +636,11 @@ public class JiraRestConverter {
             outAttachment.setAuthor(BasicUser.UNASSIGNED_USER); // $NON-NLS-1$
         }
 
-//        if (author != null && author.getDisplayName() != null) {
-//            outAttachment.setAuthorDisplayName(author.getDisplayName());
-//        } else {
-//            outAttachment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
-//        }
+        //        if (author != null && author.getDisplayName() != null) {
+        //            outAttachment.setAuthorDisplayName(author.getDisplayName());
+        //        } else {
+        //            outAttachment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
+        //        }
 
         outAttachment.setCreated(attachment.getCreationDate().toInstant());
         outAttachment.setName(attachment.getFilename());
@@ -695,11 +695,9 @@ public class JiraRestConverter {
     }
 
     private static JiraIssueLink convert(final IssueLink issueLink) {
-        final JiraIssueLink outIssueLink = new JiraIssueLink(issueLink.getTargetIssueKey(), // FIXME issueLink.getTargetIssueId().toString(),
+        return new JiraIssueLink(issueLink.getTargetIssueKey(), // FIXME issueLink.getTargetIssueId().toString(),
                 issueLink.getTargetIssueKey(), issueLink.getIssueLinkType().getName(), issueLink.getIssueLinkType().getName(),
-                issueLink.getIssueLinkType().getDescription(), ""); //$NON-NLS-1$
-
-        return outIssueLink;
+                issueLink.getIssueLinkType().getDescription(), "");
 
     }
 
@@ -817,10 +815,10 @@ public class JiraRestConverter {
             worklogInputBuilder.setAdjustEstimateLeave();
             break;
         case SET:
-            worklogInputBuilder.setAdjustEstimateNew(jiraWorklog.getNewRemainingEstimate() / 60 + "m"); //$NON-NLS-1$
+            worklogInputBuilder.setAdjustEstimateNew((jiraWorklog.getNewRemainingEstimate() / 60) + "m"); //$NON-NLS-1$
             break;
         case REDUCE:
-            worklogInputBuilder.setAdjustEstimateManual(jiraWorklog.getNewRemainingEstimate() / 60 + "m"); //$NON-NLS-1$
+            worklogInputBuilder.setAdjustEstimateManual((jiraWorklog.getNewRemainingEstimate() / 60) + "m"); //$NON-NLS-1$
             break;
         }
 
@@ -886,8 +884,7 @@ public class JiraRestConverter {
     }
 
     private static Version convert(final JiraVersion version) {
-        final Version outVersion = new Version(null, Long.valueOf(version.getId()), version.getName(), null, false, false, null);
-        return outVersion;
+        return new Version(null, Long.valueOf(version.getId()), version.getName(), null, false, false, null);
     }
 
     public static List<BasicComponent> convert(final JiraComponent[] components) {
@@ -956,13 +953,13 @@ public class JiraRestConverter {
         case TEXTAREA:
         case URL:
         case EPIC_LABEL:
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
+            if ((customField.getValues().size() > 0) && (customField.getValues().get(0) != null)) {
                 return new FieldInput(customField.getId(), customField.getValues().get(0));
             }
             break;
         case DATE:
 
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null && customField.getValues().get(0).length() > 0) {
+            if ((customField.getValues().size() > 0) && (customField.getValues().get(0) != null) && (customField.getValues().get(0).length() > 0)) {
                 String date = null;
                 final String dateValue = customField.getValues().get(0);
                 try {
@@ -981,7 +978,7 @@ public class JiraRestConverter {
             break;
         case DATETIME:
 
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null && customField.getValues().get(0).length() > 0) {
+            if ((customField.getValues().size() > 0) && (customField.getValues().get(0) != null) && (customField.getValues().get(0).length() > 0)) {
                 String date = null;
                 final String dateValue = customField.getValues().get(0);
                 try {
@@ -1002,13 +999,13 @@ public class JiraRestConverter {
             break;
 
         case FLOATFIELD:
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null && customField.getValues().get(0).length() > 0) {
+            if ((customField.getValues().size() > 0) && (customField.getValues().get(0) != null) && (customField.getValues().get(0).length() > 0)) {
                 return new FieldInput(customField.getId(), Float.parseFloat(customField.getValues().get(0)));
             }
             break;
         case MULTIUSERPICKER:
         case MULTIGROUPPICKER:
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
+            if ((customField.getValues().size() > 0) && (customField.getValues().get(0) != null)) {
 
                 final List<ComplexIssueInputFieldValue> fields = new ArrayList<>();
 
@@ -1024,7 +1021,7 @@ public class JiraRestConverter {
             break;
         case USERPICKER:
         case GROUPPICKER:
-            if (customField.getValues().size() > 0 && customField.getValues().get(0) != null) {
+            if ((customField.getValues().size() > 0) && (customField.getValues().get(0) != null)) {
                 return new FieldInput(customField.getId(), ComplexIssueInputFieldValue.with(JiraRestFields.NAME, customField.getValues().get(0)));
             }
             break;
@@ -1048,7 +1045,7 @@ public class JiraRestConverter {
             }
 
             return new FieldInput(customField.getId(), values);
-        // }
+            // }
 
         case LABELSS:
             if (customField.getValues().size() > 0) {
