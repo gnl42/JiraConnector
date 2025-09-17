@@ -11,32 +11,4 @@
     </parent>
     <artifactId>me.glindholm.connector.jira.ui</artifactId>
     <packaging>eclipse-plugin</packaging>
- <!--
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                           <includeArtifactIds></includeArtifactIds>
-                            <outputDirectory>target/lib</outputDirectory>
-                            <stripVersion>true</stripVersion>
-                            <overWriteReleases>true</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
- -->
-    <dependencies>
-    </dependencies>
-</project>
+ </project>
