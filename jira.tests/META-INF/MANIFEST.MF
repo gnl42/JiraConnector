@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mylyn Jira Tests
 Bundle-SymbolicName: me.glindholm.connector.eclipse.jira.tests
-Bundle-Version: 0.0.0
+Bundle-Version: 5.2.0.qualifier
 Require-Bundle: org.junit,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
@@ -24,7 +24,7 @@ Export-Package: me.glindholm.connector.eclipse.jira.tests;x-friends:="me.glindho
  me.glindholm.connector.eclipse.jira.tests.model;x-internal:=true,
  me.glindholm.connector.eclipse.jira.tests.ui;x-internal:=true,
  me.glindholm.connector.eclipse.jira.tests.util;x-internal:=true
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Eclipse Mylyn
 Bundle-ClassPath: lib/hamcrest-all-1.3RC0.jar,.
 Import-Package: org.eclipse.mylyn.internal.tasks.ui.search

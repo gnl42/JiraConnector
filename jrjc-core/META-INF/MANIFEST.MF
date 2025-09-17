@@ -3,50 +3,27 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Jira Rest Java Client
 Bundle-SymbolicName: jira-rest-java-client-core
 Automatic-Module-Name: jira-rest-java-client-core
-Bundle-Version: 5.1.3.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-17
-Bundle-ClassPath: .,
- target/lib/atlassian-event.jar,
- target/lib/atlassian-httpclient-api.jar,
- target/lib/atlassian-httpclient-library.jar,
- target/lib/fugue.jar,
- target/lib/httpasyncclient.jar,
- target/lib/httpasyncclient-cache.jar,
- target/lib/httpclient.jar,
- target/lib/httpclient-cache.jar,
- target/lib/httpcore.jar,
- target/lib/httpcore-nio.jar,
- target/lib/httpmime.jar,
- target/lib/sal-api.jar,
- target/lib/spring-beans.jar
+Bundle-Version: 5.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-ClassPath: .
 Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
 Require-Bundle: jira-rest-java-client-api,
  com.google.guava;bundle-version="30.1.0",
- org.eclipse.jdt.annotation
-Export-Package: com.atlassian.sal.api.executor,
- io.atlassian.fugue,
- me.glindholm.jira.rest.client.auth,
+ org.eclipse.jdt.annotation,
+ wrapped.org.apache.httpcomponents.httpmime;bundle-version="4.5.13",
+ atlassian.combined.osgi;bundle-version="1.0.0"
+Export-Package: me.glindholm.jira.rest.client.auth,
  me.glindholm.jira.rest.client.internal,
  me.glindholm.jira.rest.client.internal.async,
  me.glindholm.jira.rest.client.internal.json,
- me.glindholm.jira.rest.client.internal.json.gen,
- org.apache.http,
- org.apache.http.client,
- org.apache.http.client.config,
- org.apache.http.client.utils,
- org.apache.http.conn,
- org.apache.http.impl.client,
- org.apache.http.nio.client,
- org.apache.http.nio.conn,
- org.apache.http.nio.reactor,
- org.apache.http.ssl,
- org.apache.http.util
+ me.glindholm.jira.rest.client.internal.json.gen
 Import-Package: org.apache.commons.codec.binary;version="[1.16.0,2.0.0)",
  org.apache.commons.lang3;version="[3.17.0,4.0.0)",
  org.apache.commons.logging;version="[1.3.0,2.0.0)",
  org.apache.hc.core5.http.impl;version="[5.1.0,6.0.0)",
  org.apache.hc.core5.net;version="[5.2.0,6.0.0)",
+ org.apache.http.entity;version="[4.4.0,5.0.0)",
  org.codehaus.jettison;version="[1.3.0,2.0.0)",
  org.codehaus.jettison.json;version="[1.3.0,2.0.0)",
  org.slf4j;version="1.7.30"

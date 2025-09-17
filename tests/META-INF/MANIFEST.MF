@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Mylyn Tasks Connector: Jira Tests
 Bundle-SymbolicName: me.glindholm.connector.eclipse.tests;singleton:=true
 Bundle-Version: 0.0.0
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: 
  me.glindholm.connector.commons,
  me.glindholm.connector.eclipse.core,
