@@ -286,7 +286,10 @@ public class JiraRestClientAdapter {
                 final SubMonitor progress = SubMonitor.convert(monitor, 100);
                 progress.split(0);
                 progress.setTaskName("Query server");
-                final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql, maxSearchResult, 0, fields).get().getIssues();
+                JiraServerInfo serverInfo = cache.getServerInfo();
+                boolean newJqlPath = serverInfo != null && serverInfo.isNewJqlNeeded();
+                final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql,
+                		maxSearchResult, 0, fields, newJqlPath).get().getIssues();
                 progress.split(20).setWorkRemaining(issuesFromServer.size());
 
                 final List<JiraIssue> fullIssues = new ArrayList<>();

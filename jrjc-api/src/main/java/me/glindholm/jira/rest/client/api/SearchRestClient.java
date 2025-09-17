@@ -43,7 +43,7 @@ public interface SearchRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid JQL
      *                             query, etc.)
      */
-    Promise<SearchResult> searchJql(@Nullable String jql) throws URISyntaxException;
+    Promise<SearchResult> searchJql(@Nullable String jql, final boolean newJqlPath) throws URISyntaxException;
 
     /**
      * Performs a JQL search and returns issues matching the query. The first startAt issues will be
@@ -71,7 +71,8 @@ public interface SearchRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid JQL
      *                             query, etc.)
      */
-    Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults, @Nullable Integer startAt, @Nullable Set<String> fields)
+    Promise<SearchResult> searchJql(@Nullable String jql, @Nullable Integer maxResults,
+    		@Nullable Integer startAt, @Nullable Set<String> fields, final boolean newJqlPath)
             throws URISyntaxException;
 
     /**

@@ -31,9 +31,9 @@ public class SearchResultJsonParser implements JsonObjectParser<SearchResult> {
 
     @Override
     public SearchResult parse(final JSONObject json) throws JSONException, URISyntaxException {
-        final int startAt = json.getInt("startAt");
-        final int maxResults = json.getInt("maxResults");
-        final int total = json.getInt("total");
+        final int startAt = json.optInt("startAt",0);
+        final int maxResults = json.optInt("maxResults", 9999999);
+        int total = json.optInt("total", -1);
         final JSONArray issuesJsonArray = json.getJSONArray("issues");
 
         final List<Issue> issues;
@@ -41,8 +41,10 @@ public class SearchResultJsonParser implements JsonObjectParser<SearchResult> {
             final IssueJsonParser issueParser = new IssueJsonParser(json.getJSONObject("names"), json.getJSONObject("schema"));
             final GenericJsonArrayParser<Issue> issuesParser = GenericJsonArrayParser.create(issueParser);
             issues = issuesParser.parse(issuesJsonArray);
+            total = issues.size();
         } else {
             issues = Collections.emptyList();
+            total = 0;
         }
         return new SearchResult(startAt, maxResults, total, issues);
     }

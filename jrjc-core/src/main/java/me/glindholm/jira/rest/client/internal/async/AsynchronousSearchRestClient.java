@@ -78,24 +78,26 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     }
 
     @Override
-    public Promise<SearchResult> searchJql(@Nullable final String jql) throws URISyntaxException {
-        return searchJql(jql, null, null, null);
+    public Promise<SearchResult> searchJql(@Nullable final String jql, final boolean newpqlPath) throws URISyntaxException {
+        return searchJql(jql, null, null, null, newpqlPath);
     }
 
     @Override
     public Promise<SearchResult> searchJql(@Nullable final String jql, @Nullable final Integer maxResults, @Nullable final Integer startAt,
-            @Nullable final Set<String> fields) throws URISyntaxException {
+            @Nullable final Set<String> fields, final boolean newpqlPath) throws URISyntaxException {
         final String notNullJql = StringUtils.defaultString(jql);
         if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
-            return searchJqlImplPost(maxResults, startAt, SEARCH_EXPANDOS, notNullJql, fields);
+            return searchJqlImplPost(maxResults, startAt, SEARCH_EXPANDOS, notNullJql, fields, newpqlPath);
         } else {
-            return searchJqlImplGet(maxResults, startAt, SEARCH_EXPANDOS, notNullJql, fields);
+            return searchJqlImplGet(maxResults, startAt, SEARCH_EXPANDOS, notNullJql, fields, newpqlPath);
         }
     }
 
     private Promise<SearchResult> searchJqlImplGet(@Nullable final Integer maxResults, @Nullable final Integer startAt, final List<String> expandosValues,
-            final String jql, @Nullable final Set<String> fields) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(searchUri).addParameter(JQL_ATTRIBUTE, jql).addParameter(EXPAND_ATTRIBUTE,
+            final String jql, @Nullable final Set<String> fields, final boolean newJqlPath) throws URISyntaxException {
+
+    	final URIBuilder uriBuilder = new URIBuilder(searchUri).appendPath(newJqlPath ? "/jql" : "")
+    			.addParameter(JQL_ATTRIBUTE, jql).addParameter(EXPAND_ATTRIBUTE,
                 String.join(",", expandosValues));
 
         if (fields != null) {
@@ -114,7 +116,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     }
 
     private Promise<SearchResult> searchJqlImplPost(@Nullable final Integer maxResults, @Nullable final Integer startAt, final List<String> expandosValues,
-            final String jql, @Nullable final Set<String> fields) {
+            final String jql, @Nullable final Set<String> fields, final boolean newJqlPath) throws URISyntaxException {
         final JSONObject postEntity = new JSONObject();
 
         try {
@@ -127,7 +129,8 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
         } catch (final JSONException e) {
             throw new RestClientException(e);
         }
-        return postAndParse(searchUri, postEntity, searchResultJsonParser);
+        return postAndParse(new URIBuilder(searchUri).appendPath(newJqlPath ? "/jql" : "").build(),
+        		postEntity, searchResultJsonParser);
     }
 
     @Override

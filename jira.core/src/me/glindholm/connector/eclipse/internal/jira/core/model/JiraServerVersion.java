@@ -39,7 +39,9 @@ public class JiraServerVersion implements Comparable<JiraServerVersion>, Seriali
 
     public static final JiraServerVersion JIRA_10_0 = new JiraServerVersion("10.0"); //$NON-NLS-1$
 
-    public final static JiraServerVersion MIN_VERSION = JIRA_5_0;
+    public final static JiraServerVersion MIN_VERSION = JIRA_8_0;
+
+	public static final JiraServerVersion JIRA_1001_0 = new JiraServerVersion("1001.0"); //$NON-NLS-1$
 
     private final int major;
 
