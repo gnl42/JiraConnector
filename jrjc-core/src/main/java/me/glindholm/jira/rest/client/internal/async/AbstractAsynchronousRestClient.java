@@ -200,25 +200,36 @@ public abstract class AbstractAsynchronousRestClient {
         return List.copyOf(results);
     }
 
-    private static ErrorCollection getErrorsFromJson(final int status, final JSONObject jsonObject) throws JSONException {
-        final JSONObject jsonErrors = jsonObject.optJSONObject("errors");
-        final JSONArray jsonErrorMessages = jsonObject.optJSONArray("errorMessages");
+	private static ErrorCollection getErrorsFromJson(final int status, final JSONObject jsonObject)
+			throws JSONException {
+		final JSONObject jsonErrors = jsonObject.optJSONObject("errors");
+		final List<String> errorMessages;
+		final Map<String, String> errors;
+		if (jsonErrors == null) {
+			final String error = jsonObject.optString("error", null);
+			if (error == null) {
+				return new ErrorCollection(status, Collections.emptyList(), Collections.emptyMap());
+			}
+			errorMessages = new ArrayList<>();
+			errorMessages.add(error);
+			errors = Collections.emptyMap();
+		} else {
+			final JSONArray jsonErrorMessages = jsonObject.optJSONArray("errorMessages");
 
-        final List<String> errorMessages;
-        if (jsonErrorMessages != null) {
-            errorMessages = JsonParseUtil.toStringList(jsonErrorMessages);
-        } else {
-            errorMessages = Collections.emptyList();
-        }
+			if (jsonErrorMessages != null) {
+				errorMessages = JsonParseUtil.toStringList(jsonErrorMessages);
+			} else {
+				errorMessages = Collections.emptyList();
+			}
 
-        final Map<String, String> errors;
-        if (jsonErrors != null && jsonErrors.length() > 0) {
-            errors = JsonParseUtil.toStringMap(jsonErrors.names(), jsonErrors);
-        } else {
-            errors = Collections.emptyMap();
-        }
-        return new ErrorCollection(status, errorMessages, errors);
-    }
+			if (jsonErrors != null && jsonErrors.length() > 0) {
+				errors = JsonParseUtil.toStringMap(jsonErrors.names(), jsonErrors);
+			} else {
+				errors = Collections.emptyMap();
+			}
+		}
+		return new ErrorCollection(status, errorMessages, errors);
+	}
 
     private <T> EntityBuilder toEntity(final JsonGenerator<T> generator, final T bean) {
         return () -> new Entity() {
