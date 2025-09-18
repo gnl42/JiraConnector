@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>me.glindholm.connector.jira</groupId>
 		<artifactId>JiraConnector</artifactId>
-		<version>5.1.3-SNAPSHOT</version>
+		<version>5.2.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>jira-rest-java-client-api</artifactId>
@@ -16,54 +16,6 @@
 	<name>JIRA REST Java Client - Public API</name>
 	<description>The public API for JIRA REST Java Client</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>io.atlassian.util.concurrent</groupId>
-			<artifactId>atlassian-util-concurrent</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.atlassian.httpclient</groupId>
-			<artifactId>atlassian-httpclient-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>31.0.1-jre</version>
-		</dependency>
-
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeArtifactIds>
-								guava,atlassian-util-concurrent,atlassian-httpclient-api
-						</includeArtifactIds>
-							<outputDirectory>target/lib</outputDirectory>
-							<stripVersion>true</stripVersion>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 	<reporting>
 		<plugins>
 			<plugin>

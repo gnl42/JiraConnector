@@ -11,22 +11,15 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.mylyn.tasks.core.AbstractTaskListMigrator;
-import org.eclipse.mylyn.tasks.core.IRepositoryQuery;
-import org.eclipse.mylyn.tasks.core.ITask;
-import org.w3c.dom.Element;
-
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
-import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 
 /**
  * @author Steffen Pingel
  */
-public class JiraTaskListMigrator extends AbstractTaskListMigrator {
+public class JiraTaskListMigrator {
 
     private static final String KEY_FILTER_CUSTOM_URL = "FilterCustomUrl"; //$NON-NLS-1$
 
@@ -42,12 +35,10 @@ public class JiraTaskListMigrator extends AbstractTaskListMigrator {
 
     private static final String KEY_KEY = "Key"; //$NON-NLS-1$
 
-    @Override
     public String getConnectorKind() {
         return JiraCorePlugin.CONNECTOR_KIND;
     }
 
-    @Override
     public Set<String> getQueryElementNames() {
         final Set<String> names = new HashSet<>();
         names.add(KEY_JIRA_QUERY);
@@ -55,22 +46,35 @@ public class JiraTaskListMigrator extends AbstractTaskListMigrator {
         return names;
     }
 
-    @Override
     public String getTaskElementName() {
         return KEY_JIRA_ISSUE;
     }
 
-    @Override
-    public void migrateQuery(final IRepositoryQuery query, final Element element) {
-        query.setAttribute(KEY_FILTER_CUSTOM_URL, element.getAttribute(KEY_FILTER_CUSTOM_URL));
-        query.setAttribute(KEY_FILTER_ID, element.getAttribute(KEY_FILTER_ID));
-        query.setAttribute(KEY_FILTER_NAME, element.getAttribute(KEY_FILTER_NAME));
-    }
+    // Migration using TaskData (modern Mylyn)
+//    public void migrateQuery(final IRepositoryQuery query, final TaskData data) {
+//        query.setAttribute(KEY_FILTER_CUSTOM_URL, data.getRoot().getAttribute(KEY_FILTER_CUSTOM_URL));
+//        query.setAttribute(KEY_FILTER_ID, data.getRoot().getAttribute(KEY_FILTER_ID));
+//        query.setAttribute(KEY_FILTER_NAME, data.getRoot().getAttribute(KEY_FILTER_NAME));
+//    }
 
-    @Override
-    public void migrateTask(final ITask task, final Element element) {
-        task.setModificationDate(Date.from(JiraUtil.stringToDate(element.getAttribute(KEY_LAST_MOD_DATE))));
-        task.setTaskKey(element.getAttribute(KEY_KEY));
-    }
+//    public void migrateTask(final ITask task, final TaskData data) {
+//        String lastModDate = data.getRoot().getAttribute(KEY_LAST_MOD_DATE);
+//        if (lastModDate != null) {
+//            task.setModificationDate(Date.from(JiraUtil.stringToDate(lastModDate)));
+//        }
+//        task.setTaskKey(data.getRoot().getAttribute(KEY_KEY));
+//    }
+
+    // Optional: legacy XML migration for backward compatibility
+//    public void migrateQueryFromElement(final IRepositoryQuery query, final Element element) {
+//        query.setAttribute(KEY_FILTER_CUSTOM_URL, element.getAttribute(KEY_FILTER_CUSTOM_URL));
+//        query.setAttribute(KEY_FILTER_ID, element.getAttribute(KEY_FILTER_ID));
+//        query.setAttribute(KEY_FILTER_NAME, element.getAttribute(KEY_FILTER_NAME));
+//    }
+
+//    public void migrateTaskFromElement(final ITask task, final Element element) {
+//        task.setModificationDate(Date.from(JiraUtil.stringToDate(element.getAttribute(KEY_LAST_MOD_DATE))));
+//        task.setTaskKey(element.getAttribute(KEY_KEY));
+//    }
 
 }

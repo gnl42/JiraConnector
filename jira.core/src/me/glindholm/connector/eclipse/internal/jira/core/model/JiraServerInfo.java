@@ -128,6 +128,15 @@ public class JiraServerInfo implements Serializable {
         }
     }
 
+    /**
+     * Search url changed with 1001.0 release
+     * <a href="https://developer.atlassian.com/changelog/#CHANGE-2046">jql path change</a>
+     * @return true if new jql path should be used
+     */
+	public boolean isNewJqlNeeded() {
+		return version.isGreaterThanOrEquals(JiraServerVersion.JIRA_1001_0);
+	}
+
     @Override
     public String toString() {
         final String dateStr = dateFormat.format(buildDate);
