@@ -31,12 +31,9 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.atlassian.event.api.EventPublisher;
 import com.atlassian.httpclient.apache.httpcomponents.DefaultHttpClientFactory;
-import com.atlassian.httpclient.api.HttpClient;
 import com.atlassian.httpclient.api.factory.HttpClientOptions;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.UrlMode;
@@ -50,7 +47,6 @@ import me.glindholm.jira.rest.client.api.AuthenticationHandler;
  * @since v2.0
  */
 public class AsynchronousHttpClientFactory {
-    private static final Logger log = LoggerFactory.getLogger(AsynchronousHttpClientFactory.class);
 
     private static String libraryVersion = "unknown";
     private static Instant libraryDate = Instant.now();
@@ -72,7 +68,7 @@ public class AsynchronousHttpClientFactory {
                 }
             }
         } catch (final Exception e) {
-            log.debug("", e);
+            System.err.println("Unable to determine library version and build date from manifest:" + e.getMessage());
         }
     }
 
