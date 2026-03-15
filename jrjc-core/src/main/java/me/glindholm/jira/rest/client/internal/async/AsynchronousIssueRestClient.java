@@ -395,11 +395,18 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     private CompletableFuture<Void> postMultipart(final URI uri, final String filename, final byte[] data, final String contentType) {
         final String boundary = "----JiraClientBoundary" + UUID.randomUUID().toString().replace("-", "");
-        final byte[] body = buildMultipartBody(boundary, FILE_BODY_TYPE, filename, data, contentType);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            baos.write(buildMultipartBody(boundary, FILE_BODY_TYPE, filename, data, contentType));
+            // Final boundary
+            baos.write(("--" + boundary + "--\r\n").getBytes(UTF_8));
+        } catch (final IOException e) {
+            throw new RestClientException(e);
+        }
         final HttpRequest request = client().newRequest(uri)
                 .header("X-Atlassian-Token", "nocheck")
                 .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-                .POST(HttpRequest.BodyPublishers.ofByteArray(body))
+                .POST(HttpRequest.BodyPublishers.ofByteArray(baos.toByteArray()))
                 .build();
         return call(client().execute(request));
     }
