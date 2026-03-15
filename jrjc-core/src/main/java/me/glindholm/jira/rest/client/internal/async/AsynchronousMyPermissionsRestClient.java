@@ -17,12 +17,8 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.CompletableFuture;
 
-import org.apache.hc.core5.net.URIBuilder;
-
-import com.atlassian.httpclient.api.HttpClient;
-
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.MyPermissionsRestClient;
 import me.glindholm.jira.rest.client.api.domain.Permissions;
 import me.glindholm.jira.rest.client.api.domain.input.MyPermissionsInput;
@@ -33,19 +29,19 @@ public class AsynchronousMyPermissionsRestClient extends AbstractAsynchronousRes
     private final URI baseUri;
     private final PermissionsJsonParser permissionsJsonParser = new PermissionsJsonParser();
 
-    protected AsynchronousMyPermissionsRestClient(final URI baseUri, final HttpClient client) {
+    protected AsynchronousMyPermissionsRestClient(final URI baseUri, final DisposableHttpClient client) {
         super(client);
         this.baseUri = baseUri;
     }
 
     @Override
-    public Promise<Permissions> getMyPermissions(final MyPermissionsInput permissionInput) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(URI_PREFIX);
+    public CompletableFuture<Permissions> getMyPermissions(final MyPermissionsInput permissionInput) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath(URI_PREFIX);
         addContextParams(uriBuilder, permissionInput);
         return getAndParse(uriBuilder.build(), permissionsJsonParser);
     }
 
-    private URIBuilder addContextParams(final URIBuilder uriBuilder, final MyPermissionsInput permissionInput) {
+    private UriBuilder addContextParams(final UriBuilder uriBuilder, final MyPermissionsInput permissionInput) {
         if (permissionInput != null) {
             if (permissionInput.getProjectKey() != null) {
                 uriBuilder.addParameter("projectKey", permissionInput.getProjectKey());

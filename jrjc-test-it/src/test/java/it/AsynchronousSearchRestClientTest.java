@@ -80,10 +80,10 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
     @Test
     public void testJqlSearch() {
-        final SearchResult searchResultForNull = client.getSearchClient().searchJql(null).claim();
+        final SearchResult searchResultForNull = client.getSearchClient().searchJql(null).join();
         assertEquals(11, searchResultForNull.getTotal());
 
-        final SearchResult searchResultForReporterWseliga = client.getSearchClient().searchJql("reporter=wseliga").claim();
+        final SearchResult searchResultForReporterWseliga = client.getSearchClient().searchJql("reporter=wseliga").join();
         assertEquals(1, searchResultForReporterWseliga.getTotal());
     }
 
@@ -92,11 +92,11 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         final int maxResults = 3;
 
         // returns: 0,1,2
-        final SearchResult searchResultFrom0 = client.getSearchClient().searchJql(null, maxResults, 0, null).claim();
+        final SearchResult searchResultFrom0 = client.getSearchClient().searchJql(null, maxResults, 0, null).join();
         final Issue secondIssueFromFirstSearch = Lists.get(searchResultFrom0.getIssues(), 1);
 
         // returns: 1,2,3
-        final SearchResult searchResultFrom1 = client.getSearchClient().searchJql(null, maxResults, 1, null).claim();
+        final SearchResult searchResultFrom1 = client.getSearchClient().searchJql(null, maxResults, 1, null).join();
         final Issue firstIssueFromSecondSearch = Lists.get(searchResultFrom1.getIssues(), 0);
 
         assertEquals(secondIssueFromFirstSearch, firstIssueFromSecondSearch);
@@ -105,7 +105,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     @Test
     public void testJqlSearchWithNullStartAtShouldUseDefault0ForStartAtAndPreserveMaxResults() {
         final int maxResults = 21;
-        final SearchResult searchResult = client.getSearchClient().searchJql(null, maxResults, null, null).claim();
+        final SearchResult searchResult = client.getSearchClient().searchJql(null, maxResults, null, null).join();
         assertEquals(0, searchResult.getStartIndex());
         assertEquals(maxResults, searchResult.getMaxResults());
     }
@@ -113,14 +113,14 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     @Test
     public void testJqlSearchWithNullMaxResultsShouldUseDefault50ForMaxResultsAndPreserveStartAt() {
         final int startAt = 7;
-        final SearchResult searchResult = client.getSearchClient().searchJql(null, null, startAt, null).claim();
+        final SearchResult searchResult = client.getSearchClient().searchJql(null, null, startAt, null).join();
         assertEquals(50, searchResult.getMaxResults());
         assertEquals(startAt, searchResult.getStartIndex());
     }
 
     @Test
     public void testJqlSearchWithNullStartAtAndMaxResultsShouldUseAsDefault0ForStartIndexAnd50ForMaxResults() {
-        final SearchResult searchResult = client.getSearchClient().searchJql(null, null, null, null).claim();
+        final SearchResult searchResult = client.getSearchClient().searchJql(null, null, null, null).join();
         assertEquals(50, searchResult.getMaxResults());
         assertEquals(0, searchResult.getStartIndex());
     }
@@ -128,22 +128,22 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     @Test
     public void testJqlSearchAsAnonymous() {
         setAnonymousMode();
-        final SearchResult searchResultForNull = client.getSearchClient().searchJql(null).claim();
+        final SearchResult searchResultForNull = client.getSearchClient().searchJql(null).join();
         assertEquals(3, searchResultForNull.getTotal());
 
-        final SearchResult searchResultForReporterWseliga = client.getSearchClient().searchJql("reporter=wseliga").claim();
+        final SearchResult searchResultForReporterWseliga = client.getSearchClient().searchJql("reporter=wseliga").join();
         assertEquals(0, searchResultForReporterWseliga.getTotal());
     }
 
     @Test
     public void testJqlSearchWithPaging() {
-        final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, 3, 3, null).claim();
+        final SearchResult searchResultForNull = client.getSearchClient().searchJql(null, 3, 3, null).join();
         assertEquals(11, searchResultForNull.getTotal());
         assertEquals(3, Lists.size(searchResultForNull.getIssues()));
         assertEquals(3, searchResultForNull.getStartIndex());
         assertEquals(3, searchResultForNull.getMaxResults());
 
-        final SearchResult search2 = client.getSearchClient().searchJql("assignee is not EMPTY", 2, 1, null).claim();
+        final SearchResult search2 = client.getSearchClient().searchJql("assignee is not EMPTY", 2, 1, null).join();
         assertEquals(11, search2.getTotal());
         assertEquals(2, Lists.size(search2.getIssues()));
         assertEquals("TST-6", Lists.get(search2.getIssues(), 0).getKey());
@@ -152,7 +152,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         assertEquals(2, search2.getMaxResults());
 
         setUser1();
-        final SearchResult search3 = client.getSearchClient().searchJql("assignee is not EMPTY", 10, 5, null).claim();
+        final SearchResult search3 = client.getSearchClient().searchJql("assignee is not EMPTY", 10, 5, null).join();
         assertEquals(10, search3.getTotal());
         assertEquals(5, Lists.size(search3.getIssues()));
         assertEquals(5, search3.getStartIndex());
@@ -162,7 +162,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     @Test
     public void testVeryLongJqlWhichWillBePost() {
         final String longJql = generateVeryLongJql() + " or summary is not empty"; // so that effectively all issues are returned;
-        final SearchResult searchResultForNull = client.getSearchClient().searchJql(longJql, 3, 6, null).claim();
+        final SearchResult searchResultForNull = client.getSearchClient().searchJql(longJql, 3, 6, null).join();
         assertEquals(11, searchResultForNull.getTotal());
         assertEquals(3, Lists.size(searchResultForNull.getIssues()));
         assertEquals(6, searchResultForNull.getStartIndex());
@@ -183,7 +183,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
         TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, new Runnable() {
             @Override
             public void run() {
-                client.getSearchClient().searchJql("reporter=a/user/with/slash").claim();
+                client.getSearchClient().searchJql("reporter=a/user/with/slash").join();
             }
         });
     }
@@ -201,7 +201,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     }
 
     private void jqlSearchShouldReturnIssueWithDetails(String projectSelf) {
-        final SearchResult searchResult = client.getSearchClient().searchJql("reporter=wseliga").claim();
+        final SearchResult searchResult = client.getSearchClient().searchJql("reporter=wseliga").join();
         final Issue issue = Lists.getOnlyElement(searchResult.getIssues());
 
         assertEquals("TST-7", issue.getKey());
@@ -265,7 +265,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
     private void jqlSearchWithAllFieldsImpl(String jql) {
         final ImmutableSet<String> fields = ImmutableSet.of("*all");
-        final SearchResult searchResult = client.getSearchClient().searchJql(jql, null, null, fields).claim();
+        final SearchResult searchResult = client.getSearchClient().searchJql(jql, null, null, fields).join();
         final Issue issue = Lists.getOnlyElement(searchResult.getIssues());
 
         assertEquals("TST-2", issue.getKey());
@@ -325,7 +325,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
     @Test
     public void jqlSearchShouldReturnIssueWithLabelsAndDueDate() throws Exception {
-        final SearchResult searchResult = client.getSearchClient().searchJql("key=TST-1").claim();
+        final SearchResult searchResult = client.getSearchClient().searchJql("key=TST-1").join();
         final Issue issue = Lists.getOnlyElement(searchResult.getIssues());
         assertEquals("TST-1", issue.getKey());
         assertThat(issue.getLabels(), containsInAnyOrder("a", "bcds"));
@@ -335,7 +335,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
     @Test
     public void jqlSearchWithMinimalFieldSetShouldReturnParseableIssues() throws Exception {
         final SearchRestClient searchClient = client.getSearchClient();
-        final SearchResult searchResult = searchClient.searchJql("key=TST-1", null, null, REQUIRED_ISSUE_FIELDS).claim();
+        final SearchResult searchResult = searchClient.searchJql("key=TST-1", null, null, REQUIRED_ISSUE_FIELDS).join();
         final Issue issue = Lists.getOnlyElement(searchResult.getIssues());
         assertEquals("TST-1", issue.getKey());
         assertEquals("My sample test", issue.getSummary());
@@ -348,7 +348,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
 
         // this issue has labels, but they were not returned by JIRA REST API
         assertEmptyList(issue.getLabels());
-        final Issue fullIssue = client.getIssueClient().getIssue(issue.getKey()).claim();
+        final Issue fullIssue = client.getIssueClient().getIssue(issue.getKey()).join();
         assertThat(fullIssue.getLabels(), containsInAnyOrder("a", "bcds"));
     }
 
@@ -364,7 +364,7 @@ public class AsynchronousSearchRestClientTest extends AbstractAsynchronousRestCl
             final Set<String> fieldsToRetrieve = Sets.difference(REQUIRED_ISSUE_FIELDS, Sets.newHashSet(missingField));
 
             try {
-                searchClient.searchJql(null, 1, 0, fieldsToRetrieve).claim();
+                searchClient.searchJql(null, 1, 0, fieldsToRetrieve).join();
                 throw new java.lang.AssertionError(String.format(
                         "The above statement should throw exception. fieldsToRetrieve = %s, fields = %s, requiredFields = %s",
                         missingField, fieldsToRetrieve, REQUIRED_ISSUE_FIELDS));

@@ -113,17 +113,17 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
         final IssueRestClient issueClient = client.getIssueClient();
 
         // get issue
-        final Issue initialIssue = issueClient.getIssue(issueKey).claim();
+        final Issue initialIssue = issueClient.getIssue(issueKey).join();
 
         // # First change - test auto
         final WorklogInput worklogInput = worklogInputBuilder
                 .setIssueUri(initialIssue.getSelf())
                 .setMinutesSpent(2)
                 .build();
-        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput).claim();
+        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput).join();
 
         // check if estimate has changed
-        final Issue issueAfterFirstChange = issueClient.getIssue(issueKey).claim();
+        final Issue issueAfterFirstChange = issueClient.getIssue(issueKey).join();
         final Integer actualTimeSpentAfterChange = getTimeSpentMinutesNotNull(issueAfterFirstChange.getTimeTracking());
         final Integer expectedTimeSpentAfterChange = getTimeSpentMinutesNotNull(initialIssue.getTimeTracking()) + worklogInput
                 .getMinutesSpent();
@@ -141,10 +141,10 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
                 .setMinutesSpent(2)
                 .setAdjustEstimateNew(newEstimateValue)
                 .build();
-        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput2).claim();
+        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput2).join();
 
         // check if logged time has changed
-        final Issue issueAfterSecondChange = issueClient.getIssue(issueKey).claim();
+        final Issue issueAfterSecondChange = issueClient.getIssue(issueKey).join();
         final Integer actualTimeSpentAfterChange2 = getTimeSpentMinutesNotNull(issueAfterSecondChange.getTimeTracking());
         final Integer expectedTimeSpentAfterChange2 = getTimeSpentMinutesNotNull(issueAfterFirstChange.getTimeTracking())
                 + worklogInput2.getMinutesSpent();
@@ -160,10 +160,10 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
                 .setMinutesSpent(2)
                 .setAdjustEstimateLeave()
                 .build();
-        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput3).claim();
+        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput3).join();
 
         // check if logged time has changed
-        final Issue issueAfterThirdChange = issueClient.getIssue(issueKey).claim();
+        final Issue issueAfterThirdChange = issueClient.getIssue(issueKey).join();
         final Integer actualTimeSpentAfterChange3 = getTimeSpentMinutesNotNull(issueAfterThirdChange.getTimeTracking());
         final Integer expectedTimeSpentAfterChange3 = getTimeSpentMinutesNotNull(issueAfterSecondChange.getTimeTracking())
                 + worklogInput3.getMinutesSpent();
@@ -182,10 +182,10 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
                 .setAdjustEstimateManual(reduceByValueManual)
                 .build();
 
-        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput4).claim();
+        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput4).join();
 
         // check if logged time has changed
-        final Issue issueAfterFourthChange = issueClient.getIssue(issueKey).claim();
+        final Issue issueAfterFourthChange = issueClient.getIssue(issueKey).join();
         final Integer actualTimeSpentAfterChange4 = getTimeSpentMinutesNotNull(issueAfterFourthChange.getTimeTracking());
         final Integer expectedTimeSpentAfterChange4 = getTimeSpentMinutesNotNull(issueAfterThirdChange.getTimeTracking())
                 + worklogInput4.getMinutesSpent();
@@ -210,7 +210,7 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
         final IssueRestClient issueClient = client.getIssueClient();
 
         // get issue
-        final Issue initialIssue = issueClient.getIssue(issueKey).claim();
+        final Issue initialIssue = issueClient.getIssue(issueKey).join();
 
         // add worklog
         final int estimateWeeks = 2;
@@ -222,10 +222,10 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
                 .setAdjustEstimateNew(String
                         .format("%sw %sd %sh %sm", estimateWeeks, estimateDays, estimateHours, estimateMinutes))
                 .build();
-        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput).claim();
+        issueClient.addWorklog(initialIssue.getWorklogUri(), worklogInput).join();
 
         // check if estimate has changed
-        final Issue modifiedIssue = issueClient.getIssue(issueKey).claim();
+        final Issue modifiedIssue = issueClient.getIssue(issueKey).join();
         final int actualRemainingEstimate = getRemainingEstimateMinutesNotNull(modifiedIssue.getTimeTracking());
         // in current configuration 1w = 5d, 1d = 8h
         final int expectedRemaningEstimate = ((estimateWeeks * 5 + estimateDays) * 8 + estimateHours) * 60 + estimateMinutes;
@@ -262,15 +262,15 @@ public class AsynchronousIssueRestClientWorklogTest extends AbstractAsynchronous
         final IssueRestClient issueClient = client.getIssueClient();
 
         // get initial worklogs
-        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final Issue issue = issueClient.getIssue(issueKey).join();
         final Set<Worklog> initialWorklogs = ImmutableSet.copyOf(issue.getWorklogs());
 
         // create and add new
         final WorklogInput worklogInput = worklogInputBuilder.setIssueUri(issue.getSelf()).build();
-        issueClient.addWorklog(issue.getWorklogUri(), worklogInput).claim();
+        issueClient.addWorklog(issue.getWorklogUri(), worklogInput).join();
 
         // check if added correctly
-        final Issue issueWithWorklog = issueClient.getIssue(issueKey).claim();
+        final Issue issueWithWorklog = issueClient.getIssue(issueKey).join();
         final Worklog addedWorklog = getAddedWorklog(initialWorklogs, issueWithWorklog);
         assertEquals(worklogInput.getStartDate(), addedWorklog.getStartDate());
         assertEquals(worklogInput.getMinutesSpent(), addedWorklog.getMinutesSpent());

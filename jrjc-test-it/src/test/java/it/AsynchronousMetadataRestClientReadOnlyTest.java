@@ -77,7 +77,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
     @Test
     public void testGetServerInfo() throws Exception {
-        final ServerInfo serverInfo = client.getMetadataClient().getServerInfo().claim();
+        final ServerInfo serverInfo = client.getMetadataClient().getServerInfo().join();
         assertThat(serverInfo.getServerTitle(), equalToIgnoringCase("Your Company Jira"));
         assertTrue(serverInfo.getBuildDate().isBeforeNow());
         assertTrue(serverInfo.getServerTime().isAfter(new OffsetDateTime().minusMinutes(5)));
@@ -86,19 +86,19 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
     @Test
     public void testGetIssueTypeNonExisting() throws Exception {
-        final IssueType issueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
+        final IssueType issueType = client.getIssueClient().getIssue("TST-1").join().getIssueType();
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, new Runnable() {
             @Override
             public void run() {
-                client.getMetadataClient().getIssueType(TestUtil.toUri(issueType.getSelf() + "fake")).claim();
+                client.getMetadataClient().getIssueType(TestUtil.toUri(issueType.getSelf() + "fake")).join();
             }
         });
     }
 
     @Test
     public void testGetIssueType() {
-        final IssueType getIssueIssueType = client.getIssueClient().getIssue("TST-1").claim().getIssueType();
-        final IssueType issueType = client.getMetadataClient().getIssueType(getIssueIssueType.getSelf()).claim();
+        final IssueType getIssueIssueType = client.getIssueClient().getIssue("TST-1").join().getIssueType();
+        final IssueType issueType = client.getMetadataClient().getIssueType(getIssueIssueType.getSelf()).join();
         assertEquals("Bug", issueType.getName());
         assertEquals("A problem which impairs or prevents the functions of the product.", issueType.getDescription());
         Long expectedId = isJira5xOrNewer() ? 1L : null;
@@ -112,7 +112,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
     @JiraBuildNumberDependent(BN_JIRA_4_3)
     @Test
     public void testGetIssueTypes() {
-        final List<IssuelinksType> issueTypes = client.getMetadataClient().getIssueLinkTypes().claim();
+        final List<IssuelinksType> issueTypes = client.getMetadataClient().getIssueLinkTypes().join();
         assertEquals(1, Lists.size(issueTypes));
         final IssuelinksType issueType = Lists.getOnlyElement(issueTypes);
         assertEquals("Duplicate", issueType.getName());
@@ -122,7 +122,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
     @Test
     public void testGetStatuses() {
-        final List<Status> statuses = client.getMetadataClient().getStatuses().claim();
+        final List<Status> statuses = client.getMetadataClient().getStatuses().join();
         final Map<String, Status> statusMap = Maps.uniqueIndex(statuses, EntityHelper.GET_ENTITY_NAME_FUNCTION);
         assertThat(statusMap.keySet(), containsInAnyOrder("Open", "In Progress", "Reopened", "Resolved", "Closed"));
 
@@ -136,8 +136,8 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
     @Test
     public void testGetStatus() {
-        final Status basicStatus = client.getIssueClient().getIssue("TST-1").claim().getStatus();
-        final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf()).claim();
+        final Status basicStatus = client.getIssueClient().getIssue("TST-1").join().getStatus();
+        final Status status = client.getMetadataClient().getStatus(basicStatus.getSelf()).join();
         assertEquals("The issue is open and ready for the assignee to start work on it.", status.getDescription());
         assertThat(status.getIconUrl().toString(), Matchers.anyOf(endsWith("status_open.gif"), endsWith("open.png")));
         assertEquals("Open", status.getName());
@@ -145,21 +145,21 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
     @Test
     public void testGetStatusNonExisting() throws Exception {
-        final Status status = client.getIssueClient().getIssue("TST-1").claim().getStatus();
+        final Status status = client.getIssueClient().getIssue("TST-1").join().getStatus();
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The status with id '" +
                 TestUtil.getLastPathSegment(status.getSelf()) + "fake" +
                 "' does not exist", new Runnable() {
             @Override
             public void run() {
-                client.getMetadataClient().getStatus(TestUtil.toUri(status.getSelf() + "fake")).claim();
+                client.getMetadataClient().getStatus(TestUtil.toUri(status.getSelf() + "fake")).join();
             }
         });
     }
 
     @Test
     public void testGetPriority() {
-        final BasicPriority basicPriority = client.getIssueClient().getIssue("TST-2").claim().getPriority();
-        final Priority priority = client.getMetadataClient().getPriority(basicPriority.getSelf()).claim();
+        final BasicPriority basicPriority = client.getIssueClient().getIssue("TST-2").join().getPriority();
+        final Priority priority = client.getMetadataClient().getPriority(basicPriority.getSelf()).join();
         assertEquals(basicPriority.getSelf(), priority.getSelf());
         assertEquals("Major", priority.getName());
         assertEquals("#009900", priority.getStatusColor());
@@ -177,18 +177,18 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
 
     @Test
     public void testGetResolution() {
-        final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-2").join();
         assertNull(issue.getResolution());
-        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).join();
         final Transition resolveTransition = TestUtil.getTransitionByName(transitions, "Resolve Issue");
 
-        client.getIssueClient().transition(issue, new TransitionInput(resolveTransition.getId())).claim();
+        client.getIssueClient().transition(issue, new TransitionInput(resolveTransition.getId())).join();
 
-        final Issue resolvedIssue = client.getIssueClient().getIssue("TST-2").claim();
+        final Issue resolvedIssue = client.getIssueClient().getIssue("TST-2").join();
         final Resolution basicResolution = resolvedIssue.getResolution();
         assertNotNull(basicResolution);
 
-        final Resolution resolution = client.getMetadataClient().getResolution(basicResolution.getSelf()).claim();
+        final Resolution resolution = client.getMetadataClient().getResolution(basicResolution.getSelf()).join();
         assertEquals(basicResolution.getName(), resolution.getName());
         assertEquals(basicResolution.getSelf(), resolution.getSelf());
         assertEquals("A fix for this issue is checked into the tree and tested.", resolution.getDescription());
@@ -202,7 +202,7 @@ public class AsynchronousMetadataRestClientReadOnlyTest extends AbstractAsynchro
                 new Field("votes", "Votes", FieldType.JIRA, false, true, false, new FieldSchema("votes", null, "votes", null, null)) :
                 new Field("votes", "Votes", FieldType.JIRA, false, true, false, new FieldSchema("array", "votes", "votes", null, null));
 
-        final List<Field> fields = client.getMetadataClient().getFields().claim();
+        final List<Field> fields = client.getMetadataClient().getFields().join();
         assertThat(fields, hasItems(
                 new Field("progress", "Progress", FieldType.JIRA, false, true, false,
                         new FieldSchema("progress", null, "progress", null, null)),

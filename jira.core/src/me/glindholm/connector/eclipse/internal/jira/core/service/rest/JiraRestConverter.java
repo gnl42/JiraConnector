@@ -331,7 +331,7 @@ public class JiraRestConverter {
         }
 
         try {
-            final List<Remotelink> remotelinks = restClient.getIssueClient().getRemotelinks(rawIssue.getKey()).claim();
+            final List<Remotelink> remotelinks = restClient.getIssueClient().getRemotelinks(rawIssue.getKey()).join();
             final Map<String, List<Remotelink>> links = new HashMap<>();
             for (final Remotelink link : remotelinks) {
                 final List<Remotelink> linkList = links.computeIfAbsent(link.getRelationship(), k -> new ArrayList<>(2));

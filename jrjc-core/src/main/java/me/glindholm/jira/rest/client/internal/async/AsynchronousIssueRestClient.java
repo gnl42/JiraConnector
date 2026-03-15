@@ -16,37 +16,34 @@
 package me.glindholm.jira.rest.client.internal.async;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.http.entity.ContentType.DEFAULT_BINARY;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.apache.hc.core5.net.URIBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.atlassian.httpclient.apache.httpcomponents.MultiPartEntityBuilder;
-import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.Message;
-import com.atlassian.httpclient.api.ResponsePromise;
-
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.IssueRestClient;
 import me.glindholm.jira.rest.client.api.MetadataRestClient;
 import me.glindholm.jira.rest.client.api.RestClientException;
@@ -115,7 +112,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     private final URI baseUri;
     private ServerInfo serverInfo;
 
-    public AsynchronousIssueRestClient(final URI baseUri, final HttpClient client, final SessionRestClient sessionRestClient,
+    public AsynchronousIssueRestClient(final URI baseUri, final DisposableHttpClient client, final SessionRestClient sessionRestClient,
             final MetadataRestClient metadataRestClient) {
         super(client);
         this.baseUri = baseUri;
@@ -125,117 +122,114 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     private synchronized ServerInfo getVersionInfo() throws URISyntaxException {
         if (serverInfo == null) {
-            serverInfo = metadataRestClient.getServerInfo().claim();
+            serverInfo = metadataRestClient.getServerInfo().join();
         }
         return serverInfo;
     }
 
     @Override
-    public Promise<BasicIssue> createIssue(final IssueInput issue) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue");
+    public CompletableFuture<BasicIssue> createIssue(final IssueInput issue) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath("issue");
         return postAndParse(uriBuilder.build(), issue, new IssueInputJsonGenerator(), basicIssueParser);
     }
 
     @Override
-    public Promise<Void> updateIssue(final String issueKey, final IssueInput issue) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue").appendPath(issueKey);
+    public CompletableFuture<Void> updateIssue(final String issueKey, final IssueInput issue) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath("issue").appendPath(issueKey);
         return put(uriBuilder.build(), issue, new IssueInputJsonGenerator());
     }
 
     @Override
-    public Promise<BulkOperationResult<BasicIssue>> createIssues(final List<IssueInput> issues) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/bulk");
-
+    public CompletableFuture<BulkOperationResult<BasicIssue>> createIssues(final List<IssueInput> issues) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath("issue/bulk");
         return postAndParse(uriBuilder.build(), issues, new IssuesInputJsonGenerator(), new BasicIssuesJsonParser());
     }
 
     @Override
-    public Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@NonNull final String projectIdOrKey, @Nullable final Long startAt,
+    public CompletableFuture<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@NonNull final String projectIdOrKey, @Nullable final Long startAt,
             @Nullable final Integer maxResults) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/createmeta/" + projectIdOrKey + "/issuetypes");
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath("issue/createmeta/" + projectIdOrKey + "/issuetypes");
         addPagingParameters(uriBuilder, startAt, maxResults);
-
         return getAndParse(uriBuilder.build(), new CreateIssueMetaProjectIssueTypesParser());
     }
 
     @Override
-    public Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@NonNull final String projectIdOrKey, @NonNull final String issueTypeId,
+    public CompletableFuture<Page<CimFieldInfo>> getCreateIssueMetaFields(@NonNull final String projectIdOrKey, @NonNull final String issueTypeId,
             @Nullable final Long startAt, @Nullable final Integer maxResults) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath("issue/createmeta/" + projectIdOrKey + "/issuetypes/" + issueTypeId);
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath("issue/createmeta/" + projectIdOrKey + "/issuetypes/" + issueTypeId);
         addPagingParameters(uriBuilder, startAt, maxResults);
-
         return getAndParse(uriBuilder.build(), new CreateIssueMetaFieldsParser());
     }
 
     @Override
-    public Promise<Issue> getIssue(final String issueKey) throws URISyntaxException {
+    public CompletableFuture<Issue> getIssue(final String issueKey) throws URISyntaxException {
         return getIssue(issueKey, Collections.emptyList());
     }
 
     @Override
-    public Promise<Issue> getIssue(final String issueKey, final List<Expandos> expand) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri);
+    public CompletableFuture<Issue> getIssue(final String issueKey, final List<Expandos> expand) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(baseUri);
         final List<Expandos> expands = Stream.of(DEFAULT_EXPANDS, expand).collect(ArrayList::new, List::addAll, List::addAll);
-        // Lists.concat(DEFAULT_EXPANDS, expand);
         uriBuilder.appendPath("issue").appendPath(issueKey).addParameter("expand",
                 StreamSupport.stream(expands.spliterator(), false).map(EXPANDO_TO_PARAM).collect(Collectors.joining(",")));
         return getAndParse(uriBuilder.build(), issueParser);
     }
 
     @Override
-    public Promise<Void> deleteIssue(final String issueKey, final boolean deleteSubtasks) throws URISyntaxException {
-        return delete(new URIBuilder(baseUri).appendPath("issue").appendPath(issueKey).addParameter("deleteSubtasks", String.valueOf(deleteSubtasks)).build());
+    public CompletableFuture<Void> deleteIssue(final String issueKey, final boolean deleteSubtasks) throws URISyntaxException {
+        return delete(new UriBuilder(baseUri).appendPath("issue").appendPath(issueKey).addParameter("deleteSubtasks", String.valueOf(deleteSubtasks)).build());
     }
 
     @Override
-    public Promise<Watchers> getWatchers(final URI watchersUri) {
+    public CompletableFuture<Watchers> getWatchers(final URI watchersUri) {
         return getAndParse(watchersUri, watchersParser);
     }
 
     @Override
-    public Promise<Votes> getVotes(final URI votesUri) {
+    public CompletableFuture<Votes> getVotes(final URI votesUri) {
         return getAndParse(votesUri, votesJsonParser);
     }
 
     @Override
-    public Promise<List<Transition>> getTransitions(final URI transitionsUri) {
-        return callAndParse(client().newRequest(transitionsUri).get(), (ResponseHandler<List<Transition>>) response -> {
-            final JSONObject jsonObject = new JSONObject(response.getEntity());
-            if (jsonObject.has("transitions")) {
-                return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
-            } else {
-                final List<Transition> transitions = new ArrayList<>(jsonObject.length());
-                @SuppressWarnings("unchecked")
-                final Iterator<String> iterator = jsonObject.keys();
-                while (iterator.hasNext()) {
-                    final String key = iterator.next();
-                    try {
-                        final int id = Integer.parseInt(key);
-                        final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
-                        transitions.add(transition);
-                    } catch (URISyntaxException | JSONException e) {
-                        throw new RestClientException(e);
-                    } catch (final NumberFormatException e) {
-                        throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
+    public CompletableFuture<List<Transition>> getTransitions(final URI transitionsUri) {
+        return callAndParse(client().execute(client().newRequest(transitionsUri).GET().build()),
+                (ResponseHandler<List<Transition>>) (statusCode, body) -> {
+                    final JSONObject jsonObject = new JSONObject(body);
+                    if (jsonObject.has("transitions")) {
+                        return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
+                    } else {
+                        final List<Transition> transitions = new ArrayList<>(jsonObject.length());
+                        @SuppressWarnings("unchecked")
+                        final Iterator<String> iterator = jsonObject.keys();
+                        while (iterator.hasNext()) {
+                            final String key = iterator.next();
+                            try {
+                                final int id = Integer.parseInt(key);
+                                final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
+                                transitions.add(transition);
+                            } catch (URISyntaxException | JSONException e) {
+                                throw new RestClientException(e);
+                            } catch (final NumberFormatException e) {
+                                throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
+                            }
+                        }
+                        return transitions;
                     }
-                }
-                return transitions;
-            }
-        });
+                });
     }
 
     @Override
-    public Promise<List<Transition>> getTransitions(final Issue issue) throws URISyntaxException {
+    public CompletableFuture<List<Transition>> getTransitions(final Issue issue) throws URISyntaxException {
         if (issue.getTransitionsUri() != null) {
             return getTransitions(issue.getTransitionsUri());
         } else {
-            final URIBuilder transitionsUri = new URIBuilder(issue.getSelf());
+            final UriBuilder transitionsUri = new UriBuilder(issue.getSelf());
             return getTransitions(transitionsUri.appendPath("transitions").addParameter("expand", "transitions.fields").build());
         }
     }
 
     @Override
-    public Promise<Void> transition(final URI transitionsUri, final TransitionInput transitionInput) throws URISyntaxException {
+    public CompletableFuture<Void> transition(final URI transitionsUri, final TransitionInput transitionInput) throws URISyntaxException {
         final int buildNumber = getVersionInfo().getBuildNumber();
         try {
             final JSONObject jsonObject = new JSONObject();
@@ -257,9 +251,6 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
             if (fieldsJs.keys().hasNext()) {
                 jsonObject.put("fields", fieldsJs);
             }
-            if (fieldsJs.keys().hasNext()) {
-                jsonObject.put("fields", fieldsJs);
-            }
             return post(transitionsUri, jsonObject);
         } catch (final JSONException ex) {
             throw new RestClientException(ex);
@@ -267,44 +258,44 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Void> transition(final Issue issue, final TransitionInput transitionInput) throws URISyntaxException {
+    public CompletableFuture<Void> transition(final Issue issue, final TransitionInput transitionInput) throws URISyntaxException {
         if (issue.getTransitionsUri() != null) {
             return transition(issue.getTransitionsUri(), transitionInput);
         } else {
-            final URIBuilder uriBuilder = new URIBuilder(issue.getSelf());
+            final UriBuilder uriBuilder = new UriBuilder(issue.getSelf());
             uriBuilder.appendPath("transitions");
             return transition(uriBuilder.build(), transitionInput);
         }
     }
 
     @Override
-    public Promise<Void> vote(final URI votesUri) {
+    public CompletableFuture<Void> vote(final URI votesUri) {
         return post(votesUri);
     }
 
     @Override
-    public Promise<Void> unvote(final URI votesUri) {
+    public CompletableFuture<Void> unvote(final URI votesUri) {
         return delete(votesUri);
     }
 
     @Override
-    public Promise<Void> watch(final URI watchersUri) {
+    public CompletableFuture<Void> watch(final URI watchersUri) {
         return post(watchersUri);
     }
 
     @Override
-    public Promise<Void> unwatch(final URI watchersUri) throws URISyntaxException {
+    public CompletableFuture<Void> unwatch(final URI watchersUri) throws URISyntaxException {
         return removeWatcher(watchersUri, getLoggedUsername());
     }
 
     @Override
-    public Promise<Void> addWatcher(final URI watchersUri, final String username) {
+    public CompletableFuture<Void> addWatcher(final URI watchersUri, final String username) {
         return post(watchersUri, JSONObject.quote(username));
     }
 
     @Override
-    public Promise<Void> removeWatcher(final URI watchersUri, final String username) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(watchersUri);
+    public CompletableFuture<Void> removeWatcher(final URI watchersUri, final String username) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(watchersUri);
         if (getVersionInfo().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_4) {
             uriBuilder.addParameter("username", username);
         } else {
@@ -314,56 +305,66 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     @Override
-    public Promise<Void> linkIssue(final LinkIssuesInput linkIssuesInput) throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath("issueLink").build();
+    public CompletableFuture<Void> linkIssue(final LinkIssuesInput linkIssuesInput) throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath("issueLink").build();
         return post(uri, linkIssuesInput, new LinkIssuesInputGenerator(getVersionInfo()));
     }
 
     @Override
-    public Promise<List<Remotelink>> getRemotelinks(final String issueIdorKey) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri);
+    public CompletableFuture<List<Remotelink>> getRemotelinks(final String issueIdorKey) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(baseUri);
         uriBuilder.appendPath("issue").appendPath(issueIdorKey).appendPath("remotelink");
         return getAndParse(uriBuilder.build(), remotelinksParser);
     }
 
     @Override
-    public Promise<Void> addAttachment(final URI attachmentsUri, final InputStream inputStream, final String filename) {
-        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create().setLaxMode().setCharset(UTF_8).addBinaryBody(FILE_BODY_TYPE, inputStream,
-                DEFAULT_BINARY, filename);
-        return postAttachments(attachmentsUri, entityBuilder);
-    }
-
-    @Override
-    public Promise<Void> addAttachments(final URI attachmentsUri, final AttachmentInput... attachments) {
-        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create().setLaxMode().setCharset(UTF_8);
-        for (final AttachmentInput attachmentInput : attachments) {
-            entityBuilder.addBinaryBody(FILE_BODY_TYPE, attachmentInput.getInputStream(), DEFAULT_BINARY, attachmentInput.getFilename());
+    public CompletableFuture<Void> addAttachment(final URI attachmentsUri, final InputStream inputStream, final String filename) {
+        try {
+            final byte[] bytes = inputStream.readAllBytes();
+            return postMultipart(attachmentsUri, filename, bytes, "application/octet-stream");
+        } catch (final IOException e) {
+            throw new RestClientException(e);
         }
-        return postAttachments(attachmentsUri, entityBuilder);
     }
 
     @Override
-    public Promise<Void> addAttachments(final URI attachmentsUri, final File... files) {
-        final MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create().setLaxMode().setCharset(UTF_8);
-        for (final File file : files) {
-            entityBuilder.addBinaryBody(FILE_BODY_TYPE, file);
-        }
-        return postAttachments(attachmentsUri, entityBuilder);
+    public CompletableFuture<Void> addAttachments(final URI attachmentsUri, final AttachmentInput... attachments) {
+        return postMultipartBatch(attachmentsUri, Stream.of(attachments)
+                .collect(Collectors.toMap(AttachmentInput::getFilename, a -> {
+                    try {
+                        return a.getInputStream().readAllBytes();
+                    } catch (final IOException e) {
+                        throw new RestClientException(e);
+                    }
+                })));
     }
 
     @Override
-    public Promise<Void> addComment(final URI commentsUri, final Comment comment) throws URISyntaxException {
+    public CompletableFuture<Void> addAttachments(final URI attachmentsUri, final File... files) {
+        return postMultipartBatch(attachmentsUri, Stream.of(files)
+                .collect(Collectors.toMap(File::getName, f -> {
+                    try {
+                        return Files.readAllBytes(f.toPath());
+                    } catch (final IOException e) {
+                        throw new RestClientException(e);
+                    }
+                })));
+    }
+
+    @Override
+    public CompletableFuture<Void> addComment(final URI commentsUri, final Comment comment) throws URISyntaxException {
         return post(commentsUri, comment, new CommentJsonGenerator(getVersionInfo()));
     }
 
     @Override
-    public Promise<InputStream> getAttachment(final URI attachmentUri) {
-        return callAndParse(client().newRequest(attachmentUri).get(), Message::getEntityStream);
+    public CompletableFuture<InputStream> getAttachment(final URI attachmentUri) {
+        final HttpRequest request = client().newRequest(attachmentUri).GET().build();
+        return client().executeForBytes(request).thenApply(response -> new java.io.ByteArrayInputStream(response.body()));
     }
 
     @Override
-    public Promise<Void> addWorklog(final URI worklogUri, final WorklogInput worklogInput) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(worklogUri).addParameter("adjustEstimate", worklogInput.getAdjustEstimate().restValue);
+    public CompletableFuture<Void> addWorklog(final URI worklogUri, final WorklogInput worklogInput) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(worklogUri).addParameter("adjustEstimate", worklogInput.getAdjustEstimate().restValue);
 
         switch (worklogInput.getAdjustEstimate()) {
         case NEW:
@@ -372,11 +373,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         case MANUAL:
             uriBuilder.addParameter("reduceBy", nullToEmpty(worklogInput.getAdjustEstimateValue()));
             break;
-        case AUTO: // FIXME What should we do?
-            break;
-        case LEAVE: // FIXME What should we do?
-            break;
-        default: // FIXME What should we do?
+        default:
             break;
         }
 
@@ -387,7 +384,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         return value == null ? "" : value;
     }
 
-    private void addPagingParameters(final URIBuilder uriBuilder, @Nullable final Long startAt, @Nullable final Integer maxResults) {
+    private void addPagingParameters(final UriBuilder uriBuilder, @Nullable final Long startAt, @Nullable final Integer maxResults) {
         if (startAt != null) {
             uriBuilder.addParameter("startAt", String.valueOf(startAt));
         }
@@ -396,13 +393,53 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         }
     }
 
-    private Promise<Void> postAttachments(final URI attachmentsUri, final MultipartEntityBuilder multipartEntityBuilder) {
-        final ResponsePromise responsePromise = client().newRequest(attachmentsUri).setEntity(new MultiPartEntityBuilder(multipartEntityBuilder.build()))
-                .setHeader("X-Atlassian-Token", "nocheck").post();
-        return call(responsePromise);
+    private CompletableFuture<Void> postMultipart(final URI uri, final String filename, final byte[] data, final String contentType) {
+        final String boundary = "----JiraClientBoundary" + UUID.randomUUID().toString().replace("-", "");
+        final byte[] body = buildMultipartBody(boundary, FILE_BODY_TYPE, filename, data, contentType);
+        final HttpRequest request = client().newRequest(uri)
+                .header("X-Atlassian-Token", "nocheck")
+                .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+                .POST(HttpRequest.BodyPublishers.ofByteArray(body))
+                .build();
+        return call(client().execute(request));
+    }
+
+    private CompletableFuture<Void> postMultipartBatch(final URI uri, final java.util.Map<String, byte[]> files) {
+        final String boundary = "----JiraClientBoundary" + UUID.randomUUID().toString().replace("-", "");
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            for (final java.util.Map.Entry<String, byte[]> entry : files.entrySet()) {
+                final byte[] part = buildMultipartBody(boundary, FILE_BODY_TYPE, entry.getKey(), entry.getValue(), "application/octet-stream");
+                baos.write(part);
+            }
+            // Final boundary
+            baos.write(("--" + boundary + "--\r\n").getBytes(UTF_8));
+        } catch (final IOException e) {
+            throw new RestClientException(e);
+        }
+        final HttpRequest request = client().newRequest(uri)
+                .header("X-Atlassian-Token", "nocheck")
+                .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+                .POST(HttpRequest.BodyPublishers.ofByteArray(baos.toByteArray()))
+                .build();
+        return call(client().execute(request));
+    }
+
+    private static byte[] buildMultipartBody(final String boundary, final String fieldName, final String filename, final byte[] data, final String contentType) {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            baos.write(("--" + boundary + "\r\n").getBytes(UTF_8));
+            baos.write(("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + filename + "\"\r\n").getBytes(UTF_8));
+            baos.write(("Content-Type: " + contentType + "\r\n\r\n").getBytes(UTF_8));
+            baos.write(data);
+            baos.write("\r\n".getBytes(UTF_8));
+        } catch (final IOException e) {
+            throw new RestClientException(e);
+        }
+        return baos.toByteArray();
     }
 
     private String getLoggedUsername() throws RestClientException, URISyntaxException {
-        return sessionRestClient.getCurrentSession().claim().getUsername();
+        return sessionRestClient.getCurrentSession().join().getUsername();
     }
 }

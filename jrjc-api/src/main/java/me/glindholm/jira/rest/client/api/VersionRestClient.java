@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.Version;
 import me.glindholm.jira.rest.client.api.domain.VersionRelatedIssuesCount;
 import me.glindholm.jira.rest.client.api.domain.input.VersionInput;
@@ -42,7 +42,7 @@ public interface VersionRestClient {
      * @return full information about selected project version
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Version> getVersion(URI versionUri);
+    CompletableFuture<Version> getVersion(URI versionUri);
 
     /**
      * Creates a new version (which logically belongs to a project)
@@ -51,7 +51,7 @@ public interface VersionRestClient {
      * @return newly created version
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Version> createVersion(VersionInput version);
+    CompletableFuture<Version> createVersion(VersionInput version);
 
     /**
      * Updates selected version with a new details.
@@ -61,7 +61,7 @@ public interface VersionRestClient {
      * @return newly updated version
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Version> updateVersion(URI versionUri, VersionInput versionInput);
+    CompletableFuture<Version> updateVersion(URI versionUri, VersionInput versionInput);
 
     /**
      * Removes selected version optionally changing Fix Version(s) and/or Affects Version(s) fields of
@@ -81,7 +81,7 @@ public interface VersionRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Void> removeVersion(URI versionUri, @Nullable URI moveFixIssuesToVersionUri, @Nullable URI moveAffectedIssuesToVersionUri)
+    CompletableFuture<Void> removeVersion(URI versionUri, @Nullable URI moveFixIssuesToVersionUri, @Nullable URI moveAffectedIssuesToVersionUri)
             throws URISyntaxException;
 
     /**
@@ -93,7 +93,7 @@ public interface VersionRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<VersionRelatedIssuesCount> getVersionRelatedIssuesCount(URI versionUri) throws URISyntaxException;
+    CompletableFuture<VersionRelatedIssuesCount> getVersionRelatedIssuesCount(URI versionUri) throws URISyntaxException;
 
     /**
      * Retrieves number of unresolved issues which have their Fix Version(s) field pointing to given
@@ -104,7 +104,7 @@ public interface VersionRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Integer> getNumUnresolvedIssues(URI versionUri) throws URISyntaxException;
+    CompletableFuture<Integer> getNumUnresolvedIssues(URI versionUri) throws URISyntaxException;
 
     /**
      * Moves selected version after another version. Ordering of versions is important on various
@@ -118,7 +118,7 @@ public interface VersionRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Version> moveVersionAfter(URI versionUri, URI afterVersionUri) throws URISyntaxException;
+    CompletableFuture<Version> moveVersionAfter(URI versionUri, URI afterVersionUri) throws URISyntaxException;
 
     /**
      * Moves selected version to another position. If version already occupies given position (e.g. is
@@ -131,6 +131,6 @@ public interface VersionRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Version> moveVersion(URI versionUri, VersionPosition versionPosition) throws URISyntaxException;
+    CompletableFuture<Version> moveVersion(URI versionUri, VersionPosition versionPosition) throws URISyntaxException;
 
 }

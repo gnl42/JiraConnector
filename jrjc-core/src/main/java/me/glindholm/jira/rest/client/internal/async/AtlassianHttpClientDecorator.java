@@ -1,18 +1,15 @@
 package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
-import java.util.regex.Pattern;
-
-import com.atlassian.httpclient.apache.httpcomponents.DefaultRequest;
-import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.Request;
-import com.atlassian.httpclient.api.ResponsePromise;
-import com.atlassian.httpclient.api.ResponseTransformation;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.concurrent.CompletableFuture;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 
 /**
- * Abstract wrapper for an Atlassian HttpClient.
+ * Native Java 21 HTTP client wrapper that applies authentication to each request.
  */
 public abstract class AtlassianHttpClientDecorator implements DisposableHttpClient {
 
@@ -25,69 +22,21 @@ public abstract class AtlassianHttpClientDecorator implements DisposableHttpClie
     }
 
     @Override
-    public void flushCacheByUriPattern(final Pattern urlPattern) {
-        httpClient.flushCacheByUriPattern(urlPattern);
-    }
-
-    @Override
-    public Request.Builder newRequest() {
-        return new AuthenticatedRequestBuilder();
-    }
-
-    @Override
-    public Request.Builder newRequest(final URI uri) {
-        final Request.Builder builder = new AuthenticatedRequestBuilder();
-        builder.setUri(uri);
-        return builder;
-    }
-
-    @Override
-    public Request.Builder newRequest(final URI uri, final String contentType, final String entity) {
-        final Request.Builder builder = new AuthenticatedRequestBuilder();
-        builder.setUri(uri);
-        builder.setContentType(contentType);
-        builder.setEntity(entity);
-        return builder;
-    }
-
-    @Override
-    public Request.Builder newRequest(final String uri) {
-        final Request.Builder builder = new AuthenticatedRequestBuilder();
-        builder.setUri(URI.create(uri));
-        return builder;
-    }
-
-    @Override
-    public Request.Builder newRequest(final String uri, final String contentType, final String entity) {
-        final Request.Builder builder = new AuthenticatedRequestBuilder();
-        builder.setUri(URI.create(uri));
-        builder.setContentType(contentType);
-        builder.setEntity(entity);
-        return builder;
-    }
-
-    @Override
-    public <A> ResponseTransformation.Builder<A> transformation() {
-        return httpClient.transformation();
-    }
-
-    @Override
-    public ResponsePromise execute(final Request request) {
-        return httpClient.execute(request);
-    }
-
-    private class AuthenticatedRequestBuilder extends DefaultRequest.DefaultRequestBuilder {
-        public AuthenticatedRequestBuilder() {
-            super(httpClient);
+    public HttpRequest.Builder newRequest(final URI uri) {
+        final HttpRequest.Builder builder = HttpRequest.newBuilder(uri);
+        if (authenticationHandler != null) {
+            authenticationHandler.configure(builder);
         }
+        return builder;
+    }
 
-        @Override
-        public ResponsePromise execute(final Request.Method method) {
-            if (authenticationHandler != null) {
-                setMethod(method);
-                authenticationHandler.configure(this);
-            }
-            return super.execute(method);
-        }
+    @Override
+    public CompletableFuture<HttpResponse<String>> execute(final HttpRequest request) {
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    @Override
+    public CompletableFuture<HttpResponse<byte[]>> executeForBytes(final HttpRequest request) {
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray());
     }
 }

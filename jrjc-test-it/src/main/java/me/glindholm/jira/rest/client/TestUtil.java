@@ -26,13 +26,8 @@ import java.util.Lists;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.utils.URIBuilder;
 import org.hamcrest.Matchers;
-import org.joda.time.OffsetDateTimeZone;
-import org.joda.time.format.ISOOffsetDateTimeFormat;
-import org.joda.time.format.OffsetDateTimeFormatter;
 
-import com.atlassian.httpclient.api.Response;
 import com.google.common.collect.Iterators;
 
 import junit.framework.Assert;
@@ -50,7 +45,7 @@ public class TestUtil {
     public static List<OperationLink> EMPTY_LINKS = Lists.emptyList();
 
     public static URI toUri(String str) {
-        return new URIBuilder(str).build();
+        return URI.create(str);
     }
 
     public static OffsetDateTime toOffsetDateTime(String isoOffsetDateTimeSt) {
@@ -89,20 +84,20 @@ public class TestUtil {
 
     }
 
-    public static void assertErrorCode(Response.Status status, String message, Runnable runnable) {
-        assertErrorCode(status.getStatusCode(), message, runnable);
+    public static void assertErrorCode(int status, String message, Runnable runnable) {
+        assertErrorCode(status, message, runnable);
     }
 
     public static void assertExpectedErrorCollection(final List<ErrorList> errors, final Runnable runnable) {
         assertExpectedErrors(errors, runnable);
     }
 
-    public static void assertErrorCodeWithRegexp(Response.Status status, String regexp, Runnable runnable) {
-        assertErrorCodeWithRegexp(status.getStatusCode(), regexp, runnable);
+    public static void assertErrorCodeWithRegexp(int status, String regexp, Runnable runnable) {
+        assertErrorCodeWithRegexp(status, regexp, runnable);
     }
 
-    public static void assertErrorCode(Response.Status status, Runnable runnable) {
-        assertErrorCode(status.getStatusCode(), null, runnable);
+    public static void assertErrorCode(int status, Runnable runnable) {
+        assertErrorCode(status, null, runnable);
     }
 
     public static void assertErrorCode(int errorCode, String message, Runnable runnable) {

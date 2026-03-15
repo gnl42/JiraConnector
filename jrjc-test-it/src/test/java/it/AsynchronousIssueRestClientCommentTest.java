@@ -75,7 +75,7 @@ public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronous
         setAnonymousMode();
 
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final Issue issue = issueClient.getIssue(issueKey).join();
 
         // test if we can see added comment
         assertFalse(hasComment(issue.getComments(), addedComment.getId()));
@@ -93,7 +93,7 @@ public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronous
         setAnonymousMode();
 
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final Issue issue = issueClient.getIssue(issueKey).join();
 
         // test if we can see added comment
         assertFalse(hasComment(issue.getComments(), addedComment.getId()));
@@ -110,12 +110,12 @@ public class AsynchronousIssueRestClientCommentTest extends AbstractAsynchronous
 
     private Comment testAddCommentToIssueImpl(final String issueKey, final Comment comment) {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final Issue issue = issueClient.getIssue(issueKey).join();
         final List<Comment> initialComments = Lists.newArrayList(issue.getComments());
 
-        issueClient.addComment(issue.getCommentsUri(), comment).claim();
+        issueClient.addComment(issue.getCommentsUri(), comment).join();
 
-        final Issue issueWithComments = issueClient.getIssue(issueKey).claim();
+        final Issue issueWithComments = issueClient.getIssue(issueKey).join();
         final List<Comment> newComments = Lists.newArrayList(issueWithComments.getComments());
         newComments.removeAll(initialComments);
         assertEquals(1, Lists.size(newComments));

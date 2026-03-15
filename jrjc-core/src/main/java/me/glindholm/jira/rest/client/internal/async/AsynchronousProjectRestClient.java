@@ -18,12 +18,8 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-import org.apache.hc.core5.net.URIBuilder;
-
-import com.atlassian.httpclient.api.HttpClient;
-
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.ProjectRestClient;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.Project;
@@ -46,32 +42,31 @@ public class AsynchronousProjectRestClient extends AbstractAsynchronousRestClien
 
     private final URI baseUri;
 
-    public AsynchronousProjectRestClient(final URI baseUri, final HttpClient client) {
+    public AsynchronousProjectRestClient(final URI baseUri, final DisposableHttpClient client) {
         super(client);
         this.baseUri = baseUri;
     }
 
     @Override
-    public Promise<Project> getProject(final String key) throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).appendPath(key).build();
+    public CompletableFuture<Project> getProject(final String key) throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).appendPath(key).build();
         return getAndParse(uri, projectJsonParser);
     }
 
     @Override
-    public Promise<Project> getProject(final URI projectUri) {
+    public CompletableFuture<Project> getProject(final URI projectUri) {
         return getAndParse(projectUri, projectJsonParser);
     }
 
     @Override
-    public Promise<List<BasicProject>> getAllProjects() throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).build();
+    public CompletableFuture<List<BasicProject>> getAllProjects() throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).build();
         return getAndParse(uri, basicProjectsJsonParser);
     }
 
     @Override
-    public Promise<SecurityLevel> getSecurityLevel(final String projectKey) throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).appendPath(projectKey).appendPath("issuesecuritylevelscheme").build();
+    public CompletableFuture<SecurityLevel> getSecurityLevel(final String projectKey) throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath(PROJECT_URI_PREFIX).appendPath(projectKey).appendPath("issuesecuritylevelscheme").build();
         return getAndParse(uri, securityJsonParser);
-
     }
 }

@@ -25,7 +25,7 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
 import me.glindholm.jira.rest.client.api.domain.BulkOperationResult;
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
@@ -60,7 +60,7 @@ public interface IssueRestClient {
      *                             argument, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<BasicIssue> createIssue(IssueInput issue) throws URISyntaxException;
+    CompletableFuture<BasicIssue> createIssue(IssueInput issue) throws URISyntaxException;
 
     /**
      * Update an existing issue.
@@ -73,7 +73,7 @@ public interface IssueRestClient {
      *                             argument, etc.)
      * @since me.glindholm.jira.rest.client.api 3.0, server 5.0
      */
-    Promise<Void> updateIssue(String issueKey, IssueInput issue) throws URISyntaxException;
+    CompletableFuture<Void> updateIssue(String issueKey, IssueInput issue) throws URISyntaxException;
 
     /**
      * Creates new issues in batch.
@@ -87,12 +87,12 @@ public interface IssueRestClient {
      * @since me.glindholm.jira.rest.client.api 2.0, server 6.0
      */
 
-    Promise<BulkOperationResult<BasicIssue>> createIssues(List<IssueInput> issues) throws URISyntaxException;
+    CompletableFuture<BulkOperationResult<BasicIssue>> createIssues(List<IssueInput> issues) throws URISyntaxException;
 
-    Promise<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@NonNull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults)
+    CompletableFuture<Page<IssueType>> getCreateIssueMetaProjectIssueTypes(@NonNull String projectIdOrKey, @Nullable Long startAt, @Nullable Integer maxResults)
             throws URISyntaxException;
 
-    Promise<Page<CimFieldInfo>> getCreateIssueMetaFields(@NonNull String projectIdOrKey, @NonNull String issueTypeId, @Nullable Long startAt,
+    CompletableFuture<Page<CimFieldInfo>> getCreateIssueMetaFields(@NonNull String projectIdOrKey, @NonNull String issueTypeId, @Nullable Long startAt,
             @Nullable Integer maxResults) throws URISyntaxException;
 
     /**
@@ -104,7 +104,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<Issue> getIssue(String issueKey) throws URISyntaxException;
+    CompletableFuture<Issue> getIssue(String issueKey) throws URISyntaxException;
 
     /**
      * Retrieves issue with selected issue key, with specified additional expandos.
@@ -118,7 +118,7 @@ public interface IssueRestClient {
      *                             argument, etc.)
      * @since 0.6
      */
-    Promise<Issue> getIssue(String issueKey, List<Expandos> expand) throws URISyntaxException;
+    CompletableFuture<Issue> getIssue(String issueKey, List<Expandos> expand) throws URISyntaxException;
 
     /**
      * Retrieves remotelinks for an issue
@@ -129,7 +129,7 @@ public interface IssueRestClient {
      *
      * @since 6.2.0
      */
-    Promise<List<Remotelink>> getRemotelinks(String issueIdorKey) throws URISyntaxException;
+    CompletableFuture<List<Remotelink>> getRemotelinks(String issueIdorKey) throws URISyntaxException;
 
     /**
      * Deletes issue with given issueKey. You can set {@code deleteSubtasks} to delete issue with
@@ -143,7 +143,7 @@ public interface IssueRestClient {
      * @throws URISyntaxException
      * @since 2.0
      */
-    Promise<Void> deleteIssue(String issueKey, boolean deleteSubtasks) throws URISyntaxException;
+    CompletableFuture<Void> deleteIssue(String issueKey, boolean deleteSubtasks) throws URISyntaxException;
 
     /**
      * Retrieves complete information (if the caller has permission) about watchers for selected issue.
@@ -155,7 +155,7 @@ public interface IssueRestClient {
      *                             argument, etc.)
      * @see me.glindholm.jira.rest.client.api.domain.Issue#getWatchers()
      */
-    Promise<Watchers> getWatchers(URI watchersUri);
+    CompletableFuture<Watchers> getWatchers(URI watchersUri);
 
     /**
      * Retrieves complete information (if the caller has permission) about voters for selected issue.
@@ -167,7 +167,7 @@ public interface IssueRestClient {
      *                             argument, etc.)
      * @see me.glindholm.jira.rest.client.api.domain.Issue#getVotesUri()
      */
-    Promise<Votes> getVotes(URI votesUri);
+    CompletableFuture<Votes> getVotes(URI votesUri);
 
     /**
      * Retrieves complete information (if the caller has permission) about transitions available for the
@@ -179,7 +179,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<List<Transition>> getTransitions(URI transitionsUri);
+    CompletableFuture<List<Transition>> getTransitions(URI transitionsUri);
 
     /**
      * Retrieves complete information (if the caller has permission) about transitions available for the
@@ -192,7 +192,7 @@ public interface IssueRestClient {
      *                             argument, etc.)
      * @since v0.5
      */
-    Promise<List<Transition>> getTransitions(Issue issue) throws URISyntaxException;
+    CompletableFuture<List<Transition>> getTransitions(Issue issue) throws URISyntaxException;
 
     /**
      * Performs selected transition on selected issue.
@@ -204,7 +204,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<Void> transition(URI transitionsUri, TransitionInput transitionInput) throws URISyntaxException;
+    CompletableFuture<Void> transition(URI transitionsUri, TransitionInput transitionInput) throws URISyntaxException;
 
     /**
      * Performs selected transition on selected issue.
@@ -216,7 +216,7 @@ public interface IssueRestClient {
      *                             argument, etc.)
      * @since v0.5
      */
-    Promise<Void> transition(Issue issue, TransitionInput transitionInput) throws URISyntaxException;
+    CompletableFuture<Void> transition(Issue issue, TransitionInput transitionInput) throws URISyntaxException;
 
     /**
      * Casts your vote on the selected issue. Casting a vote on already votes issue by the caller,
@@ -227,7 +227,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<Void> vote(URI votesUri);
+    CompletableFuture<Void> vote(URI votesUri);
 
     /**
      * Removes your vote from the selected issue. Removing a vote from the issue without your vote
@@ -238,7 +238,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<Void> unvote(URI votesUri);
+    CompletableFuture<Void> unvote(URI votesUri);
 
     /**
      * Starts watching selected issue
@@ -248,7 +248,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<Void> watch(URI watchersUri);
+    CompletableFuture<Void> watch(URI watchersUri);
 
     /**
      * Stops watching selected issue
@@ -259,7 +259,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<Void> unwatch(URI watchersUri) throws URISyntaxException;
+    CompletableFuture<Void> unwatch(URI watchersUri) throws URISyntaxException;
 
     /**
      * Adds selected person as a watcher for selected issue. You need to have permissions to do that
@@ -271,7 +271,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<Void> addWatcher(final URI watchersUri, final String username);
+    CompletableFuture<Void> addWatcher(final URI watchersUri, final String username);
 
     /**
      * Removes selected person from the watchers list for selected issue. You need to have permissions
@@ -284,7 +284,7 @@ public interface IssueRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, invalid
      *                             argument, etc.)
      */
-    Promise<Void> removeWatcher(final URI watchersUri, final String username) throws URISyntaxException;
+    CompletableFuture<Void> removeWatcher(final URI watchersUri, final String username) throws URISyntaxException;
 
     /**
      * Creates link between two issues and adds a comment (optional) to the source issues.
@@ -295,7 +295,7 @@ public interface IssueRestClient {
      *                             argument, permissions, etc.)
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
      */
-    Promise<Void> linkIssue(LinkIssuesInput linkIssuesInput) throws URISyntaxException;
+    CompletableFuture<Void> linkIssue(LinkIssuesInput linkIssuesInput) throws URISyntaxException;
 
     /**
      * Uploads attachments to JIRA (adding it to selected issue)
@@ -306,7 +306,7 @@ public interface IssueRestClient {
      * @param filename       file name to use for the uploaded attachment
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
      */
-    Promise<Void> addAttachment(URI attachmentsUri, InputStream in, String filename);
+    CompletableFuture<Void> addAttachment(URI attachmentsUri, InputStream in, String filename);
 
     /**
      * Uploads attachments to JIRA (adding it to selected issue)
@@ -316,7 +316,7 @@ public interface IssueRestClient {
      * @param attachments    attachments to upload
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
      */
-    Promise<Void> addAttachments(URI attachmentsUri, AttachmentInput... attachments);
+    CompletableFuture<Void> addAttachments(URI attachmentsUri, AttachmentInput... attachments);
 
     /**
      * Uploads attachments to JIRA (adding it to selected issue)
@@ -326,7 +326,7 @@ public interface IssueRestClient {
      * @param files          files to upload
      * @since me.glindholm.jira.rest.client.api 0.2, server 4.3
      */
-    Promise<Void> addAttachments(URI attachmentsUri, File... files);
+    CompletableFuture<Void> addAttachments(URI attachmentsUri, File... files);
 
     /**
      * Adds a comment to JIRA (adding it to selected issue)
@@ -336,7 +336,7 @@ public interface IssueRestClient {
      * @throws URISyntaxException
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<Void> addComment(URI commentsUri, Comment comment) throws URISyntaxException;
+    CompletableFuture<Void> addComment(URI commentsUri, Comment comment) throws URISyntaxException;
 
     /**
      * Retrieves the content of given attachment.
@@ -345,7 +345,7 @@ public interface IssueRestClient {
      * @return stream from which the caller may read the attachment content (bytes). The caller is
      *         responsible for closing the stream.
      */
-    Promise<InputStream> getAttachment(URI attachmentUri);
+    CompletableFuture<InputStream> getAttachment(URI attachmentUri);
 
     /**
      * Adds new worklog entry to issue.
@@ -354,7 +354,7 @@ public interface IssueRestClient {
      * @param worklogInput worklog input object to create
      * @throws URISyntaxException
      */
-    Promise<Void> addWorklog(URI worklogUri, WorklogInput worklogInput) throws URISyntaxException;
+    CompletableFuture<Void> addWorklog(URI worklogUri, WorklogInput worklogInput) throws URISyntaxException;
 
     /**
      * Expandos supported by {@link IssueRestClient#getIssue(String, List)}

@@ -69,7 +69,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
 
     @Test
     public void testGetAllRecordsAndFilterThemByGivenAuditEvent() {
-        client.getUserClient().createUser(USER_JOHN).claim();
+        client.getUserClient().createUser(USER_JOHN).join();
 
         final List<AuditRecord> records = StreamSupport
                 .stream(getAllAuditRecords().getRecords().spliterator(), false)
@@ -112,7 +112,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         final AuditRecordsData offsetedAuditRecordsData = client
                 .getAuditRestClient()
                 .getAuditRecords(new AuditRecordSearchInput(offset, null, null, null, null))
-                .claim();
+                .join();
 
         // then
         final int offsetedAuditRecordsSize = Lists.newArrayList(offsetedAuditRecordsData.getRecords()).size();
@@ -130,7 +130,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         final AuditRecordsData limitedAuditRecordsData = client
                 .getAuditRestClient()
                 .getAuditRecords(new AuditRecordSearchInput(null, limit, null, null, null))
-                .claim();
+                .join();
 
         // then
         final List<AuditRecord> limitedAuditRecords = Lists.newArrayList(limitedAuditRecordsData.getRecords());
@@ -139,11 +139,11 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
 
     @Test
     public void testGetRecordsWithFilter() {
-        client.getUserClient().createUser(USER_WILL).claim();
+        client.getUserClient().createUser(USER_WILL).join();
         final AuditRecordsData auditRecordsData = client
                 .getAuditRestClient()
                 .getAuditRecords(new AuditRecordSearchInput(null, null, "User created", null, null))
-                .claim();
+                .join();
         final List<AuditRecord> records = StreamSupport
                 .stream(auditRecordsData.getRecords().spliterator(), false)
                 .filter(val -> findPersonThroughChangedValueFullName(val, FULL_NAME_WILL))
@@ -180,7 +180,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         // when
         final List<AuditRecord> auditRecords = auditRestClient.
                 getAuditRecords(new AuditRecordSearchInput(null, numberOfAddedRecords, null, null, null))
-                .claim()
+                .join()
                 .getRecords();
 
         // then
@@ -226,7 +226,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
     public void shouldReturnNoRecordsWhenFilteringForTomorrow() {
         final OffsetDateTime tomorrow = new DateMidnight().plus(Period.days(1)).toOffsetDateTime();
 
-        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, tomorrow, tomorrow)).claim();
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(new AuditRecordSearchInput(null, null, null, tomorrow, tomorrow)).join();
 
         assertThat(auditRecordsData.getRecords(), Matchers.emptyList());
     }
@@ -240,7 +240,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
 
         // when
         final AuditRecordSearchInput toLatestSearchCriteria = new AuditRecordSearchInput(null, null, null, null, latestCreatedDate);
-        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(toLatestSearchCriteria).claim();
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(toLatestSearchCriteria).join();
 
         // then
         assertThat(auditRecordsData.getRecords(), hasSameIdsAs(firstPageOfRecords.getRecords()));
@@ -254,7 +254,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
 
         // when
         final AuditRecordSearchInput fromLatestSearchCriteria = new AuditRecordSearchInput(null, null, null, latestCreatedDateInStrangeTimezone, null);
-        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(fromLatestSearchCriteria).claim();
+        final AuditRecordsData auditRecordsData = client.getAuditRestClient().getAuditRecords(fromLatestSearchCriteria).join();
 
         // then
         assertThat(auditRecordsData.getRecords(), Matchers.hasItem(auditRecordWithId(latestCreatedRecord.getId())));
@@ -316,7 +316,7 @@ public class AsynchronousAuditRestClientTest extends AbstractAsynchronousRestCli
         return client
                 .getAuditRestClient()
                 .getAuditRecords(new AuditRecordSearchInput(null, null, null, null, null))
-                .claim();
+                .join();
     }
 
     private boolean findPersonThroughChangedValueFullName(final AuditRecord record, final String fullName) {

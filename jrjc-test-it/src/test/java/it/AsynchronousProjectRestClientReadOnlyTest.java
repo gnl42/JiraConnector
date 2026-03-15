@@ -72,14 +72,14 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
                 nonExistingProjectKey + "'.", new Runnable() {
             @Override
             public void run() {
-                client.getProjectClient().getProject(nonExistingProjectKey).claim();
+                client.getProjectClient().getProject(nonExistingProjectKey).join();
             }
         });
     }
 
     @Test
     public void testGetProject() throws URISyntaxException {
-        final Project project = client.getProjectClient().getProject("TST").claim();
+        final Project project = client.getProjectClient().getProject("TST").join();
         assertEquals("TST", project.getKey());
         assertEquals(Long.valueOf(10000), project.getId());
         assertEquals(IntegrationTestUtil.USER_ADMIN_60, project.getLead());
@@ -104,17 +104,17 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
 
     @Test
     public void testGetRestrictedProject() {
-        final Project project = client.getProjectClient().getProject("RST").claim();
+        final Project project = client.getProjectClient().getProject("RST").join();
         assertEquals("RST", project.getKey());
 
         setClient(TestConstants.USER1_USERNAME, TestConstants.USER1_PASSWORD);
-        client.getProjectClient().getProject("TST").claim();
+        client.getProjectClient().getProject("TST").join();
         // @todo when JRADEV-3519 - instead of NOT_FOUND, FORBIDDEN code should be returned by JIRA
         final String message = getCannotViewProjectErrorMessage("RST");
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, message, new Runnable() {
             @Override
             public void run() {
-                client.getProjectClient().getProject("RST").claim();
+                client.getProjectClient().getProject("RST").join();
             }
         });
     }
@@ -132,18 +132,18 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, getCannotViewProjectErrorMessage("RST"), new Runnable() {
             @Override
             public void run() {
-                client.getProjectClient().getProject("RST").claim();
+                client.getProjectClient().getProject("RST").join();
             }
         });
 
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, getCannotViewProjectErrorMessage("TST"), new Runnable() {
             @Override
             public void run() {
-                client.getProjectClient().getProject("TST").claim();
+                client.getProjectClient().getProject("TST").join();
             }
         });
 
-        final Project project = client.getProjectClient().getProject("ANNON").claim();
+        final Project project = client.getProjectClient().getProject("ANNON").join();
         assertEquals("ANNON", project.getKey());
 
     }
@@ -154,7 +154,7 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
             return;
         }
 
-        final List<BasicProject> projects = client.getProjectClient().getAllProjects().claim();
+        final List<BasicProject> projects = client.getProjectClient().getAllProjects().join();
         assertEquals(4, Lists.size(projects));
         final BasicProject tst = Lists.find(projects, new Predicate<BasicProject>() {
             @Override
@@ -165,7 +165,7 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
         assertTrue(tst.getSelf().toString().contains(jiraRestRootUri.toString()));
 
         setAnonymousMode();
-        final List<BasicProject> anonymouslyAccessibleProjects = client.getProjectClient().getAllProjects().claim();
+        final List<BasicProject> anonymouslyAccessibleProjects = client.getProjectClient().getAllProjects().join();
         assertEquals(2, Lists.size(anonymouslyAccessibleProjects));
 
         final List<String> projectsKeys = Lists
@@ -178,17 +178,17 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
         Assert.assertThat(projectsKeys, containsInAnyOrder("ANNON", "ANONEDIT"));
 
         setUser1();
-        assertEquals(3, Lists.size(client.getProjectClient().getAllProjects().claim()));
+        assertEquals(3, Lists.size(client.getProjectClient().getAllProjects().join()));
     }
 
     private boolean isGetAllProjectsSupported() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
     }
 
     @Test
     @JiraBuildNumberDependent(BN_JIRA_5)
     public void testGetPriorities() {
-        final List<Priority> priorities = client.getMetadataClient().getPriorities().claim();
+        final List<Priority> priorities = client.getMetadataClient().getPriorities().join();
         assertEquals(5, Lists.size(priorities));
 
         final Priority priority = findEntityBySelfAddressSuffix(priorities, "/1");
@@ -201,7 +201,7 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
     @Test
     @JiraBuildNumberDependent(BN_JIRA_5)
     public void testGetIssueTypes() {
-        final List<IssueType> issueTypes = client.getMetadataClient().getIssueTypes().claim();
+        final List<IssueType> issueTypes = client.getMetadataClient().getIssueTypes().join();
         assertEquals(5, Lists.size(issueTypes));
 
         final IssueType issueType = findEntityBySelfAddressSuffix(issueTypes, "/5");
@@ -215,7 +215,7 @@ public class AsynchronousProjectRestClientReadOnlyTest extends AbstractAsynchron
     @Test
     @JiraBuildNumberDependent(BN_JIRA_5)
     public void testGetResolutions() {
-        final List<Resolution> resolutions = client.getMetadataClient().getResolutions().claim();
+        final List<Resolution> resolutions = client.getMetadataClient().getResolutions().join();
         assertEquals(5, Lists.size(resolutions));
         final Resolution resolution = findEntityBySelfAddressSuffix(resolutions, "/1");
         assertEquals("Fixed", resolution.getName());

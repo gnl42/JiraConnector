@@ -83,7 +83,7 @@ public class App {
         }
 
         try {
-            ServerInfo serverInfo = client.getMetadataClient().getServerInfo().claim();
+            ServerInfo serverInfo = client.getMetadataClient().getServerInfo().join();
             log.info("Found JIRA version {}", serverInfo.getVersion());
             if (commandLine.hasOption(OPTION_ISSUE)) {
                 String issueId = commandLine.getOptionValue(OPTION_ISSUE);

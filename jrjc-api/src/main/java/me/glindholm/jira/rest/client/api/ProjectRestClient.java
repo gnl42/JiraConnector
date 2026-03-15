@@ -20,7 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
@@ -39,37 +39,15 @@ public interface ProjectRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Project> getProject(String key) throws URISyntaxException;
+    CompletableFuture<Project> getProject(String key) throws URISyntaxException;
 
-    /**
-     * Retrieves complete information about given project. Use this method rather than
-     * {@link ProjectRestClient#getProject(String)} wheever you can, as this method is proof for
-     * potential changes of URI scheme used for exposing various resources by JIRA REST API.
-     *
-     * @param projectUri URI to project resource (usually get from <code>self</code> attribute
-     *                   describing component elsewhere
-     * @return complete information about given project
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-     */
-    Promise<Project> getProject(URI projectUri);
+    // ...existing javadoc...
+    CompletableFuture<Project> getProject(URI projectUri);
 
-    /**
-     * Returns all projects, which are visible for the currently logged in user. If no user is logged
-     * in, it returns the list of projects that are visible when using anonymous access.
-     *
-     * @return projects which the currently logged user can see
-     * @throws URISyntaxException
-     * @since me.glindholm.jira.rest.client.api: 0.2, server 4.3
-     */
-    Promise<List<BasicProject>> getAllProjects() throws URISyntaxException;
+    // ...existing javadoc...
+    CompletableFuture<List<BasicProject>> getAllProjects() throws URISyntaxException;
 
-    /**
-     * Returns the security level for the project
-     *
-     * @param projectKey
-     * @return
-     * @throws URISyntaxException
-     */
-    Promise<SecurityLevel> getSecurityLevel(String projectKey) throws URISyntaxException;
+    // ...existing javadoc...
+    CompletableFuture<SecurityLevel> getSecurityLevel(String projectKey) throws URISyntaxException;
 
 }

@@ -109,8 +109,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
     @Test
     public void testGetWatchers() throws Exception {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
+        final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).join();
         assertEquals(1, watchers.getNumWatchers());
         assertFalse(watchers.isWatching());
         assertThat(watchers.getUsers(), containsInAnyOrder(USER1));
@@ -119,8 +119,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @Test
     public void testGetWatcherForAnonymouslyAccessibleIssue() {
         setAnonymousMode();
-        final Issue issue = client.getIssueClient().getIssue("ANNON-1").claim();
-        final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim();
+        final Issue issue = client.getIssueClient().getIssue("ANNON-1").join();
+        final Watchers watchers = client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).join();
         assertEquals(1, watchers.getNumWatchers());
         assertFalse(watchers.isWatching());
         assertTrue("JRADEV-3594 bug!!!", Lists.isEmpty(watchers.getUsers()));
@@ -131,7 +131,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @Test
     public void testGetIssueWithAnonymouslyCreatedAttachment() {
         setAnonymousMode();
-        final Issue issue = client.getIssueClient().getIssue("ANONEDIT-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("ANONEDIT-1").join();
         final Iterator<Attachment> attachmentIterator = issue.getAttachments().iterator();
         assertTrue(attachmentIterator.hasNext());
         assertNull(attachmentIterator.next().getAuthor());
@@ -140,7 +140,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @Test
     public void testGetIssueWithAnonymouslyCreatedWorklogEntry() {
         setAnonymousMode();
-        final Issue issue = client.getIssueClient().getIssue("ANONEDIT-2").claim();
+        final Issue issue = client.getIssueClient().getIssue("ANONEDIT-2").join();
         final Iterator<Worklog> worklogIterator = issue.getWorklogs().iterator();
         assertTrue(worklogIterator.hasNext());
         assertNull(worklogIterator.next().getAuthor());
@@ -156,7 +156,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @Test
     @SuppressWarnings("unchecked")
     public void testGetIssue() throws Exception {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         assertEquals("TST-1", issue.getKey());
         assertEquals(Long.valueOf(10000), issue.getId());
         assertTrue(issue.getSelf().toString().startsWith(jiraUri.toString()));
@@ -190,7 +190,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         assertNull(issue.getChangelog());
 
         final Issue issueWithChangelogAndOperations = client.getIssueClient().getIssue("TST-2", EnumSet.of(CHANGELOG, OPERATIONS))
-                .claim();
+                .join();
         final List<ChangelogGroup> changelog = issueWithChangelogAndOperations.getChangelog();
         if (isJira5xOrNewer()) {
             assertNotNull(changelog);
@@ -229,7 +229,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
     @Test
     public void testGetIssueWithNonTrivialComments() {
-        final Issue issue = client.getIssueClient().getIssue("TST-2").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-2").join();
         final List<Comment> comments = issue.getComments();
         assertEquals(3, size(comments));
         final Comment c1 = Lists.get(comments, 0);
@@ -242,22 +242,22 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
     @Test
     public void testGetVoter() {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
+        final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).join();
         assertFalse(votes.hasVoted());
         assertThat(votes.getUsers(), containsInAnyOrder(USER1));
     }
 
     @Test
     public void testGetVotersWithoutViewIssuePermission() {
-        final Issue issue = client.getIssueClient().getIssue("RST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("RST-1").join();
         setUser2();
         final String optionalDot = isJira5xOrNewer() ? "." : "";
         assertErrorCode(Response.Status.FORBIDDEN,
                 "You do not have the permission to see the specified issue" + optionalDot, new Runnable() {
                     @Override
                     public void run() {
-                        client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
+                        client.getIssueClient().getVotes(issue.getVotes().getSelf()).join();
                     }
                 });
     }
@@ -276,10 +276,10 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
 
     private void assertNumVotesAndNoVotersDetails(final String issueKey, final int numVotes) {
-        final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
+        final Issue issue = client.getIssueClient().getIssue(issueKey).join();
         assertEquals(numVotes, issue.getVotes().getVotes());
         assertFalse(issue.getVotes().hasVoted());
-        final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).claim();
+        final Votes votes = client.getIssueClient().getVotes(issue.getVotes().getSelf()).join();
         assertFalse(votes.hasVoted());
         assertEquals(numVotes, votes.getVotes());
         assertTrue(Lists.isEmpty(votes.getUsers()));
@@ -288,8 +288,8 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
     @Test
     public void testGetTransitions() throws Exception {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).join();
         assertEquals(4, size(transitions));
         assertTrue(Lists
                 .contains(transitions, new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Lists
@@ -302,7 +302,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
         final List<CimProject> metadataProjects = client
                 .getIssueClient()
                 .getCreateIssueMetadata(new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build())
-                .claim();
+                .join();
 
         assertEquals(4, size(metadataProjects));
 
@@ -326,7 +326,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     public void testGetCreateIssueMetadataWithFieldsNotExpanded() throws URISyntaxException {
         final List<CimProject> metadataProjects = client
                 .getIssueClient()
-                .getCreateIssueMetadata(null).claim();
+                .getCreateIssueMetadata(null).join();
 
         assertEquals(4, size(metadataProjects));
 
@@ -353,7 +353,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
                         .withProjectKeys("ANONEDIT", "TST")
                         .withExpandedIssueTypesFields()
                         .build())
-                .claim();
+                .join();
 
         assertEquals(2, size(metadataProjects));
 
@@ -375,7 +375,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @JiraBuildNumberDependent(BN_JIRA_8_4)
     @Test
     public void testGetCreateIssueMetaProjectIssueTypes() throws Exception {
-        final Page<IssueType> issueTypes = client.getIssueClient().getCreateIssueMetaProjectIssueTypes("ANONEDIT", null, null).claim();
+        final Page<IssueType> issueTypes = client.getIssueClient().getCreateIssueMetaProjectIssueTypes("ANONEDIT", null, null).join();
 
         assertEquals(5, size(issueTypes.getValues()));
         assertEquals(0, issueTypes.getStartAt());
@@ -388,7 +388,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
     @JiraBuildNumberDependent(BN_JIRA_8_4)
     @Test
     public void testGetCreateIssueMetaFields() throws Exception {
-        final Page<CimFieldInfo> fields = client.getIssueClient().getCreateIssueMetaFields("ANONEDIT", "1", null, null).claim();
+        final Page<CimFieldInfo> fields = client.getIssueClient().getCreateIssueMetaFields("ANONEDIT", "1", null, null).join();
 
         assertEquals(19, size(fields.getValues()));
         assertEquals(0, fields.getStartAt());
@@ -400,7 +400,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
     @Test
     public void testFetchingIssueWithWorklogWhenAuthorIsDeleted() {
-        final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).claim();
+        final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).join();
         final Worklog worklog = issue.getWorklogs().iterator().next();
         assertNotNull(worklog);
         final BasicUser author = worklog.getAuthor();
@@ -411,7 +411,7 @@ public class AsynchronousIssueRestClientReadOnlyTest extends AbstractAsynchronou
 
     @Test
     public void testFetchingIssueWithCommentWhenAuthorIsDeleted() {
-        final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).claim();
+        final Issue issue = client.getIssueClient().getIssue(ISSUE_KEY_WITH_REMOVED_USER_DATA).join();
         final Comment comment = issue.getComments().iterator().next();
         assertNotNull(comment);
         final BasicUser author = comment.getAuthor();

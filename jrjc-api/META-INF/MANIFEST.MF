@@ -8,12 +8,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ClassPath: .
 Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
-Export-Package: me.glindholm.jira.rest.client.api;uses:="me.glindholm.jira.rest.client.api.domain,me.glindholm.jira.rest.client.api.domain.input,Request",
+Export-Package: me.glindholm.jira.rest.client.api;uses:="me.glindholm.jira.rest.client.api.domain,me.glindholm.jira.rest.client.api.domain.input",
  me.glindholm.jira.rest.client.api.domain;uses:="me.glindholm.jira.rest.client.api.domain.util,me.glindholm.jira.rest.client.api",
  me.glindholm.jira.rest.client.api.domain.input;uses:="me.glindholm.jira.rest.client.api.domain,me.glindholm.jira.rest.client.api",
  me.glindholm.jira.rest.client.api.domain.util
 Import-Package: org.slf4j;version="1.7.30"
 Require-Bundle: org.eclipse.jdt.annotation,
- com.google.guava,
- atlassian.combined.osgi;bundle-version="1.0.0"
+ com.google.guava
 

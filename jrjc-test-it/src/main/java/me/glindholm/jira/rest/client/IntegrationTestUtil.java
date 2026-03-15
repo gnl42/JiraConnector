@@ -91,7 +91,7 @@ public class IntegrationTestUtil {
 
             int determinedBuildNumber;
             try {
-                determinedBuildNumber = client.getMetadataClient().getServerInfo().claim().getBuildNumber();
+                determinedBuildNumber = client.getMetadataClient().getServerInfo().join().getBuildNumber();
             } catch (RestClientException e) {
                 // the client failed to receive the build number, defaulting to recent cloud version:
                 // we should not log here as it's a static blog and that could screw log instance access

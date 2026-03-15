@@ -69,8 +69,8 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
     @Test
     public void testGetProjectRoleWithRoleKeyFromAnonymousProject() {
-        final Project anonProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).claim();
-        final ProjectRole role = client.getProjectRolesRestClient().getRole(anonProject.getSelf(), 10000l).claim();
+        final Project anonProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).join();
+        final ProjectRole role = client.getProjectRolesRestClient().getRole(anonProject.getSelf(), 10000l).join();
         assertNotNull(role);
         assertEquals("Users", role.getName());
         assertEquals("A project role that represents users in a project", role.getDescription());
@@ -84,8 +84,8 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
     @Test
     public void testGetProjectRoleWithRoleKeyFromRestrictedProject() {
-        final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY).claim();
-        final ProjectRole role = client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l).claim();
+        final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY).join();
+        final ProjectRole role = client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l).join();
         assertNotNull(role);
         assertEquals("Users", role.getName());
         assertEquals("A project role that represents users in a project", role.getDescription());
@@ -99,7 +99,7 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
     @Test
     public void testGetProjectRoleWithRoleKeyFromRestrictedProjectWithoutPermission() {
-        final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY).claim();
+        final Project restrictedProject = client.getProjectClient().getProject(RESTRICTED_PROJECT_KEY).join();
         setAnonymousMode();
         exception.expect(RestClientException.class);
         if (isJira61xOrNewer()) {
@@ -108,15 +108,15 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
         } else {
             exception.expectMessage(String.format("No project could be found with key '%s'", RESTRICTED_PROJECT_KEY));
         }
-        client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l).claim();
+        client.getProjectRolesRestClient().getRole(restrictedProject.getSelf(), 10000l).join();
     }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_4_4)
     @Test
     public void testGetProjectRoleWithFullURI() {
-        final Project anonProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).claim();
-        final URI roleURI = client.getProjectRolesRestClient().getRole(anonProject.getSelf(), 10000l).claim().getSelf();
-        final ProjectRole role = client.getProjectRolesRestClient().getRole(roleURI).claim();
+        final Project anonProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).join();
+        final URI roleURI = client.getProjectRolesRestClient().getRole(anonProject.getSelf(), 10000l).join().getSelf();
+        final ProjectRole role = client.getProjectRolesRestClient().getRole(roleURI).join();
         assertNotNull(role);
         assertEquals("Users", role.getName());
         assertEquals("A project role that represents users in a project", role.getDescription());
@@ -140,9 +140,9 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
     }
 
     private void testGetAllRolesForProject(String projectIdOrKey) {
-        final Project anonymousProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).claim();
+        final Project anonymousProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).join();
         final List<ProjectRole> projectRoles = client.getProjectRolesRestClient().getRoles(anonymousProject.getSelf())
-                .claim();
+                .join();
         final List<ProjectRole> projectRolesWithoutSelf = Lists.transform(
                 projectRoles,
                 new Function<ProjectRole, ProjectRole>() {
@@ -191,10 +191,10 @@ public class AsynchronousProjectRoleRestClientTest extends AbstractAsynchronousR
     }
 
     private void testGetProjectRoleWithRoleKeyErrorCode(final String description) {
-        final Project anonProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).claim();
+        final Project anonProject = client.getProjectClient().getProject(ANONYMOUS_PROJECT_KEY).join();
         exception.expect(RestClientException.class);
         exception.expectMessage(description);
-        client.getProjectRolesRestClient().getRole(anonProject.getSelf(), -1l).claim();
+        client.getProjectRolesRestClient().getRole(anonProject.getSelf(), -1l).join();
     }
 
     @JiraBuildNumberDependent(ServerVersionConstants.BN_JIRA_7_2)

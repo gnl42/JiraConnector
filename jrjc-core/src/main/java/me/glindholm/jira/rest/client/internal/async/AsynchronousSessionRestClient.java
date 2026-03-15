@@ -17,12 +17,8 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.CompletableFuture;
 
-import org.apache.hc.core5.net.URIBuilder;
-
-import com.atlassian.httpclient.api.HttpClient;
-
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.SessionRestClient;
 import me.glindholm.jira.rest.client.api.domain.Session;
@@ -38,14 +34,13 @@ public class AsynchronousSessionRestClient extends AbstractAsynchronousRestClien
     private final SessionJsonParser sessionJsonParser = new SessionJsonParser();
     private final URI serverUri;
 
-    public AsynchronousSessionRestClient(final URI serverUri, final HttpClient client) {
+    public AsynchronousSessionRestClient(final URI serverUri, final DisposableHttpClient client) {
         super(client);
         this.serverUri = serverUri;
     }
 
     @Override
-    public Promise<Session> getCurrentSession() throws RestClientException, URISyntaxException {
-        return getAndParse(new URIBuilder(serverUri).appendPath("rest/auth/latest/session").build(), sessionJsonParser);
+    public CompletableFuture<Session> getCurrentSession() throws RestClientException, URISyntaxException {
+        return getAndParse(new UriBuilder(serverUri).appendPath("rest/auth/latest/session").build(), sessionJsonParser);
     }
-
 }

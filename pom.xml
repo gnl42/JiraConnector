@@ -462,7 +462,7 @@
                             <type>p2-installable-unit</type>
                             <artifactId>org.eclipse.equinox.event</artifactId>
                         </dependency>
-                    </dependencies>
+                     </dependencies>
                 </configuration>
             </plugin>
             <plugin>

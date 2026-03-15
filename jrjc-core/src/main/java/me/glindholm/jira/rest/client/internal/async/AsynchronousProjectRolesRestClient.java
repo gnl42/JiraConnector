@@ -18,14 +18,9 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import org.apache.hc.core5.net.URIBuilder;
-
-import com.atlassian.httpclient.api.HttpClient;
-
-import io.atlassian.util.concurrent.Promise;
-import io.atlassian.util.concurrent.Promises;
 import me.glindholm.jira.rest.client.api.ProjectRolesRestClient;
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
@@ -42,28 +37,37 @@ public class AsynchronousProjectRolesRestClient extends AbstractAsynchronousRest
     private final ProjectRoleJsonParser projectRoleJsonParser;
     private final BasicProjectRoleJsonParser basicRoleJsonParser;
 
-    public AsynchronousProjectRolesRestClient(final URI serverUri, final HttpClient client) {
+    public AsynchronousProjectRolesRestClient(final URI serverUri, final DisposableHttpClient client) {
         super(client);
         projectRoleJsonParser = new ProjectRoleJsonParser(serverUri);
         basicRoleJsonParser = new BasicProjectRoleJsonParser();
     }
 
     @Override
-    public Promise<ProjectRole> getRole(final URI uri) {
+    public CompletableFuture<ProjectRole> getRole(final URI uri) {
         return getAndParse(uri, projectRoleJsonParser);
     }
 
     @Override
-    public Promise<ProjectRole> getRole(final URI projectUri, final Long roleId) throws URISyntaxException {
-        final URI roleUri = new URIBuilder(projectUri).appendPath("role").appendPath(String.valueOf(roleId)).build();
+    public CompletableFuture<ProjectRole> getRole(final URI projectUri, final Long roleId) throws URISyntaxException {
+        final URI roleUri = new UriBuilder(projectUri).appendPath("role").appendPath(String.valueOf(roleId)).build();
         return getAndParse(roleUri, projectRoleJsonParser);
     }
 
     @Override
-    public Promise<List<ProjectRole>> getRoles(final URI projectUri) throws URISyntaxException {
-        final URI rolesUris = new URIBuilder(projectUri).appendPath("role").build();
-        final Promise<List<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
+    public CompletableFuture<List<ProjectRole>> getRoles(final URI projectUri) throws URISyntaxException {
+        final URI rolesUris = new UriBuilder(projectUri).appendPath("role").build();
+        final CompletableFuture<List<BasicProjectRole>> basicProjectRoles = getAndParse(rolesUris, basicRoleJsonParser);
 
-        return Promises.promise(basicProjectRoles.claim().stream().map(basic -> getRole(basic.getSelf()).claim()).collect(Collectors.toList()));
+        return basicProjectRoles.thenCompose(basics ->
+            CompletableFuture.allOf(basics.stream().map(basic -> getRole(basic.getSelf())).toArray(CompletableFuture[]::new))
+                .thenApply(v -> basics.stream().map(basic -> {
+                    try {
+                        return getRole(basic.getSelf()).join();
+                    } catch (final Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList()))
+        );
     }
 }

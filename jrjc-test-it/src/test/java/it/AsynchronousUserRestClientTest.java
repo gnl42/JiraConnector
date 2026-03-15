@@ -52,7 +52,7 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
 
     @Test
     public void testGetUser() throws JSONException {
-        final User user = client.getUserClient().getUser(ADMIN_USERNAME).claim();
+        final User user = client.getUserClient().getUser(ADMIN_USERNAME).join();
         assertEquals("wojciech.seliga@spartez.com", user.getEmailAddress());
         assertEquals("admin", user.getName());
         assertEquals("Administrator", user.getDisplayName());
@@ -61,13 +61,13 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
         assertEquals(IntegrationTestUtil.USER_ADMIN_60.getSelf(), user.getSelf());
         assertTrue(user.getAvatarUri().toString().contains("ownerId=" + user.getName()));
 
-        final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME).claim();
+        final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME).join();
         assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
     }
 
     @Test
     public void testGetUserWithSlash() {
-        final User user = client.getUserClient().getUser(USER_SLASH.getName()).claim();
+        final User user = client.getUserClient().getUser(USER_SLASH.getName()).join();
         assertEquals(USER_SLASH_60.getSelf(), user.getSelf());
         assertEquals(USER_SLASH_60.getDisplayName(), user.getDisplayName());
     }
@@ -79,7 +79,7 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
                 new Runnable() {
                     @Override
                     public void run() {
-                        client.getUserClient().getUser(username).claim();
+                        client.getUserClient().getUser(username).join();
                     }
                 });
     }
@@ -90,7 +90,7 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
             @Override
             public void run() {
                 setAnonymousMode();
-                client.getUserClient().getUser(TestConstants.USER1_USERNAME).claim();
+                client.getUserClient().getUser(TestConstants.USER1_USERNAME).join();
             }
         });
 
@@ -103,7 +103,7 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
         administration.generalConfiguration().setUserEmailVisibility(GeneralConfiguration.EmailVisibility.HIDDEN);
 
         try {
-            final User user = client.getUserClient().getUser(ADMIN_USERNAME).claim();
+            final User user = client.getUserClient().getUser(ADMIN_USERNAME).join();
             assertNull(user.getEmailAddress());
             assertEquals("admin", user.getName());
             assertEquals("Administrator", user.getDisplayName());
@@ -112,7 +112,7 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
             assertEquals(IntegrationTestUtil.USER_ADMIN_60.getSelf(), user.getSelf());
             assertTrue(user.getAvatarUri().toString().contains("ownerId=" + user.getName()));
 
-            final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME).claim();
+            final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME).join();
             assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
 
         } finally {
@@ -128,7 +128,7 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
         administration.generalConfiguration().setUserEmailVisibility(GeneralConfiguration.EmailVisibility.MASKED);
 
         try {
-            final User user = client.getUserClient().getUser(ADMIN_USERNAME).claim();
+            final User user = client.getUserClient().getUser(ADMIN_USERNAME).join();
             assertEquals("wojciech dot seliga at spartez dot com", user.getEmailAddress());
             assertEquals("admin", user.getName());
             assertEquals("Administrator", user.getDisplayName());
@@ -137,7 +137,7 @@ public class AsynchronousUserRestClientTest extends AbstractAsynchronousRestClie
             assertEquals(IntegrationTestUtil.USER_ADMIN_60.getSelf(), user.getSelf());
             assertTrue(user.getAvatarUri().toString().contains("ownerId=" + user.getName()));
 
-            final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME).claim();
+            final User user2 = client.getUserClient().getUser(TestConstants.USER1_USERNAME).join();
             assertEquals(new ExpandableProperty<String>(ImmutableList.of("jira-users")), user2.getGroups());
         } finally {
             // Restore e-mail visibility configuration

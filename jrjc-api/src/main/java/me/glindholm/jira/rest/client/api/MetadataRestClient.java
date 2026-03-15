@@ -20,7 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.IssuelinksType;
@@ -46,7 +46,7 @@ public interface MetadataRestClient {
      * @return complete information about issue type resource
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<IssueType> getIssueType(URI uri);
+    CompletableFuture<IssueType> getIssueType(URI uri);
 
     /**
      * Retrieves from the server complete list of available issue type
@@ -56,7 +56,7 @@ public interface MetadataRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<List<IssueType>> getIssueTypes() throws URISyntaxException;
+    CompletableFuture<List<IssueType>> getIssueTypes() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete list of available issue types
@@ -67,7 +67,7 @@ public interface MetadataRestClient {
      *                             connectivity, malformed messages, etc.)
      * @since server 4.3, me.glindholm.jira.rest.client.api 0.5
      */
-    Promise<List<IssuelinksType>> getIssueLinkTypes() throws URISyntaxException;
+    CompletableFuture<List<IssuelinksType>> getIssueLinkTypes() throws URISyntaxException;
 
     /**
      * Retrieves complete information about selected status
@@ -77,7 +77,7 @@ public interface MetadataRestClient {
      * @return complete information about the selected status
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Status> getStatus(URI uri);
+    CompletableFuture<Status> getStatus(URI uri);
 
     /**
      * Retrieves lists of available statuses with complete information about them
@@ -86,7 +86,7 @@ public interface MetadataRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<List<Status>> getStatuses() throws URISyntaxException;
+    CompletableFuture<List<Status>> getStatuses() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete information about selected priority
@@ -95,7 +95,7 @@ public interface MetadataRestClient {
      * @return complete information about the selected priority
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Priority> getPriority(URI uri);
+    CompletableFuture<Priority> getPriority(URI uri);
 
     /**
      * Retrieves from the server complete list of available priorities
@@ -105,7 +105,7 @@ public interface MetadataRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<List<Priority>> getPriorities() throws URISyntaxException;
+    CompletableFuture<List<Priority>> getPriorities() throws URISyntaxException;
 
     /**
      * Retrieves from the server complete information about selected resolution
@@ -114,7 +114,7 @@ public interface MetadataRestClient {
      * @return complete information about the selected resolution
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Resolution> getResolution(URI uri);
+    CompletableFuture<Resolution> getResolution(URI uri);
 
     /**
      * Retrieves from the server complete information about selected resolution
@@ -124,7 +124,7 @@ public interface MetadataRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      * @since me.glindholm.jira.rest.client.api 1.0, server 5.0
      */
-    Promise<List<Resolution>> getResolutions() throws URISyntaxException;
+    CompletableFuture<List<Resolution>> getResolutions() throws URISyntaxException;
 
     /**
      * Retrieves information about this JIRA instance
@@ -133,7 +133,7 @@ public interface MetadataRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<ServerInfo> getServerInfo() throws URISyntaxException;
+    CompletableFuture<ServerInfo> getServerInfo() throws URISyntaxException;
 
     /**
      * Retrieves information about JIRA custom and system fields.
@@ -142,5 +142,5 @@ public interface MetadataRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<List<Field>> getFields() throws URISyntaxException;
+    CompletableFuture<List<Field>> getFields() throws URISyntaxException;
 }

@@ -1,6 +1,6 @@
 package me.glindholm.jira.rest.client.auth;
 
-import com.atlassian.httpclient.api.Request.Builder;
+import java.net.http.HttpRequest;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 
@@ -14,8 +14,8 @@ public class BearerHttpAuthenticationHandler implements AuthenticationHandler {
     }
 
     @Override
-    public void configure(final Builder builder) {
-        builder.setHeader(AUTHORIZATION_HEADER, "Bearer " + token);
-        builder.setHeader("X-client", "jrjc");
+    public void configure(final HttpRequest.Builder builder) {
+        builder.header(AUTHORIZATION_HEADER, "Bearer " + token);
+        builder.header("X-client", "jrjc");
     }
 }

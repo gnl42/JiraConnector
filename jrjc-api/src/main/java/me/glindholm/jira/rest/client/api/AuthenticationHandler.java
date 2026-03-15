@@ -16,20 +16,20 @@
 
 package me.glindholm.jira.rest.client.api;
 
-import com.atlassian.httpclient.api.Request;
+import java.net.http.HttpRequest;
 
 /**
  * Interface for classes which authenticate the requests. The configure method is invoked during
  * each request. For instance, the implementation of this handling which would configure the request
  * to do a basic http authentication would have a following implementation.
  * <p>
- * public void configure(final Request request) { request.setHeader("Authorization", "Basic " +
+ * public void configure(final HttpRequest.Builder builder) { builder.header("Authorization", "Basic " +
  * base64EncodedCredentials()); }
  *
  * @since v0.1
  */
 public interface AuthenticationHandler {
 
-    void configure(final Request.Builder builder);
+    void configure(final HttpRequest.Builder builder);
 
 }

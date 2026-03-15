@@ -18,12 +18,8 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-import org.apache.hc.core5.net.URIBuilder;
-
-import com.atlassian.httpclient.api.HttpClient;
-
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.MetadataRestClient;
 import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
@@ -63,71 +59,70 @@ public class AsynchronousMetadataRestClient extends AbstractAsynchronousRestClie
     private final JsonArrayParser<List<Field>> fieldsJsonParser = FieldJsonParser.createFieldsArrayParser();
     private final URI baseUri;
 
-    public AsynchronousMetadataRestClient(final URI baseUri, final HttpClient httpClient) {
+    public AsynchronousMetadataRestClient(final URI baseUri, final DisposableHttpClient httpClient) {
         super(httpClient);
         this.baseUri = baseUri;
-
     }
 
     @Override
-    public Promise<IssueType> getIssueType(final URI uri) {
+    public CompletableFuture<IssueType> getIssueType(final URI uri) {
         return getAndParse(uri, issueTypeJsonParser);
     }
 
     @Override
-    public Promise<List<IssueType>> getIssueTypes() throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath("issuetype").build();
+    public CompletableFuture<List<IssueType>> getIssueTypes() throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath("issuetype").build();
         return getAndParse(uri, issueTypesJsonParser);
     }
 
     @Override
-    public Promise<List<IssuelinksType>> getIssueLinkTypes() throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath("issueLinkType").build();
+    public CompletableFuture<List<IssuelinksType>> getIssueLinkTypes() throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath("issueLinkType").build();
         return getAndParse(uri, issueLinkTypesJsonParser);
     }
 
     @Override
-    public Promise<Status> getStatus(final URI uri) {
+    public CompletableFuture<Status> getStatus(final URI uri) {
         return getAndParse(uri, statusJsonParser);
     }
 
     @Override
-    public Promise<List<Status>> getStatuses() throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath("status").build();
+    public CompletableFuture<List<Status>> getStatuses() throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath("status").build();
         return getAndParse(uri, statusesJsonParser);
     }
 
     @Override
-    public Promise<Priority> getPriority(final URI uri) {
+    public CompletableFuture<Priority> getPriority(final URI uri) {
         return getAndParse(uri, priorityJsonParser);
     }
 
     @Override
-    public Promise<List<Priority>> getPriorities() throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath("priority").build();
+    public CompletableFuture<List<Priority>> getPriorities() throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath("priority").build();
         return getAndParse(uri, prioritiesJsonParser);
     }
 
     @Override
-    public Promise<Resolution> getResolution(final URI uri) {
+    public CompletableFuture<Resolution> getResolution(final URI uri) {
         return getAndParse(uri, resolutionJsonParser);
     }
 
     @Override
-    public Promise<List<Resolution>> getResolutions() throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath("resolution").build();
+    public CompletableFuture<List<Resolution>> getResolutions() throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath("resolution").build();
         return getAndParse(uri, resolutionsJsonParser);
     }
 
     @Override
-    public Promise<ServerInfo> getServerInfo() throws URISyntaxException {
-        final URI serverInfoUri = new URIBuilder(baseUri).appendPath(SERVER_INFO_RESOURCE).build();
+    public CompletableFuture<ServerInfo> getServerInfo() throws URISyntaxException {
+        final URI serverInfoUri = new UriBuilder(baseUri).appendPath(SERVER_INFO_RESOURCE).build();
         return getAndParse(serverInfoUri, serverInfoJsonParser);
     }
 
     @Override
-    public Promise<List<Field>> getFields() throws URISyntaxException {
-        final URI uri = new URIBuilder(baseUri).appendPath("field").build();
+    public CompletableFuture<List<Field>> getFields() throws URISyntaxException {
+        final URI uri = new UriBuilder(baseUri).appendPath("field").build();
         return getAndParse(uri, fieldsJsonParser);
     }
 }

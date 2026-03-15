@@ -18,13 +18,10 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-import org.apache.hc.core5.net.URIBuilder;
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.atlassian.httpclient.api.HttpClient;
-
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.GroupRestClient;
 import me.glindholm.jira.rest.client.api.domain.Group;
 import me.glindholm.jira.rest.client.internal.json.GroupsJsonParser;
@@ -48,20 +45,20 @@ public class AsynchronousGroupRestClient extends AbstractAsynchronousRestClient 
 
     private final URI baseUri;
 
-    public AsynchronousGroupRestClient(final URI baseUri, final HttpClient client) {
+    public AsynchronousGroupRestClient(final URI baseUri, final DisposableHttpClient client) {
         super(client);
         this.baseUri = baseUri;
     }
 
     @Override
-    public Promise<List<Group>> findGroups() throws URISyntaxException {
+    public CompletableFuture<List<Group>> findGroups() throws URISyntaxException {
         return findGroups(null, null, null, null);
     }
 
     @Override
-    public Promise<List<Group>> findGroups(@Nullable final String query, @Nullable final String exclude, @Nullable final Integer maxResults,
+    public CompletableFuture<List<Group>> findGroups(@Nullable final String query, @Nullable final String exclude, @Nullable final Integer maxResults,
             @Nullable final String userName) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(GROUPS_URI_PREFIX).appendPath(PICKER_URI_PREFIX);
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath(GROUPS_URI_PREFIX).appendPath(PICKER_URI_PREFIX);
 
         addOptionalQueryParam(uriBuilder, QUERY_ATTRIBUTE, query);
         addOptionalQueryParam(uriBuilder, EXCLUDE_ATTRIBUTE, exclude);
@@ -72,7 +69,7 @@ public class AsynchronousGroupRestClient extends AbstractAsynchronousRestClient 
         return getAndParse(groupsUri, groupsJsonParser);
     }
 
-    private static void addOptionalQueryParam(final URIBuilder uriBuilder, final String key, final Object value) {
+    private static void addOptionalQueryParam(final UriBuilder uriBuilder, final String key, final Object value) {
         if (value != null) {
             uriBuilder.addParameter(key, String.valueOf(value));
         }

@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.hc.core5.net.URIBuilder;
-
 import me.glindholm.jira.rest.client.api.AuditRestClient;
 import me.glindholm.jira.rest.client.api.ComponentRestClient;
 import me.glindholm.jira.rest.client.api.GroupRestClient;
@@ -57,8 +55,7 @@ public class AsynchronousJiraRestClient implements JiraRestClient {
     private final AuditRestClient auditRestClient;
 
     public AsynchronousJiraRestClient(final URI serverUri, final DisposableHttpClient httpClient) throws URISyntaxException {
-        // baseUri = new URIBuilder(serverUri).path("/rest/api/latest").build();
-        final URI baseUri = new URIBuilder(serverUri).appendPath("/rest/api/latest").build();
+        final URI baseUri = new UriBuilder(serverUri).appendPath("/rest/api/latest").build();
         this.httpClient = httpClient;
         metadataRestClient = new AsynchronousMetadataRestClient(baseUri, httpClient);
         sessionRestClient = new AsynchronousSessionRestClient(serverUri, httpClient);

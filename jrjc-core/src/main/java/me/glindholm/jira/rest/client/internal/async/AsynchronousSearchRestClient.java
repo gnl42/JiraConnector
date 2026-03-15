@@ -23,17 +23,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.core5.net.URIBuilder;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.atlassian.httpclient.api.HttpClient;
-
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.SearchRestClient;
 import me.glindholm.jira.rest.client.api.domain.Filter;
@@ -70,20 +67,20 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     private final URI favouriteUri;
     private final URI baseUri;
 
-    public AsynchronousSearchRestClient(final URI baseUri, final HttpClient asyncHttpClient) throws URISyntaxException {
+    public AsynchronousSearchRestClient(final URI baseUri, final DisposableHttpClient asyncHttpClient) throws URISyntaxException {
         super(asyncHttpClient);
         this.baseUri = baseUri;
-        searchUri = new URIBuilder(baseUri).appendPath(SEARCH_URI_PREFIX).build();
-        favouriteUri = new URIBuilder(baseUri).appendPath(FILTER_FAVOURITE_PATH).build();
+        searchUri = new UriBuilder(baseUri).appendPath(SEARCH_URI_PREFIX).build();
+        favouriteUri = new UriBuilder(baseUri).appendPath(FILTER_FAVOURITE_PATH).build();
     }
 
     @Override
-    public Promise<SearchResult> searchJql(@Nullable final String jql, final boolean newpqlPath) throws URISyntaxException {
+    public CompletableFuture<SearchResult> searchJql(@Nullable final String jql, final boolean newpqlPath) throws URISyntaxException {
         return searchJql(jql, null, null, null, newpqlPath);
     }
 
     @Override
-    public Promise<SearchResult> searchJql(@Nullable final String jql, @Nullable final Integer maxResults, @Nullable final Integer startAt,
+    public CompletableFuture<SearchResult> searchJql(@Nullable final String jql, @Nullable final Integer maxResults, @Nullable final Integer startAt,
             @Nullable final Set<String> fields, final boolean newpqlPath) throws URISyntaxException {
         final String notNullJql = StringUtils.defaultString(jql);
         if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
@@ -93,12 +90,10 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
         }
     }
 
-    private Promise<SearchResult> searchJqlImplGet(@Nullable final Integer maxResults, @Nullable final Integer startAt, final List<String> expandosValues,
+    private CompletableFuture<SearchResult> searchJqlImplGet(@Nullable final Integer maxResults, @Nullable final Integer startAt, final List<String> expandosValues,
             final String jql, @Nullable final Set<String> fields, final boolean newJqlPath) throws URISyntaxException {
-
-    	final URIBuilder uriBuilder = new URIBuilder(searchUri).appendPath(newJqlPath ? "/jql" : "")
-    			.addParameter(JQL_ATTRIBUTE, jql).addParameter(EXPAND_ATTRIBUTE,
-                String.join(",", expandosValues));
+        final UriBuilder uriBuilder = new UriBuilder(searchUri).appendPath(newJqlPath ? "/jql" : "")
+                .addParameter(JQL_ATTRIBUTE, jql).addParameter(EXPAND_ATTRIBUTE, String.join(",", expandosValues));
 
         if (fields != null) {
             uriBuilder.addParameter(FIELDS_ATTRIBUTE, String.join(",", fields));
@@ -109,13 +104,13 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
         return getAndParse(uriBuilder.build(), searchResultJsonParser);
     }
 
-    private void addOptionalQueryParam(final URIBuilder uriBuilder, final String key, final Object value) {
+    private static void addOptionalQueryParam(final UriBuilder uriBuilder, final String key, final Object value) {
         if (value != null) {
             uriBuilder.addParameter(key, String.valueOf(value));
         }
     }
 
-    private Promise<SearchResult> searchJqlImplPost(@Nullable final Integer maxResults, @Nullable final Integer startAt, final List<String> expandosValues,
+    private CompletableFuture<SearchResult> searchJqlImplPost(@Nullable final Integer maxResults, @Nullable final Integer startAt, final List<String> expandosValues,
             final String jql, @Nullable final Set<String> fields, final boolean newJqlPath) throws URISyntaxException {
         final JSONObject postEntity = new JSONObject();
 
@@ -124,27 +119,26 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
                     .putOpt(MAX_RESULTS_ATTRIBUTE, maxResults);
 
             if (fields != null) {
-                postEntity.put(FIELDS_ATTRIBUTE, fields); // putOpt doesn't work with collections
+                postEntity.put(FIELDS_ATTRIBUTE, fields);
             }
         } catch (final JSONException e) {
             throw new RestClientException(e);
         }
-        return postAndParse(new URIBuilder(searchUri).appendPath(newJqlPath ? "/jql" : "").build(),
-        		postEntity, searchResultJsonParser);
+        return postAndParse(new UriBuilder(searchUri).appendPath(newJqlPath ? "/jql" : "").build(), postEntity, searchResultJsonParser);
     }
 
     @Override
-    public Promise<List<Filter>> getFavouriteFilters() {
+    public CompletableFuture<List<Filter>> getFavouriteFilters() {
         return getAndParse(favouriteUri, filtersParser);
     }
 
     @Override
-    public Promise<Filter> getFilter(final URI filterUri) {
+    public CompletableFuture<Filter> getFilter(final URI filterUri) {
         return getAndParse(filterUri, filterJsonParser);
     }
 
     @Override
-    public Promise<Filter> getFilter(final long id) throws URISyntaxException {
-        return getFilter(new URIBuilder(baseUri).appendPath(String.format(FILTER_PATH_FORMAT, id)).build());
+    public CompletableFuture<Filter> getFilter(final long id) throws URISyntaxException {
+        return getFilter(new UriBuilder(baseUri).appendPath(String.format(FILTER_PATH_FORMAT, id)).build());
     }
 }

@@ -56,7 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.hc.core5.net.URIBuilder;
+import me.glindholm.jira.rest.client.internal.async.UriBuilder;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -300,7 +300,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
     private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) throws URISyntaxException {
         return transitionsUriString != null ? JsonParseUtil.parseURI(transitionsUriString)
-                : new URIBuilder(selfUri).appendPath("transitions").addParameter("expand", "transitions.fields").build();
+                : new UriBuilder(selfUri).appendPath("transitions").addParameter("expand", "transitions.fields").build();
     }
 
     @Nullable

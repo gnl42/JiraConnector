@@ -51,9 +51,9 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
     @Test
     public void testGetComponent() throws Exception {
-        final BasicComponent basicComponent = findEntityByName(client.getProjectClient().getProject("TST").claim()
+        final BasicComponent basicComponent = findEntityByName(client.getProjectClient().getProject("TST").join()
                 .getComponents(), "Component A");
-        final Component component = client.getComponentClient().getComponent(basicComponent.getSelf()).claim();
+        final Component component = client.getComponentClient().getComponent(basicComponent.getSelf()).join();
         assertEquals("Component A", component.getName());
         assertEquals("this is some description of component A", component.getDescription());
         assertEquals(IntegrationTestUtil.USER_ADMIN_60, component.getLead());
@@ -62,9 +62,9 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @Test
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testGetComponentOnJira4xOrNewerShouldContainNotNullId() throws Exception {
-        final BasicComponent basicComponent = findEntityByName(client.getProjectClient().getProject("TST").claim()
+        final BasicComponent basicComponent = findEntityByName(client.getProjectClient().getProject("TST").join()
                 .getComponents(), "Component A");
-        final Component component = client.getComponentClient().getComponent(basicComponent.getSelf()).claim();
+        final Component component = client.getComponentClient().getComponent(basicComponent.getSelf()).join();
         assertEquals("Component A", component.getName());
         assertEquals("this is some description of component A", component.getDescription());
         assertEquals(Long.valueOf(10000), component.getId());
@@ -73,23 +73,23 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
     @Test
     public void testGetInvalidComponent() throws Exception {
-        final BasicComponent basicComponent = Lists.get(client.getProjectClient().getProject("TST").claim()
+        final BasicComponent basicComponent = Lists.get(client.getProjectClient().getProject("TST").join()
                 .getComponents(), 0);
         final String uriForUnexistingComponent = basicComponent.getSelf().toString() + "1234";
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "The component with id "
                 + TestUtil.getLastPathSegment(basicComponent.getSelf()) + "1234 does not exist.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().getComponent(TestUtil.toUri(uriForUnexistingComponent)).claim();
+                client.getComponentClient().getComponent(TestUtil.toUri(uriForUnexistingComponent)).join();
             }
         });
     }
 
     @Test
     public void testGetComponentFromRestrictedProject() throws Exception {
-        final BasicComponent basicComponent = Lists.getOnlyElement(client.getProjectClient().getProject("RST").claim()
+        final BasicComponent basicComponent = Lists.getOnlyElement(client.getProjectClient().getProject("RST").join()
                 .getComponents());
-        assertEquals("One Great Component", client.getComponentClient().getComponent(basicComponent.getSelf()).claim().getName());
+        assertEquals("One Great Component", client.getComponentClient().getComponent(basicComponent.getSelf()).join().getName());
 
         // now as unauthorized user
         setClient(TestConstants.USER2_USERNAME, TestConstants.USER2_PASSWORD);
@@ -98,7 +98,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
                 : "The user user does not have permission to complete this operation.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().getComponent(basicComponent.getSelf()).claim().getName();
+                client.getComponentClient().getComponent(basicComponent.getSelf()).join().getName();
             }
         });
 
@@ -108,7 +108,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
                 : "This user does not have permission to complete this operation.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().getComponent(basicComponent.getSelf()).claim().getName();
+                client.getComponentClient().getComponent(basicComponent.getSelf()).join().getName();
             }
         });
     }
@@ -116,23 +116,23 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @Test
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testCreateAndRemoveComponent() {
-        final List<BasicComponent> components = client.getProjectClient().getProject("TST").claim().getComponents();
+        final List<BasicComponent> components = client.getProjectClient().getProject("TST").join().getComponents();
         assertEquals(2, Lists.size(components));
         final BasicComponent basicComponent = Lists.get(components, 0);
         final BasicComponent basicComponent2 = Lists.get(components, 1);
         final String componentName = "my component";
         final ComponentInput componentInput = new ComponentInput(componentName, "a description", null, null);
-        final Component component = client.getComponentClient().createComponent("TST", componentInput).claim();
+        final Component component = client.getComponentClient().createComponent("TST", componentInput).join();
         assertEquals(componentInput.getName(), component.getName());
         assertEquals(componentInput.getDescription(), component.getDescription());
         assertNull(component.getLead());
         assertProjectHasComponents(basicComponent.getName(), basicComponent2.getName(), componentName);
 
-        client.getComponentClient().removeComponent(basicComponent.getSelf(), null).claim();
+        client.getComponentClient().removeComponent(basicComponent.getSelf(), null).join();
         assertProjectHasComponents(basicComponent2.getName(), componentName);
-        client.getComponentClient().removeComponent(basicComponent2.getSelf(), null).claim();
+        client.getComponentClient().removeComponent(basicComponent2.getSelf(), null).join();
         assertProjectHasComponents(componentName);
-        client.getComponentClient().removeComponent(component.getSelf(), null).claim();
+        client.getComponentClient().removeComponent(component.getSelf(), null).join();
         assertProjectHasComponents();
 
     }
@@ -140,7 +140,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @Test
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testCreateAndRemoveComponentAsUnauthorizedUsers() {
-        final List<BasicComponent> components = client.getProjectClient().getProject("TST").claim().getComponents();
+        final List<BasicComponent> components = client.getProjectClient().getProject("TST").join().getComponents();
         assertEquals(2, Lists.size(components));
         final BasicComponent basicComponent = Lists.get(components, 0);
 
@@ -153,13 +153,13 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
         TestUtil.assertErrorCode(expectedForbiddenErrorCode, "The user wseliga does not have permission to complete this operation.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().removeComponent(basicComponent.getSelf(), null).claim();
+                client.getComponentClient().removeComponent(basicComponent.getSelf(), null).join();
             }
         });
         TestUtil.assertErrorCode(expectedForbiddenErrorCode, "You cannot edit the configuration of this project.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().createComponent("TST", componentInput).claim();
+                client.getComponentClient().createComponent("TST", componentInput).join();
             }
         });
 
@@ -169,7 +169,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
                 : "This user does not have permission to complete this operation.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().removeComponent(basicComponent.getSelf(), null).claim();
+                client.getComponentClient().removeComponent(basicComponent.getSelf(), null).join();
             }
         });
 
@@ -177,7 +177,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
             TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "No project could be found with key 'TST'.", new Runnable() {
                 @Override
                 public void run() {
-                    client.getComponentClient().createComponent("TST", componentInput).claim();
+                    client.getComponentClient().createComponent("TST", componentInput).join();
                 }
             });
         } else {
@@ -185,7 +185,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
             TestUtil.assertErrorCode(expectedForbiddenErrorCode, "You cannot edit the configuration of this project.", new Runnable() {
                 @Override
                 public void run() {
-                    client.getComponentClient().createComponent("TST", componentInput).claim();
+                    client.getComponentClient().createComponent("TST", componentInput).join();
                 }
             });
         }
@@ -197,7 +197,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
         TestUtil.assertErrorCode(Response.Status.BAD_REQUEST, "A component with the name Component A already exists in this project.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().createComponent("TST", dupeComponentInput).claim();
+                client.getComponentClient().createComponent("TST", dupeComponentInput).join();
             }
         });
 
@@ -205,7 +205,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, "No project could be found with key 'FAKE'.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().createComponent("FAKE", componentInput).claim();
+                client.getComponentClient().createComponent("FAKE", componentInput).join();
             }
         });
 
@@ -217,7 +217,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testCreateComponentWithLead() {
         final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
-        final Component component = client.getComponentClient().createComponent("TST", componentInput).claim();
+        final Component component = client.getComponentClient().createComponent("TST", componentInput).join();
         assertNotNull(component.getAssigneeInfo());
         assertEquals(IntegrationTestUtil.USER_ADMIN_60, component.getAssigneeInfo().getAssignee());
         assertEquals(AssigneeType.COMPONENT_LEAD, component.getAssigneeInfo().getAssigneeType());
@@ -227,7 +227,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
         final ComponentInput componentInput2 = new ComponentInput("my component name2", "a description", IntegrationTestUtil.USER1
                 .getName(), AssigneeType.UNASSIGNED);
-        final Component component2 = client.getComponentClient().createComponent("TST", componentInput2).claim();
+        final Component component2 = client.getComponentClient().createComponent("TST", componentInput2).join();
         assertNotNull(component2.getAssigneeInfo());
         assertNull(component2.getAssigneeInfo().getAssignee());
         assertEquals(AssigneeType.UNASSIGNED, component2.getAssigneeInfo().getAssigneeType());
@@ -240,23 +240,23 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @Test
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testUpdateComponent() {
-        final BasicComponent basicComponent = Lists.get(client.getProjectClient().getProject("TST").claim()
+        final BasicComponent basicComponent = Lists.get(client.getProjectClient().getProject("TST").join()
                 .getComponents(), 0);
-        final Component component = client.getComponentClient().getComponent(basicComponent.getSelf()).claim();
+        final Component component = client.getComponentClient().getComponent(basicComponent.getSelf()).join();
         final String newName = basicComponent.getName() + "updated";
         Component adjustedComponent = new Component(component.getSelf(), component.getId(), newName, component
                 .getDescription(), component.getLead(), component.getAssigneeInfo());
 
         Component updatedComponent = client.getComponentClient().updateComponent(basicComponent
-                .getSelf(), new ComponentInput(newName, null, null, null)).claim();
+                .getSelf(), new ComponentInput(newName, null, null, null)).join();
         assertEquals(adjustedComponent, updatedComponent);
-        assertEquals(adjustedComponent, client.getComponentClient().getComponent(basicComponent.getSelf()).claim());
+        assertEquals(adjustedComponent, client.getComponentClient().getComponent(basicComponent.getSelf()).join());
 
         final String newDescription = "updated description";
         adjustedComponent = new Component(component.getSelf(), component
                 .getId(), newName, newDescription, IntegrationTestUtil.USER1_60, component.getAssigneeInfo());
         updatedComponent = client.getComponentClient().updateComponent(basicComponent
-                .getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1_60.getName(), null)).claim();
+                .getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1_60.getName(), null)).join();
         assertEquals(adjustedComponent, updatedComponent);
 
         adjustedComponent = new Component(component.getSelf(), component
@@ -265,7 +265,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
         updatedComponent = client.getComponentClient().updateComponent(basicComponent
                 .getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER1
-                .getName(), AssigneeType.COMPONENT_LEAD)).claim();
+                .getName(), AssigneeType.COMPONENT_LEAD)).join();
         assertEquals(adjustedComponent, updatedComponent);
 
 
@@ -276,7 +276,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
         updatedComponent = client.getComponentClient().updateComponent(basicComponent
                 .getSelf(), new ComponentInput(null, newDescription, IntegrationTestUtil.USER2
-                .getName(), AssigneeType.COMPONENT_LEAD)).claim();
+                .getName(), AssigneeType.COMPONENT_LEAD)).join();
         assertEquals(adjustedComponent, updatedComponent);
 
     }
@@ -285,15 +285,15 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
     @Test
     @JiraBuildNumberDependent(BN_JIRA_4_4)
     public void testGetComponentRelatedIssuesCount() {
-        final BasicComponent bc = findEntityByName(client.getProjectClient().getProject("TST").claim()
+        final BasicComponent bc = findEntityByName(client.getProjectClient().getProject("TST").join()
                 .getComponents(), "Component A");
-        assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(bc.getSelf()).claim().intValue());
+        assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(bc.getSelf()).join().intValue());
         final ComponentInput componentInput = new ComponentInput("my component name", "a description", "admin", AssigneeType.COMPONENT_LEAD);
-        final Component component = client.getComponentClient().createComponent("TST", componentInput).claim();
-        assertEquals(0, client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf()).claim().intValue());
+        final Component component = client.getComponentClient().createComponent("TST", componentInput).join();
+        assertEquals(0, client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf()).join().intValue());
 
-        client.getComponentClient().removeComponent(bc.getSelf(), component.getSelf()).claim();
-        assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf()).claim().intValue());
+        client.getComponentClient().removeComponent(bc.getSelf(), component.getSelf()).join();
+        assertEquals(1, client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf()).join().intValue());
 
         // smelly error code/message returned here - JRA-25062
         setAnonymousMode();
@@ -302,12 +302,12 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
                 : "This user does not have permission to complete this operation.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf()).claim();
+                client.getComponentClient().getComponentRelatedIssuesCount(component.getSelf()).join();
             }
         });
 
         setAdmin();
-        final BasicComponent restrictedComponent = Lists.getOnlyElement(client.getProjectClient().getProject("RST").claim()
+        final BasicComponent restrictedComponent = Lists.getOnlyElement(client.getProjectClient().getProject("RST").join()
                 .getComponents());
         setUser1();
         TestUtil.assertErrorCode(Response.Status.NOT_FOUND, IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ?
@@ -315,7 +315,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
                 : "The user wseliga does not have permission to complete this operation.", new Runnable() {
             @Override
             public void run() {
-                client.getComponentClient().getComponentRelatedIssuesCount(restrictedComponent.getSelf()).claim();
+                client.getComponentClient().getComponentRelatedIssuesCount(restrictedComponent.getSelf()).join();
             }
         });
 
@@ -326,7 +326,7 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
                     @Override
                     public void run() {
                         client.getComponentClient().getComponentRelatedIssuesCount(TestUtil.toUri(restrictedComponent.getSelf() + "999"))
-                                .claim();
+                                .join();
                     }
                 });
 
@@ -334,12 +334,12 @@ public class AsynchronousComponentRestClientTest extends AbstractAsynchronousRes
 
 
     private boolean doesJiraReturnCorrectErrorCodeForForbiddenOperation() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_5;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_5;
     }
 
 
     private void assertProjectHasComponents(String... names) {
-        assertThat(Lists.transform(client.getProjectClient().getProject("TST").claim().getComponents(),
+        assertThat(Lists.transform(client.getProjectClient().getProject("TST").join().getComponents(),
                 EntityHelper.GET_ENTITY_NAME_FUNCTION), containsInAnyOrder(names));
     }
 

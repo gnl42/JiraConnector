@@ -151,9 +151,9 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
 
     private void assertTransitionWithNumericCustomField(FieldInput fieldInput, Double expectedValue) {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).join();
 
         final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
         assertNotNull(transitionFound);
@@ -161,8 +161,8 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                 new Transition.Field(NUMERIC_CUSTOMFIELD_ID, false,
                         IntegrationTestUtil.TESTING_JIRA_5_OR_NEWER ? NUMERIC_CUSTOMFIELD_TYPE_V5 : NUMERIC_CUSTOMFIELD_TYPE)));
         client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
-                Comment.valueOf("My test comment"))).claim();
-        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
+                Comment.valueOf("My test comment"))).join();
+        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").join();
         assertTrue(changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue().equals(expectedValue));
     }
 
@@ -172,11 +172,11 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
         // verify that issue exist
         final String issueKey = "TST-1";
-        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final Issue issue = issueClient.getIssue(issueKey).join();
         assertEquals(issueKey, issue.getKey());
 
         // delete issue
-        issueClient.deleteIssue(issueKey, false).claim();
+        issueClient.deleteIssue(issueKey, false).join();
 
         // verify
         assertThatIssueNotExists(issueKey);
@@ -188,13 +188,13 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
         // verify that issue exist and create subtask
         final String issueKey = "TST-1";
-        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final Issue issue = issueClient.getIssue(issueKey).join();
         assertEquals(issueKey, issue.getKey());
         final BasicIssue subtask = addSubtaskToIssue(issue);
         System.out.println(subtask);
 
         // delete issue
-        issueClient.deleteIssue(issueKey, true).claim();
+        issueClient.deleteIssue(issueKey, true).join();
 
         // verify
         assertThatIssueNotExists(issueKey);
@@ -207,7 +207,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
         // verify that issue exist and create subtask
         final String issueKey = "TST-1";
-        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final Issue issue = issueClient.getIssue(issueKey).join();
         assertEquals(issueKey, issue.getKey());
         BasicIssue subtask = addSubtaskToIssue(issue);
         System.out.println(subtask);
@@ -215,7 +215,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         // delete issue
         expectedException.expect(rceWithSingleError(400, String.format("The issue '%s' has subtasks.  "
                 + "You must specify the 'deleteSubtasks' parameter to delete this issue and all its subtasks.", issueKey)));
-        issueClient.deleteIssue(issueKey, false).claim();
+        issueClient.deleteIssue(issueKey, false).join();
     }
 
     @Test
@@ -228,7 +228,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
         // delete issue should thrown 404
         expectedException.expect(rceWithSingleError(404, "Issue Does Not Exist"));
-        issueClient.deleteIssue(issueKey, false).claim();
+        issueClient.deleteIssue(issueKey, false).join();
     }
 
     @Test
@@ -238,30 +238,30 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
         // verify that issue doesn't exist
         final String issueKey = "ANONEDIT-2";
-        final Issue issue = issueClient.getIssue(issueKey).claim();
+        final Issue issue = issueClient.getIssue(issueKey).join();
         assertEquals(issueKey, issue.getKey());
 
         // delete issue should thrown 401
         expectedException.expect(rceWithSingleError(401, "You do not have permission to delete issues in this project."));
-        issueClient.deleteIssue(issueKey, false).claim();
+        issueClient.deleteIssue(issueKey, false).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
     @Test
     public void testUpdateField() {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
         final double newValue = 123;
         final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
-        client.getIssueClient().updateIssue(issue.getKey(), IssueInput.createWithFields(fieldInput)).claim();
-        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
+        client.getIssueClient().updateIssue(issue.getKey(), IssueInput.createWithFields(fieldInput)).join();
+        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").join();
         assertEquals(newValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
     @Test
     public void testUpdateMultipleFields() {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
         final double newNumericValue = 123;
         final String newTextValue = "my new text";
@@ -270,8 +270,8 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                 .setFieldValue(NUMERIC_CUSTOMFIELD_ID, newNumericValue)
                 .setFieldValue(TEXT_CUSTOMFIELD_ID, newTextValue);
 
-        client.getIssueClient().updateIssue(issue.getKey(), issueInputBuilder.build()).claim();
-        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
+        client.getIssueClient().updateIssue(issue.getKey(), issueInputBuilder.build()).join();
+        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").join();
         assertNotNull(changedIssue);
         assertEquals(newNumericValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
         assertEquals(newTextValue, changedIssue.getField(TEXT_CUSTOMFIELD_ID).getValue());
@@ -280,14 +280,14 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     @JiraBuildNumberDependent(BN_JIRA_5)
     @Test
     public void testUpdateIssueWithInvalidAdditionalField() {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         final String fieldId = "invalidField";
 
         expectedException.expect(RestClientException.class);
         expectedException.expectMessage(String.format(
                 "Field '%s' cannot be set. It is not on the appropriate screen, or unknown.", fieldId));
         final FieldInput fieldInput = new FieldInput(fieldId, "who cares?");
-        client.getIssueClient().updateIssue(issue.getKey(), IssueInput.createWithFields(fieldInput)).claim();
+        client.getIssueClient().updateIssue(issue.getKey(), IssueInput.createWithFields(fieldInput)).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -299,14 +299,14 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         expectedException.expectMessage(String.format(
                 "Field '%s' cannot be set. It is not on the appropriate screen, or unknown.", NUMERIC_CUSTOMFIELD_ID));
         final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, 1.23d);
-        client.getIssueClient().updateIssue("TST-1", IssueInput.createWithFields(fieldInput)).claim();
+        client.getIssueClient().updateIssue("TST-1", IssueInput.createWithFields(fieldInput)).join();
     }
 
     @Test
     public void testTransitionWithNumericCustomFieldAndInteger() throws Exception {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).join();
         final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 
         assertNotNull(transitionFound);
@@ -317,16 +317,16 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         final FieldInput fieldInput = new FieldInput(NUMERIC_CUSTOMFIELD_ID, newValue);
         client.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(transitionFound.getId(), Arrays
                 .asList(fieldInput),
-                Comment.valueOf("My test comment"))).claim();
-        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
+                Comment.valueOf("My test comment"))).join();
+        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").join();
         assertEquals(newValue, changedIssue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
     }
 
     @Test
     public void testTransitionWithInvalidNumericField() throws Exception {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         assertNull(issue.getField(NUMERIC_CUSTOMFIELD_ID).getValue());
-        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).join();
         final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
 
         assertNotNull(transitionFound);
@@ -341,7 +341,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             @Override
             public void run() {
                 client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), Arrays.asList(fieldInput),
-                        Comment.valueOf("My test comment"))).claim();
+                        Comment.valueOf("My test comment"))).join();
             }
         });
     }
@@ -382,27 +382,27 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     }
 
     private void assertInvalidCommentInput(final Comment comment, String expectedErrorMsg) {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).join();
         final Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
         final String errorMsg = doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue()
                 ? expectedErrorMsg : null;
         assertErrorCode(Response.Status.BAD_REQUEST, errorMsg, new Runnable() {
             @Override
             public void run() {
-                client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment)).claim();
+                client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment)).join();
             }
         });
     }
 
     private void testTransitionImpl(Comment comment) {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).join();
         Transition transitionFound = TestUtil.getTransitionByName(transitions, "Estimate");
         OffsetDateTime now = new OffsetDateTime();
-        client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment)).claim();
+        client.getIssueClient().transition(issue, new TransitionInput(transitionFound.getId(), comment)).join();
 
-        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue changedIssue = client.getIssueClient().getIssue("TST-1").join();
         final Comment lastComment = Lists.getLast(changedIssue.getComments());
         assertEquals(comment.getBody(), lastComment.getBody());
         assertEquals(IntegrationTestUtil.USER_ADMIN, lastComment.getAuthor());
@@ -414,7 +414,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
     @Test
     public void testVoteUnvote() {
-        final Issue issue1 = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue1 = client.getIssueClient().getIssue("TST-1").join();
         assertFalse(issue1.getVotes().hasVoted());
         assertEquals(1, issue1.getVotes().getVotes()); // the other user has voted
         final String expectedMessage = isJira5xOrNewer() // JIRA 5.0 comes without Polish translation OOB
@@ -425,56 +425,56 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         assertErrorCode(Response.Status.NOT_FOUND, expectedMessage, new Runnable() {
             @Override
             public void run() {
-                client.getIssueClient().vote(issue1.getVotesUri()).claim();
+                client.getIssueClient().vote(issue1.getVotesUri()).join();
             }
         });
 
 
         final String issueKey = "TST-7";
-        Issue issue = client.getIssueClient().getIssue(issueKey).claim();
+        Issue issue = client.getIssueClient().getIssue(issueKey).join();
         assertFalse(issue.getVotes().hasVoted());
         assertEquals(0, issue.getVotes().getVotes());
 
-        client.getIssueClient().vote(issue.getVotesUri()).claim();
-        issue = client.getIssueClient().getIssue(issueKey).claim();
+        client.getIssueClient().vote(issue.getVotesUri()).join();
+        issue = client.getIssueClient().getIssue(issueKey).join();
         assertTrue(issue.getVotes().hasVoted());
         assertEquals(1, issue.getVotes().getVotes());
 
-        client.getIssueClient().unvote(issue.getVotesUri()).claim();
-        issue = client.getIssueClient().getIssue(issueKey).claim();
+        client.getIssueClient().unvote(issue.getVotesUri()).join();
+        issue = client.getIssueClient().getIssue(issueKey).join();
         assertFalse(issue.getVotes().hasVoted());
         assertEquals(0, issue.getVotes().getVotes());
 
         setUser2();
-        issue = client.getIssueClient().getIssue(issueKey).claim();
+        issue = client.getIssueClient().getIssue(issueKey).join();
         assertFalse(issue.getVotes().hasVoted());
         assertEquals(0, issue.getVotes().getVotes());
         final Issue finalIssue = issue;
         if (isJira6_3_7_OrNewer()) {
-            client.getIssueClient().unvote(finalIssue.getVotesUri()).claim();
-            issue = client.getIssueClient().getIssue(issueKey).claim();
+            client.getIssueClient().unvote(finalIssue.getVotesUri()).join();
+            issue = client.getIssueClient().getIssue(issueKey).join();
             assertEquals(0, issue.getVotes().getVotes());
         } else {
             assertErrorCode(Response.Status.NOT_FOUND, "Cannot remove a vote for an issue that the user has not already voted for.",
                     new Runnable() {
                         @Override
                         public void run() {
-                            client.getIssueClient().unvote(finalIssue.getVotesUri()).claim();
+                            client.getIssueClient().unvote(finalIssue.getVotesUri()).join();
                         }
                     });
         }
 
-        issue = client.getIssueClient().getIssue(issueKey).claim();
+        issue = client.getIssueClient().getIssue(issueKey).join();
         assertFalse(issue.getVotes().hasVoted());
         assertEquals(0, issue.getVotes().getVotes());
-        client.getIssueClient().vote(issue.getVotesUri()).claim();
-        issue = client.getIssueClient().getIssue(issueKey).claim();
+        client.getIssueClient().vote(issue.getVotesUri()).join();
+        issue = client.getIssueClient().getIssue(issueKey).join();
         assertTrue(issue.getVotes().hasVoted());
         assertEquals(1, issue.getVotes().getVotes());
 
         setClient(ADMIN_USERNAME, ADMIN_PASSWORD);
-        client.getIssueClient().vote(issue.getVotesUri()).claim();
-        issue = client.getIssueClient().getIssue(issueKey).claim();
+        client.getIssueClient().vote(issue.getVotesUri()).join();
+        issue = client.getIssueClient().getIssue(issueKey).join();
         assertTrue(issue.getVotes().hasVoted());
         assertEquals(2, issue.getVotes().getVotes());
     }
@@ -482,34 +482,34 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     @Test
     public void testWatchUnwatch() {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue1 = issueClient.getIssue("TST-1").claim();
+        final Issue issue1 = issueClient.getIssue("TST-1").join();
 
-        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).claim()
+        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).join()
                 .getUsers(), not(hasItem(IntegrationTestUtil.USER_ADMIN)));
 
-        issueClient.watch(issue1.getWatchers().getSelf()).claim();
-        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).claim()
+        issueClient.watch(issue1.getWatchers().getSelf()).join();
+        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).join()
                 .getUsers(), hasItem(IntegrationTestUtil.USER_ADMIN));
 
-        issueClient.unwatch(issue1.getWatchers().getSelf()).claim();
-        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).claim()
+        issueClient.unwatch(issue1.getWatchers().getSelf()).join();
+        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).join()
                 .getUsers(), not(hasItem(IntegrationTestUtil.USER_ADMIN)));
 
-        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).claim()
+        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).join()
                 .getUsers(), hasItem(IntegrationTestUtil.USER1));
-        issueClient.removeWatcher(issue1.getWatchers().getSelf(), IntegrationTestUtil.USER1.getName()).claim();
-        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).claim()
+        issueClient.removeWatcher(issue1.getWatchers().getSelf(), IntegrationTestUtil.USER1.getName()).join();
+        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).join()
                 .getUsers(), not(hasItem(IntegrationTestUtil.USER1)));
-        issueClient.addWatcher(issue1.getWatchers().getSelf(), IntegrationTestUtil.USER1.getName()).claim();
-        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).claim()
+        issueClient.addWatcher(issue1.getWatchers().getSelf(), IntegrationTestUtil.USER1.getName()).join();
+        Assert.assertThat(issueClient.getWatchers(issue1.getWatchers().getSelf()).join()
                 .getUsers(), hasItem(IntegrationTestUtil.USER1));
     }
 
     @Test
     public void testRemoveWatcherUnauthorized() {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue1 = issueClient.getIssue("TST-1").claim();
-        issueClient.watch(issue1.getWatchers().getSelf()).claim();
+        final Issue issue1 = issueClient.getIssue("TST-1").join();
+        issueClient.watch(issue1.getWatchers().getSelf()).join();
 
         setUser1();
         final IssueRestClient issueClient2 = client.getIssueClient();
@@ -517,7 +517,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                 "User 'wseliga' is not allowed to remove watchers from issue 'TST-1'", new Runnable() {
                     @Override
                     public void run() {
-                        issueClient2.removeWatcher(issue1.getWatchers().getSelf(), ADMIN_USERNAME).claim();
+                        issueClient2.removeWatcher(issue1.getWatchers().getSelf(), ADMIN_USERNAME).join();
                     }
                 });
     }
@@ -527,44 +527,44 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     public void testWatchAlreadyWatched() {
         setUser1();
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue("TST-1").claim();
-        Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim()
+        final Issue issue = issueClient.getIssue("TST-1").join();
+        Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).join()
                 .getUsers(), hasItem(IntegrationTestUtil.USER1));
         // JIRA allows to watch already watched issue by you - such action effectively has no effect
-        issueClient.watch(issue.getWatchers().getSelf()).claim();
-        Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).claim()
+        issueClient.watch(issue.getWatchers().getSelf()).join();
+        Assert.assertThat(client.getIssueClient().getWatchers(issue.getWatchers().getSelf()).join()
                 .getUsers(), hasItem(IntegrationTestUtil.USER1));
     }
 
     @Test
     public void testAddWatcherUnauthorized() {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue1 = issueClient.getIssue("TST-1").claim();
-        issueClient.addWatcher(issue1.getWatchers().getSelf(), USER1_USERNAME).claim();
-        assertThat(client.getIssueClient().getWatchers(issue1.getWatchers().getSelf()).claim()
+        final Issue issue1 = issueClient.getIssue("TST-1").join();
+        issueClient.addWatcher(issue1.getWatchers().getSelf(), USER1_USERNAME).join();
+        assertThat(client.getIssueClient().getWatchers(issue1.getWatchers().getSelf()).join()
                 .getUsers(), hasItem(IntegrationTestUtil.USER1));
 
         setUser1();
-        assertTrue(client.getIssueClient().getIssue("TST-1").claim().getWatchers().isWatching());
+        assertTrue(client.getIssueClient().getIssue("TST-1").join().getWatchers().isWatching());
         String expectedErrorMsg = isJraDev3516Fixed() ? ("User '" + USER1_USERNAME
                 + "' is not allowed to add watchers to issue 'TST-1'") : null;
         assertErrorCode(Response.Status.UNAUTHORIZED, expectedErrorMsg, new Runnable() {
             @Override
             public void run() {
-                client.getIssueClient().addWatcher(issue1.getWatchers().getSelf(), ADMIN_USERNAME).claim();
+                client.getIssueClient().addWatcher(issue1.getWatchers().getSelf(), ADMIN_USERNAME).join();
             }
         });
     }
 
     private boolean isJraDev3516Fixed() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= BN_JIRA_4_3;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= BN_JIRA_4_3;
     }
 
     @Test
     public void testAddWatcherWhoDoesNotHaveViewIssuePermissions() {
         final IssueRestClient issueClient = client.getIssueClient();
         final String issueKey = "RST-1";
-        final Issue issue1 = issueClient.getIssue(issueKey).claim();
+        final Issue issue1 = issueClient.getIssue(issueKey).join();
         final String expectedErrorMessage;
 
         if (isJira5xOrNewer()) {
@@ -580,7 +580,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                 new Runnable() {
                     @Override
                     public void run() {
-                        issueClient.addWatcher(issue1.getWatchers().getSelf(), USER2_USERNAME).claim();
+                        issueClient.addWatcher(issue1.getWatchers().getSelf(), USER2_USERNAME).join();
                     }
                 });
     }
@@ -617,14 +617,14 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                         : "The issue no longer exists.", new Runnable() {
                     @Override
                     public void run() {
-                        client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "FAKEKEY-1", "Duplicate", null)).claim();
+                        client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "FAKEKEY-1", "Duplicate", null)).join();
                     }
                 });
 
         assertErrorCode(Response.Status.NOT_FOUND, "No issue link type with name 'NonExistingLinkType' found.", new Runnable() {
             @Override
             public void run() {
-                client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "NonExistingLinkType", null)).claim();
+                client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "NonExistingLinkType", null)).join();
             }
         });
 
@@ -634,7 +634,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                 "You do not have the permission to see the specified issue" + optionalDot, new Runnable() {
                     @Override
                     public void run() {
-                        client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "RST-1", "Duplicate", null)).claim();
+                        client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "RST-1", "Duplicate", null)).join();
                     }
                 });
         final ErrorList.Builder ecb = ErrorList.builder();
@@ -647,21 +647,21 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             @Override
             public void run() {
                 client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate",
-                        Comment.createWithRoleLevel("my body", "Administrators"))).claim();
+                        Comment.createWithRoleLevel("my body", "Administrators"))).join();
             }
         });
         assertErrorCode(Response.Status.BAD_REQUEST, "You are currently not a member of the group: jira-administrators.", new Runnable() {
             @Override
             public void run() {
                 client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate",
-                        Comment.createWithGroupLevel("my body", "jira-administrators"))).claim();
+                        Comment.createWithGroupLevel("my body", "jira-administrators"))).join();
             }
         });
         assertErrorCode(Response.Status.BAD_REQUEST, "Group: somefakegroup does not exist.", new Runnable() {
             @Override
             public void run() {
                 client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate",
-                        Comment.createWithGroupLevel("my body", "somefakegroup"))).claim();
+                        Comment.createWithGroupLevel("my body", "somefakegroup"))).join();
             }
         });
     }
@@ -673,7 +673,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         assertErrorCode(Response.Status.UNAUTHORIZED, "No Link Issue Permission for issue 'TST-7'", new Runnable() {
             @Override
             public void run() {
-                client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", null)).claim();
+                client.getIssueClient().linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", null)).join();
             }
         });
     }
@@ -686,13 +686,13 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
     private void testLinkIssuesImpl(@Nullable Comment commentInput) {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue originalIssue = issueClient.getIssue("TST-7").claim();
+        final Issue originalIssue = issueClient.getIssue("TST-7").join();
         int origNumComments = Lists.size(originalIssue.getComments());
         assertFalse(originalIssue.getIssueLinks().iterator().hasNext());
 
-        issueClient.linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", commentInput)).claim();
+        issueClient.linkIssue(new LinkIssuesInput("TST-7", "TST-6", "Duplicate", commentInput)).join();
 
-        final Issue linkedIssue = issueClient.getIssue("TST-7").claim();
+        final Issue linkedIssue = issueClient.getIssue("TST-7").join();
         assertEquals(1, Lists.size(linkedIssue.getIssueLinks()));
         final IssueLink addedLink = linkedIssue.getIssueLinks().iterator().next();
         assertEquals("Duplicate", addedLink.getIssueLinkType().getName());
@@ -711,18 +711,18 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         }
 
 
-        final Issue targetIssue = issueClient.getIssue("TST-6").claim();
+        final Issue targetIssue = issueClient.getIssue("TST-6").join();
         final IssueLink targetLink = targetIssue.getIssueLinks().iterator().next();
         assertEquals(IssueLinkType.Direction.INBOUND, targetLink.getIssueLinkType().getDirection());
         assertEquals("Duplicate", targetLink.getIssueLinkType().getName());
     }
 
     private boolean doesJiraSupportAddingAttachment() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= BN_JIRA_4_3;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= BN_JIRA_4_3;
     }
 
     private boolean doesJiraServeCorrectlyErrorMessagesForBadRequestWhileTransitioningIssue() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= BN_JIRA_4_3;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= BN_JIRA_4_3;
     }
 
     @Test
@@ -733,17 +733,17 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             return;
         }
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue("TST-3").claim();
+        final Issue issue = issueClient.getIssue("TST-3").join();
         assertFalse(issue.getAttachments().iterator().hasNext());
 
         String str = "Wojtek";
         final String filename1 = "my-test-file";
-        issueClient.addAttachment(issue.getAttachmentsUri(), new ByteArrayInputStream(str.getBytes("UTF-8")), filename1).claim();
+        issueClient.addAttachment(issue.getAttachmentsUri(), new ByteArrayInputStream(str.getBytes("UTF-8")), filename1).join();
         final String filename2 = "my-picture.png";
         issueClient.addAttachment(issue.getAttachmentsUri(), AsynchronousIssueRestClientTest.class
-                .getResourceAsStream("/attachment-test/transparent-png.png"), filename2).claim();
+                .getResourceAsStream("/attachment-test/transparent-png.png"), filename2).join();
 
-        final Issue issueWithAttachments = issueClient.getIssue("TST-3").claim();
+        final Issue issueWithAttachments = issueClient.getIssue("TST-3").join();
         final List<Attachment> attachments = issueWithAttachments.getAttachments();
         assertEquals(2, Lists.size(attachments));
         final List<String> attachmentsNames = Lists.transform(attachments, new Function<Attachment, String>() {
@@ -765,26 +765,26 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         assertTrue(
                 IOUtils.contentEquals(AsynchronousIssueRestClientTest.class
                                 .getResourceAsStream("/attachment-test/transparent-png.png"),
-                        issueClient.getAttachment(pictureAttachment.getContentUri()).claim()));
+                        issueClient.getAttachment(pictureAttachment.getContentUri()).join()));
     }
 
     @Test
     public void testAddAttachmentWithUtf8InNameAndBody() throws IOException {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue("TST-3").claim();
+        final Issue issue = issueClient.getIssue("TST-3").join();
         assertFalse(issue.getAttachments().iterator().hasNext());
 
         final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(UTF8_FILE_BODY.getBytes("UTF-8"));
-        issueClient.addAttachment(issue.getAttachmentsUri(), byteArrayInputStream, UTF8_FILE_NAME).claim();
+        issueClient.addAttachment(issue.getAttachmentsUri(), byteArrayInputStream, UTF8_FILE_NAME).join();
 
-        final Issue issueWithAttachments = issueClient.getIssue("TST-3").claim();
+        final Issue issueWithAttachments = issueClient.getIssue("TST-3").join();
         final List<Attachment> attachments = issueWithAttachments.getAttachments();
         assertEquals(1, Lists.size(attachments));
         final Attachment attachment = attachments.iterator().next();
         assertThat(attachment.getFilename(), equalTo(UTF8_FILE_NAME));
 
         assertTrue(IOUtils.contentEquals(new ByteArrayInputStream(UTF8_FILE_BODY.getBytes("UTF-8")),
-                issueClient.getAttachment(attachment.getContentUri()).claim()));
+                issueClient.getAttachment(attachment.getContentUri()).join()));
     }
 
     @Test
@@ -794,7 +794,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             return;
         }
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue("TST-4").claim();
+        final Issue issue = issueClient.getIssue("TST-4").join();
         assertFalse(issue.getAttachments().iterator().hasNext());
 
         final AttachmentInput[] attachmentInputs = new AttachmentInput[3];
@@ -802,9 +802,9 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             attachmentInputs[i - 1] = new AttachmentInput("my-test-file-" + i + ".txt", new ByteArrayInputStream((
                     "content-of-the-file-" + i).getBytes("UTF-8")));
         }
-        issueClient.addAttachments(issue.getAttachmentsUri(), attachmentInputs).claim();
+        issueClient.addAttachments(issue.getAttachmentsUri(), attachmentInputs).join();
 
-        final Issue issueWithAttachments = issueClient.getIssue("TST-4").claim();
+        final Issue issueWithAttachments = issueClient.getIssue("TST-4").join();
         final List<Attachment> attachments = issueWithAttachments.getAttachments();
         assertEquals(3, Lists.size(attachments));
         Pattern pattern = Pattern.compile("my-test-file-(\\d)\\.txt");
@@ -814,7 +814,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             matcher.find();
             final String interfix = matcher.group(1);
             assertTrue(IOUtils.contentEquals(new ByteArrayInputStream(("content-of-the-file-" + interfix).getBytes("UTF-8")),
-                    issueClient.getAttachment(attachment.getContentUri()).claim()));
+                    issueClient.getAttachment(attachment.getContentUri()).join()));
 
         }
     }
@@ -822,7 +822,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     @Test
     public void testAddAttachmentsWithUtf8InNameAndBody() throws IOException {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue("TST-4").claim();
+        final Issue issue = issueClient.getIssue("TST-4").join();
         assertFalse(issue.getAttachments().iterator().hasNext());
 
         final AttachmentInput[] attachmentInputs = new AttachmentInput[3];
@@ -833,9 +833,9 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             contents[i] = "content-of-the-file-" + i + " with some utf8: " + UTF8_FILE_BODY;
             attachmentInputs[i] = new AttachmentInput(names[i], new ByteArrayInputStream(contents[i].getBytes("UTF-8")));
         }
-        issueClient.addAttachments(issue.getAttachmentsUri(), attachmentInputs).claim();
+        issueClient.addAttachments(issue.getAttachmentsUri(), attachmentInputs).join();
 
-        final Issue issueWithAttachments = issueClient.getIssue("TST-4").claim();
+        final Issue issueWithAttachments = issueClient.getIssue("TST-4").join();
         final List<Attachment> attachments = issueWithAttachments.getAttachments();
         assertEquals(3, Lists.size(attachments));
         Pattern pattern = Pattern.compile(".*-(\\d)\\.txt");
@@ -846,7 +846,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             final int attachmentNum = Integer.parseInt(matcher.group(1));
             assertThat(attachment.getFilename(), equalTo(names[attachmentNum]));
             assertTrue(IOUtils.contentEquals(new ByteArrayInputStream((contents[attachmentNum]).getBytes("UTF-8")),
-                    issueClient.getAttachment(attachment.getContentUri()).claim()));
+                    issueClient.getAttachment(attachment.getContentUri()).join()));
 
         }
     }
@@ -858,7 +858,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             return;
         }
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue("TST-5").claim();
+        final Issue issue = issueClient.getIssue("TST-5").join();
         assertFalse(issue.getAttachments().iterator().hasNext());
 
         final File tempFile = File.createTempFile("jim-integration-test", ".txt");
@@ -866,19 +866,19 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         FileWriter writer = new FileWriter(tempFile);
         writer.write("This is the content of my file which I am going to upload to JIRA for testing.");
         writer.close();
-        issueClient.addAttachments(issue.getAttachmentsUri(), tempFile).claim();
+        issueClient.addAttachments(issue.getAttachmentsUri(), tempFile).join();
 
-        final Issue issueWithAttachments = issueClient.getIssue("TST-5").claim();
+        final Issue issueWithAttachments = issueClient.getIssue("TST-5").join();
         final List<Attachment> attachments = issueWithAttachments.getAttachments();
         assertEquals(1, Lists.size(attachments));
         assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
-                issueClient.getAttachment(attachments.iterator().next().getContentUri()).claim()));
+                issueClient.getAttachment(attachments.iterator().next().getContentUri()).join()));
     }
 
     @Test
     public void testAddFileAttachmentWithUtf8InNameAndBody() throws IOException {
         final IssueRestClient issueClient = client.getIssueClient();
-        final Issue issue = issueClient.getIssue("TST-5").claim();
+        final Issue issue = issueClient.getIssue("TST-5").join();
         assertFalse(issue.getAttachments().iterator().hasNext());
 
         final File tempFile = File.createTempFile(UTF8_FILE_NAME, ".txt");
@@ -886,14 +886,14 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         FileWriter writer = new FileWriter(tempFile);
         writer.write(UTF8_FILE_BODY);
         writer.close();
-        issueClient.addAttachments(issue.getAttachmentsUri(), tempFile).claim();
+        issueClient.addAttachments(issue.getAttachmentsUri(), tempFile).join();
 
-        final Issue issueWithAttachments = issueClient.getIssue("TST-5").claim();
+        final Issue issueWithAttachments = issueClient.getIssue("TST-5").join();
         final List<Attachment> attachments = issueWithAttachments.getAttachments();
         assertEquals(1, Lists.size(attachments));
         final Attachment firstAttachment = attachments.iterator().next();
         assertTrue(IOUtils.contentEquals(new FileInputStream(tempFile),
-                issueClient.getAttachment(firstAttachment.getContentUri()).claim()));
+                issueClient.getAttachment(firstAttachment.getContentUri()).join()));
         assertThat(firstAttachment.getFilename(), equalTo(tempFile.getName()));
     }
 
@@ -928,7 +928,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             backdoor.darkFeatures().disableForSite(LAZY_LOADING_ACTIVITY_TABS_FF);
 
             administration.generalConfiguration().setAllowUnassignedIssues(true);
-            assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5").claim().getAssignee());
+            assertEquals(IntegrationTestUtil.USER_ADMIN, client.getIssueClient().getIssue("TST-5").join().getAssignee());
 
             setUserLanguageToEnUk();
             navigation.issue().unassignIssue("TST-5", "unassigning issue");
@@ -936,7 +936,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
             // but it does not work yet with JIRA 5.0-resthack...
             //navigation.issue().assignIssue("TST-5", "unassigning issue", "Nieprzydzielone");
 
-            assertNull(client.getIssueClient().getIssue("TST-5").claim().getAssignee());
+            assertNull(client.getIssueClient().getIssue("TST-5").join().getAssignee());
         } finally {
             backdoor.darkFeatures().enableForSite(LAZY_LOADING_ACTIVITY_TABS_FF);
         }
@@ -951,7 +951,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         navigation.logout();
         navigation.issue().addComment(issueKey, commentText);
 
-        final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
+        final Issue issue = client.getIssueClient().getIssue(issueKey).join();
         assertEquals(1, Lists.size(issue.getComments()));
         final Comment comment = issue.getComments().iterator().next();
         assertEquals(commentText, comment.getBody());
@@ -967,36 +967,36 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
     @Test
     public void testGetIssueWithNoViewWatchersPermission() {
         setUser1();
-        assertTrue(client.getIssueClient().getIssue("TST-1").claim().getWatchers().isWatching());
+        assertTrue(client.getIssueClient().getIssue("TST-1").join().getWatchers().isWatching());
 
         setUser2();
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         assertFalse(issue.getWatchers().isWatching());
-        client.getIssueClient().watch(issue.getWatchers().getSelf()).claim();
-        final Issue watchedIssue = client.getIssueClient().getIssue("TST-1").claim();
+        client.getIssueClient().watch(issue.getWatchers().getSelf()).join();
+        final Issue watchedIssue = client.getIssueClient().getIssue("TST-1").join();
         assertTrue(watchedIssue.getWatchers().isWatching());
         assertEquals(2, watchedIssue.getWatchers().getNumWatchers());
 
         // although there are 2 watchers, only one is listed with details - the caller itself, as the caller does not
         // have view watchers and voters permission
-        assertThat(client.getIssueClient().getWatchers(watchedIssue.getWatchers().getSelf()).claim().getUsers(),
+        assertThat(client.getIssueClient().getWatchers(watchedIssue.getWatchers().getSelf()).join().getUsers(),
                 containsInAnyOrder(USER2));
     }
 
     @Test
     public void testTransition() throws Exception {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
-        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
+        final List<Transition> transitions = client.getIssueClient().getTransitions(issue).join();
         assertEquals(4, Lists.size(transitions));
         final Transition startProgressTransition = new Transition("Start Progress", IntegrationTestUtil.START_PROGRESS_TRANSITION_ID, Lists
                 .<Transition.Field>emptyList());
         assertTrue(Lists.contains(transitions, startProgressTransition));
 
         client.getIssueClient().transition(issue, new TransitionInput(IntegrationTestUtil.START_PROGRESS_TRANSITION_ID,
-                Lists.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).claim();
-        final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1").claim();
+                Lists.<FieldInput>emptyList(), Comment.valueOf("My test comment"))).join();
+        final Issue transitionedIssue = client.getIssueClient().getIssue("TST-1").join();
         assertEquals("In Progress", transitionedIssue.getStatus().getName());
-        final List<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue).claim();
+        final List<Transition> transitionsAfterTransition = client.getIssueClient().getTransitions(issue).join();
         assertFalse(Lists.contains(transitionsAfterTransition, startProgressTransition));
         final Transition stopProgressTransition = new Transition("Stop Progress", IntegrationTestUtil.STOP_PROGRESS_TRANSITION_ID, Lists
                 .<Transition.Field>emptyList());
@@ -1005,7 +1005,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
 
     private void assertThatIssueNotExists(String issueKey) {
         try {
-            final Issue issue = client.getIssueClient().getIssue(issueKey).claim();
+            final Issue issue = client.getIssueClient().getIssue(issueKey).join();
             fail("It looks that issue exists, and it should not be here! issue = " + issue);
         } catch (RestClientException ex) {
             assertThat(ex, rceWithSingleError(404, "Issue Does Not Exist"));
@@ -1017,7 +1017,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
         final IssueRestClient issueClient = client.getIssueClient();
         final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
                 new GetCreateIssueMetadataOptionsBuilder().withProjectKeys(issue.getProject().getKey())
-                        .withExpandedIssueTypesFields().build()).claim();
+                        .withExpandedIssueTypesFields().build()).join();
 
         // select project and issue
         assertEquals(1, Lists.size(metadataProjects));
@@ -1034,7 +1034,7 @@ public class AsynchronousIssueRestClientTest extends AbstractAsynchronousRestCli
                 .setFieldValue("parent", ComplexIssueInputFieldValue.with("key", issue.getKey()));
 
         // create
-        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build()).claim();
+        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build()).join();
         assertNotNull(basicCreatedIssue.getKey());
 
         return basicCreatedIssue;

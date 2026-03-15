@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.Component;
 import me.glindholm.jira.rest.client.api.domain.input.ComponentInput;
 
@@ -36,13 +36,13 @@ public interface ComponentRestClient {
      * @return complete information about selected component
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Component> getComponent(URI componentUri);
+    CompletableFuture<Component> getComponent(URI componentUri);
 
-    Promise<Component> createComponent(String projectKey, ComponentInput componentInput);
+    CompletableFuture<Component> createComponent(String projectKey, ComponentInput componentInput);
 
-    Promise<Component> updateComponent(URI componentUri, ComponentInput componentInput);
+    CompletableFuture<Component> updateComponent(URI componentUri, ComponentInput componentInput);
 
-    Promise<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri) throws URISyntaxException;
+    CompletableFuture<Void> removeComponent(URI componentUri, @Nullable URI moveIssueToComponentUri) throws URISyntaxException;
 
-    Promise<Integer> getComponentRelatedIssuesCount(URI componentUri) throws URISyntaxException;
+    CompletableFuture<Integer> getComponentRelatedIssuesCount(URI componentUri) throws URISyntaxException;
 }

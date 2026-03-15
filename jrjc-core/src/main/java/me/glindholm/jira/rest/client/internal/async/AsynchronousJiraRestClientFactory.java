@@ -17,9 +17,7 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.factory.HttpClientOptions;
+import java.net.http.HttpClient;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 import me.glindholm.jira.rest.client.api.JiraRestClient;
@@ -28,7 +26,7 @@ import me.glindholm.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import me.glindholm.jira.rest.client.auth.BearerHttpAuthenticationHandler;
 
 /**
- * Serves asynchronous implementations of the JiraRestClient.
+ * Serves asynchronous implementations of the JiraRestClient using native Java 21 HttpClient.
  *
  * @since v2.0
  */
@@ -62,20 +60,19 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
     }
 
     @Override
-    public JiraRestClient createWithBearerHttpAuthentication(final URI uri, final String token, final HttpClientOptions httpOptions) throws URISyntaxException {
-        return create(uri, new BearerHttpAuthenticationHandler(token), httpOptions);
+    public JiraRestClient createWithBearerHttpAuthentication(final URI uri, final String token, final HttpClient httpClient) throws URISyntaxException {
+        return create(uri, new BearerHttpAuthenticationHandler(token), httpClient);
     }
 
     @Override
-    public JiraRestClient create(final URI uri, final AuthenticationHandler authenticationHandler, final HttpClientOptions httpOptions)
-            throws URISyntaxException {
-        final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory().createClient(uri, authenticationHandler, httpOptions);
-        return new AsynchronousJiraRestClient(uri, httpClient);
+    public JiraRestClient create(final URI uri, final AuthenticationHandler authenticationHandler, final HttpClient httpClient) throws URISyntaxException {
+        final DisposableHttpClient disposableHttpClient = new AsynchronousHttpClientFactory().createClient(uri, authenticationHandler, httpClient);
+        return new AsynchronousJiraRestClient(uri, disposableHttpClient);
     }
 
     @Override
-    public JiraRestClient createWithBasicHttpAuthentication(final URI uri, final String username, final String password, final HttpClientOptions httpOptions)
+    public JiraRestClient createWithBasicHttpAuthentication(final URI uri, final String username, final String password, final HttpClient httpClient)
             throws URISyntaxException {
-        return create(uri, new BasicHttpAuthenticationHandler(username, password), httpOptions);
+        return create(uri, new BasicHttpAuthenticationHandler(username, password), httpClient);
     }
 }
