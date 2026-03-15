@@ -395,39 +395,40 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     private CompletableFuture<Void> postMultipart(final URI uri, final String filename, final byte[] data, final String contentType) {
         final String boundary = "----JiraClientBoundary" + UUID.randomUUID().toString().replace("-", "");
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
+        final byte[] body;
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             baos.write(buildMultipartBody(boundary, FILE_BODY_TYPE, filename, data, contentType));
             // Final boundary
             baos.write(("--" + boundary + "--\r\n").getBytes(UTF_8));
+            body = baos.toByteArray();
         } catch (final IOException e) {
             throw new RestClientException(e);
         }
         final HttpRequest request = client().newRequest(uri)
                 .header("X-Atlassian-Token", "nocheck")
                 .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-                .POST(HttpRequest.BodyPublishers.ofByteArray(baos.toByteArray()))
+                .POST(HttpRequest.BodyPublishers.ofByteArray(body))
                 .build();
         return call(client().execute(request));
     }
 
     private CompletableFuture<Void> postMultipartBatch(final URI uri, final java.util.Map<String, byte[]> files) {
         final String boundary = "----JiraClientBoundary" + UUID.randomUUID().toString().replace("-", "");
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
+        final byte[] body;
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             for (final java.util.Map.Entry<String, byte[]> entry : files.entrySet()) {
-                final byte[] part = buildMultipartBody(boundary, FILE_BODY_TYPE, entry.getKey(), entry.getValue(), "application/octet-stream");
-                baos.write(part);
+                baos.write(buildMultipartBody(boundary, FILE_BODY_TYPE, entry.getKey(), entry.getValue(), "application/octet-stream"));
             }
             // Final boundary
             baos.write(("--" + boundary + "--\r\n").getBytes(UTF_8));
+            body = baos.toByteArray();
         } catch (final IOException e) {
             throw new RestClientException(e);
         }
         final HttpRequest request = client().newRequest(uri)
                 .header("X-Atlassian-Token", "nocheck")
                 .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-                .POST(HttpRequest.BodyPublishers.ofByteArray(baos.toByteArray()))
+                .POST(HttpRequest.BodyPublishers.ofByteArray(body))
                 .build();
         return call(client().execute(request));
     }

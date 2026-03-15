@@ -12,7 +12,5 @@ Export-Package: me.glindholm.jira.rest.client.api;uses:="me.glindholm.jira.rest.
  me.glindholm.jira.rest.client.api.domain;uses:="me.glindholm.jira.rest.client.api.domain.util,me.glindholm.jira.rest.client.api",
  me.glindholm.jira.rest.client.api.domain.input;uses:="me.glindholm.jira.rest.client.api.domain,me.glindholm.jira.rest.client.api",
  me.glindholm.jira.rest.client.api.domain.util
-Import-Package: org.slf4j;version="1.7.30"
-Require-Bundle: org.eclipse.jdt.annotation,
- com.google.guava
+Require-Bundle: org.eclipse.jdt.annotation
 
