@@ -18,15 +18,16 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 public class BasicPriorityJsonParserTest {
     @Test
     public void testParse() throws Exception {
         final BasicPriorityJsonParser parser = new BasicPriorityJsonParser();
         final BasicPriority basicPriority = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/priority/valid.json"));
-        Assert.assertEquals(new BasicPriority(TestUtil
+        assertEquals(new BasicPriority(TestUtil
                 .toUri("http://localhost:8090/jira/rest/api/latest/priority/3"), 3L, "XMajor"), basicPriority);
     }
 
@@ -35,7 +36,7 @@ public class BasicPriorityJsonParserTest {
         final BasicPriorityJsonParser parser = new BasicPriorityJsonParser();
         final BasicPriority basicPriority = parser.parse(ResourceUtil
                 .getJsonObjectFromResource("/json/priority/valid-without-id.json"));
-        Assert.assertEquals(new BasicPriority(TestUtil
+        assertEquals(new BasicPriority(TestUtil
                 .toUri("http://localhost:8090/jira/rest/api/latest/priority/3"), null, "XMajor"), basicPriority);
     }
 }

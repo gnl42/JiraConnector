@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,8 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.domain.Priority;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
 
@@ -27,7 +27,7 @@ public class PriorityJsonParserTest {
     public void testParse() throws Exception {
         final PriorityJsonParser parser = new PriorityJsonParser();
         final Priority priority = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/priority/complete.json"));
-        Assert.assertEquals(new Priority(toUri("http://localhost:8090/jira/rest/api/latest/priority/4"), 4L, "Minor",
+        assertEquals(new Priority(toUri("http://localhost:8090/jira/rest/api/latest/priority/4"), 4L, "Minor",
                 "#006600", "Minor loss of function, or other problem where easy workaround is present.",
                 toUri("http://localhost:8090/jira/images/icons/priority_minor.gif")), priority);
     }

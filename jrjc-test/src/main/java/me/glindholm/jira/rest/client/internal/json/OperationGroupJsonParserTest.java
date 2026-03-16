@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.OperationGroup;
 import me.glindholm.jira.rest.client.api.domain.OperationHeader;

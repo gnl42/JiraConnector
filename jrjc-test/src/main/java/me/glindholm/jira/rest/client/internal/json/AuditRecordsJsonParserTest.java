@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.AuditAssociatedItem;
 import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;

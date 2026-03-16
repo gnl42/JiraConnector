@@ -17,10 +17,10 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BasicIssueJsonParserTest {
 

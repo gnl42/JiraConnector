@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.test.matchers;
 
 import org.hamcrest.Description;
-import org.junit.internal.matchers.TypeSafeMatcher;
+import org.hamcrest.TypeSafeMatcher;
 
 import java.net.URI;
 import java.util.regex.Pattern;

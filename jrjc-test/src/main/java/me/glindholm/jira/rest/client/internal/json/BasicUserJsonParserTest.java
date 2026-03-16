@@ -1,11 +1,16 @@
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.api.domain.BasicUser;
-import org.junit.Assert;
-import org.junit.Test;
-
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
 import static me.glindholm.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
 
 public class BasicUserJsonParserTest {
 
@@ -15,15 +20,15 @@ public class BasicUserJsonParserTest {
     public void testParseWhenAnonymousUser() throws Exception {
         final BasicUser user = parser.parse(getJsonObjectFromResource("/json/user/valid-basic-anonymous.json"));
 
-        Assert.assertNull(user);
+        assertNull(user);
     }
 
     @Test
     public void testParseWhenDeletedUserBugJRA30263() throws Exception {
         final BasicUser user = parser.parse(getJsonObjectFromResource("/json/user/valid-basic-deleted-JRA-30263.json"));
 
-        Assert.assertEquals("mark", user.getName());
-        Assert.assertTrue(user.isSelfUriIncomplete());
+        assertEquals("mark", user.getName());
+        assertTrue(user.isSelfUriIncomplete());
     }
 
 
@@ -31,35 +36,35 @@ public class BasicUserJsonParserTest {
     public void testParseWhenValid() throws Exception {
         final BasicUser user = parser.parse(getJsonObjectFromResource("/json/user/valid.json"));
 
-        Assert.assertNotNull(user);
-        Assert.assertEquals("admin", user.getName());
-        Assert.assertEquals("Administrator", user.getDisplayName());
-        Assert.assertNull(user.getAccountId());
-        Assert.assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), user.getSelf());
-        Assert.assertFalse(user.isSelfUriIncomplete());
+        assertNotNull(user);
+        assertEquals("admin", user.getName());
+        assertEquals("Administrator", user.getDisplayName());
+        assertNull(user.getAccountId());
+        assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), user.getSelf());
+        assertFalse(user.isSelfUriIncomplete());
     }
 
     @Test
     public void testParseWhenValidWithAccountId() throws Exception {
         final BasicUser user = parser.parse(getJsonObjectFromResource("/json/user/valid-with-accountId.json"));
 
-        Assert.assertNotNull(user);
-        Assert.assertEquals("admin", user.getName());
-        Assert.assertEquals("Administrator", user.getDisplayName());
-        Assert.assertEquals("uuid-accountId-admin", user.getAccountId());
-        Assert.assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), user.getSelf());
-        Assert.assertFalse(user.isSelfUriIncomplete());
+        assertNotNull(user);
+        assertEquals("admin", user.getName());
+        assertEquals("Administrator", user.getDisplayName());
+        assertEquals("uuid-accountId-admin", user.getAccountId());
+        assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), user.getSelf());
+        assertFalse(user.isSelfUriIncomplete());
     }
 
     @Test
     public void testParseWhenValidWithAccountIdWithoutName() throws Exception {
         final BasicUser user = parser.parse(getJsonObjectFromResource("/json/user/valid-with-accountId-without-name.json"));
 
-        Assert.assertNotNull(user);
-        Assert.assertNull(user.getName());
-        Assert.assertEquals("Administrator", user.getDisplayName());
-        Assert.assertEquals("uuid-accountId-admin", user.getAccountId());
-        Assert.assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), user.getSelf());
-        Assert.assertFalse(user.isSelfUriIncomplete());
+        assertNotNull(user);
+        assertNull(user.getName());
+        assertEquals("Administrator", user.getDisplayName());
+        assertEquals("uuid-accountId-admin", user.getAccountId());
+        assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"), user.getSelf());
+        assertFalse(user.isSelfUriIncomplete());
     }
 }

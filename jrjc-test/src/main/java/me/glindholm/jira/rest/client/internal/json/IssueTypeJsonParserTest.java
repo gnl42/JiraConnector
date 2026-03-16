@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,8 @@ package me.glindholm.jira.rest.client.internal.json;
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import org.codehaus.jettison.json.JSONException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
 
@@ -29,7 +29,7 @@ public class IssueTypeJsonParserTest {
     public void testParse() throws JSONException {
         IssueTypeJsonParser parser = new IssueTypeJsonParser();
         final IssueType issueType = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueType/complete.json"));
-        Assert.assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), 1L, "Bug", true,
+        assertEquals(new IssueType(toUri("http://localhost:8090/jira/rest/api/latest/issueType/1"), 1L, "Bug", true,
                 "A problem which impairs or prevents the functions of the product.",
                 TestUtil.toUri("http://localhost:8090/jira/images/icons/bug.gif")), issueType);
     }

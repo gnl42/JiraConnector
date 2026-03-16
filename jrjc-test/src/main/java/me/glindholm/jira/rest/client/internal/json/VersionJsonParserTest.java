@@ -17,8 +17,10 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,8 +28,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import org.codehaus.jettison.json.JSONException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Version;
 import me.glindholm.jira.rest.client.test.matchers.DateTimeMatcher;
@@ -43,8 +44,8 @@ public class VersionJsonParserTest {
         assertEquals(Long.valueOf(10000), version.getId());
         assertEquals("1.1", version.getName());
         assertEquals("Some version", version.getDescription());
-        Assert.assertFalse(version.isReleased());
-        Assert.assertTrue(version.isArchived());
+        assertFalse(version.isReleased());
+        assertTrue(version.isArchived());
         assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
                 OffsetDateTime.of(2010, 8, 25, 0, 0, 0, 0, ZoneOffset.ofHours(2))));
     }
@@ -58,8 +59,8 @@ public class VersionJsonParserTest {
         assertEquals(Long.valueOf(10000), version.getId());
         assertEquals("1.1abc", version.getName());
         assertNull(version.getDescription());
-        Assert.assertTrue(version.isReleased());
-        Assert.assertFalse(version.isArchived());
+        assertTrue(version.isReleased());
+        assertFalse(version.isArchived());
         assertNull(version.getReleaseDate());
     }
 
@@ -72,8 +73,8 @@ public class VersionJsonParserTest {
         assertNull(version.getId());
         assertEquals("1.1", version.getName());
         assertEquals("Some version", version.getDescription());
-        Assert.assertFalse(version.isReleased());
-        Assert.assertTrue(version.isArchived());
+        assertFalse(version.isReleased());
+        assertTrue(version.isArchived());
         assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
                 OffsetDateTime.of(2010, 8, 25, 0, 0, 0, 0, ZoneOffset.ofHours(2))));
     }
@@ -87,8 +88,8 @@ public class VersionJsonParserTest {
         assertEquals(Long.valueOf(10000), version.getId());
         assertEquals("1.1", version.getName());
         assertNull(version.getDescription());
-        Assert.assertFalse(version.isReleased());
-        Assert.assertTrue(version.isArchived());
+        assertFalse(version.isReleased());
+        assertTrue(version.isArchived());
         assertThat(version.getReleaseDate(), DateTimeMatcher.isEqual(
                 OffsetDateTime.of(2010, 8, 25, 0, 0, 0, 0, ZoneOffset.ofHours(2))));
     }

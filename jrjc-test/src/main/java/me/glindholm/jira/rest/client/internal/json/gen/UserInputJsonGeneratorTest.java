@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2018 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.input.UserInput;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;

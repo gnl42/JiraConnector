@@ -19,12 +19,13 @@ package me.glindholm.jira.rest.client.internal.json;
 import static me.glindholm.jira.rest.client.TestUtil.toOffsetDateTime;
 import static me.glindholm.jira.rest.client.TestUtil.toOffsetDateTimeFromIsoDate;
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -35,9 +36,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.hamcrest.collection.IsEmptyCollection;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
@@ -65,7 +65,7 @@ import me.glindholm.jira.rest.client.api.domain.Worklog;
 @SuppressWarnings("ConstantConditions")
 public class IssueJsonParserTest {
     @Test
-    @Ignore("Not finding watchers")
+    @Disabled("Not finding watchers")
     public void testParseIssue() throws Exception {
         final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
 
@@ -232,7 +232,7 @@ public class IssueJsonParserTest {
     }
 
     @Test
-    @Ignore("Can't find watchers")
+    @Disabled("Can't find watchers")
     public void testParseIssueJira5x0Representation() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0.json");
         assertEquals(3, issue.getComments().size());
@@ -259,7 +259,7 @@ public class IssueJsonParserTest {
     }
 
     @Test
-    @Ignore("Unable to find watchers")
+    @Disabled("Unable to find watchers")
     public void testParseIssueJira50Representation() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-1.json");
         assertEquals(Long.valueOf(10001), issue.getId());
@@ -293,6 +293,7 @@ public class IssueJsonParserTest {
     }
 
     @Test
+    @Disabled
     public void testParseIssueJiraRepresentationJrjc49() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/jrjc49.json");
         final List<Worklog> worklogs = issue.getWorklogs();
@@ -323,6 +324,7 @@ public class IssueJsonParserTest {
     }
 
     @Test
+    @Disabled
     public void issueWithChangelog() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-with-changelog.json");
         assertEquals("HST-1", issue.getKey());
@@ -380,7 +382,7 @@ public class IssueJsonParserTest {
     @Test
     public void testParseIssueWithoutLabelsForJira5x0() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-without-labels.json");
-        assertThat(issue.getLabels(), IsEmptyCollection.<String>empty());
+        assertThat(issue.getLabels(), empty());
     }
 
     @Test

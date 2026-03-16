@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2018 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,13 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.User;

@@ -19,6 +19,7 @@ package me.glindholm.jira.rest.client.internal.json;
 import static me.glindholm.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,9 +28,7 @@ import java.util.Map;
 
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.Resolution;
@@ -59,7 +58,7 @@ public class CimFieldsInfoMapJsonParserTest {
                 getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-all-issue-types.json")
                 );
 
-        assertThat(fieldsInfo.get("security").getAllowedValues(), IsIterableContainingInAnyOrder.<Object>containsInAnyOrder(
+        assertThat(fieldsInfo.get("security").getAllowedValues(), containsInAnyOrder(
                 new SecurityLevel(URI.create("http://localhost:2990/jira/rest/api/2/securitylevel/10000"), 10000L,
                         "internal", "For internals only"),
                 new SecurityLevel(URI.create("http://localhost:2990/jira/rest/api/2/securitylevel/10001"), 10001L,
@@ -74,7 +73,7 @@ public class CimFieldsInfoMapJsonParserTest {
                 getJsonObjectFromResource("/json/createmeta/fieldsinfo/valid-with-all-issue-types.json")
                 );
 
-        assertThat(fieldsInfo.get("resolution").getAllowedValues(), IsIterableContainingInAnyOrder.<Object>containsInAnyOrder(
+        assertThat(fieldsInfo.get("resolution").getAllowedValues(), containsInAnyOrder(
                 new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/1"), 1L, "Fixed", null),
                 new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/2"), 2L, "Won't Fix", null),
                 new Resolution(URI.create("http://localhost:2990/jira/rest/api/latest/resolution/3"), 3L, "Duplicate", null),
@@ -150,6 +149,6 @@ public class CimFieldsInfoMapJsonParserTest {
     }
 
     private void assertElementsNotList(final List<Object> allowedValues) {
-        assertThat(allowedValues, JUnitMatchers.everyItem(Matchers.not(Matchers.instanceOf(List.class))));
+        assertThat(allowedValues, Matchers.everyItem(Matchers.not(Matchers.instanceOf(List.class))));
     }
 }

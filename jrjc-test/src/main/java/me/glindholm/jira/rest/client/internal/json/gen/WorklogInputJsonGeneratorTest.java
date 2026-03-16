@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 import java.time.ZoneId;
 
 import org.codehaus.jettison.json.JSONException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;

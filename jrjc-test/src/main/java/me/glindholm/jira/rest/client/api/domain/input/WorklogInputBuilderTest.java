@@ -6,8 +6,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.net.URI;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.input.WorklogInput.AdjustEstimate;
@@ -22,7 +22,7 @@ public class WorklogInputBuilderTest {
         return value + ESTIMATE_UNIT_MINUTES;
     }
 
-    @Before
+    @BeforeEach
     public void beforeMethod() {
         builder = new WorklogInputBuilder(dummyUri);
     }

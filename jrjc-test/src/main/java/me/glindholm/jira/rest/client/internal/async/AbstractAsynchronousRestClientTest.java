@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010-2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,13 +17,13 @@
 package me.glindholm.jira.rest.client.internal.async;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
@@ -37,7 +37,7 @@ public class AbstractAsynchronousRestClientTest {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
         final ErrorCollection errorList = errors.get(0);
-        assertThat(errorList.getErrors().values(), IsIterableContainingInAnyOrder.containsInAnyOrder("abcfsd"));
+        assertThat(errorList.getErrors().values(), containsInAnyOrder("abcfsd"));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class AbstractAsynchronousRestClientTest {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid2.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
         final ErrorCollection errorList = errors.get(0);
-        assertThat(errorList.getErrorMessages(), IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b", "xxx"));
+        assertThat(errorList.getErrorMessages(), containsInAnyOrder("a", "b", "xxx"));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class AbstractAsynchronousRestClientTest {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid3.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
         final ErrorCollection errorList = errors.get(0);
-        assertThat(errorList.getErrors().values(), IsIterableContainingInAnyOrder.containsInAnyOrder("aa", "bb"));
+        assertThat(errorList.getErrors().values(), containsInAnyOrder("aa", "bb"));
     }
 
     @Test
@@ -62,9 +62,9 @@ public class AbstractAsynchronousRestClientTest {
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
         final ErrorCollection errorList = errors.get(0);
 
-        assertThat(errorList.getErrorMessages(), IsIterableContainingInAnyOrder.containsInAnyOrder("a", "b"));
-        Assert.assertEquals(errorList.getErrors().get("a"), "y");
-        Assert.assertEquals(errorList.getErrors().get("c"), "z");
+        assertThat(errorList.getErrorMessages(), containsInAnyOrder("a", "b"));
+        assertEquals(errorList.getErrors().get("a"), "y");
+        assertEquals(errorList.getErrors().get("c"), "z");
     }
 
 }

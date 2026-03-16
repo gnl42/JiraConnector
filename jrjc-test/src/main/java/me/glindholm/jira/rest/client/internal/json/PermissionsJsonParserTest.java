@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2014 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Permission;
 import me.glindholm.jira.rest.client.api.domain.Permissions;
@@ -28,7 +28,7 @@ import me.glindholm.jira.rest.client.api.domain.Permissions;
 public class PermissionsJsonParserTest {
 
     @Test
-    @Ignore("Wrong edit permission returned")
+    @Disabled("Wrong edit permission returned")
     public void testParse() throws Exception {
         final PermissionsJsonParser parser = new PermissionsJsonParser();
         final Permissions permissions = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/mypermission/valid.json"));

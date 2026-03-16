@@ -22,8 +22,6 @@ import java.util.List;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-
 import me.glindholm.jira.rest.client.api.domain.BasicIssue;
 
 public class IssueMatchers {
@@ -42,6 +40,6 @@ public class IssueMatchers {
         for (String key : keys) {
             matchers.add(withIssueKey(key));
         }
-        return IsIterableContainingInAnyOrder.containsInAnyOrder(matchers);
+        return Matchers.containsInAnyOrder(matchers);
     }
 }

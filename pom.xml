@@ -148,7 +148,7 @@
         <module>jrjc-api</module>
         <module>jrjc-core</module>
         <module>help</module>
-        <!-- <module>me.glindholm.jira.rest.client</module> -->
+        <module>jrjc-test</module>
         <module>jira-feature</module>
         <module>jira.core</module>
         <module>jira.ui</module>

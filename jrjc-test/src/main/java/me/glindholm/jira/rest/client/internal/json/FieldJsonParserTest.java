@@ -15,7 +15,7 @@
  */
 package me.glindholm.jira.rest.client.internal.json;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.net.URISyntaxException;
@@ -23,9 +23,7 @@ import java.util.List;
 
 import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.FieldSchema;
@@ -34,9 +32,6 @@ import me.glindholm.jira.rest.client.api.domain.FieldType;
 public class FieldJsonParserTest {
 
     private static final FieldJsonParser fieldJsonParser = new FieldJsonParser();
-
-    @Rule
-    public final ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testParseValidSingleField() throws JSONException {
@@ -77,9 +72,9 @@ public class FieldJsonParserTest {
 
     @Test
     public void testParseFieldWithoutSomeFields() throws JSONException {
-        expectedException.expect(JSONException.class);
-        expectedException.expectMessage("JSONObject[\"orderable\"] not found.");
-        fieldJsonParser.parse(ResourceUtil.getJsonObjectFromResource("/json/field/invalid-field.json"));
+        final JSONException e = assertThrows(JSONException.class,
+                () -> fieldJsonParser.parse(ResourceUtil.getJsonObjectFromResource("/json/field/invalid-field.json")));
+        assertTrue(e.getMessage().contains("JSONObject[\"orderable\"] not found."));
     }
 
 }

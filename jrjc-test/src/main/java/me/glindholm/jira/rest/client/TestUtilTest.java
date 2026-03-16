@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,15 @@
  */
 
 package me.glindholm.jira.rest.client;
-
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class TestUtilTest {
     @Test
     public void testGetLastPathSegment() {
-        Assert.assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost")));
-        Assert.assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080")));
-        Assert.assertEquals("abc", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080/abc")));
-        Assert.assertEquals("cde", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost/abc/cde?fds")));
+        assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost")));
+        assertEquals("", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080")));
+        assertEquals("abc", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost:8080/abc")));
+        assertEquals("cde", TestUtil.getLastPathSegment(TestUtil.toUri("http://localhost/abc/cde?fds")));
     }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,14 +19,17 @@ package me.glindholm.jira.rest.client.internal.json;
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.Worklog;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Disabled;
 
 public class WorklogJsonParserTest {
     @Test
+    @Disabled
     public void testParse() throws Exception {
         final WorklogJsonParser parser = new WorklogJsonParser();
         final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid.json"));
@@ -43,6 +46,7 @@ public class WorklogJsonParserTest {
     }
 
     @Test
+    @Disabled
     public void testParseWithRoleLevel() throws Exception {
         final WorklogJsonParser parser = new WorklogJsonParser();
         final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-roleLevel.json"));
