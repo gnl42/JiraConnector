@@ -29,8 +29,9 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
@@ -56,7 +57,7 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     protected interface ResponseHandler<T> {
-        T handle(int statusCode, String body) throws JSONException, IOException, URISyntaxException;
+        T handle(int statusCode, String body) throws JsonProcessingException, IOException, URISyntaxException;
     }
 
     protected final <T> CompletableFuture<T> getAndParse(final URI uri, final JsonParser<?, T> parser) {
@@ -145,13 +146,13 @@ public abstract class AbstractAsynchronousRestClient {
                     try {
                         final List<ErrorCollection> errorMessages = extractErrors(status, body);
                         throw new RestClientException(errorMessages, status);
-                    } catch (final JSONException e) {
+                    } catch (final JsonProcessingException e) {
                         throw new RestClientException(e, status);
                     }
                 }
             } catch (final RestClientException e) {
                 throw e;
-            } catch (final JSONException | IOException | URISyntaxException e) {
+            } catch (final IOException | URISyntaxException e) {
                 throw new RestClientException(e);
             }
         }));
@@ -174,7 +175,7 @@ public abstract class AbstractAsynchronousRestClient {
                 try {
                     final List<ErrorCollection> errorMessages = extractErrors(status, response.body());
                     throw new RestClientException(errorMessages, status);
-                } catch (final JSONException e) {
+                } catch (final JsonProcessingException e) {
                     throw new RestClientException(e, status);
                 }
             }
@@ -185,7 +186,7 @@ public abstract class AbstractAsynchronousRestClient {
         return client;
     }
 
-    public static List<ErrorCollection> extractErrors(final int status, final String body) throws JSONException {
+    public static List<ErrorCollection> extractErrors(final int status, final String body) throws JsonProcessingException {
         if (body == null) {
             return Collections.emptyList();
         }
@@ -234,7 +235,7 @@ public abstract class AbstractAsynchronousRestClient {
         };
     }
 
-    private static ErrorCollection getErrorsFromJson(final int status, final JSONObject jsonObject) throws JSONException {
+    private static ErrorCollection getErrorsFromJson(final int status, final JSONObject jsonObject) throws JsonProcessingException {
         final JSONObject jsonErrors = jsonObject.optJSONObject("errors");
         final List<String> errorMessages;
         final Map<String, String> errors;
@@ -267,7 +268,7 @@ public abstract class AbstractAsynchronousRestClient {
     private <T> String toJsonString(final JsonGenerator<T> generator, final T bean) {
         try {
             return generator.generate(bean).toString();
-        } catch (final JSONException e) {
+        } catch (final JsonProcessingException e) {
             throw new RestClientException(e);
         }
     }

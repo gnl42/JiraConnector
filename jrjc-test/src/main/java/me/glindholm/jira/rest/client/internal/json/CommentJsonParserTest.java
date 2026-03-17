@@ -16,21 +16,20 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.TestUtil;
-import me.glindholm.jira.rest.client.api.domain.Comment;
-import me.glindholm.jira.rest.client.api.domain.Visibility;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.jupiter.api.Disabled;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.Test;
+
+import me.glindholm.jira.rest.client.TestUtil;
+import me.glindholm.jira.rest.client.api.domain.Comment;
+import me.glindholm.jira.rest.client.api.domain.Visibility;
 
 
 public class CommentJsonParserTest {
     @Test
-    @Disabled
     public void testParse() throws Exception {
         final JSONObject commentsJson = ResourceUtil.getJsonObjectFromResource("/json/comment/valid.json");
         final CommentJsonParser parser = new CommentJsonParser();
@@ -58,7 +57,6 @@ public class CommentJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseWithoutId() throws Exception {
         final JSONObject commentsJson = ResourceUtil.getJsonObjectFromResource("/json/comment/valid-without-id.json");
         final CommentJsonParser parser = new CommentJsonParser();

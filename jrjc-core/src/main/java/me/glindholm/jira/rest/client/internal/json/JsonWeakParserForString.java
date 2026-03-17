@@ -24,8 +24,7 @@ public class JsonWeakParserForString implements JsonWeakParser<String> {
         try {
             return (String) o;
         } catch (final ClassCastException e) {
-            throw new JSONException("Expected [" + String.class.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]");
+            throw new JSONException("Expected [" + String.class.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]", e);
         }
     }
-
 }

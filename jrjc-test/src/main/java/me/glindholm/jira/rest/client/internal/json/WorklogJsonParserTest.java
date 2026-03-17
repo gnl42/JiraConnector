@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Disabled;
 
 public class WorklogJsonParserTest {
     @Test
-    @Disabled
     public void testParse() throws Exception {
         final WorklogJsonParser parser = new WorklogJsonParser();
         final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid.json"));
@@ -46,7 +45,6 @@ public class WorklogJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseWithRoleLevel() throws Exception {
         final WorklogJsonParser parser = new WorklogJsonParser();
         final Worklog worklog = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/worklog/valid-roleLevel.json"));

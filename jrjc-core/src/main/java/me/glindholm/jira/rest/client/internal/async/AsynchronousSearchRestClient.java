@@ -27,8 +27,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
@@ -121,7 +122,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
             if (fields != null) {
                 postEntity.put(FIELDS_ATTRIBUTE, fields);
             }
-        } catch (final JSONException e) {
+        } catch (final JsonProcessingException e) {
             throw new RestClientException(e);
         }
         return postAndParse(new UriBuilder(searchUri).appendPath(newJqlPath ? "/jql" : "").build(), postEntity, searchResultJsonParser);

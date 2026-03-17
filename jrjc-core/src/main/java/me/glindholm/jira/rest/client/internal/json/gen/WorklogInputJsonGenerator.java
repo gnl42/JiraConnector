@@ -18,8 +18,9 @@ package me.glindholm.jira.rest.client.internal.json.gen;
 
 import java.time.format.DateTimeFormatter;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
@@ -41,7 +42,7 @@ public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
     }
 
     @Override
-    public JSONObject generate(final WorklogInput worklogInput) throws JSONException {
+    public JSONObject generate(final WorklogInput worklogInput) throws JsonProcessingException {
         final JSONObject res = new JSONObject().put("self", worklogInput.getSelf()).put("comment", worklogInput.getComment())
                 .put("started", worklogInput.getStartDate().format(dateTimeFormatter)).put("timeSpent", worklogInput.getMinutesSpent() + "m");
 
@@ -52,7 +53,7 @@ public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
     }
 
     private <K> JSONObject putGeneratedIfNotNull(final String key, final K value, final JSONObject dest, final JsonGenerator<K> generator)
-            throws JSONException {
+            throws JsonProcessingException {
         if (value != null) {
             dest.put(key, generator.generate(value));
         }

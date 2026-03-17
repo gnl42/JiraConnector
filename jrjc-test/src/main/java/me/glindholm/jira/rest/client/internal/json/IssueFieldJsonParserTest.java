@@ -33,7 +33,7 @@ public class IssueFieldJsonParserTest {
         assertEquals(1.45, (Double) issueField.getValue(), 0.001);
 
         final IssueField userIssueField = parser.parse(fieldsJs.getJSONObject("customfield_10020"), "customfield_10020");
-        assertEquals(TestConstants.USER1_BASIC_DEPRECATED, userIssueField.getValue());
+        assertEquals(TestConstants.USER1_BASIC_DEPRECATED_2, userIssueField.getValue());
 
     }
 

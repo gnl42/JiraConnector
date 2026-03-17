@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2010-2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,10 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
@@ -33,7 +34,7 @@ public class AbstractAsynchronousRestClientTest {
     private static final int BAD_REQUEST = 400;
 
     @Test
-    public void testExtractErrors() throws JSONException {
+    public void testExtractErrors() throws JsonProcessingException {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
         final ErrorCollection errorList = errors.get(0);
@@ -41,7 +42,7 @@ public class AbstractAsynchronousRestClientTest {
     }
 
     @Test
-    public void testExtractErrors2() throws JSONException {
+    public void testExtractErrors2() throws JsonProcessingException {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid2.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
         final ErrorCollection errorList = errors.get(0);
@@ -49,7 +50,7 @@ public class AbstractAsynchronousRestClientTest {
     }
 
     @Test
-    public void testExtractErrors3() throws JSONException {
+    public void testExtractErrors3() throws JsonProcessingException {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid3.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
         final ErrorCollection errorList = errors.get(0);
@@ -57,7 +58,7 @@ public class AbstractAsynchronousRestClientTest {
     }
 
     @Test
-    public void testExtractErrors4() throws JSONException {
+    public void testExtractErrors4() throws JsonProcessingException {
         final String str = ResourceUtil.getStringFromResource("/json/error/valid4.json");
         final List<ErrorCollection> errors = AbstractAsynchronousRestClient.extractErrors(BAD_REQUEST, str);
         final ErrorCollection errorList = errors.get(0);

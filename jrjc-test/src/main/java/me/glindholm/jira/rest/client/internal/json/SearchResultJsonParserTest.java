@@ -70,9 +70,8 @@ public class SearchResultJsonParserTest {
 
     @Test
     public void testParseInvalidTotal() {
-        final RuntimeException e = assertThrows(RuntimeException.class,
+        final JSONException e = assertThrows(JSONException.class,
                 () -> parser.parse(getJsonObjectFromResource("/json/search/issues-invalid-total.json")));
-        assertEquals(JSONException.class, e.getCause().getClass());
         assertTrue(e.getMessage().contains("JSONObject[\"total\"] is not a number."));
     }
 

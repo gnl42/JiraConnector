@@ -40,7 +40,6 @@ public class WatchersJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseWatchers() throws JSONException, URISyntaxException {
         final JsonObjectParser<Watchers> parser = WatchersJsonParserBuilder.createWatchersParser();
         final Watchers watcher = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/watcher/complete-valid.json"));

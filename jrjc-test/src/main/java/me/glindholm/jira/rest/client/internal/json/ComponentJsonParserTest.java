@@ -46,7 +46,6 @@ public class ComponentJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseComponent() throws Exception {
         ComponentJsonParser parser = new ComponentJsonParser();
         final Component component = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/component/complete-valid.json"));
@@ -68,7 +67,6 @@ public class ComponentJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseComponentWithId() throws Exception {
         ComponentJsonParser parser = new ComponentJsonParser();
         final Component component = parser.parse(ResourceUtil

@@ -31,7 +31,6 @@ import me.glindholm.jira.rest.client.api.domain.Votes;
  */
 public class VotesJsonParserTest {
     @Test
-    @Disabled
     public void testParse() throws Exception {
         final VotesJsonParser parser = new VotesJsonParser();
         final Votes votes = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/votes/complete.json"));

@@ -44,7 +44,6 @@ public class ProjectJsonParserTest {
     private final ProjectJsonParser parser = new ProjectJsonParser();
 
     @Test
-    @Disabled
     public void testParse() throws Exception {
         final Project project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/valid.json"));
         assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/TST"), project.getSelf());

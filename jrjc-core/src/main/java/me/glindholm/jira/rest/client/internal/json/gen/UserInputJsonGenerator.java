@@ -17,8 +17,9 @@
 package me.glindholm.jira.rest.client.internal.json.gen;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.input.UserInput;
 
@@ -29,7 +30,7 @@ import me.glindholm.jira.rest.client.api.domain.input.UserInput;
  */
 public class UserInputJsonGenerator implements JsonGenerator<UserInput> {
     @Override
-    public JSONObject generate(final UserInput user) throws JSONException {
+    public JSONObject generate(final UserInput user) throws JsonProcessingException {
         return new JSONObject().putOpt("key", user.getKey()).putOpt("name", user.getName()).putOpt("password", user.getPassword())
                 .putOpt("emailAddress", user.getEmailAddress()).putOpt("displayName", user.getDisplayName()).putOpt("notification", user.getNotification())
                 .putOpt("applicationKeys", new JSONArray(user.getApplicationKeys()));

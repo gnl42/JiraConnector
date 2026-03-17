@@ -20,6 +20,8 @@ import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.VersionRestClient;

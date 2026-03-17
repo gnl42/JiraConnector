@@ -14,8 +14,11 @@ Export-Package: me.glindholm.jira.rest.client.auth,
  me.glindholm.jira.rest.client.internal,
  me.glindholm.jira.rest.client.internal.async,
  me.glindholm.jira.rest.client.internal.json,
- me.glindholm.jira.rest.client.internal.json.gen
+ me.glindholm.jira.rest.client.internal.json.gen,
+ org.codehaus.jettison.json
 Import-Package: org.apache.commons.lang3;version="[3.17.0,4.0.0)",
  org.apache.commons.logging;version="[1.3.0,2.0.0)",
- org.codehaus.jettison;version="[1.3.0,2.0.0)",
- org.codehaus.jettison.json;version="[1.3.0,2.0.0)"
+ com.fasterxml.jackson.core;version="[2.15.0,3.0.0)",
+ com.fasterxml.jackson.databind;version="[2.15.0,3.0.0)",
+ com.fasterxml.jackson.databind.node;version="[2.15.0,3.0.0)",
+ com.fasterxml.jackson.databind.exc;version="[2.15.0,3.0.0)"

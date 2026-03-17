@@ -338,16 +338,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
                 // after fixing this
                 final Object value = json.opt(key);
                 fields.add(new IssueField(key, namesMap.get(key), typesMap.get("key"),
-                        value == JSONObject.NULL || value == JSONObject.EXPLICIT_NULL ? null : value));
+                        value == JSONObject.NULL ? null : value));
             } catch (final Exception e) {
-                throw new JSONException("Error while parsing [" + key + "] field: " + e.getMessage()) {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public Throwable getCause() {
-                        return e;
-                    }
-                };
+                throw new JSONException("Error while parsing [" + key + "] field: " + e.getMessage(), e);
             }
         }
         return fields;

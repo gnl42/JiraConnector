@@ -16,8 +16,9 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.AssigneeType;
@@ -27,7 +28,7 @@ import me.glindholm.jira.rest.client.internal.domain.input.ComponentInputWithPro
 public class ComponentInputWithProjectKeyJsonGenerator implements JsonGenerator<ComponentInputWithProjectKey> {
 
     @Override
-    public JSONObject generate(final ComponentInputWithProjectKey componentInput) throws JSONException {
+    public JSONObject generate(final ComponentInputWithProjectKey componentInput) throws JsonProcessingException {
         final JSONObject res = new JSONObject();
         if (componentInput.getProjectKey() != null) {
             res.put("project", componentInput.getProjectKey());

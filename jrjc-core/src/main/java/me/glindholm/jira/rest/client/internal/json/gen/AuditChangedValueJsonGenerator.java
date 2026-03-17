@@ -1,7 +1,8 @@
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;
 
@@ -10,7 +11,7 @@ import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;
  */
 public class AuditChangedValueJsonGenerator implements JsonGenerator<AuditChangedValue> {
     @Override
-    public JSONObject generate(final AuditChangedValue bean) throws JSONException {
+    public JSONObject generate(final AuditChangedValue bean) throws JsonProcessingException {
         final JSONObject obj = new JSONObject().put("fieldName", bean.getFieldName());
         if (bean.getChangedTo() != null) {
             obj.put("changedTo", bean.getChangedTo());

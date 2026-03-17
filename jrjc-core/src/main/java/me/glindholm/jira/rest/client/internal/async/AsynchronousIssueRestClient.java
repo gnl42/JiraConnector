@@ -39,8 +39,9 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -207,7 +208,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
                                 final int id = Integer.parseInt(key);
                                 final Transition transition = transitionJsonParser.parse(jsonObject.getJSONObject(key), id);
                                 transitions.add(transition);
-                            } catch (URISyntaxException | JSONException e) {
+                            } catch (URISyntaxException | JsonProcessingException e) {
                                 throw new RestClientException(e);
                             } catch (final NumberFormatException e) {
                                 throw new RestClientException("Transition id should be an integer, but found [" + key + "]", e);
@@ -252,7 +253,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
                 jsonObject.put("fields", fieldsJs);
             }
             return post(transitionsUri, jsonObject);
-        } catch (final JSONException ex) {
+        } catch (final JsonProcessingException ex) {
             throw new RestClientException(ex);
         }
     }

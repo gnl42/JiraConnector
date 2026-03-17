@@ -17,14 +17,12 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
@@ -32,7 +30,6 @@ import me.glindholm.jira.rest.client.api.domain.Attachment;
 public class AttachmentJsonParserTest {
 
     @Test
-    @Disabled
     public void testParse() throws Exception {
         final AttachmentJsonParser parser = new AttachmentJsonParser();
         final Attachment attachment = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/attachment/valid.json"));

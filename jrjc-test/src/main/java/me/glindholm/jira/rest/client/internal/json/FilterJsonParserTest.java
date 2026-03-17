@@ -33,7 +33,6 @@ import me.glindholm.jira.rest.client.api.domain.Filter;
 public class FilterJsonParserTest {
 
     @Test
-    @Disabled
     public void testParseWithoutShares() throws Exception {
         final Filter actual = parseFilter("/json/filter/valid-no-shares.json");
         final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10000"), 10000L,
@@ -50,7 +49,6 @@ public class FilterJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseWithShares() throws Exception {
         final Filter actual = parseFilter("/json/filter/valid-with-shares.json");
         final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10003"), 10003L,
@@ -67,7 +65,6 @@ public class FilterJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseNotFavourite() throws Exception {
         final Filter actual = parseFilter("/json/filter/valid-not-favourite.json");
         final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10001"), 10001L,
@@ -84,7 +81,6 @@ public class FilterJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseWitSubscriptionsBugJRA30958() throws Exception {
         final Filter actual = parseFilter("/json/filter/valid-with-subscriptions-bug-JRA-30958-subscription-have-no-elements.json");
         final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10004"), 10004L,

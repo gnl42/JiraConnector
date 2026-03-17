@@ -10,7 +10,10 @@ Eclipse-BuddyPolicy: registered
 Require-Bundle: jira-rest-java-client-api,
  jira-rest-java-client-core,
  org.eclipse.jdt.annotation
-Import-Package: org.apache.commons.io;version="[2.20.0,3.0.0)",
+Import-Package: com.fasterxml.jackson.annotation;version="[2.19.0,3.0.0)",
+ com.fasterxml.jackson.core;version="[2.15.0,3.0.0)",
+ com.fasterxml.jackson.databind;version="[2.15.0,3.0.0)",
+ org.apache.commons.io;version="[2.20.0,3.0.0)",
  org.apache.commons.lang3;version="[3.20.0,4.0.0)",
  org.codehaus.jettison.json,
  org.hamcrest;version="[3.0.0,4.0.0)",

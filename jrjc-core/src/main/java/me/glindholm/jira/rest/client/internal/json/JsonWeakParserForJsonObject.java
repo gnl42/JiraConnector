@@ -28,11 +28,11 @@ class JsonWeakParserForJsonObject<T> implements JsonWeakParser<T> {
         this.jsonParser = jsonParser;
     }
 
-    private <T> T convert(final Object o, final Class<T> clazz) throws JSONException {
+    private <U> U convert(final Object o, final Class<U> clazz) throws JSONException {
         try {
             return clazz.cast(o);
         } catch (final ClassCastException e) {
-            throw new JSONException("Expected [" + clazz.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]");
+            throw new JSONException("Expected [" + clazz.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]", e);
         }
     }
 

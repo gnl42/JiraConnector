@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2018 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.input.UserInput;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
@@ -36,7 +37,7 @@ public class UserInputJsonGeneratorTest {
     private final UserInputJsonGenerator generator = new UserInputJsonGenerator();
 
     @Test
-    public void testGenerate() throws JSONException {
+    public void testGenerate() throws JsonProcessingException {
         final UserInput userInput = new UserInput(
                 "admin",
                 "admin",

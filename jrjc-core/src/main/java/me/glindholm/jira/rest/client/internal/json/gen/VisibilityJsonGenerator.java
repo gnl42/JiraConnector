@@ -16,15 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 
 public class VisibilityJsonGenerator implements JsonGenerator<Visibility> {
 
     @Override
-    public JSONObject generate(final Visibility visibility) throws JSONException {
+    public JSONObject generate(final Visibility visibility) throws JsonProcessingException {
         return new JSONObject().put("type", visibility.getType().name().toLowerCase()).put("value", visibility.getValue());
     }
 }

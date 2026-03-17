@@ -17,8 +17,9 @@
 package me.glindholm.jira.rest.client.internal.json.gen;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
@@ -34,7 +35,7 @@ public class IssueInputJsonGenerator implements JsonGenerator<IssueInput> {
     private final ComplexIssueInputFieldValueJsonGenerator complexIssueInputFieldValueJsonGenerator = new ComplexIssueInputFieldValueJsonGenerator();
 
     @Override
-    public JSONObject generate(final IssueInput issue) throws JSONException {
+    public JSONObject generate(final IssueInput issue) throws JsonProcessingException {
         final JSONObject jsonObject = new JSONObject();
         final JSONObject fields = new JSONObject();
 

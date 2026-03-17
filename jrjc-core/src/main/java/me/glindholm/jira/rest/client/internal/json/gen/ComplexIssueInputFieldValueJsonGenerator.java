@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 
@@ -32,7 +34,7 @@ import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValu
  */
 public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<ComplexIssueInputFieldValue> {
     @Override
-    public JSONObject generate(final ComplexIssueInputFieldValue bean) throws JSONException {
+    public JSONObject generate(final ComplexIssueInputFieldValue bean) throws JsonProcessingException {
         final JSONObject json = new JSONObject();
         for (final Map.Entry<String, Object> entry : bean.getValuesMap().entrySet()) {
             json.put(entry.getKey(), generateFieldValueForJson(entry.getValue()));
@@ -40,7 +42,7 @@ public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<C
         return json;
     }
 
-    public Object generateFieldValueForJson(final Object rawValue) throws JSONException {
+    public Object generateFieldValueForJson(final Object rawValue) throws JsonProcessingException {
         if (rawValue == null) {
             return JSONObject.NULL;
         } else if (rawValue instanceof ComplexIssueInputFieldValue) {
@@ -57,7 +59,8 @@ public class ComplexIssueInputFieldValueJsonGenerator implements JsonGenerator<C
         } else if (rawValue instanceof Number) {
             return rawValue;
         } else {
-            throw new JSONException("Cannot generate value - unknown type for me: " + rawValue.getClass());
+            throw new JsonGenerationException("Cannot generate value - unknown type for me: " + rawValue.getClass(),
+                    (com.fasterxml.jackson.core.JsonGenerator) null);
         }
     }
 }

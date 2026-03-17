@@ -19,8 +19,9 @@ package me.glindholm.jira.rest.client.internal.json.gen;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 
@@ -34,7 +35,7 @@ public class IssuesInputJsonGenerator implements JsonGenerator<List<IssueInput>>
     private final IssueInputJsonGenerator issueInputJsonGenerator = new IssueInputJsonGenerator();
 
     @Override
-    public JSONObject generate(final List<IssueInput> issues) throws JSONException {
+    public JSONObject generate(final List<IssueInput> issues) throws JsonProcessingException {
         final JSONObject issueUpdates = new JSONObject();
         final List<JSONObject> obj = new ArrayList<>();
 

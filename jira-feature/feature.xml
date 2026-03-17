@@ -67,10 +67,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.codehaus.jettison.jettison"
-         version="0.0.0"/>
-
-   <plugin
          id="org.apache.commons.lang3"
          version="0.0.0"/>
 

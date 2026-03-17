@@ -33,7 +33,7 @@ public class SearchResultJsonParser implements JsonObjectParser<SearchResult> {
     public SearchResult parse(final JSONObject json) throws JSONException, URISyntaxException {
         final int startAt = json.optInt("startAt",0);
         final int maxResults = json.optInt("maxResults", 9999999);
-        int total = json.optInt("total", -1);
+        int total = json.getInt("total");
         final JSONArray issuesJsonArray = json.getJSONArray("issues");
 
         final List<Issue> issues;
