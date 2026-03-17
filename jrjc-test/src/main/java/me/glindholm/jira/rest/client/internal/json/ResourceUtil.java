@@ -47,8 +47,7 @@ public class ResourceUtil {
 
     public static String getStringFromResource(String resourcePath) {
         final String s;
-        try {
-            final InputStream is = ResourceUtil.class.getResourceAsStream(resourcePath);
+        try (final InputStream is = ResourceUtil.class.getResourceAsStream(resourcePath)) {
             if (is == null) {
                 throw new IOException("Cannot open resource [" + resourcePath + "]");
             }

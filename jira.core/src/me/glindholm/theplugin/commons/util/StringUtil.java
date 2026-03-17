@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.codec.binary.Base64;
+import java.util.Base64;
 import org.eclipse.jdt.annotation.Nullable;
 
 public final class StringUtil {
@@ -49,8 +49,7 @@ public final class StringUtil {
             return "";
         }
         try {
-            final Base64 base64 = new Base64();
-            final byte[] passwordBytes = base64.decode(str2decode.getBytes("UTF-8"));
+            final byte[] passwordBytes = Base64.getDecoder().decode(str2decode.getBytes("UTF-8"));
             if (passwordBytes == null || passwordBytes.length == 0) {
                 throw new IllegalArgumentException("Cannot decode string due to not supported " + "characters or becuase it is not encoded");
             }
@@ -68,8 +67,7 @@ public final class StringUtil {
 
     public static synchronized String encode(final String str2encode) {
         try {
-            final Base64 base64 = new Base64();
-            final byte[] bytes = base64.encode(str2encode.getBytes("UTF-8"));
+            final byte[] bytes = Base64.getEncoder().encode(str2encode.getBytes("UTF-8"));
             return new String(bytes);
         } catch (final UnsupportedEncodingException e) {
             /// CLOVER:OFF
