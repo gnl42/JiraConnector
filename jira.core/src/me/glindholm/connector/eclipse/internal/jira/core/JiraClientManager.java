@@ -17,6 +17,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -115,6 +116,16 @@ public class JiraClientManager {
         } catch (final Throwable e) {
             StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error writing JIRA repository configuration cache", e)); //$NON-NLS-1$
         }
+
+        // close all clients
+        for (final JiraClient client : clientByUrl.values()) {
+            try {
+                client.close();
+            } catch (final IOException e) {
+                StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error closing JIRA client", e)); //$NON-NLS-1$
+            }
+        }
+        clientByUrl.clear();
     }
 
     /**
@@ -131,11 +142,12 @@ public class JiraClientManager {
      */
     public JiraServerInfo validateConnection(final AbstractWebLocation location, final JiraLocalConfiguration configuration, final IProgressMonitor monitor)
             throws JiraException {
-        final JiraClient client = createClient(location, configuration);
-
-        client.getSession(monitor);
-
-        return client.getServerInfo(monitor);
+        try (final JiraClient client = createClient(location, configuration)) {
+            client.getSession(monitor);
+            return client.getServerInfo(monitor);
+        } catch (final IOException e) {
+            throw new JiraException(e);
+        }
     }
 
     public JiraClient getClient(final String url) {
@@ -180,11 +192,23 @@ public class JiraClientManager {
             clientDataByUrl.put(client.getBaseUrl(), client.getCache().getData());
         }
         clientByUrl.remove(client.getBaseUrl());
+        try {
+            client.close();
+        } catch (final IOException e) {
+            StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error closing JIRA client", e)); //$NON-NLS-1$
+        }
     }
 
     public void removeAllClients(final boolean clearData) {
         if (clearData) {
             clientDataByUrl.clear();
+        }
+        for (final JiraClient client : clientByUrl.values()) {
+            try {
+                client.close();
+            } catch (final IOException e) {
+                StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN, "Error closing JIRA client", e)); //$NON-NLS-1$
+            }
         }
         clientByUrl.clear();
     }

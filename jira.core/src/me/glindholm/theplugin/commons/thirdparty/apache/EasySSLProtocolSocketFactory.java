@@ -79,8 +79,9 @@ public class EasySSLProtocolSocketFactory {
             if (keyStorePassword != null && !keyStorePassword.isEmpty() && keyStoreFileName != null && !keyStoreFileName.isEmpty()) {
                 jKeyStore = KeyStore.getInstance("JKS");
                 final File file = new File(keyStoreFileName);
-                final FileInputStream inStream = new FileInputStream(file);
-                jKeyStore.load(inStream, keyStorePassword.toCharArray());
+                try (final FileInputStream inStream = new FileInputStream(file)) {
+                    jKeyStore.load(inStream, keyStorePassword.toCharArray());
+                }
             }
         } catch (final KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
         }

@@ -114,9 +114,7 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
             return;
         }
 
-        ObjectInput in = null;
-        try {
-            in = createObjectInput(getCacheFile());
+        try (ObjectInput in = createObjectInput(getCacheFile())) {
             final int size = in.readInt();
             for (int i = 0; i < size; i++) {
                 final String url = (String) in.readObject();
@@ -127,14 +125,6 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
             }
         } catch (final Throwable e) {
             StatusHandler.log(new Status(IStatus.WARNING, JiraConnectorCorePlugin.PLUGIN_ID, "The repository configuration cache could not be read", e));
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (final IOException e) {
-                    // ignore
-                }
-            }
         }
     }
 
@@ -144,9 +134,7 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
             return;
         }
 
-        ObjectOutput out = null;
-        try {
-            out = createObjectOutput(getCacheFile());
+        try (ObjectOutput out = createObjectOutput(getCacheFile())) {
             out.writeInt(getClientDataByUrl().size());
             for (final String url : getClientDataByUrl().keySet()) {
                 out.writeObject(url);
@@ -154,14 +142,6 @@ public abstract class RepositoryClientManager<T, C extends Serializable> impleme
             }
         } catch (final IOException e) {
             StatusHandler.log(new Status(IStatus.WARNING, JiraConnectorCorePlugin.PLUGIN_ID, "The repository configuration cache could not be written", e));
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (final IOException e) {
-                    // ignore
-                }
-            }
         }
     }
 

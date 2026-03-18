@@ -319,7 +319,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
 
     @Override
     public CompletableFuture<Void> addAttachment(final URI attachmentsUri, final InputStream inputStream, final String filename) {
-        try {
+        try (inputStream) {
             final byte[] bytes = inputStream.readAllBytes();
             return postMultipart(attachmentsUri, filename, bytes, "application/octet-stream");
         } catch (final IOException e) {
@@ -331,8 +331,8 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     public CompletableFuture<Void> addAttachments(final URI attachmentsUri, final AttachmentInput... attachments) {
         return postMultipartBatch(attachmentsUri, Stream.of(attachments)
                 .collect(Collectors.toMap(AttachmentInput::getFilename, a -> {
-                    try {
-                        return a.getInputStream().readAllBytes();
+                    try (final InputStream is = a.getInputStream()) {
+                        return is.readAllBytes();
                     } catch (final IOException e) {
                         throw new RestClientException(e);
                     }
@@ -434,17 +434,16 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     }
 
     private static byte[] buildMultipartBody(final String boundary, final String fieldName, final String filename, final byte[] data, final String contentType) {
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()){
             baos.write(("--" + boundary + "\r\n").getBytes(UTF_8));
             baos.write(("Content-Disposition: form-data; name=\"" + fieldName + "\"; filename=\"" + filename + "\"\r\n").getBytes(UTF_8));
             baos.write(("Content-Type: " + contentType + "\r\n\r\n").getBytes(UTF_8));
             baos.write(data);
             baos.write("\r\n".getBytes(UTF_8));
+            return baos.toByteArray();
         } catch (final IOException e) {
             throw new RestClientException(e);
         }
-        return baos.toByteArray();
     }
 
     private String getLoggedUsername() throws RestClientException, URISyntaxException {

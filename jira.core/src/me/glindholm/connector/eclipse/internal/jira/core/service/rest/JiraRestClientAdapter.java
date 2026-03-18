@@ -13,6 +13,8 @@
 package me.glindholm.connector.eclipse.internal.jira.core.service.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
 import java.net.URI;
@@ -83,7 +85,7 @@ import me.glindholm.jira.rest.client.internal.async.UriBuilder;
 /**
  * @author Jacek Jaroczynski
  */
-public class JiraRestClientAdapter {
+public class JiraRestClientAdapter implements Closeable {
 
     private static final Integer TIMEOUT_CONNECTION_IN_MS = 60 * 1000; // one minute
 
@@ -819,6 +821,13 @@ public class JiraRestClientAdapter {
             return restClient.getUserClient().findAssignableUsersForProject(projectKey, null, 1000, true, false).get();
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (restClient != null) {
+            restClient.close();
         }
     }
 }
