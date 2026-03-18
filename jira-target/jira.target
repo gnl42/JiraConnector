@@ -21,6 +21,7 @@
             <unit id="org.eclipse.mylyn.commons.notifications.feature.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.mylyn.monitor.feature.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.mylyn.ide.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.mylyn.wikitext.feature.feature.group" version="4.10.0.v20260106-1815"/>
         </location>
         <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
             <repository location="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/2026-03"/>
