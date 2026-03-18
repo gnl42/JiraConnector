@@ -3,7 +3,7 @@ Automatic-Module-Name: me.glindholm.connector.jira.help
 Bundle-ManifestVersion: 2
 Bundle-Name: JiraConnector Eclipse Connector Documentation
 Bundle-SymbolicName: me.glindholm.connector.jira.help;singleton:=true
-Bundle-Version: 5.2.0.qualifier
+Bundle-Version: 6.0.0.qualifier
 Bundle-Vendor: George Lindholm
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ActivationPolicy: lazy
