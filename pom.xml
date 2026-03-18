@@ -69,56 +69,6 @@
         <system>GitHub</system>
         <url>https://github.com/gnl42/JiraConnector/issues</url>
     </issueManagement>
-    <!-- <distributionManagement> -->
-    <!-- <repository> -->
-    <!-- <id>JiraConnector-update</id> -->
-    <!-- <name>github.io</name> -->
-    <!-- <url>file:///home/thara/testesb/in</url> -->
-    <!-- </repository> -->
-    <!-- </distributionManagement> -->
-    <repositories>
-        <!--        <repository>-->
-        <!--            <id>eclipse</id>-->
-        <!--            <url>https://download.eclipse.org/releases/2023-09</url>-->
-        <!--            <layout>p2</layout>-->
-        <!--        </repository>-->
-        <!--        <repository>-->
-        <!--            <id>mylyn</id>-->
-        <!--
-    <url>https://download.eclipse.org/mylyn/updates/release/latest</url>-->
-        <!--            <layout>p2</layout>-->
-        <!--        </repository>-->
-        <repository>
-            <id>m2e-eclipse-extension</id>
-            <url>https://simulation.tudelft.nl/maven</url>
-        </repository>
-        <repository>
-            <id>atlassian again</id>
-            <url>https://packages.atlassian.com/mvn/maven-atlassian-external/</url>
-        </repository>
-        <!--		<repository>-->
-        <!--			<id>atlassian</id>-->
-        <!--			<url>-->
-        <!--
-        https://maven.atlassian.com/content/repositories/atlassian-public/</url>-->
-        <!--		</repository>-->
-        <!--		<repository>-->
-        <!--			<id>atlassian-3rd-party</id>-->
-        <!--			<name>atlassian 3rd party</name>-->
-        <!--			<url>https://maven.atlassian.com/maven-3rdparty/</url>-->
-        <!--		</repository>-->
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>release</id>
-            <url>https://repo.eclipse.org/content/groups/releases/</url>
-        </pluginRepository>
-        <!--		<pluginRepository>-->
-        <!--			<id>tycho-snapshots</id>-->
-        <!--
-        <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>-->
-        <!--		</pluginRepository>-->
-    </pluginRepositories>
     <properties>
         <!-- Required properties for releasing -->
         <github-update-repo>git@github.com:gnl42/JiraConnector-update.git</github-update-repo>
@@ -136,7 +86,6 @@
         <jira.test-lib.version>${jira.version}</jira.test-lib.version>
         <amps.version>6.3.22-fc341f3d2</amps.version>
         <testkit.version>8.1.5</testkit.version>
-
     </properties>
     <modules>
         <module>jira-target</module>
@@ -464,9 +413,6 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
                 <configuration>
-                    <executionEnvironments>
-                        <executionEnvironment>JavaSE-21</executionEnvironment>
-                    </executionEnvironments>
                     <environments>
                         <environment>
                             <os>linux</os>
