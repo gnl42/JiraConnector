@@ -17,7 +17,8 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.domain.OperationLink;
-import org.codehaus.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 

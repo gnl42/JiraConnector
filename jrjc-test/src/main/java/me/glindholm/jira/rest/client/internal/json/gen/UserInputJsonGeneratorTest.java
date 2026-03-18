@@ -20,13 +20,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.input.UserInput;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 
 /**

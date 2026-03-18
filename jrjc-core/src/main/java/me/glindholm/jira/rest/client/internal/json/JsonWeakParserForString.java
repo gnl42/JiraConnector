@@ -16,7 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import org.codehaus.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class JsonWeakParserForString implements JsonWeakParser<String> {
     @Override

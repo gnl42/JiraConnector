@@ -16,11 +16,11 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.domain.Visibility;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class VisibilityJsonParser implements JsonObjectParser<Visibility> {
     private static final String ROLE_TYPE = "ROLE";

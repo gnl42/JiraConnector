@@ -26,13 +26,13 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.Resolution;
 import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 /**
  * @since v1.0

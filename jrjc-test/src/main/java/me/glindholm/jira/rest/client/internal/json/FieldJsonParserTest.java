@@ -21,13 +21,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Field;
 import me.glindholm.jira.rest.client.api.domain.FieldSchema;
 import me.glindholm.jira.rest.client.api.domain.FieldType;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class FieldJsonParserTest {
 

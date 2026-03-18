@@ -38,9 +38,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -87,6 +84,8 @@ import me.glindholm.jira.rest.client.internal.json.gen.IssueUpdateJsonGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.IssuesInputJsonGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.LinkIssuesInputGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.WorklogInputJsonGenerator;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * Asynchronous implementation of IssueRestClient.

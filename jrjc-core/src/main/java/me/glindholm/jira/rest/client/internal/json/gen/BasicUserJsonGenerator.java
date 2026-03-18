@@ -16,11 +16,10 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class BasicUserJsonGenerator implements JsonGenerator<BasicUser> {
     @Override

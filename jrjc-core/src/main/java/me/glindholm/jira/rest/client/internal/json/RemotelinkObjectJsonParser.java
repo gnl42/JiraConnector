@@ -3,12 +3,11 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.RemotelinkIcon;
 import me.glindholm.jira.rest.client.api.domain.RemotelinkObject;
 import me.glindholm.jira.rest.client.api.domain.RemotelinkStatus;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class RemotelinkObjectJsonParser implements JsonObjectParser<RemotelinkObject> {
     private final RemotelinkIconJsonParser iconParser = new RemotelinkIconJsonParser();

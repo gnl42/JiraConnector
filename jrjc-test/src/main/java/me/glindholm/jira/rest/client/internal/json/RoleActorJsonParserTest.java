@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.codehaus.jettison.json.JSONException;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.RoleActor;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class RoleActorJsonParserTest {
 

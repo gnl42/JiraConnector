@@ -16,12 +16,11 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.input.VersionInput;
 import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class VersionInputJsonGenerator implements JsonGenerator<VersionInput> {
     @Override

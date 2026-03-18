@@ -27,10 +27,10 @@ import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import org.codehaus.jettison.json.JSONException;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Version;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 import me.glindholm.jira.rest.client.test.matchers.DateTimeMatcher;
 
 public class VersionJsonParserTest {

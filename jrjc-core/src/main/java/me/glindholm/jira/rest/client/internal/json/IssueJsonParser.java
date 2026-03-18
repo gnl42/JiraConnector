@@ -57,9 +57,10 @@ import java.util.Map;
 import java.util.Set;
 
 import me.glindholm.jira.rest.client.internal.async.UriBuilder;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.IssueRestClient;

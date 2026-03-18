@@ -2,10 +2,9 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.RemotelinkApplication;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class RemotelinkApplicationJsonParser implements JsonObjectParser<RemotelinkApplication> {
 

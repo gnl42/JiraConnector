@@ -22,12 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URISyntaxException;
 
-import org.codehaus.jettison.json.JSONException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.BasicWatchers;
 import me.glindholm.jira.rest.client.api.domain.Watchers;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class WatchersJsonParserTest {
     @Test

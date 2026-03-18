@@ -15,9 +15,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osgi.util.NLS;
 
@@ -28,6 +25,9 @@ import me.glindholm.jira.rest.client.internal.json.CustomFieldOptionJsonParser;
 import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
 import me.glindholm.jira.rest.client.internal.json.UserJsonParser;
 import me.glindholm.jira.rest.client.internal.json.UsersJsonParser;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class JiraRestCustomFieldsParser {
     private static final UsersJsonParser usersParser = new UsersJsonParser();

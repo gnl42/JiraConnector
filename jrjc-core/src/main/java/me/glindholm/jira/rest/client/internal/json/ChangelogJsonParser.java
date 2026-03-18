@@ -20,12 +20,11 @@ import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.ChangelogGroup;
 import me.glindholm.jira.rest.client.api.domain.ChangelogItem;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class ChangelogJsonParser implements JsonObjectParser<ChangelogGroup> {
     private final ChangelogItemJsonParser changelogItemJsonParser = new ChangelogItemJsonParser();

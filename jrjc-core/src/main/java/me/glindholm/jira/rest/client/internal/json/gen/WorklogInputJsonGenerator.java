@@ -18,14 +18,13 @@ package me.glindholm.jira.rest.client.internal.json.gen;
 
 import java.time.format.DateTimeFormatter;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.input.WorklogInput;
 import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class WorklogInputJsonGenerator implements JsonGenerator<WorklogInput> {
 

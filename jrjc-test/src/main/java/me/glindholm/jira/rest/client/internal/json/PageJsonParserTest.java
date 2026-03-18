@@ -3,11 +3,11 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Page;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class PageJsonParserTest {
 

@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.jdt.annotation.Nullable;
@@ -39,6 +38,7 @@ import me.glindholm.jira.rest.client.api.domain.SearchResult;
 import me.glindholm.jira.rest.client.internal.json.FilterJsonParser;
 import me.glindholm.jira.rest.client.internal.json.GenericJsonArrayParser;
 import me.glindholm.jira.rest.client.internal.json.SearchResultJsonParser;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * Asynchronous implementation of SearchRestClient.

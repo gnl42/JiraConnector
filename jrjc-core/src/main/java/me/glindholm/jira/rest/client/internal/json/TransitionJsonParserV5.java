@@ -20,10 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.Transition;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class TransitionJsonParserV5 implements JsonObjectParser<Transition> {
     private final TransitionFieldJsonParser transitionFieldJsonParser = new TransitionFieldJsonParser();

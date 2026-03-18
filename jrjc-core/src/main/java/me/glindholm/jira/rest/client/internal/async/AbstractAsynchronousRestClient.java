@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -40,6 +38,8 @@ import me.glindholm.jira.rest.client.internal.json.JsonObjectParser;
 import me.glindholm.jira.rest.client.internal.json.JsonParseUtil;
 import me.glindholm.jira.rest.client.internal.json.JsonParser;
 import me.glindholm.jira.rest.client.internal.json.gen.JsonGenerator;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * This is a base class for asynchronous REST clients using native Java 21 HttpClient.

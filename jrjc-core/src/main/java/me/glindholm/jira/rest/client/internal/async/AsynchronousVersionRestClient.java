@@ -19,8 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -33,6 +31,7 @@ import me.glindholm.jira.rest.client.internal.json.VersionJsonParser;
 import me.glindholm.jira.rest.client.internal.json.VersionRelatedIssueCountJsonParser;
 import me.glindholm.jira.rest.client.internal.json.gen.VersionInputJsonGenerator;
 import me.glindholm.jira.rest.client.internal.json.gen.VersionPositionInputGenerator;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * Asynchronous implementation of VersionRestClient.

@@ -18,7 +18,8 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
-import org.codehaus.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 

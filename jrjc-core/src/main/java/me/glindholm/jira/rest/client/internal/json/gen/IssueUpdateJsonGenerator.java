@@ -2,11 +2,10 @@ package me.glindholm.jira.rest.client.internal.json.gen;
 
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class IssueUpdateJsonGenerator implements JsonGenerator<List<FieldInput>> {
     private final ComplexIssueInputFieldValueJsonGenerator generator = new ComplexIssueInputFieldValueJsonGenerator();

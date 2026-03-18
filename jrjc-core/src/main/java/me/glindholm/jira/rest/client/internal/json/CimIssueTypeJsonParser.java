@@ -20,12 +20,11 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.CimFieldInfo;
 import me.glindholm.jira.rest.client.api.domain.CimIssueType;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * JSON parser for CimIssueType

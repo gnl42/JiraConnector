@@ -23,13 +23,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.codehaus.jettison.json.JSONException;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
 import me.glindholm.jira.rest.client.api.domain.RoleActor;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class ProjectRoleJsonParserTest {
 

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +30,7 @@ import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 import me.glindholm.jira.rest.client.api.domain.input.PropertyInput;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 
 /**

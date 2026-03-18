@@ -29,7 +29,6 @@ import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +36,7 @@ import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Project;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 @SuppressWarnings("ConstantConditions")

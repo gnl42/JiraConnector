@@ -16,14 +16,13 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.AssigneeType;
 import me.glindholm.jira.rest.client.internal.domain.AssigneeTypeConstants;
 import me.glindholm.jira.rest.client.internal.domain.input.ComponentInputWithProjectKey;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class ComponentInputWithProjectKeyJsonGenerator implements JsonGenerator<ComponentInputWithProjectKey> {
 

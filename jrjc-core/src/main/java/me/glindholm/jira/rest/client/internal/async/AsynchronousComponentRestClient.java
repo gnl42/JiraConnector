@@ -19,7 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.ComponentRestClient;
@@ -28,6 +27,7 @@ import me.glindholm.jira.rest.client.api.domain.input.ComponentInput;
 import me.glindholm.jira.rest.client.internal.domain.input.ComponentInputWithProjectKey;
 import me.glindholm.jira.rest.client.internal.json.ComponentJsonParser;
 import me.glindholm.jira.rest.client.internal.json.gen.ComponentInputWithProjectKeyJsonGenerator;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * Asynchronous implementation of ComponentRestClient.

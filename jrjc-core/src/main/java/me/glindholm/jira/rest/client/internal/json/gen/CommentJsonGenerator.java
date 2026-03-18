@@ -16,8 +16,6 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.Comment;
@@ -25,6 +23,7 @@ import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.internal.json.CommentJsonParser;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class CommentJsonGenerator implements JsonGenerator<Comment> {
 

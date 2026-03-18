@@ -19,12 +19,11 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.net.URI;
 import java.time.OffsetDateTime;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.api.domain.Worklog;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class WorklogJsonParserV5 implements JsonObjectParser<Worklog> {
 

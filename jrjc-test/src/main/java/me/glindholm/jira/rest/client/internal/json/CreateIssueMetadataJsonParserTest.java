@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jettison.json.JSONException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
@@ -40,6 +39,7 @@ import me.glindholm.jira.rest.client.api.domain.CustomFieldOption;
 import me.glindholm.jira.rest.client.api.domain.FieldSchema;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.StandardOperation;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 /**
  * @since v1.0

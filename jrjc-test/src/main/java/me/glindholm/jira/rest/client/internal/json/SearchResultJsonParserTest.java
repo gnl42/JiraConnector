@@ -26,7 +26,6 @@ import static me.glindholm.jira.rest.client.test.matchers.SearchResultMatchers.s
 import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.codehaus.jettison.json.JSONException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +37,7 @@ import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.SearchResult;
 import me.glindholm.jira.rest.client.api.domain.Status;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class SearchResultJsonParserTest {
 
