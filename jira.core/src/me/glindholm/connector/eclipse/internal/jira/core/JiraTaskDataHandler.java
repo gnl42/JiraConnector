@@ -1162,7 +1162,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
                             && !JiraRepositoryConnector.isClosed(issue) && taskData.getRoot().getMappedAttribute(JiraConstants.ATTRIBUTE_READ_ONLY) == null
                             && !changeIds.equals(Collections.singleton(TaskAttribute.COMMENT_NEW))
                             && (!STOP_PROGRESS_OPERATION.equals(operationId) || !changeIds.equals(Collections.singleton(TaskAttribute.OPERATION)))) {
-                        client.updateIssue(issue, newComment, changeIds.contains(JiraAttribute.ESTIMATE.id()), monitor);
+                        client.updateIssue(issue, newComment, changeIds, monitor);
                         handled = true;
                     }
 

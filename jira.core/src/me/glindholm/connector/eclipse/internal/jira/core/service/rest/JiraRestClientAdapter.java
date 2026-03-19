@@ -40,6 +40,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
@@ -281,7 +282,7 @@ public class JiraRestClientAdapter {
                 JiraServerInfo serverInfo = cache.getServerInfo();
                 boolean newJqlPath = serverInfo != null && serverInfo.isNewJqlNeeded();
                 final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql,
-                		maxSearchResult, 0, fields, newJqlPath).get().getIssues();
+                        maxSearchResult, 0, fields, newJqlPath).get().getIssues();
                 progress.split(20).setWorkRemaining(issuesFromServer.size());
 
                 final List<JiraIssue> fullIssues = new ArrayList<>();
@@ -585,7 +586,7 @@ public class JiraRestClientAdapter {
         return call(() -> restClient.getIssueClient().createIssue(issueInputBuilder.build()).get().getKey());
     }
 
-    public void updateIssue(final JiraIssue changedIssue, final boolean updateEstimate) throws JiraException {
+    public void updateIssue(final JiraIssue changedIssue, final Set<String> changeIds) throws JiraException {
         final JiraIssue fullIssue = getIssueByKeyOrId(changedIssue.getKey(), new org.eclipse.core.runtime.NullProgressMonitor());
 
         final Issue issue = fullIssue.getRawIssue();
@@ -594,12 +595,19 @@ public class JiraRestClientAdapter {
 
         final List<FieldInput> updateFields = new ArrayList<>();
 
-        updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getType().getId())));
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.PRIORITY, null)) && changedIssue.getPriority() != null) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_TYPE) && //
+                changeIds.contains(JiraConstants.ATTRIBUTE_TYPE)) {
+            updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getType().getId())));
+        }
+
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_PRIORITY) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.PRIORITY, null)) && //
+                changedIssue.getPriority() != null) {
             updateFields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getPriority().getId())));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.DUEDATE, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_DUE_DATE) &&
+                editableFields.contains(new JiraIssueField(JiraRestFields.DUEDATE, null))) {
             final String date;
             if (changedIssue.getDue() == null) {
                 date = null;
@@ -610,7 +618,7 @@ public class JiraRestClientAdapter {
         }
 
         // if time tracking is enabled and estimate changed
-        if (issue.getTimeTracking() != null && updateEstimate) {
+        if (issue.getTimeTracking() != null && changeIds.contains(JiraAttribute.ESTIMATE.id())) {
 
             final Long currentEstimateInSeconds = changedIssue.getEstimate();
             final Integer previousEstimateInMinutes = issue.getTimeTracking().getRemainingEstimateMinutes();
@@ -668,7 +676,8 @@ public class JiraRestClientAdapter {
             updateFields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.FIX_VERSIONS, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_FIXVERSIONS) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.FIX_VERSIONS, null))) {
             final List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<>();
             for (final JiraVersion version : changedIssue.getFixVersions()) {
                 fixVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
@@ -676,7 +685,8 @@ public class JiraRestClientAdapter {
             updateFields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.COMPONENTS, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_COMPONENTS) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.COMPONENTS, null))) {
             final List<ComplexIssueInputFieldValue> components = new ArrayList<>();
             for (final JiraComponent component : changedIssue.getComponents()) {
                 components.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, component.getId()));
@@ -684,7 +694,8 @@ public class JiraRestClientAdapter {
             updateFields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
         }
 
-        if (changedIssue.getSecurityLevel() != null) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_SECURITY_LEVEL) && //
+                changedIssue.getSecurityLevel() != null) {
             // security level value "-1" clears security level
             updateFields
                     .add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
@@ -692,19 +703,23 @@ public class JiraRestClientAdapter {
             // do not clear security level as it might be not available on the screen
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.ENVIRONMENT, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_ENVIRONMENT) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.ENVIRONMENT, null))) {
             updateFields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.SUMMARY, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_SUMMARY) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.SUMMARY, null))) {
             updateFields.add(new FieldInput(JiraRestFields.SUMMARY, changedIssue.getSummary()));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.DESCRIPTION, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_DESCRIPTION) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.DESCRIPTION, null))) {
             updateFields.add(new FieldInput(JiraRestFields.DESCRIPTION, changedIssue.getDescription() != null ? changedIssue.getDescription() : "")); //$NON-NLS-1$
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.ASSIGNEE, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_ASSIGNEE) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.ASSIGNEE, null))) {
             final String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee().getId(); //$NON-NLS-1$//$NON-NLS-2$
             final String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getId() : ""; //$NON-NLS-1$
 
@@ -713,14 +728,17 @@ public class JiraRestClientAdapter {
             }
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.LABELS, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_LABELS) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.LABELS, null))) {
             updateFields.add(new FieldInput(JiraRestFields.LABELS, Arrays.asList(changedIssue.getLabels())));
         }
 
         for (final JiraCustomField customField : changedIssue.getCustomFields()) {
-            final FieldInput field = JiraRestConverter.convert(customField);
-            if (field != null) {
-                updateFields.add(field);
+            if (changeIds.contains(JiraConstants.ATTRIBUTE_CUSTOM_PREFIX + customField.getId())) {
+                final FieldInput field = JiraRestConverter.convert(customField);
+                if (field != null) {
+                    updateFields.add(field);
+                }
             }
         }
 
