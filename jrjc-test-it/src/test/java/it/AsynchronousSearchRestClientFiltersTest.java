@@ -118,7 +118,7 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
 
     @Test
     public void testGetFavouriteFilters() throws Exception {
-        final List<Filter> filters = client.getSearchClient().getFavouriteFilters().claim();
+        final List<Filter> filters = client.getSearchClient().getFavouriteFilters().join();
         final List<Pair<Filter, Filter>> expectedFilters = ImmutableList.of(
                 Pair.of(FILTER_10000_OLD, FILTER_10000_NEW),
                 Pair.of(FILTER_10002_OLD, FILTER_10002_NEW),
@@ -139,7 +139,7 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
                 Pair.of(FILTER_10002_OLD, FILTER_10002_NEW),
                 Pair.of(FILTER_10003_OLD, FILTER_10003_NEW));
         for (Pair<Filter, Filter> pair : expectedFilters) {
-            final Filter actualFilter = client.getSearchClient().getFilter(pair.first().getSelf()).claim();
+            final Filter actualFilter = client.getSearchClient().getFilter(pair.first().getSelf()).join();
             assertThat(actualFilter, anyOf(is(pair.first()), is(pair.second())));
         }
     }
@@ -152,7 +152,7 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
                 Pair.of(FILTER_10002_OLD, FILTER_10002_NEW),
                 Pair.of(FILTER_10003_OLD, FILTER_10003_NEW));
         for (Pair<Filter, Filter> pair : expectedFilters) {
-            final Filter actualFilter = client.getSearchClient().getFilter(pair.first().getId()).claim();
+            final Filter actualFilter = client.getSearchClient().getFilter(pair.first().getId()).join();
             assertThat(actualFilter, anyOf(is(pair.first()), is(pair.second())));
         }
     }
@@ -167,7 +167,7 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
         TestUtil.assertExpectedErrorCollection(ImmutableList.of(ecb.build()), new Runnable() {
             @Override
             public void run() {
-                client.getSearchClient().getFilter(resolveURI("rest/api/latest/filter/999999")).claim();
+                client.getSearchClient().getFilter(resolveURI("rest/api/latest/filter/999999")).join();
             }
         });
     }
@@ -181,7 +181,7 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
         TestUtil.assertExpectedErrorCollection(ImmutableList.of(ecb.build()), new Runnable() {
             @Override
             public void run() {
-                client.getSearchClient().getFilter(999999).claim();
+                client.getSearchClient().getFilter(999999).join();
             }
         });
 

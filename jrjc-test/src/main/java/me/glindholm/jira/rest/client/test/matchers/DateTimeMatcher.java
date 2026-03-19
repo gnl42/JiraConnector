@@ -19,7 +19,7 @@ package me.glindholm.jira.rest.client.test.matchers;
 import java.time.OffsetDateTime;
 
 import org.hamcrest.Description;
-import org.junit.internal.matchers.TypeSafeMatcher;
+import org.hamcrest.TypeSafeMatcher;
 
 public class DateTimeMatcher extends TypeSafeMatcher<OffsetDateTime> {
     private final OffsetDateTime expected;

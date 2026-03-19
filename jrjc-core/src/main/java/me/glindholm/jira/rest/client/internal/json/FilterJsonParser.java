@@ -18,11 +18,10 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Filter;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * JSON parser for Filter.

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2011 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.internal.json.gen;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;

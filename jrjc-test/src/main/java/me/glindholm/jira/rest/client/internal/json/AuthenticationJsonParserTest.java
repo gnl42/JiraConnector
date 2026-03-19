@@ -19,8 +19,9 @@ package me.glindholm.jira.rest.client.internal.json;
 import me.glindholm.jira.rest.client.api.domain.Authentication;
 import me.glindholm.jira.rest.client.api.domain.LoginInfo;
 import me.glindholm.jira.rest.client.api.domain.SessionCookie;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import static me.glindholm.jira.rest.client.TestUtil.toOffsetDateTime;
 
@@ -31,7 +32,7 @@ public class AuthenticationJsonParserTest {
         final AuthenticationJsonParser parser = new AuthenticationJsonParser();
         final Authentication authentication = parser.parse(ResourceUtil
                 .getJsonObjectFromResource("/json/authentication/valid.json"));
-        Assert.assertEquals(new Authentication(new LoginInfo(54, 23, toOffsetDateTime("2010-09-13T17:19:20.752+0300"),
+        assertEquals(new Authentication(new LoginInfo(54, 23, toOffsetDateTime("2010-09-13T17:19:20.752+0300"),
                 toOffsetDateTime("2010-09-13T17:19:38.220+0900")), new SessionCookie("JSESSIONID", "E5BD072ABEE0082DE4D6C8C2B6D96B79")), authentication);
     }
 }

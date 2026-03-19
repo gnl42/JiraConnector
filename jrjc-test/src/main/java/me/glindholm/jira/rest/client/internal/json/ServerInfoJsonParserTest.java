@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,8 @@
  */
 
 package me.glindholm.jira.rest.client.internal.json;
-
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
@@ -27,7 +26,7 @@ public class ServerInfoJsonParserTest {
     public void testParse() throws Exception {
         final ServerInfoJsonParser parser = new ServerInfoJsonParser();
         final ServerInfo serverInfo = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/serverInfo/valid.json"));
-        Assert.assertEquals(
+        assertEquals(
                 new ServerInfo(TestUtil.toUri("http://localhost:8090/jira"), "4.2-SNAPSHOT", 580, TestUtil.toOffsetDateTime("2010-09-23T00:00:00.000+0200"),
                         TestUtil.toOffsetDateTime("2010-09-30T16:11:09.767+0200"), "abc128082", "Your Company JIRA", "cloud"),
                 serverInfo);
@@ -37,7 +36,7 @@ public class ServerInfoJsonParserTest {
     public void testParseAnonymous() throws Exception {
         final ServerInfoJsonParser parser = new ServerInfoJsonParser();
         final ServerInfo serverInfo = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/serverInfo/valid-for-anonymous.json"));
-        Assert.assertEquals(new ServerInfo(TestUtil.toUri("http://localhost:8090/jira"), "4.2-SNAPSHOT", 580,
+        assertEquals(new ServerInfo(TestUtil.toUri("http://localhost:8090/jira"), "4.2-SNAPSHOT", 580,
                 TestUtil.toOffsetDateTime("2010-09-23T00:00:00.000+0200"), null, "128082", "Your Company JIRA", "cloud"), serverInfo);
 
     }

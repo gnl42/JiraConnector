@@ -16,6 +16,11 @@
 
 package me.glindholm.jira.rest.client;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
@@ -29,9 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.Assert;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.OperationGroup;
@@ -49,7 +52,7 @@ public class TestUtil {
 
     public static URI toUri(final String str) {
         try {
-            return new URIBuilder(str).build();
+            return new URI(str);
         } catch (final URISyntaxException e) {
             return null;
         }
@@ -78,14 +81,14 @@ public class TestUtil {
     public static <T extends Throwable> void assertThrows(final Class<T> clazz, final String regexp, final Runnable runnable) {
         try {
             runnable.run();
-            Assert.fail(clazz.getName() + " exception expected");
+            fail(clazz.getName() + " exception expected");
         } catch (final Throwable e) {
-            Assert.assertTrue("Expected exception of class " + clazz.getName() + " but was caught " + e.getClass().getName(), clazz.isInstance(e));
+            assertTrue(clazz.isInstance(e), "Expected exception of class " + clazz.getName() + " but was caught " + e.getClass().getName());
             if (e.getMessage() == null && regexp != null) {
-                Assert.fail("Exception with no message caught, while expected regexp [" + regexp + "]");
+                fail("Exception with no message caught, while expected regexp [" + regexp + "]");
             }
             if (regexp != null && e.getMessage() != null) {
-                Assert.assertTrue("Message [" + e.getMessage() + "] does not match regexp [" + regexp + "]", e.getMessage().matches(regexp));
+                assertTrue(e.getMessage().matches(regexp), "Message [" + e.getMessage() + "] does not match regexp [" + regexp + "]");
             }
         }
 
@@ -113,19 +116,19 @@ public class TestUtil {
     public static void assertErrorCode(final int errorCode, final String message, final Runnable runnable) {
         try {
             runnable.run();
-            Assert.fail(RestClientException.class + " exception expected");
+            fail(RestClientException.class + " exception expected");
         } catch (final me.glindholm.jira.rest.client.api.RestClientException e) {
-            Assert.assertTrue(e.getStatusCode().isPresent());
-            Assert.assertEquals(errorCode, e.getStatusCode().get().intValue());
+            assertTrue(e.getStatusCode().isPresent());
+            assertEquals(errorCode, e.getStatusCode().get().intValue());
             if (!StringUtils.isEmpty(message)) {
                 // We expect a single error message. Either error or error message.
-                Assert.assertEquals(1, e.getErrorCollections().size());
+                assertEquals(1, e.getErrorCollections().size());
                 if (e.getErrorCollections().get(0).getErrorMessages().size() > 0) {
-                    Assert.assertEquals(e.getErrorCollections().get(0).getErrors().values(), message);
+                    assertEquals(e.getErrorCollections().get(0).getErrors().values(), message);
                 } else if (e.getErrorCollections().get(0).getErrors().size() > 0) {
-                    Assert.assertEquals(e.getErrorCollections().get(0).getErrors().values(), message);
+                    assertEquals(e.getErrorCollections().get(0).getErrors().values(), message);
                 } else {
-                    Assert.fail("Expected an error message.");
+                    fail("Expected an error message.");
                 }
             }
         }
@@ -134,13 +137,13 @@ public class TestUtil {
     public static void assertErrorCodeWithRegexp(final int errorCode, final String regExp, final Runnable runnable) {
         try {
             runnable.run();
-            Assert.fail(RestClientException.class + " exception expected");
+            fail(RestClientException.class + " exception expected");
         } catch (final me.glindholm.jira.rest.client.api.RestClientException ex) {
             final ErrorCollection errorElement = ex.getErrorCollections().get(0);
             final String errorMessage = errorElement.getErrorMessages().get(0);
-            Assert.assertTrue("'" + ex.getMessage() + "' does not match regexp '" + regExp + "'", errorMessage.matches(regExp));
-            Assert.assertTrue(ex.getStatusCode().isPresent());
-            Assert.assertEquals(errorCode, ex.getStatusCode().get().intValue());
+            assertTrue(errorMessage.matches(regExp), "'" + ex.getMessage() + "' does not match regexp '" + regExp + "'");
+            assertTrue(ex.getStatusCode().isPresent());
+            assertEquals(errorCode, ex.getStatusCode().get().intValue());
         }
     }
 
@@ -157,17 +160,17 @@ public class TestUtil {
     }
 
     public static <E> void assertEqualsSymmetrical(final E a, final E b) {
-        Assert.assertEquals(a, b);
-        Assert.assertEquals(b, a);
+        assertEquals(a, b);
+        assertEquals(b, a);
     }
 
     public static <E> void assertNotEquals(final E a, final E b) {
         if (a == null) {
-            Assert.assertFalse("[" + a + "] not equals [" + b + "]", b.equals(a));
+            assertFalse(b.equals(a), "[" + a + "] not equals [" + b + "]");
         } else if (b == null) {
-            Assert.assertFalse("[" + a + "] not equals [" + b + "]", a.equals(b));
+            assertFalse(a.equals(b), "[" + a + "] not equals [" + b + "]");
         } else if (a.equals(b) || b.equals(a)) {
-            Assert.fail("[" + a + "] not equals [" + b + "]");
+            fail("[" + a + "] not equals [" + b + "]");
         }
     }
 
@@ -186,17 +189,17 @@ public class TestUtil {
     private static void assertExpectedErrors(final List<ErrorCollection> expectedErrors, final Runnable runnable) {
         try {
             runnable.run();
-            Assert.fail(RestClientException.class + " exception expected");
+            fail(RestClientException.class + " exception expected");
         } catch (final me.glindholm.jira.rest.client.api.RestClientException e) {
-            Assert.assertEquals(e.getErrorCollections(), expectedErrors);
+            assertEquals(e.getErrorCollections(), expectedErrors);
         }
     }
 
     public static <K> void assertEmptyList(final List<K> iterable) {
-        Assert.assertEquals(iterable, Collections.emptyList());
+        assertEquals(iterable, Collections.emptyList());
     }
 
     public static <K> void assertEmptySet(final Set<K> iterable) {
-        Assert.assertEquals(iterable, Collections.emptySet());
+        assertEquals(iterable, Collections.emptySet());
     }
 }

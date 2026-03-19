@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.CustomFieldOption;
 
@@ -39,7 +39,7 @@ public class CustomFieldOptionJsonParserTest {
         final CustomFieldOption expected = new CustomFieldOption(10017L,
                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10017"), "colors",
                 Collections.emptyList(), null);
-        Assert.assertEquals(expected, customFieldOption);
+        assertEquals(expected, customFieldOption);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class CustomFieldOptionJsonParserTest {
                                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10021"), "green",
                                 Collections.emptyList(), null)
                         ), null);
-        Assert.assertEquals(expected, customFieldOption);
+        assertEquals(expected, customFieldOption);
     }
 
     @Test
@@ -77,6 +77,6 @@ public class CustomFieldOptionJsonParserTest {
         final CustomFieldOption expected = new CustomFieldOption(10017L,
                 TestUtil.toUri("http://localhost:2990/jira/rest/api/2/customFieldOption/10017"), "colors",
                 Collections.emptyList(), child);
-        Assert.assertEquals(expected, customFieldOption);
+        assertEquals(expected, customFieldOption);
     }
 }

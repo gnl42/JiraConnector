@@ -4,13 +4,13 @@ import com.atlassian.jira.rest.client.domain.FavouriteFilter;
 import com.atlassian.jira.rest.client.internal.json.FavouriteFilterJsonParser;
 import com.atlassian.jira.rest.client.internal.json.GenericJsonArrayParser;
 import junit.framework.TestCase;
-import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * User: kalamon
@@ -44,7 +44,7 @@ public class RestParserTest extends TestCase {
             if (is == null) {
                 throw new IOException("Cannot open resource [" + resourcePath + "]");
             }
-            s = IOUtils.toString(is);
+            s = new String(is.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

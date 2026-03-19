@@ -49,7 +49,7 @@ public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestC
 
     @Test
     public void testValidSession() {
-        final Session session = client.getSessionClient().getCurrentSession().claim();
+        final Session session = client.getSessionClient().getCurrentSession().join();
         assertEquals(ADMIN_USERNAME, session.getUsername());
 
     }
@@ -60,20 +60,20 @@ public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestC
         TestUtil.assertErrorCode(401, new Runnable() {
             @Override
             public void run() {
-                client.getSessionClient().getCurrentSession().claim();
+                client.getSessionClient().getCurrentSession().join();
             }
         });
     }
 
     @Test
     public void testGetCurrentSession() throws Exception {
-        final Session session = client.getSessionClient().getCurrentSession().claim();
+        final Session session = client.getSessionClient().getCurrentSession().join();
         assertEquals(ADMIN_USERNAME, session.getUsername());
 
         // that is not a mistake - username and the password for this user is the same
         client = clientFactory.createWithBasicHttpAuthentication(jiraUri, TestConstants.USER1.getName(), TestConstants.USER1
                 .getName());
-        final Session session2 = client.getSessionClient().getCurrentSession().claim();
+        final Session session2 = client.getSessionClient().getCurrentSession().join();
         assertEquals(TestConstants.USER1.getName(), session2.getUsername());
         final OffsetDateTime lastFailedLoginDate = session2.getLoginInfo().getLastFailedLoginDate();
 
@@ -83,14 +83,14 @@ public class AsynchronousSessionRestClientTest extends AbstractAsynchronousRestC
         TestUtil.assertErrorCode(401, new Runnable() {
             @Override
             public void run() {
-                client2.getSessionClient().getCurrentSession().claim();
+                client2.getSessionClient().getCurrentSession().join();
             }
         });
         while (!new OffsetDateTime().isAfter(lastFailedLoginDate)) {
             Thread.sleep(20);
         }
 
-        final Session sessionAfterFailedLogin = client.getSessionClient().getCurrentSession().claim();
+        final Session sessionAfterFailedLogin = client.getSessionClient().getCurrentSession().join();
         assertTrue(sessionAfterFailedLogin.getLoginInfo().getLastFailedLoginDate().isAfter(lastFailedLoginDate));
         assertTrue(sessionAfterFailedLogin.getLoginInfo().getLastFailedLoginDate().isAfter(now));
     }

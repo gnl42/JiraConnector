@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2011 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,8 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.domain.TimeTracking;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class TimeTrackingJsonParserTest {
     @Test
@@ -26,7 +26,7 @@ public class TimeTrackingJsonParserTest {
         final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
         final TimeTracking timeTracking = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/timeTracking/valid.json")
                 .getJSONObject("value"));
-        Assert.assertEquals(new TimeTracking(1500, 70, 190), timeTracking);
+        assertEquals(new TimeTracking(1500, 70, 190), timeTracking);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class TimeTrackingJsonParserTest {
         final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
         final TimeTracking timeTracking = parser.parse(ResourceUtil
                 .getJsonObjectFromResource("/json/timeTracking/valid-no-estimation.json").getJSONObject("value"));
-        Assert.assertEquals(new TimeTracking(null, 170, 9), timeTracking);
+        assertEquals(new TimeTracking(null, 170, 9), timeTracking);
     }
 
     @Test
@@ -42,7 +42,7 @@ public class TimeTrackingJsonParserTest {
         final TimeTrackingJsonParser parser = new TimeTrackingJsonParser();
         final TimeTracking timeTracking = parser.parse(ResourceUtil
                 .getJsonObjectFromResource("/json/timeTracking/valid-just-timespent.json").getJSONObject("value"));
-        Assert.assertEquals(new TimeTracking(null, null, 840), timeTracking);
+        assertEquals(new TimeTracking(null, null, 840), timeTracking);
     }
 
 }

@@ -68,7 +68,7 @@ public class AsynchronousMyPermissionsRestClientTest extends AbstractAsynchronou
 
     private void testWorkIssuePermission(MyPermissionsInput permissionsInput, boolean expectedPermission) {
         // when
-        final Permissions permissions = client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).claim();
+        final Permissions permissions = client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).join();
 
         // then
         assertThat("Context " + permissionsInput, permissions.havePermission(Permissions.WORK_ISSUE), is(expectedPermission));
@@ -76,7 +76,7 @@ public class AsynchronousMyPermissionsRestClientTest extends AbstractAsynchronou
 
     private void testError(MyPermissionsInput permissionsInput, int expectedStatus) {
         try {
-            client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).claim();
+            client.getMyPermissionsRestClient().getMyPermissions(permissionsInput).join();
             fail("rest client should fail for input " + permissionsInput);
         } catch (RestClientException e) {
             assertThat("Context " + permissionsInput, e.getStatusCode(), is(Optional.of(expectedStatus)));

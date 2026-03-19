@@ -44,7 +44,7 @@ public class ExamplesTest extends AbstractAsynchronousRestClientTest {
 
         // -- check state after example
         final Issue issue = client.getIssueClient().getIssue("TST-7", ImmutableList.copyOf(Lists.newArrayList(IssueRestClient
-                .Expandos.values()))).claim();
+                .Expandos.values()))).join();
 
         // votes
         final BasicVotes votes = issue.getVotes();

@@ -18,9 +18,12 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicVotes;
-import org.codehaus.jettison.json.JSONException;
-import org.junit.Assert;
-import org.junit.Test;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @since v0.1
@@ -30,8 +33,8 @@ public class BasicVotesJsonParserTest {
     public void testParse() throws JSONException {
         final BasicVotesJsonParser parser = new BasicVotesJsonParser();
         final BasicVotes basicVotes = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/votes/valid.json"));
-        Assert.assertEquals(1, basicVotes.getVotes());
-        Assert.assertTrue(basicVotes.hasVoted());
-        Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes"), basicVotes.getSelf());
+        assertEquals(1, basicVotes.getVotes());
+        assertTrue(basicVotes.hasVoted());
+        assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes"), basicVotes.getSelf());
     }
 }

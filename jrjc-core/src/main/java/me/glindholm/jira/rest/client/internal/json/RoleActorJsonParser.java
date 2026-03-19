@@ -18,11 +18,9 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.hc.core5.net.URIBuilder;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.RoleActor;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
 
@@ -46,7 +44,7 @@ public class RoleActorJsonParser implements JsonObjectParser<RoleActor> {
     private URI parseAvatarUrl(final JSONObject json) throws URISyntaxException {
         final String pathToAvatar = JsonParseUtil.getOptionalString(json, "avatarUrl");
         if (pathToAvatar != null) {
-            final URI avatarUri = new URIBuilder(pathToAvatar).build();
+            final URI avatarUri = new URI(pathToAvatar);
             return avatarUri.isAbsolute() ? avatarUri : baseJiraUri.resolve(pathToAvatar);
         } else {
             return null;

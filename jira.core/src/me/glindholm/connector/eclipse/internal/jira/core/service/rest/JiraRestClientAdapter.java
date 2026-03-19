@@ -13,6 +13,8 @@
 package me.glindholm.connector.eclipse.internal.jira.core.service.rest;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
 import java.net.URI;
@@ -30,10 +32,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.core5.net.URIBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -41,8 +40,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
-
-import com.atlassian.httpclient.api.factory.HttpClientOptions;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
@@ -83,11 +80,12 @@ import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInputBuilder;
 import me.glindholm.jira.rest.client.api.domain.input.TransitionInput;
 import me.glindholm.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import me.glindholm.jira.rest.client.internal.async.UriBuilder;
 
 /**
  * @author Jacek Jaroczynski
  */
-public class JiraRestClientAdapter {
+public class JiraRestClientAdapter implements Closeable {
 
     private static final Integer TIMEOUT_CONNECTION_IN_MS = 60 * 1000; // one minute
 
@@ -158,14 +156,10 @@ public class JiraRestClientAdapter {
             // return true;
             // }
             // });
-            final HttpClientOptions httpOptions = new HttpClientOptions();
-            httpOptions.setUserAgent("Mylyn Tasks Connector: Jira");
-            httpOptions.setConnectionTimeout(TIMEOUT_CONNECTION_IN_MS, TimeUnit.MILLISECONDS);
-            httpOptions.setSocketTimeout(TIMEOUT_READ_IN_MS, TimeUnit.MILLISECONDS);
             if (userName.isEmpty()) {
-                restClient = new AsynchronousJiraRestClientFactory().createWithBearerHttpAuthentication(new URI(url), password, httpOptions);
+                restClient = new AsynchronousJiraRestClientFactory().createWithBearerHttpAuthentication(new URI(url), password);
             } else {
-                restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password, httpOptions);
+                restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password);
             }
         } catch (final URISyntaxException e) {
             // we should never get here as Mylyn constructs URI first and fails if it is
@@ -177,7 +171,7 @@ public class JiraRestClientAdapter {
     public void addComment(final String issueKey, final String comment) throws JiraException {
 
         call(() -> {
-            restClient.getIssueClient().addComment(getIssue(issueKey).getCommentsUri(), Comment.valueOf(comment)).claim();
+            restClient.getIssueClient().addComment(getIssue(issueKey).getCommentsUri(), Comment.valueOf(comment)).join();
 
             return null;
         });
@@ -196,7 +190,7 @@ public class JiraRestClientAdapter {
     }
 
     public void addAttachment(final String issueKey, final byte[] content, final String filename) throws JiraException {
-        restClient.getIssueClient().addAttachment(getIssue(issueKey).getAttachmentsUri(), new ByteArrayInputStream(content), filename).claim();
+        restClient.getIssueClient().addAttachment(getIssue(issueKey).getAttachmentsUri(), new ByteArrayInputStream(content), filename).join();
     }
 
     public InputStream getAttachment(final URI attachmentUri) throws JiraException {
@@ -346,7 +340,7 @@ public class JiraRestClientAdapter {
     public void addWorklog(final String issueKey, final JiraWorkLog jiraWorklog) throws JiraException {
         final Issue issue = getIssue(issueKey);
         try {
-            restClient.getIssueClient().addWorklog(issue.getWorklogUri(), JiraRestConverter.convert(jiraWorklog, issue.getSelf())).claim();
+            restClient.getIssueClient().addWorklog(issue.getWorklogUri(), JiraRestConverter.convert(jiraWorklog, issue.getSelf())).join();
         } catch (final URISyntaxException e) {
             throw new JiraException(e);
         }
@@ -385,7 +379,7 @@ public class JiraRestClientAdapter {
     public List<JiraAction> getTransitions(final String issueKey) throws JiraException {
 
         try {
-            final URI transitionUri = new URIBuilder(url).appendPath("/rest/api/latest") //
+            final URI transitionUri = new UriBuilder(new URI(url)).appendPath("/rest/api/latest") //
                     .appendPath("issue") //
                     .appendPath(issueKey) //
                     .appendPath("transitions") //$NON-NLS-1$
@@ -480,7 +474,7 @@ public class JiraRestClientAdapter {
         final TransitionInput transitionInput = new TransitionInput(Integer.parseInt(transitionKey), fields, outComment);
 
         try {
-            restClient.getIssueClient().transition(getIssue(issue.getKey()), transitionInput).claim();
+            restClient.getIssueClient().transition(getIssue(issue.getKey()), transitionInput).join();
         } catch (URISyntaxException | JiraException e) {
             throw new JiraException(e);
         }
@@ -493,7 +487,7 @@ public class JiraRestClientAdapter {
         final IssueInput fields = IssueInput
                 .createWithFields(new FieldInput(JiraRestFields.ASSIGNEE, ComplexIssueInputFieldValue.with(cache.getServerInfo().getAccountTag(), user)));
         try {
-            restClient.getIssueClient().updateIssue(issue.getKey(), fields).claim();
+            restClient.getIssueClient().updateIssue(issue.getKey(), fields).join();
         } catch (final URISyntaxException e) {
             throw new JiraException(e);
         }
@@ -734,7 +728,7 @@ public class JiraRestClientAdapter {
 
         call(() -> {
             final IssueInput issueInput = IssueInput.createWithFields(updateFields.toArray(new FieldInput[0]));
-            restClient.getIssueClient().updateIssue(issue.getKey(), issueInput).claim();
+            restClient.getIssueClient().updateIssue(issue.getKey(), issueInput).join();
             return null;
         });
 
@@ -814,7 +808,7 @@ public class JiraRestClientAdapter {
     public void deleteIssue(final String key, final IProgressMonitor monitor) throws JiraException {
         call(() -> {
             try {
-                restClient.getIssueClient().deleteIssue(key, true).claim();
+                restClient.getIssueClient().deleteIssue(key, true).join();
             } catch (final URISyntaxException e) {
                 throw new JiraException(e);
             }
@@ -827,6 +821,13 @@ public class JiraRestClientAdapter {
             return restClient.getUserClient().findAssignableUsersForProject(projectKey, null, 1000, true, false).get();
         } catch (InterruptedException | ExecutionException | URISyntaxException e) {
             throw new JiraException(e);
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (restClient != null) {
+            restClient.close();
         }
     }
 }

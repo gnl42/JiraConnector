@@ -17,9 +17,10 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,8 +48,7 @@ public class ResourceUtil {
 
     public static String getStringFromResource(String resourcePath) {
         final String s;
-        try {
-            final InputStream is = ResourceUtil.class.getResourceAsStream(resourcePath);
+        try (final InputStream is = ResourceUtil.class.getResourceAsStream(resourcePath)) {
             if (is == null) {
                 throw new IOException("Cannot open resource [" + resourcePath + "]");
             }

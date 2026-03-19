@@ -20,7 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
@@ -39,37 +39,37 @@ public interface ProjectRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Project> getProject(String key) throws URISyntaxException;
+    CompletableFuture<Project> getProject(String key) throws URISyntaxException;
 
     /**
-     * Retrieves complete information about given project. Use this method rather than
-     * {@link ProjectRestClient#getProject(String)} wheever you can, as this method is proof for
-     * potential changes of URI scheme used for exposing various resources by JIRA REST API.
+     * Retrieves complete information about the project identified by the given URI.
+     * <p>
+     * This is a URI-based variant of {@link #getProject(String)}, intended for use when
+     * the caller already has a project resource URI (for example, from another API call).
      *
-     * @param projectUri URI to project resource (usually get from <code>self</code> attribute
-     *                   describing component elsewhere
-     * @return complete information about given project
+     * @param projectUri the URI of the project resource
+     * @return a future containing complete information about the given project
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<Project> getProject(URI projectUri);
+    CompletableFuture<Project> getProject(URI projectUri);
 
     /**
-     * Returns all projects, which are visible for the currently logged in user. If no user is logged
-     * in, it returns the list of projects that are visible when using anonymous access.
+     * Retrieves basic information about all projects visible to the currently authenticated user.
      *
-     * @return projects which the currently logged user can see
-     * @throws URISyntaxException
-     * @since me.glindholm.jira.rest.client.api: 0.2, server 4.3
+     * @return a future containing a list of basic representations of all accessible projects
+     * @throws URISyntaxException if the URI used to access the project collection is invalid
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<List<BasicProject>> getAllProjects() throws URISyntaxException;
+    CompletableFuture<List<BasicProject>> getAllProjects() throws URISyntaxException;
 
     /**
-     * Returns the security level for the project
+     * Retrieves the issue security level configuration for the project identified by the given key.
      *
-     * @param projectKey
-     * @return
-     * @throws URISyntaxException
+     * @param projectKey unique key of the project (usually 2+ characters)
+     * @return a future containing the security level information for the specified project
+     * @throws URISyntaxException if the URI used to access the project's security level is invalid
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<SecurityLevel> getSecurityLevel(String projectKey) throws URISyntaxException;
+    CompletableFuture<SecurityLevel> getSecurityLevel(String projectKey) throws URISyntaxException;
 
 }

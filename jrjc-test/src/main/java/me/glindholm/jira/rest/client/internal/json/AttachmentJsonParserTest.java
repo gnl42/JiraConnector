@@ -17,12 +17,13 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
 
@@ -32,11 +33,11 @@ public class AttachmentJsonParserTest {
     public void testParse() throws Exception {
         final AttachmentJsonParser parser = new AttachmentJsonParser();
         final Attachment attachment = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/attachment/valid.json"));
-        Assert.assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"), attachment.getSelf());
-        Assert.assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10031/snipe.png"), attachment.getContentUri());
-        Assert.assertEquals("admin", attachment.getAuthor().getName());
+        assertEquals(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"), attachment.getSelf());
+        assertEquals(toUri("http://localhost:8090/jira/secure/attachment/10031/snipe.png"), attachment.getContentUri());
+        assertEquals("admin", attachment.getAuthor().getName());
 
-        Assert.assertEquals(new Attachment(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"),
+        assertEquals(new Attachment(toUri("http://localhost:8090/jira/rest/api/latest/attachment/10031"),
                 "snipe.png", TestConstants.USER_ADMIN_BASIC_DEPRECATED, OffsetDateTime.of(2010, 7, 26, 13, 31, 35, 577000000, ZoneOffset.ofHours(2)),
                 31020, "image/png", toUri("http://localhost:8090/jira/secure/attachment/10031/snipe.png"),
                 toUri("http://localhost:8090/jira/secure/thumbnail/10031/10031_snipe.png")), attachment);
@@ -47,7 +48,7 @@ public class AttachmentJsonParserTest {
         final AttachmentJsonParser parser = new AttachmentJsonParser();
         final Attachment attachment = parser.parse(ResourceUtil
                 .getJsonObjectFromResource("/json/attachment/valid-anonymousAuthor.json"));
-        Assert.assertNull(attachment.getAuthor());
+        assertNull(attachment.getAuthor());
     }
 
     @Test
@@ -55,7 +56,7 @@ public class AttachmentJsonParserTest {
         final AttachmentJsonParser parser = new AttachmentJsonParser();
         final Attachment attachment = parser.parse(ResourceUtil
                 .getJsonObjectFromResource("/json/attachment/valid-anonymousAuthor-oldRepresentation.json"));
-        Assert.assertNull(attachment.getAuthor());
+        assertNull(attachment.getAuthor());
     }
 
 }

@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.User;
 import me.glindholm.jira.rest.client.api.domain.input.UserInput;
 
@@ -39,7 +39,7 @@ public interface UserRestClient {
      * @return user
      * @throws URISyntaxException
      */
-    Promise<User> getCurrentUser() throws URISyntaxException;
+    CompletableFuture<User> getCurrentUser() throws URISyntaxException;
 
     /**
      * Retrieves detailed information about selected user. Try to use {@link #getUser(URI)} instead as
@@ -50,7 +50,7 @@ public interface UserRestClient {
      * @throws URISyntaxException
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<User> getUser(String username) throws URISyntaxException;
+    CompletableFuture<User> getUser(String username) throws URISyntaxException;
 
     /**
      * Retrieves detailed information about selected user. This method is preferred over
@@ -60,7 +60,7 @@ public interface UserRestClient {
      * @return complete information about given user
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<User> getUser(URI userUri);
+    CompletableFuture<User> getUser(URI userUri);
 
     /**
      * Create user. By default created user will not be notified with email. If password field is not
@@ -73,7 +73,7 @@ public interface UserRestClient {
      *
      * @since v5.1.0
      */
-    Promise<User> createUser(UserInput userInput) throws URISyntaxException;
+    CompletableFuture<User> createUser(UserInput userInput) throws URISyntaxException;
 
     /**
      * Modify user. The "value" fields present will override the existing value. Fields skipped in
@@ -86,7 +86,7 @@ public interface UserRestClient {
      *
      * @since v5.1.0
      */
-    Promise<User> updateUser(URI userUri, UserInput userInput);
+    CompletableFuture<User> updateUser(URI userUri, UserInput userInput);
 
     /**
      * Removes user.
@@ -97,7 +97,7 @@ public interface UserRestClient {
      *
      * @since v5.1.0
      */
-    Promise<Void> removeUser(URI userUri);
+    CompletableFuture<Void> removeUser(URI userUri);
 
     /**
      * Returns a list of users that match the search string. This resource cannot be accessed
@@ -110,7 +110,7 @@ public interface UserRestClient {
      *
      * @since v5.1.0
      */
-    Promise<List<User>> findUsers(String username) throws URISyntaxException;
+    CompletableFuture<List<User>> findUsers(String username) throws URISyntaxException;
 
     /**
      * Returns a list of users that match the search string. This resource cannot be accessed
@@ -129,7 +129,7 @@ public interface UserRestClient {
      *
      * @since v5.1.0
      */
-    Promise<List<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults, @Nullable Boolean includeActive,
+    CompletableFuture<List<User>> findUsers(String username, @Nullable Integer startAt, @Nullable Integer maxResults, @Nullable Boolean includeActive,
             @Nullable Boolean includeInactive) throws URISyntaxException;
 
     /**
@@ -149,10 +149,10 @@ public interface UserRestClient {
      *
      * @since v6.0.0
      */
-    Promise<List<User>> findAssignableUsersForIssue(final String issueKey, @Nullable Integer startAt, @Nullable Integer maxResults,
+    CompletableFuture<List<User>> findAssignableUsersForIssue(final String issueKey, @Nullable Integer startAt, @Nullable Integer maxResults,
             @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException;
 
-    Promise<List<User>> findAssignableUsersForProject(final String projectKey, @Nullable Integer startAt, @Nullable Integer maxResults,
+    CompletableFuture<List<User>> findAssignableUsersForProject(final String projectKey, @Nullable Integer startAt, @Nullable Integer maxResults,
             @Nullable Boolean includeActive, @Nullable Boolean includeInactive) throws URISyntaxException;
 
 }

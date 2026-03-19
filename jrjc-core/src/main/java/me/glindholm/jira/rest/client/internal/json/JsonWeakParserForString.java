@@ -16,7 +16,7 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import org.codehaus.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class JsonWeakParserForString implements JsonWeakParser<String> {
     @Override
@@ -24,8 +24,7 @@ public class JsonWeakParserForString implements JsonWeakParser<String> {
         try {
             return (String) o;
         } catch (final ClassCastException e) {
-            throw new JSONException("Expected [" + String.class.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]");
+            throw new JSONException("Expected [" + String.class.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]", e);
         }
     }
-
 }

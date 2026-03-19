@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,10 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.StatusCategory;
 import me.glindholm.jira.rest.client.api.domain.Status;
-import org.codehaus.jettison.json.JSONException;
-import org.junit.Assert;
-import org.junit.Test;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
 
@@ -30,7 +31,7 @@ public class StatusJsonParserTest {
     public void testParseNoStatusCategory() throws JSONException {
         final StatusJsonParser parser = new StatusJsonParser();
         final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/valid.json"));
-        Assert.assertEquals(new Status(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
+        assertEquals(new Status(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
                 1L, "Open", "The issue is open and ready for the assignee to start work on it.",
                 toUri("http://localhost:8090/jira/images/icons/status_open.gif"), null), status);
     }
@@ -42,10 +43,10 @@ public class StatusJsonParserTest {
                 toUri("https://localhost:8080/rest/api/latest/statuscategory/2"),"New",2l,"new","blue-gray");
 
         final Status status = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/status/validStatusCategory.json"));
-        Assert.assertEquals(new Status(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
+        assertEquals(new Status(toUri("http://localhost:8090/jira/rest/api/latest/status/1"),
                 1L, "Open", "The issue is open and ready for the assignee to start work on it.",
                 toUri("http://localhost:8090/jira/images/icons/status_open.gif"), null), status);
 
-        Assert.assertEquals(status.getStatusCategory(), statusCategory);
+        assertEquals(status.getStatusCategory(), statusCategory);
     }
 }

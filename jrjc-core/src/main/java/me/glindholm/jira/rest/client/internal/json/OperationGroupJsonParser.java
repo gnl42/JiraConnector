@@ -19,12 +19,11 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.OperationGroup;
 import me.glindholm.jira.rest.client.api.domain.OperationHeader;
 import me.glindholm.jira.rest.client.api.domain.OperationLink;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class OperationGroupJsonParser implements JsonObjectParser<OperationGroup> {
     final private OperationLinkJsonParser linkJsonParser = new OperationLinkJsonParser();

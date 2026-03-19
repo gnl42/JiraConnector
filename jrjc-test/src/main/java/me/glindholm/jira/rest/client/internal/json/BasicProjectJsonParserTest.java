@@ -18,15 +18,16 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 public class BasicProjectJsonParserTest {
     @Test
     public void testParse() throws Exception {
         BasicProjectJsonParser parser = new BasicProjectJsonParser();
         final BasicProject project = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/project/basic.json"));
-        Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/RST"), project.getSelf());
-        Assert.assertEquals("RST", project.getKey());
+        assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/project/RST"), project.getSelf());
+        assertEquals("RST", project.getKey());
     }
 }

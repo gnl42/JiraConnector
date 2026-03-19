@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2011 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +17,10 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.domain.Visibility;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static me.glindholm.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VisibilityJsonParserTest {
     @Test

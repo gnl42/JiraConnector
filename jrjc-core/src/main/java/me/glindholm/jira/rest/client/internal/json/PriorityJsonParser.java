@@ -18,11 +18,10 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URI;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.Priority;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class PriorityJsonParser implements JsonObjectParser<Priority> {
     private final BasicPriorityJsonParser basicPriorityJsonParser = new BasicPriorityJsonParser();

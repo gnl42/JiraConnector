@@ -47,6 +47,8 @@ public class TestConstants {
     // USER1_BASIC_DEPRECATED is deprecated - all tests that use this constant
     // should be reviewed (JIRA now returns more info than we test)
     public static final BasicUser USER1_BASIC_DEPRECATED = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=wseliga"),
+            USER1_USERNAME, "Wojciech Seliga", null, null, false);
+    public static final BasicUser USER1_BASIC_DEPRECATED_2 = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=wseliga"),
             USER1_USERNAME, "Wojciech Seliga");
     public static final BasicUser USER1_BASIC = new BasicUser(toUri("http://localhost:8090/jira/rest/api/2/user?username=wseliga"), USER1_USERNAME,
             "Wojciech Seliga", "wojciech.seliga@spartez.com", null, true);
@@ -58,7 +60,7 @@ public class TestConstants {
     // USER_ADMIN_DEPRECATED this is deprecated - all tests that use this constant
     // should be reviewed (JIRA now returns more info than we test)
     public static final BasicUser USER_ADMIN_BASIC_DEPRECATED = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"),
-            ADMIN_USERNAME, "Administrator");
+            ADMIN_USERNAME, "Administrator", null, null, false);
     public static final BasicUser USER_ADMIN_BASIC = new BasicUser(toUri("http://localhost:8090/jira/rest/api/2/user?username=admin"), ADMIN_USERNAME,
             "Administrator");
     public static final BasicUser USER_ADMIN_BASIC_LATEST = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"),

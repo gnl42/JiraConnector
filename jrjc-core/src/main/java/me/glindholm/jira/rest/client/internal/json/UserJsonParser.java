@@ -23,12 +23,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.ExpandableProperty;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.User;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class UserJsonParser implements JsonObjectParser<User> {
     @Override

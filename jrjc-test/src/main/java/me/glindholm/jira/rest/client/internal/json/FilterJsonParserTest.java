@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,17 +16,19 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.api.domain.Filter;
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.Test;
-
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
 import static me.glindholm.jira.rest.client.internal.json.TestConstants.USER_ADMIN_BASIC_LATEST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.is;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import me.glindholm.jira.rest.client.api.domain.Filter;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class FilterJsonParserTest {
 

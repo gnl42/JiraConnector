@@ -19,7 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.ProjectRole;
 
 /**
@@ -36,27 +36,12 @@ public interface ProjectRolesRestClient {
      * @return full information about selected role.
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      */
-    Promise<ProjectRole> getRole(URI uri);
+    CompletableFuture<ProjectRole> getRole(URI uri);
 
-    /**
-     * Retrieves a full information about the selected role.
-     *
-     * @param projectUri uri of the project of the role to retrieve.
-     * @param roleId     unique role id.
-     * @return full information about selected role.
-     * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-     */
-    Promise<ProjectRole> getRole(URI projectUri, Long roleId) throws URISyntaxException;
+    // ...existing javadoc...
+    CompletableFuture<ProjectRole> getRole(URI projectUri, Long roleId) throws URISyntaxException;
 
-    /**
-     * Retrieves a collection of roles in the selected project.
-     *
-     * @param projectUri uri of the project of the roles to retrieve.
-     * @return a collection of roles in the selected project.
-     * @throws URISyntaxException
-     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
-     */
-    Promise<List<ProjectRole>> getRoles(URI projectUri) throws URISyntaxException;
+    // ...existing javadoc...
+    CompletableFuture<List<ProjectRole>> getRoles(URI projectUri) throws URISyntaxException;
 
 }

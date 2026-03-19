@@ -19,9 +19,6 @@ package me.glindholm.jira.rest.client.api;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import com.atlassian.httpclient.api.HttpClient;
-import com.atlassian.httpclient.api.factory.HttpClientOptions;
-
 /**
  * Factory for producing JIRA REST com.atlassian.jira.client with selected authentication handler
  *
@@ -58,28 +55,18 @@ public interface JiraRestClientFactory {
     JiraRestClient createWithAuthenticationHandler(final URI serverUri, final AuthenticationHandler authenticationHandler) throws URISyntaxException;
 
     /**
-     * Creates an instance of JiraRestClient with given Atlassian HttpClient. Please note, that this
-     * me.glindholm.jira.rest.client.api has to be fully configured to do the request authentication.
+     * Creates an instance of JiraRestClient with given HttpClient settings.
      *
      * @param serverUri  - URI of JIRA instance.
-     * @param httpClient - instance of Atlassian HttpClient.
+     * @param httpClient - instance of java.net.http.HttpClient.
      */
-    JiraRestClient create(final URI serverUri, final HttpClient httpClient) throws URISyntaxException;
+    JiraRestClient create(final URI serverUri, final java.net.http.HttpClient httpClient) throws URISyntaxException;
 
-    /**
-     * Creates an instance of JiraRestClient with Bearer HttpClient settings. HttpClient will conduct a
-     * Bearer authentication for given token.
-     *
-     * @param serverUri
-     * @param password
-     * @return
-     * @throws URISyntaxException
-     */
     JiraRestClient createWithBearerHttpAuthentication(URI serverUri, String token) throws URISyntaxException;
 
-    JiraRestClient createWithBearerHttpAuthentication(URI uri, String token, HttpClientOptions httpOptions) throws URISyntaxException;
+    JiraRestClient createWithBearerHttpAuthentication(URI uri, String token, java.net.http.HttpClient httpClient) throws URISyntaxException;
 
-    JiraRestClient createWithBasicHttpAuthentication(URI uri, String username, String password, HttpClientOptions httpOptions) throws URISyntaxException;
+    JiraRestClient createWithBasicHttpAuthentication(URI uri, String username, String password, java.net.http.HttpClient httpClient) throws URISyntaxException;
 
-    JiraRestClient create(URI uri, AuthenticationHandler authenticationHandler, HttpClientOptions httpOptions) throws URISyntaxException;
+    JiraRestClient create(URI uri, AuthenticationHandler authenticationHandler, java.net.http.HttpClient httpClient) throws URISyntaxException;
 }

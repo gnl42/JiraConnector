@@ -16,15 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class BasicUserJsonGenerator implements JsonGenerator<BasicUser> {
     @Override
-    public JSONObject generate(final BasicUser user) throws JSONException {
-        return new JSONObject().put("self", user.getSelf()).put("name", user.getName()).put("accountId", user.getAccountId()).put("displayName",
+    public JSONObject generate(final BasicUser user) throws JsonProcessingException {
+        return new JSONObject().put("self", user.getSelf()).put("name", user.getName()).putOpt("accountId", user.getAccountId()).put("displayName",
                 user.getDisplayName());
     }
 }

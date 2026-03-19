@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,15 +17,15 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.domain.SessionCookie;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 
 public class SessionCookieJsonParserTest {
     @Test
     public void testParse() throws Exception {
         final SessionCookieJsonParser parser = new SessionCookieJsonParser();
-        Assert.assertEquals(new SessionCookie("JSESSIONID", "E5BD072ABEE0082DE4D6C8C2B6D96B79"),
+        assertEquals(new SessionCookie("JSESSIONID", "E5BD072ABEE0082DE4D6C8C2B6D96B79"),
                 parser.parse(ResourceUtil.getJsonObjectFromResource("/json/sessionCookie/valid.json")));
     }
 }

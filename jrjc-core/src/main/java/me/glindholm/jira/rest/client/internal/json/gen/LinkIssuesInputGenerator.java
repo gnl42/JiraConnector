@@ -16,12 +16,12 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.input.LinkIssuesInput;
 import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class LinkIssuesInputGenerator implements JsonGenerator<LinkIssuesInput> {
 
@@ -32,7 +32,7 @@ public class LinkIssuesInputGenerator implements JsonGenerator<LinkIssuesInput> 
     }
 
     @Override
-    public JSONObject generate(final LinkIssuesInput linkIssuesInput) throws JSONException {
+    public JSONObject generate(final LinkIssuesInput linkIssuesInput) throws JsonProcessingException {
         final JSONObject res = new JSONObject();
 
         final int buildNumber = serverInfo.getBuildNumber();

@@ -23,15 +23,11 @@ import static me.glindholm.jira.rest.client.TestUtil.toUri;
 import static me.glindholm.jira.rest.client.internal.json.ResourceUtil.getJsonObjectFromResource;
 import static me.glindholm.jira.rest.client.test.matchers.IssueMatchers.issuesWithKeys;
 import static me.glindholm.jira.rest.client.test.matchers.SearchResultMatchers.searchResultWithParamsAndIssueCount;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
-import org.codehaus.jettison.json.JSONException;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.BasicPriority;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
@@ -41,16 +37,14 @@ import me.glindholm.jira.rest.client.api.domain.Issue;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.SearchResult;
 import me.glindholm.jira.rest.client.api.domain.Status;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class SearchResultJsonParserTest {
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
 
     final SearchResultJsonParser parser = new SearchResultJsonParser();
 
     @Test
-    @Ignore("Can't find watchers")
+    @Disabled("Can't find watchers")
     public void testParse() throws Exception {
         final SearchResult searchResult = parser.parse(getJsonObjectFromResource("/json/search/issues1.json"));
 
@@ -61,7 +55,7 @@ public class SearchResultJsonParserTest {
     }
 
     @Test
-    @Ignore("Can't find watchers")
+    @Disabled("Can't find watchers")
     public void testParseMany() throws Exception {
         final SearchResult searchResult = parser.parse(getJsonObjectFromResource("/json/search/many-issues.json"));
 
@@ -75,11 +69,10 @@ public class SearchResultJsonParserTest {
     }
 
     @Test
-    public void testParseInvalidTotal() throws Exception {
-        exception.expect(JSONException.class);
-        exception.expectMessage("JSONObject[\"total\"] is not a number.");
-
-        parser.parse(getJsonObjectFromResource("/json/search/issues-invalid-total.json"));
+    public void testParseInvalidTotal() {
+        final JSONException e = assertThrows(JSONException.class,
+                () -> parser.parse(getJsonObjectFromResource("/json/search/issues-invalid-total.json")));
+        assertTrue(e.getMessage().contains("JSONObject[\"total\"] is not a number."));
     }
 
     private void assertIssueIsTST7(final Issue issue) {

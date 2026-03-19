@@ -18,13 +18,10 @@ package me.glindholm.jira.rest.client.internal.async;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-import org.apache.hc.core5.net.URIBuilder;
 import org.eclipse.jdt.annotation.Nullable;
 
-import com.atlassian.httpclient.api.HttpClient;
-
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.UserRestClient;
 import me.glindholm.jira.rest.client.api.domain.User;
 import me.glindholm.jira.rest.client.api.domain.input.UserInput;
@@ -56,55 +53,54 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
 
     private final URI baseUri;
 
-    public AsynchronousUserRestClient(final URI baseUri, final HttpClient client) {
+    public AsynchronousUserRestClient(final URI baseUri, final DisposableHttpClient client) {
         super(client);
         this.baseUri = baseUri;
     }
 
     @Override
-    public Promise<User> getCurrentUser() throws URISyntaxException {
-        final URI userUri = new URIBuilder(baseUri).appendPath("myself").build();
+    public CompletableFuture<User> getCurrentUser() throws URISyntaxException {
+        final URI userUri = new UriBuilder(baseUri).appendPath("myself").build();
         return getUser(userUri);
     }
 
     @Override
-    public Promise<User> getUser(final String username) throws URISyntaxException {
-        final URI userUri = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX).addParameter("username", username).addParameter("expand", "groups").build();
+    public CompletableFuture<User> getUser(final String username) throws URISyntaxException {
+        final URI userUri = new UriBuilder(baseUri).appendPath(USER_URI_PREFIX).addParameter("username", username).addParameter("expand", "groups").build();
         return getUser(userUri);
     }
 
     @Override
-    public Promise<User> getUser(final URI userUri) {
+    public CompletableFuture<User> getUser(final URI userUri) {
         return getAndParse(userUri, userJsonParser);
     }
 
     @Override
-    public Promise<User> createUser(final UserInput user) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX);
+    public CompletableFuture<User> createUser(final UserInput user) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath(USER_URI_PREFIX);
         return postAndParse(uriBuilder.build(), user, new UserInputJsonGenerator(), userJsonParser);
     }
 
     @Override
-    public Promise<User> updateUser(final URI userUri, final UserInput user) {
+    public CompletableFuture<User> updateUser(final URI userUri, final UserInput user) {
         return putAndParse(userUri, user, new UserInputJsonGenerator(), userJsonParser);
     }
 
     @Override
-    public Promise<Void> removeUser(final URI userUri) {
+    public CompletableFuture<Void> removeUser(final URI userUri) {
         return delete(userUri);
     }
 
     @Override
-    public Promise<List<User>> findUsers(final String username) throws URISyntaxException {
+    public CompletableFuture<List<User>> findUsers(final String username) throws URISyntaxException {
         return findUsers(username, null, null, null, null);
     }
 
     @Override
-    public Promise<List<User>> findUsers(final String username, @Nullable final Integer startAt, @Nullable final Integer maxResults,
+    public CompletableFuture<List<User>> findUsers(final String username, @Nullable final Integer startAt, @Nullable final Integer maxResults,
             @Nullable final Boolean includeActive, @Nullable final Boolean includeInactive) throws URISyntaxException {
 
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX).appendPath(SEARCH_URI_PREFIX).addParameter(USERNAME_ATTRIBUTE,
-                username);
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath(USER_URI_PREFIX).appendPath(SEARCH_URI_PREFIX).addParameter(USERNAME_ATTRIBUTE, username);
 
         addOptionalQueryParam(uriBuilder, START_AT_ATTRIBUTE, startAt);
         addOptionalQueryParam(uriBuilder, MAX_RESULTS_ATTRIBUTE, maxResults);
@@ -116,23 +112,21 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
     }
 
     @Override
-    public Promise<List<User>> findAssignableUsersForIssue(final String issueKey, final Integer startAt, final Integer maxResults, final Boolean includeActive,
-            final Boolean includeInactive) throws URISyntaxException {
+    public CompletableFuture<List<User>> findAssignableUsersForIssue(final String issueKey, final Integer startAt, final Integer maxResults,
+            final Boolean includeActive, final Boolean includeInactive) throws URISyntaxException {
         return findAssignableUsers(ISSUE_ATTRIBUTE, issueKey, startAt, maxResults, includeActive, includeInactive);
     }
 
     @Override
-    public Promise<List<User>> findAssignableUsersForProject(final String projectKey, final Integer startAt, final Integer maxResults,
+    public CompletableFuture<List<User>> findAssignableUsersForProject(final String projectKey, final Integer startAt, final Integer maxResults,
             final Boolean includeActive, final Boolean includeInactive) throws URISyntaxException {
         return findAssignableUsers(PROJECT_ATTRIBUTE, projectKey, startAt, maxResults, includeActive, includeInactive);
     }
 
-    private Promise<List<User>> findAssignableUsers(final String searchAttriubute, final String key, final Integer startAt, final Integer maxResults,
-            final Boolean includeActive,
-
-            final Boolean includeInactive) throws URISyntaxException {
-        final URIBuilder uriBuilder = new URIBuilder(baseUri).appendPath(USER_URI_PREFIX).appendPath(ASSIGNABLE_SEARCH_URI_PREFIX)
-                .addParameter(searchAttriubute, key);
+    private CompletableFuture<List<User>> findAssignableUsers(final String searchAttribute, final String key, final Integer startAt, final Integer maxResults,
+            final Boolean includeActive, final Boolean includeInactive) throws URISyntaxException {
+        final UriBuilder uriBuilder = new UriBuilder(baseUri).appendPath(USER_URI_PREFIX).appendPath(ASSIGNABLE_SEARCH_URI_PREFIX)
+                .addParameter(searchAttribute, key);
 
         addOptionalQueryParam(uriBuilder, START_AT_ATTRIBUTE, startAt);
         addOptionalQueryParam(uriBuilder, MAX_RESULTS_ATTRIBUTE, maxResults);
@@ -143,10 +137,9 @@ public class AsynchronousUserRestClient extends AbstractAsynchronousRestClient i
         return getAndParse(usersUri, usersJsonParser);
     }
 
-    private static void addOptionalQueryParam(final URIBuilder uriBuilder, final String key, final Object value) {
+    private static void addOptionalQueryParam(final UriBuilder uriBuilder, final String key, final Object value) {
         if (value != null) {
             uriBuilder.addParameter(key, String.valueOf(value));
         }
     }
-
 }

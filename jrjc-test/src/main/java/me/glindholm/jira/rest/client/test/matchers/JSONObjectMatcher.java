@@ -16,9 +16,10 @@
 
 package me.glindholm.jira.rest.client.test.matchers;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.hamcrest.Description;
-import org.junit.internal.matchers.TypeSafeMatcher;
+import org.hamcrest.TypeSafeMatcher;
+
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class JSONObjectMatcher extends TypeSafeMatcher<JSONObject> {
 

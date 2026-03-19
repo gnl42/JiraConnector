@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,10 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
@@ -33,10 +34,10 @@ public class VotesJsonParserTest {
     public void testParse() throws Exception {
         final VotesJsonParser parser = new VotesJsonParser();
         final Votes votes = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/votes/complete.json"));
-        Assert.assertEquals(2, ((List<BasicUser>) votes.getUsers()).size());
-        Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, ((List<BasicUser>) votes.getUsers()).get(0));
-        Assert.assertFalse(votes.hasVoted());
-        Assert.assertEquals(2, votes.getVotes());
-        Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes"), votes.getSelf());
+        assertEquals(2, ((List<BasicUser>) votes.getUsers()).size());
+        assertEquals(TestConstants.USER1_BASIC_DEPRECATED, ((List<BasicUser>) votes.getUsers()).get(0));
+        assertFalse(votes.hasVoted());
+        assertEquals(2, votes.getVotes());
+        assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-1/votes"), votes.getSelf());
     }
 }

@@ -38,7 +38,7 @@ public class AsynchronousIssueRestClientWithAnonymousThingsAsynchronousRestClien
 
     @Test
     public void testGetUnassignedIssue() throws Exception {
-        final Issue issue = client.getIssueClient().getIssue("TST-1").claim();
+        final Issue issue = client.getIssueClient().getIssue("TST-1").join();
         assertEquals("TST-1", issue.getKey());
         assertNull(issue.getAssignee());
     }

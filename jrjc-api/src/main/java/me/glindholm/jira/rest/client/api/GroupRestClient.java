@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.Group;
 
 /**
@@ -37,26 +37,12 @@ public interface GroupRestClient {
      * @return list of groups
      * @throws URISyntaxException
      */
-    Promise<List<Group>> findGroups() throws URISyntaxException;
+    CompletableFuture<List<Group>> findGroups() throws URISyntaxException;
 
     /**
-     * Returns groups with substrings matching a given query. This is mainly for use with the group
-     * picker, so the returned groups contain html to be used as picker suggestions. The groups are also
-     * wrapped in a single response object that also contains a header for use in the picker,
-     * specifically showing X of Y matching groups.
-     *
-     * The number of groups returned is limited by the system property "jira.ajax.autocomplete.limit"
-     *
-     * The groups will be unique and sorted.
-     *
-     * @param query      A string to match groups against
-     * @param exclude    Exclude groups
-     * @param maxResults The maximum number of groups to return
-     * @param userName   A user name
-     * @return list of groups that match the search string
-     * @throws URISyntaxException
+     * Returns groups with substrings matching a given query.
      */
-    Promise<List<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
+    CompletableFuture<List<Group>> findGroups(@Nullable String query, @Nullable String exclude, @Nullable Integer maxResults, @Nullable String userName)
             throws URISyntaxException;
 
 }

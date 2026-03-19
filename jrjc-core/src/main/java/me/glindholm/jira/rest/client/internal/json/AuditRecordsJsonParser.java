@@ -4,13 +4,12 @@ import java.net.URISyntaxException;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.AuditAssociatedItem;
 import me.glindholm.jira.rest.client.api.domain.AuditChangedValue;
 import me.glindholm.jira.rest.client.api.domain.AuditRecord;
 import me.glindholm.jira.rest.client.api.domain.AuditRecordsData;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * @since v2.0

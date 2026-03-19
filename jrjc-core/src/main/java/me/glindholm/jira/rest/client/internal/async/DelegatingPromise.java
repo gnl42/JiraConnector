@@ -16,94 +16,51 @@
 
 package me.glindholm.jira.rest.client.internal.async;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
-import io.atlassian.util.concurrent.Promise;
 import me.glindholm.jira.rest.client.api.RestClientException;
 
 /**
- * This class delegates all calls to given delegate Promise. Additionally it throws new
- * RestClientException with original RestClientException given as a cause, which gives a more useful
- * stack trace.
+ * A CompletableFuture wrapper that re-wraps RestClientExceptions from the delegate,
+ * providing more useful stack traces.
  */
-public class DelegatingPromise<T> implements Promise<T> {
+public class DelegatingPromise<T> extends CompletableFuture<T> {
 
-    private final Promise<T> delegate;
-
-    public DelegatingPromise(final Promise<T> delegate) {
-        this.delegate = delegate;
+    public DelegatingPromise(final CompletableFuture<T> delegate) {
+        delegate.whenComplete((result, ex) -> {
+            if (ex != null) {
+                if (ex instanceof RestClientException rce) {
+                    completeExceptionally(new RestClientException(rce));
+                } else if (ex.getCause() instanceof RestClientException rce) {
+                    completeExceptionally(new RestClientException(rce));
+                } else {
+                    completeExceptionally(ex);
+                }
+            } else {
+                complete(result);
+            }
+        });
     }
 
-    @Override
+    /**
+     * Synchronously waits for and returns the result, similar to the old Promise.claim().
+     */
     public T claim() {
         try {
-            return delegate.claim();
-        } catch (final RestClientException e) {
+            return get();
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new RestClientException(e);
+        } catch (final ExecutionException e) {
+            final Throwable cause = e.getCause();
+            if (cause instanceof RestClientException rce) {
+                throw rce;
+            }
+            throw new RestClientException(cause);
         }
-    }
-
-    @Override
-    public Promise<T> done(final Consumer<? super T> e) {
-        return delegate.done(e);
-    }
-
-    @Override
-    public Promise<T> fail(final Consumer<Throwable> e) {
-        return delegate.fail(e);
-    }
-
-    @Override
-    public Promise<T> then(final TryConsumer<? super T> consumer) {
-        return delegate.then(consumer);
-    }
-
-    @Override
-    public <B> Promise<B> map(final Function<? super T, ? extends B> function) {
-        return delegate.map(function);
-    }
-
-    @Override
-    public <B> Promise<B> flatMap(final Function<? super T, ? extends Promise<? extends B>> function) {
-        return delegate.flatMap(function);
-    }
-
-    @Override
-    public Promise<T> recover(final Function<Throwable, ? extends T> handleThrowable) {
-        return delegate.recover(handleThrowable);
-    }
-
-    @Override
-    public <B> Promise<B> fold(final Function<Throwable, ? extends B> handleThrowable, final Function<? super T, ? extends B> function) {
-        return delegate.fold(handleThrowable, function);
-    }
-
-    @Override
-    public boolean cancel(final boolean mayInterruptIfRunning) {
-        return delegate.cancel(mayInterruptIfRunning);
-    }
-
-    @Override
-    public boolean isCancelled() {
-        return delegate.isCancelled();
-    }
-
-    @Override
-    public boolean isDone() {
-        return delegate.isDone();
-    }
-
-    @Override
-    public T get() throws InterruptedException, ExecutionException {
-        return delegate.get();
-    }
-
-    @Override
-    public T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return delegate.get(timeout, unit);
     }
 }

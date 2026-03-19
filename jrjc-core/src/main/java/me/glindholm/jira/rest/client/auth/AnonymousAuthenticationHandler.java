@@ -16,7 +16,7 @@
 
 package me.glindholm.jira.rest.client.auth;
 
-import com.atlassian.httpclient.api.Request;
+import java.net.http.HttpRequest;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 
@@ -29,6 +29,6 @@ import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 public class AnonymousAuthenticationHandler implements AuthenticationHandler {
 
     @Override
-    public void configure(final Request.Builder builder) {
+    public void configure(final HttpRequest.Builder builder) {
     }
 }

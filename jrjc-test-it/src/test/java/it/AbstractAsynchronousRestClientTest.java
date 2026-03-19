@@ -79,35 +79,35 @@ public abstract class AbstractAsynchronousRestClientTest extends NimbleFuncTestC
     }
 
     protected boolean isJira4x4OrNewer() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_4;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_4;
     }
 
     protected boolean isJira5xOrNewer() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_5;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_5;
     }
 
     protected boolean isJira43xOrNewer() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_3;
     }
 
     protected boolean isJira61xOrNewer() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_6_1;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_6_1;
     }
 
     protected boolean isJira6_3_7_OrNewer() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_6_3_7;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_6_3_7;
     }
 
     protected boolean isJira6_4_OrNewer() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_6_4;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_6_4;
     }
 
     protected boolean isJira7_1_OrNewer() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_7_1;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_7_1;
     }
 
     protected boolean isJira7_2_OrNewer() {
-        return client.getMetadataClient().getServerInfo().claim().getBuildNumber() >= ServerVersionConstants.BN_JIRA_7_2;
+        return client.getMetadataClient().getServerInfo().join().getBuildNumber() >= ServerVersionConstants.BN_JIRA_7_2;
     }
 
     @Override

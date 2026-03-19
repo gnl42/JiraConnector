@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,8 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.domain.Resolution;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
 
@@ -28,7 +28,7 @@ public class ResolutionJsonParserTest {
         final ResolutionJsonParser parser = new ResolutionJsonParser();
         final Resolution basicresolution = parser.parse(ResourceUtil
                 .getJsonObjectFromResource("/json/resolution/valid.json"));
-        Assert.assertEquals(new Resolution(
+        assertEquals(new Resolution(
                 toUri("http://localhost:8090/jira/rest/api/latest/resolution/4"), 4L, "Incomplete",
                 "The problem is not completely described."), basicresolution);
     }

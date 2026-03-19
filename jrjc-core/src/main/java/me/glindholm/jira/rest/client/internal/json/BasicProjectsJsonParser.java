@@ -19,10 +19,9 @@ package me.glindholm.jira.rest.client.internal.json;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 
 public class BasicProjectsJsonParser implements JsonArrayParser<List<BasicProject>> {
 

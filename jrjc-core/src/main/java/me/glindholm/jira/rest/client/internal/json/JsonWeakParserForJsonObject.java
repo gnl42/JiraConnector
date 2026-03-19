@@ -18,8 +18,8 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 class JsonWeakParserForJsonObject<T> implements JsonWeakParser<T> {
     private final JsonObjectParser<T> jsonParser;
@@ -28,11 +28,11 @@ class JsonWeakParserForJsonObject<T> implements JsonWeakParser<T> {
         this.jsonParser = jsonParser;
     }
 
-    private <T> T convert(final Object o, final Class<T> clazz) throws JSONException {
+    private <U> U convert(final Object o, final Class<U> clazz) throws JSONException {
         try {
             return clazz.cast(o);
         } catch (final ClassCastException e) {
-            throw new JSONException("Expected [" + clazz.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]");
+            throw new JSONException("Expected [" + clazz.getSimpleName() + "], but found [" + o.getClass().getSimpleName() + "]", e);
         }
     }
 

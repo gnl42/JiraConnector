@@ -16,14 +16,13 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.AssigneeType;
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Component;
 import me.glindholm.jira.rest.client.internal.domain.AssigneeTypeConstants;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class ComponentJsonParser implements JsonObjectParser<Component> {
     @Override

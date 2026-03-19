@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,15 +22,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 import me.glindholm.jira.rest.client.api.domain.input.PropertyInput;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 
 /**
@@ -39,7 +39,7 @@ import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 public class IssueInputJsonGeneratorTest {
 
     @Test
-    @Ignore("Fields in different order")
+    @Disabled("Fields in different order")
     public void testGenerate() throws Exception {
         final IssueInputJsonGenerator generator = new IssueInputJsonGenerator();
         final IssueInput issueInput = IssueInput.createWithFields(

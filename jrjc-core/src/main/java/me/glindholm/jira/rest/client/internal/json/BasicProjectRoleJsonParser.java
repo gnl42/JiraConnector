@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class BasicProjectRoleJsonParser implements JsonObjectParser<List<BasicProjectRole>> {
 

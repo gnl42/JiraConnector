@@ -18,8 +18,9 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.BasicProject;
@@ -37,8 +38,8 @@ public class BasicProjectsJsonParserTest {
         BasicProjectsJsonParser parser = new BasicProjectsJsonParser();
 
         final List<BasicProject> project = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/project/projects-without-id.json"));
-        Assert.assertEquals(3, project.size());
-        Assert.assertEquals(TST_PROJECT_WITHOUT_ID, project.get(0));
+        assertEquals(3, project.size());
+        assertEquals(TST_PROJECT_WITHOUT_ID, project.get(0));
     }
 
     @Test
@@ -46,8 +47,8 @@ public class BasicProjectsJsonParserTest {
         BasicProjectsJsonParser parser = new BasicProjectsJsonParser();
 
         final List<BasicProject> project = parser.parse(ResourceUtil.getJsonArrayFromResource("/json/project/projects.json"));
-        Assert.assertEquals(3, project.size());
-        Assert.assertEquals(TST_PROJECT, project.get(0));
+        assertEquals(3, project.size());
+        assertEquals(TST_PROJECT, project.get(0));
     }
 
 }

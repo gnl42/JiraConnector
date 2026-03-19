@@ -21,16 +21,15 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.BasicComponent;
 import me.glindholm.jira.rest.client.api.domain.BasicProjectRole;
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Project;
 import me.glindholm.jira.rest.client.api.domain.Version;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class ProjectJsonParser implements JsonObjectParser<Project> {
 

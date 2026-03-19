@@ -16,15 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.domain.input.VersionPosition;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class VersionPositionInputGenerator implements JsonGenerator<VersionPosition> {
     @Override
-    public JSONObject generate(final VersionPosition versionPosition) throws JSONException {
+    public JSONObject generate(final VersionPosition versionPosition) throws JsonProcessingException {
         final JSONObject res = new JSONObject();
         final String posValue = switch (versionPosition) {
         case FIRST -> "First";

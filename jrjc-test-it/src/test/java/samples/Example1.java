@@ -55,11 +55,11 @@ public class Example1 {
         final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
         final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
         try {
-            final int buildNumber = restClient.getMetadataClient().getServerInfo().claim().getBuildNumber();
+            final int buildNumber = restClient.getMetadataClient().getServerInfo().join().getBuildNumber();
 
             // first let's get and print all visible projects (only jira4.3+)
             if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-                final List<BasicProject> allProjects = restClient.getProjectClient().getAllProjects().claim();
+                final List<BasicProject> allProjects = restClient.getProjectClient().getAllProjects().join();
                 for (BasicProject project : allProjects) {
                     println(project);
                 }
@@ -67,30 +67,30 @@ public class Example1 {
 
             // let's now print all issues matching a JQL string (here: all assigned issues)
             if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-                final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY").claim();
+                final SearchResult searchResult = restClient.getSearchClient().searchJql("assignee is not EMPTY").join();
                 for (BasicIssue issue : searchResult.getIssues()) {
                     println(issue.getKey());
                 }
             }
 
-            final Issue issue = restClient.getIssueClient().getIssue("TST-7").claim();
+            final Issue issue = restClient.getIssueClient().getIssue("TST-7").join();
 
             println(issue);
 
             // now let's vote for it
-            restClient.getIssueClient().vote(issue.getVotesUri()).claim();
+            restClient.getIssueClient().vote(issue.getVotesUri()).join();
 
             // now let's watch it
             final BasicWatchers watchers = issue.getWatchers();
             if (watchers != null) {
-                restClient.getIssueClient().watch(watchers.getSelf()).claim();
+                restClient.getIssueClient().watch(watchers.getSelf()).join();
             }
 
             // now let's start progress on this issue
-            final List<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).claim();
+            final List<Transition> transitions = restClient.getIssueClient().getTransitions(issue.getTransitionsUri()).join();
             final Transition startProgressTransition = getTransitionByName(transitions, "Start Progress");
             restClient.getIssueClient().transition(issue.getTransitionsUri(), new TransitionInput(startProgressTransition.getId()))
-                    .claim();
+                    .join();
 
             // and now let's resolve it as Incomplete
             final Transition resolveIssueTransition = getTransitionByName(transitions, "Resolve Issue");
@@ -104,7 +104,7 @@ public class Example1 {
             }
             final TransitionInput transitionInput = new TransitionInput(resolveIssueTransition.getId(), fieldInputs, Comment
                     .valueOf("My comment"));
-            restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput).claim();
+            restClient.getIssueClient().transition(issue.getTransitionsUri(), transitionInput).join();
         } finally {
             restClient.close();
         }

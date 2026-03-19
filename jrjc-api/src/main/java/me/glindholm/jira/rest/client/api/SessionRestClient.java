@@ -18,7 +18,7 @@ package me.glindholm.jira.rest.client.api;
 
 import java.net.URISyntaxException;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.Session;
 
 /**
@@ -33,5 +33,5 @@ public interface SessionRestClient {
      * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
      * @throws URISyntaxException
      */
-    Promise<Session> getCurrentSession() throws RestClientException, URISyntaxException;
+    CompletableFuture<Session> getCurrentSession() throws RestClientException, URISyntaxException;
 }

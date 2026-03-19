@@ -16,10 +16,12 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import me.glindholm.jira.rest.client.api.domain.IssueField;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Test;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class IssueFieldJsonParserTest {
 
@@ -28,10 +30,10 @@ public class IssueFieldJsonParserTest {
         final IssueFieldJsonParser parser = new IssueFieldJsonParser();
         final JSONObject fieldsJs = ResourceUtil.getJsonObjectFromResource("/json/cimField/valid-cim-fields.json");
         final IssueField issueField = parser.parse(fieldsJs.getJSONObject("customfield_10000"), "customfield_10000");
-        Assert.assertEquals(1.45, (Double) issueField.getValue(), 0.001);
+        assertEquals(1.45, (Double) issueField.getValue(), 0.001);
 
         final IssueField userIssueField = parser.parse(fieldsJs.getJSONObject("customfield_10020"), "customfield_10020");
-        Assert.assertEquals(TestConstants.USER1_BASIC_DEPRECATED, userIssueField.getValue());
+        assertEquals(TestConstants.USER1_BASIC_DEPRECATED_2, userIssueField.getValue());
 
     }
 

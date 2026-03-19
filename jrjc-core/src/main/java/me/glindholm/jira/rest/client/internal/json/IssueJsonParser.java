@@ -56,10 +56,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.hc.core5.net.URIBuilder;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import me.glindholm.jira.rest.client.internal.async.UriBuilder;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
+
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.IssueRestClient;
@@ -300,7 +301,7 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
     private URI parseTransisionsUri(final String transitionsUriString, final URI selfUri) throws URISyntaxException {
         return transitionsUriString != null ? JsonParseUtil.parseURI(transitionsUriString)
-                : new URIBuilder(selfUri).appendPath("transitions").addParameter("expand", "transitions.fields").build();
+                : new UriBuilder(selfUri).appendPath("transitions").addParameter("expand", "transitions.fields").build();
     }
 
     @Nullable
@@ -338,16 +339,9 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
                 // after fixing this
                 final Object value = json.opt(key);
                 fields.add(new IssueField(key, namesMap.get(key), typesMap.get("key"),
-                        value == JSONObject.NULL || value == JSONObject.EXPLICIT_NULL ? null : value));
+                        value == JSONObject.NULL ? null : value));
             } catch (final Exception e) {
-                throw new JSONException("Error while parsing [" + key + "] field: " + e.getMessage()) {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public Throwable getCause() {
-                        return e;
-                    }
-                };
+                throw new JSONException("Error while parsing [" + key + "] field: " + e.getMessage(), e);
             }
         }
         return fields;

@@ -20,12 +20,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.BulkOperationErrorResult;
 import me.glindholm.jira.rest.client.api.domain.util.ErrorCollection;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * Parses collection of errors returned from bulk issue create operation

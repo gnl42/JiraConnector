@@ -2,11 +2,10 @@ package me.glindholm.jira.rest.client.internal.json;
 
 import java.net.URISyntaxException;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.IssueType;
 import me.glindholm.jira.rest.client.api.domain.Page;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class CreateIssueMetaProjectIssueTypesParser implements JsonObjectParser<Page<IssueType>> {
 

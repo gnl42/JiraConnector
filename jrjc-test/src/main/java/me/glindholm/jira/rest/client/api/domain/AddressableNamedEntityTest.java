@@ -16,12 +16,13 @@
 
 package me.glindholm.jira.rest.client.api.domain;
 
-import me.glindholm.jira.rest.client.TestUtil;
-import org.junit.Assert;
-import org.junit.Test;
-
 import static me.glindholm.jira.rest.client.TestUtil.assertNotEquals;
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+import me.glindholm.jira.rest.client.TestUtil;
 
 public class AddressableNamedEntityTest {
 
@@ -34,7 +35,7 @@ public class AddressableNamedEntityTest {
     @Test
     public void testEquals() {
         TestUtil.assertEqualsSymmetrical(P1, P2);
-        Assert.assertEquals(P1, P1);
+        assertEquals(P1, P1);
         assertNotEquals(P1, null);
         assertNotEquals(P1, P3);
         assertNotEquals(P1, P4);
@@ -42,7 +43,7 @@ public class AddressableNamedEntityTest {
 
     @Test
     public void testHashCode() throws Exception {
-        Assert.assertEquals(P1.hashCode(), P2.hashCode());
+        assertEquals(P1.hashCode(), P2.hashCode());
     }
 
 }

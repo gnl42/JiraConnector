@@ -18,10 +18,9 @@ package me.glindholm.connector.commons.jira;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import me.glindholm.jira.rest.client.api.domain.IssueField;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * @autrhor pmaruszak

@@ -16,14 +16,14 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
 import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.internal.json.CommentJsonParser;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class CommentJsonGenerator implements JsonGenerator<Comment> {
 
@@ -34,7 +34,7 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
     }
 
     @Override
-    public JSONObject generate(final Comment comment) throws JSONException {
+    public JSONObject generate(final Comment comment) throws JsonProcessingException {
         final JSONObject res = new JSONObject();
         if (comment.getBody() != null) {
             res.put("body", comment.getBody());

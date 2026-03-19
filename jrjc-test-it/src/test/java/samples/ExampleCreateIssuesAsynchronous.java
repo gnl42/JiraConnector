@@ -16,22 +16,20 @@
 
 package samples;
 
-import com.atlassian.jira.rest.client.api.IssueRestClient;
-import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.domain.BasicIssue;
-import com.atlassian.jira.rest.client.api.domain.input.IssueInput;
-import com.atlassian.jira.rest.client.api.domain.input.IssueInputBuilder;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import io.atlassian.util.concurrent.Promise;
-
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Lists.transform;
+import me.glindholm.jira.rest.client.api.IssueRestClient;
+import me.glindholm.jira.rest.client.api.JiraRestClient;
+import me.glindholm.jira.rest.client.api.domain.BasicIssue;
+import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
+import me.glindholm.jira.rest.client.api.domain.input.IssueInputBuilder;
+import me.glindholm.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 
 /**
  * This example shows how to create many issues using asynchronous API.
@@ -42,12 +40,12 @@ public class ExampleCreateIssuesAsynchronous {
 
     private static URI jiraServerUri = URI.create("http://localhost:2990/jira");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
         final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
         final JiraRestClient restClient = factory.createWithBasicHttpAuthentication(jiraServerUri, "admin", "admin");
 
-        try {
-            final List<Promise<BasicIssue>> promises = Lists.newArrayList();
+        try (restClient) {
+            final List<CompletableFuture<BasicIssue>> futures = new ArrayList<>();
             final IssueRestClient issueClient = restClient.getIssueClient();
 
             System.out.println("Sending issue creation requests...");
@@ -55,20 +53,12 @@ public class ExampleCreateIssuesAsynchronous {
                 final String summary = "NewIssue#" + i;
                 final IssueInput newIssue = new IssueInputBuilder("TST", 1L, summary).build();
                 System.out.println("\tCreating: " + summary);
-                promises.add(issueClient.createIssue(newIssue));
+                futures.add(issueClient.createIssue(newIssue));
             }
 
             System.out.println("Collecting responses...");
-            final List<BasicIssue> createdIssues = transform(promises, new Function<Promise<BasicIssue>, BasicIssue>() {
-                @Override
-                public BasicIssue apply(Promise<BasicIssue> promise) {
-                    return promise.claim();
-                }
-            });
-
-            System.out.println("Created issues:\n" + Joiner.on("\n").join(createdIssues));
-        } finally {
-            restClient.close();
+            final List<BasicIssue> createdIssues = futures.stream().map(CompletableFuture::join).collect(Collectors.toList());
+            System.out.println("Created issues:\n" + createdIssues.stream().map(issue -> String.valueOf(issue.getId())).collect(Collectors.joining("\n")));
         }
     }
 }

@@ -1,17 +1,20 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Jira Rest Java Client
-Bundle-SymbolicName: jira-rest-java-client-test
-Bundle-Version: 5.2.0.qualifier
+Bundle-Name: Jira Rest Java Client Tests
+Bundle-SymbolicName: jrjc-test
+Bundle-Version: 6.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-ClassPath: .
 Bundle-Vendor: George Lindholm
 Eclipse-BuddyPolicy: registered
-Require-Bundle: org.junit;bundle-version="4.13.2",
- org.hamcrest.library;bundle-version="0.0.0",
- jira-rest-java-client-api,
+Require-Bundle: jira-rest-java-client-api,
  jira-rest-java-client-core,
- org.apache.commons.lang3,
- org.apache.commons.io;bundle-version="0.0.0",
  org.eclipse.jdt.annotation
-Import-Package: org.codehaus.jettison.json
+Import-Package: com.fasterxml.jackson.annotation;version="[2.19.0,3.0.0)",
+ com.fasterxml.jackson.core;version="[2.15.0,3.0.0)",
+ com.fasterxml.jackson.databind;version="[2.15.0,3.0.0)",
+ me.glindholm.jira.rest.client.shim.jettison.json,
+ org.apache.commons.io;version="[2.20.0,3.0.0)",
+ org.apache.commons.lang3;version="[3.20.0,4.0.0)",
+ org.hamcrest;version="[3.0.0,4.0.0)",
+ org.junit.jupiter.api;version="[5.14.0,6.0.0)"

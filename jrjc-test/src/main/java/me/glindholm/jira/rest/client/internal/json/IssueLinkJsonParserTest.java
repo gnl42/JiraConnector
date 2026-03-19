@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,18 +19,18 @@ package me.glindholm.jira.rest.client.internal.json;
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.IssueLink;
 import me.glindholm.jira.rest.client.api.domain.IssueLinkType;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class IssueLinkJsonParserTest {
     @Test
     public void testParseIssueLink() throws Exception {
         IssueLinkJsonParser parser = new IssueLinkJsonParser();
         final IssueLink issueLink = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/issueLink/valid.json"));
-        Assert.assertEquals(new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND), issueLink
+        assertEquals(new IssueLinkType("Duplicate", "duplicates", IssueLinkType.Direction.OUTBOUND), issueLink
                 .getIssueLinkType());
-        Assert.assertEquals("TST-2", issueLink.getTargetIssueKey());
-        Assert.assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), issueLink
+        assertEquals("TST-2", issueLink.getTargetIssueKey());
+        assertEquals(TestUtil.toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), issueLink
                 .getTargetIssueUri());
     }
 }

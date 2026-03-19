@@ -23,8 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZoneId;
 
-import org.codehaus.jettison.json.JSONException;
-import org.junit.Test;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.BasicUser;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
@@ -47,7 +47,7 @@ public class WorklogInputJsonGeneratorTest {
     }
 
     @Test
-    public void testGenerate() throws JSONException {
+    public void testGenerate() throws JsonProcessingException {
         final WorklogInput worklogInput = new WorklogInput(
                 toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), USER, ADMIN, "my first work",
@@ -58,7 +58,7 @@ public class WorklogInputJsonGeneratorTest {
     }
 
     @Test
-    public void testGenerateWithoutVisibility() throws JSONException {
+    public void testGenerateWithoutVisibility() throws JsonProcessingException {
         final WorklogInput worklogInput = new WorklogInput(
                 toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), ADMIN, USER, "my first work",
@@ -69,7 +69,7 @@ public class WorklogInputJsonGeneratorTest {
     }
 
     @Test
-    public void testGenerateWithoutAuthorAndUpdateAuthor() throws JSONException {
+    public void testGenerateWithoutAuthorAndUpdateAuthor() throws JsonProcessingException {
         final WorklogInput worklogInput = new WorklogInput(
                 toUri("http://localhost:8090/jira/rest/api/latest/worklog/10010"),
                 toUri("http://localhost:8090/jira/rest/api/latest/issue/TST-2"), null, null, "my first work",

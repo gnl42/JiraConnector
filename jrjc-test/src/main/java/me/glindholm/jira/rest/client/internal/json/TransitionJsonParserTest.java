@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2010 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,8 @@
  */
 
 package me.glindholm.jira.rest.client.internal.json;
-
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Transition;
 
@@ -27,9 +26,9 @@ public class TransitionJsonParserTest {
         final TransitionJsonParser parser = new TransitionJsonParser();
 
         final Transition transition = parser.parse(ResourceUtil.getJsonObjectFromResource("/json/transition/valid.json"), 5);
-        Assert.assertEquals(4, transition.getFields().size());
-        Assert.assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"),
+        assertEquals(4, transition.getFields().size());
+        assertEquals(new Transition.Field("assignee", false, "com.opensymphony.user.User"),
                 transition.getFields().get(transition.getFields().size() - 1));
-        Assert.assertEquals(5, transition.getId());
+        assertEquals(5, transition.getId());
     }
 }

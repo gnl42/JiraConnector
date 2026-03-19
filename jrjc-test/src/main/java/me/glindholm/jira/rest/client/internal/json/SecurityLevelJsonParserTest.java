@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2013 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,9 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import me.glindholm.jira.rest.client.api.domain.SecurityLevel;
-import org.codehaus.jettison.json.JSONException;
-import org.junit.Test;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 

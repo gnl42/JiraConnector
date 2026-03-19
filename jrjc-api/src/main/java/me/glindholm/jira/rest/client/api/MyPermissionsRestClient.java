@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-import io.atlassian.util.concurrent.Promise;
+import java.util.concurrent.CompletableFuture;
 import me.glindholm.jira.rest.client.api.domain.Permissions;
 import me.glindholm.jira.rest.client.api.domain.input.MyPermissionsInput;
 
@@ -42,5 +42,5 @@ public interface MyPermissionsRestClient {
      * @return Permissions for user in the context
      * @throws URISyntaxException
      */
-    Promise<Permissions> getMyPermissions(@Nullable MyPermissionsInput permissionInput) throws URISyntaxException;
+    CompletableFuture<Permissions> getMyPermissions(@Nullable MyPermissionsInput permissionInput) throws URISyntaxException;
 }

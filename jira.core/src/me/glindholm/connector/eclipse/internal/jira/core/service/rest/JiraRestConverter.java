@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -95,6 +93,8 @@ import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValu
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.WorklogInput;
 import me.glindholm.jira.rest.client.api.domain.input.WorklogInputBuilder;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 /**
  * @author Jacek Jaroczynski
@@ -331,7 +331,7 @@ public class JiraRestConverter {
         }
 
         try {
-            final List<Remotelink> remotelinks = restClient.getIssueClient().getRemotelinks(rawIssue.getKey()).claim();
+            final List<Remotelink> remotelinks = restClient.getIssueClient().getRemotelinks(rawIssue.getKey()).join();
             final Map<String, List<Remotelink>> links = new HashMap<>();
             for (final Remotelink link : remotelinks) {
                 final List<Remotelink> linkList = links.computeIfAbsent(link.getRelationship(), k -> new ArrayList<>(2));

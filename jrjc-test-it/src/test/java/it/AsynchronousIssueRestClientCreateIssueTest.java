@@ -112,7 +112,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
         final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
+                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).join();
 
         // select project and issue
         assertEquals(1, Lists.size(metadataProjects));
@@ -153,11 +153,11 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
                 .setFieldValue(multiUserCustomFieldId, multiUserCustomFieldValues);
 
         // create
-        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build()).claim();
+        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build()).join();
         assertNotNull(basicCreatedIssue.getKey());
 
         // get issue and check if everything was set as we expected
-        final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey()).claim();
+        final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey()).join();
         assertNotNull(createdIssue);
 
         assertEquals(basicCreatedIssue.getKey(), createdIssue.getKey());
@@ -209,7 +209,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
         final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
+                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).join();
 
         // select project and issue
         assertEquals(1, Lists.size(metadataProjects));
@@ -248,11 +248,11 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
                 .setFieldValue("parent", ComplexIssueInputFieldValue.with("key", "TST-1"));
 
         // create
-        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build()).claim();
+        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInputBuilder.build()).join();
         assertNotNull(basicCreatedIssue.getKey());
 
         // get issue and check if everything was set as we expected
-        final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey()).claim();
+        final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey()).join();
         assertNotNull(createdIssue);
 
         assertEquals(basicCreatedIssue.getKey(), createdIssue.getKey());
@@ -289,7 +289,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
         final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
+                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).join();
 
         // select project and issue
         assertEquals(1, Lists.size(metadataProjects));
@@ -337,7 +337,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         assertEquals(summaries.size(), issuesToCreate.size());
 
         // create
-        final BulkOperationResult<BasicIssue> createdIssues = issueClient.createIssues(issuesToCreate).claim();
+        final BulkOperationResult<BasicIssue> createdIssues = issueClient.createIssues(issuesToCreate).join();
         assertEquals(summaries.size(), Lists.size(createdIssues.getIssues()));
         assertEquals(0, Lists.size(createdIssues.getErrors()));
 
@@ -346,13 +346,13 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
                 .getIssues(), new Function<BasicIssue, String>() {
             @Override
             public String apply(final BasicIssue basicIssue) {
-                return issueClient.getIssue(basicIssue.getKey()).claim().getSummary();
+                return issueClient.getIssue(basicIssue.getKey()).join().getSummary();
             }
         }));
 
         assertEquals(summaries, createdSummariesOrder);
 
-        final Issue parentIssue = issueClient.getIssue("TST-1").claim();
+        final Issue parentIssue = issueClient.getIssue("TST-1").join();
         final Set<String> subtaskKeys = ImmutableSet.copyOf(Lists.transform(parentIssue
                 .getSubtasks(), new Function<Subtask, String>() {
             @Override
@@ -364,7 +364,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         for (final BasicIssue basicIssue : createdIssues.getIssues()) {
 
             // get issue and check if everything was set as we expected
-            final Issue createdIssue = issueClient.getIssue(basicIssue.getKey()).claim();
+            final Issue createdIssue = issueClient.getIssue(basicIssue.getKey()).join();
             assertNotNull(createdIssue);
 
             assertEquals(basicIssue.getKey(), createdIssue.getKey());
@@ -388,7 +388,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
         final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
+                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).join();
 
         // select project and issue
         assertEquals(1, Lists.size(metadataProjects));
@@ -447,7 +447,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         assertEquals(summaries.size(), issuesToCreate.size());
 
         // create
-        final BulkOperationResult<BasicIssue> createdIssues = issueClient.createIssues(issuesToCreate).claim();
+        final BulkOperationResult<BasicIssue> createdIssues = issueClient.createIssues(issuesToCreate).join();
         assertEquals(issuecToCreateCount, Lists.size(createdIssues.getIssues()));
         assertEquals(issuesInErrorCount, Lists.size(createdIssues.getErrors()));
 
@@ -456,13 +456,13 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
                 .getIssues(), new Function<BasicIssue, String>() {
             @Override
             public String apply(final BasicIssue basicIssue) {
-                return issueClient.getIssue(basicIssue.getKey()).claim().getSummary();
+                return issueClient.getIssue(basicIssue.getKey()).join().getSummary();
             }
         }));
 
         assertEquals(expectedSummariesOrder, createdSummariesOrder);
 
-        final Issue parentIssue = issueClient.getIssue("TST-1").claim();
+        final Issue parentIssue = issueClient.getIssue("TST-1").join();
         final Set<String> subtaskKeys = ImmutableSet.copyOf(Lists.transform(parentIssue
                 .getSubtasks(), new Function<Subtask, String>() {
             @Override
@@ -474,7 +474,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         for (final BasicIssue basicIssue : createdIssues.getIssues()) {
 
             // get issue and check if everything was set as we expected
-            final Issue createdIssue = issueClient.getIssue(basicIssue.getKey()).claim();
+            final Issue createdIssue = issueClient.getIssue(basicIssue.getKey()).join();
             assertNotNull(createdIssue);
 
             assertEquals(basicIssue.getKey(), createdIssue.getKey());
@@ -499,7 +499,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
         final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
+                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).join();
 
         // select project and issue
         assertEquals(1, Lists.size(metadataProjects));
@@ -556,7 +556,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 
         // create
         try {
-            issueClient.createIssues(issuesToCreate).claim();
+            issueClient.createIssues(issuesToCreate).join();
         } catch (RestClientException ex) {
             assertEquals(issuesInErrorCount, ex.getErrorLists().size());
             for (final ErrorCollection errorList : ex.getErrorLists()) {
@@ -573,7 +573,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // collect CreateIssueMetadata for project with key TST
         final IssueRestClient issueClient = client.getIssueClient();
         final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).claim();
+                new GetCreateIssueMetadataOptionsBuilder().withProjectKeys("TST").withExpandedIssueTypesFields().build()).join();
 
         // select project and issue
         assertEquals(1, Lists.size(metadataProjects));
@@ -585,11 +585,11 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 
         // create
         final IssueInput issueInput = new IssueInputBuilder(project, issueType, summary).build();
-        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInput).claim();
+        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInput).join();
         assertNotNull(basicCreatedIssue.getKey());
 
         // get issue and check if everything was set as we expected
-        final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey()).claim();
+        final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey()).join();
         assertNotNull(createdIssue);
 
         assertEquals(basicCreatedIssue.getKey(), createdIssue.getKey());
@@ -607,7 +607,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         thrown.expectMessage("You must specify a summary of the issue.");
 
         final IssueInput issueInput = new IssueInputBuilder("TST", 1L).build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -619,7 +619,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         thrown.expectMessage("project is required");
 
         final IssueInput issueInput = new IssueInputBuilder("BAD", 1L, "Should fail").build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -631,7 +631,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         thrown.expectMessage("valid issue type is required");
 
         final IssueInput issueInput = new IssueInputBuilder("TST", 666L, "Should fail").build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
 
@@ -647,7 +647,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
                 "summary", new FieldInput("summary", "Summary"),
                 "issuetype", new FieldInput("issuetype", ComplexIssueInputFieldValue.with("id", "1"))
         ), ImmutableList.of(new PropertyInput("testKey", "{\"testValue\" : \"foo\"}")));
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -663,7 +663,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         final IssueInput issueInput = new IssueInputBuilder("TST", 1L, "Should fail")
                 .setFieldValue(fieldId, "test")
                 .build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -680,7 +680,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         final IssueInput issueInput = new IssueInputBuilder("TST", 1L, "Should fail")
                 .setFieldValue("customfield_10001", invalidPriority)
                 .build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -691,7 +691,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         final IssueRestClient issueClient = client.getIssueClient();
 
         final IssueInput issueInput = new IssueInputBuilder("ANONEDIT", 1L, "Anonymously created issue").build();
-        final BasicIssue createdIssue = issueClient.createIssue(issueInput).claim();
+        final BasicIssue createdIssue = issueClient.createIssue(issueInput).join();
 
         assertNotNull(createdIssue);
         assertNotNull(createdIssue.getKey());
@@ -709,7 +709,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // TODO: add summary when JIRA bug is fixed (JRADEV-13412)
         final IssueInput issueInput = new IssueInputBuilder("TST", 1L/*, "Issue created by testCreateIssueAsAnonymousWhenNotAllowed"*/)
                 .build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -729,7 +729,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         thrown.expectMessage("Field 'summary' cannot be set. It is not on the appropriate screen, or unknown.");
 
         final IssueInput issueInput = new IssueInputBuilder("TST", 1L, "Sample summary").build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -744,7 +744,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         final IssueInput issueInput = new IssueInputBuilder("TST", 1L, "Issue created by testCreateIssueWithAssigneeWhenNotAllowedToAssignIssue")
                 .setAssignee(IntegrationTestUtil.USER_ADMIN)
                 .build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_5)
@@ -759,7 +759,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // TODO: add summary when JIRA bug is fixed (JRADEV-13412)
         final IssueInput issueInput = new IssueInputBuilder("NCIFU", 1L/*, "Issue created by testCreateIssueWithoutCreateIssuePermission"*/)
                 .build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
 
@@ -775,7 +775,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // TODO: add summary when JIRA bug is fixed (JRADEV-13412)
         final IssueInput issueInput = new IssueInputBuilder("RST", 1L/*, "Issue created by testCreateIssueWithoutBrowseProjectPermission"*/)
                 .build();
-        issueClient.createIssue(issueInput).claim();
+        issueClient.createIssue(issueInput).join();
     }
 
     @JiraBuildNumberDependent(BN_JIRA_6)
@@ -783,7 +783,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
     public void testCreateMetaShouldReturnIssueTypeInFieldsListEvenIfIssueTypeIsNotOnCreateIssueScreen() {
         final IssueRestClient issueClient = client.getIssueClient();
         final List<CimProject> cimProjects = issueClient.getCreateIssueMetadata(
-                new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).claim();
+                new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).join();
 
         final CimProject testProject = findEntityByName(cimProjects, "Project With Create Issue Screen Without Issue Type");
         assertThat(testProject.getIssueTypes(), IsListWithSize.<CimIssueType>iterableWithSize(greaterThanOrEqualTo(5)));
@@ -814,7 +814,7 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
 
         // get project list with fields expanded
         final List<CimProject> metadataProjects = issueClient.getCreateIssueMetadata(
-                new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).claim();
+                new GetCreateIssueMetadataOptionsBuilder().withExpandedIssueTypesFields().build()).join();
         log.log("Available projects: ");
         for (CimProject p : metadataProjects) {
             log.log(MessageFormat.format("\t* [{0}] {1}", p.getKey(), p.getName()));
@@ -938,10 +938,10 @@ public class AsynchronousIssueRestClientCreateIssueTest extends AbstractAsynchro
         // all required data is provided, let's create issue
         final IssueInput issueInput = builder.build();
 
-        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInput).claim();
+        final BasicIssue basicCreatedIssue = issueClient.createIssue(issueInput).join();
         assertNotNull(basicCreatedIssue);
 
-        final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey()).claim();
+        final Issue createdIssue = issueClient.getIssue(basicCreatedIssue.getKey()).join();
         assertNotNull(createdIssue);
 
         log.log("Created new issue successfully, key: " + basicCreatedIssue.getKey());
