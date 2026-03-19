@@ -618,7 +618,8 @@ public class JiraRestClientAdapter {
         }
 
         // if time tracking is enabled and estimate changed
-        if (issue.getTimeTracking() != null && changeIds.contains(JiraAttribute.ESTIMATE.id())) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_ESTIMATE) && //
+        issue.getTimeTracking() != null && changeIds.contains(JiraAttribute.ESTIMATE.id())) {
 
             final Long currentEstimateInSeconds = changedIssue.getEstimate();
             final Integer previousEstimateInMinutes = issue.getTimeTracking().getRemainingEstimateMinutes();
@@ -668,7 +669,8 @@ public class JiraRestClientAdapter {
             }
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.VERSIONS, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_AFFECTSVERSIONS) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.VERSIONS, null))) {
             final List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<>();
             for (final JiraVersion version : changedIssue.getReportedVersions()) {
                 reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
