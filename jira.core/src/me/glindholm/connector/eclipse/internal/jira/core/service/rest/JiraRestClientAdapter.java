@@ -133,38 +133,32 @@ public class JiraRestClientAdapter implements Closeable {
             final boolean followRedirects) {
         this(url, cache, followRedirects);
 
-        // final TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
-        // public X509Certificate[] getAcceptedIssuers() {
-        // return null;
-        // }
-        //
-        // public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws
-        // CertificateException {
-        // }
-        //
-        // public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws
-        // CertificateException {
-        // }
-        // } };
-
         try {
-
-            // HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-            //
-            // HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-            // public boolean verify(String s, javax.net.ssl.SSLSession sslSession) {
-            // return true;
-            // }
-            // });
+            final javax.net.ssl.TrustManager[] trustManagers = buildTrustManagers(url);
+            final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
             if (userName.isEmpty()) {
-                restClient = new AsynchronousJiraRestClientFactory().createWithBearerHttpAuthentication(new URI(url), password);
+                restClient = factory.createWithBearerHttpAuthentication(new URI(url), password, trustManagers);
             } else {
-                restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password);
+                restClient = factory.createWithBasicHttpAuthentication(new URI(url), userName, password, trustManagers);
             }
         } catch (final URISyntaxException e) {
             // we should never get here as Mylyn constructs URI first and fails if it is
             // incorrect
             StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
+        }
+    }
+
+    private static javax.net.ssl.TrustManager[] buildTrustManagers(final String url) {
+        try {
+            final String host = new URI(url).getHost();
+            return new javax.net.ssl.TrustManager[] {
+                new me.glindholm.theplugin.commons.ssl.ConnectorTrustManager(host, null)
+            };
+        } catch (final Exception e) {
+            // Fallback: return empty array so the HttpClient will use its own default
+            StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                    "Could not build SSL trust manager, falling back to default", e)); //$NON-NLS-1$
+            return null;
         }
     }
 
@@ -782,9 +776,30 @@ public class JiraRestClientAdapter implements Closeable {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             }
+            // Unwrap JiraException wrapping an SSL handshake failure and provide a useful message
+            final Throwable cause = unwrapCause(e);
+            if (cause instanceof javax.net.ssl.SSLHandshakeException || (cause != null && cause.getMessage() != null && cause.getMessage().contains("unable to find valid certification path"))) { //$NON-NLS-1$
+                throw new JiraException(
+                        "SSL certificate verification failed. If you are using a self-signed certificate, import it into the JVM trust store (cacerts).", //$NON-NLS-1$
+                        e);
+            }
             throw new JiraException(e);
         }
 
+    }
+
+    private static Throwable unwrapCause(Throwable t) {
+        final java.util.Set<Throwable> seen = new java.util.HashSet<>();
+        while (t != null && seen.add(t)) {
+            if (t instanceof javax.net.ssl.SSLHandshakeException) {
+                return t;
+            }
+            if (t.getMessage() != null && t.getMessage().contains("unable to find valid certification path")) { //$NON-NLS-1$
+                return t;
+            }
+            t = t.getCause();
+        }
+        return null;
     }
 
     public static SimpleDateFormat getOffsetDateTimeFormat() {

@@ -19,6 +19,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 
+import javax.net.ssl.TrustManager;
+
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 import me.glindholm.jira.rest.client.api.JiraRestClient;
 import me.glindholm.jira.rest.client.api.JiraRestClientFactory;
@@ -74,5 +76,19 @@ public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory 
     public JiraRestClient createWithBasicHttpAuthentication(final URI uri, final String username, final String password, final HttpClient httpClient)
             throws URISyntaxException {
         return create(uri, new BasicHttpAuthenticationHandler(username, password), httpClient);
+    }
+
+    public JiraRestClient createWithBasicHttpAuthentication(final URI uri, final String username, final String password, final TrustManager[] trustManagers)
+            throws URISyntaxException {
+        return create(uri, new BasicHttpAuthenticationHandler(username, password), trustManagers);
+    }
+
+    public JiraRestClient createWithBearerHttpAuthentication(final URI uri, final String token, final TrustManager[] trustManagers) throws URISyntaxException {
+        return create(uri, new BearerHttpAuthenticationHandler(token), trustManagers);
+    }
+
+    public JiraRestClient create(final URI uri, final AuthenticationHandler authenticationHandler, final TrustManager[] trustManagers) throws URISyntaxException {
+        final DisposableHttpClient disposableHttpClient = new AsynchronousHttpClientFactory().createClient(uri, authenticationHandler, trustManagers);
+        return new AsynchronousJiraRestClient(uri, disposableHttpClient);
     }
 }
