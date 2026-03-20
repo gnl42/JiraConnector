@@ -126,6 +126,9 @@ public class ConnectorTrustManager extends X509ExtendedTrustManager {
 
     // ─────────────────────────────────────────────────────────────────────────
 
+    /** System property that, when set to {@code true}, automatically accepts self-signed certificates. */
+    private static final String PROP_ACCEPT_SELF_SIGNED = "me.glindholm.jira.self-signed"; //$NON-NLS-1$
+
     private void checkServerTrustedInternal(final X509Certificate[] chain, final String authType) throws CertificateException {
         try {
             defaultTrustManager.checkServerTrusted(chain, authType);
@@ -136,6 +139,12 @@ public class ConnectorTrustManager extends X509ExtendedTrustManager {
 
             if (SESSION_ACCEPTED.contains(certKey)) {
                 return; // user already accepted this session
+            }
+
+            // Auto-accept self-signed certificates when the system property is set
+            if (isSelfSigned(chain[0]) && Boolean.getBoolean(PROP_ACCEPT_SELF_SIGNED)) {
+                SESSION_ACCEPTED.add(certKey);
+                return;
             }
 
             // Build a human-readable reason
