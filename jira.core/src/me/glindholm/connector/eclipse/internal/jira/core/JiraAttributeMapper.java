@@ -201,7 +201,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
                     try {
                         users = project.setAssignables(client.getProjectAssignables(project.getKey()));
                     } catch (final JiraException e) {
-                        return Collections.EMPTY_MAP;
+                        return Collections.emptyMap();
                     }
                 }
 
@@ -215,7 +215,7 @@ public class JiraAttributeMapper extends TaskAttributeMapper implements ITaskAtt
 
                     return options;
                 } catch (final JiraException e) {
-                    return Collections.EMPTY_MAP;
+                    return Collections.emptyMap();
                 }
 
             } else {

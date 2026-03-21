@@ -12,6 +12,7 @@
 package me.glindholm.connector.eclipse.ui;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -21,7 +22,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * Common class for getting and creating images
- * 
+ *
  * @author sminto
  */
 public final class JiraConnectorImages {
@@ -55,12 +56,12 @@ public final class JiraConnectorImages {
     private static ImageDescriptor create(final String prefix, final String name) {
         try {
             return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
-        } catch (final MalformedURLException e) {
+        } catch (final MalformedURLException | URISyntaxException e) {
             return ImageDescriptor.getMissingImageDescriptor();
         }
     }
 
-    private static URL makeIconFileURL(final String prefix, final String name) throws MalformedURLException {
+    private static URL makeIconFileURL(final String prefix, final String name) throws MalformedURLException, URISyntaxException {
         if (BASE_URL == null) {
             throw new MalformedURLException();
         }
@@ -68,7 +69,7 @@ public final class JiraConnectorImages {
         final StringBuilder buffer = new StringBuilder(prefix);
         buffer.append('/');
         buffer.append(name);
-        return new URL(BASE_URL, buffer.toString());
+        return BASE_URL.toURI().resolve(buffer.toString()).toURL();
     }
 
     private static ImageRegistry getImageRegistry() {

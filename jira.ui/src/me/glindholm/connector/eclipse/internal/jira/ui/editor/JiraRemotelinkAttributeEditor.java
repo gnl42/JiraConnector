@@ -38,6 +38,7 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 /**
  * @author Steffen Pingel
  */
+@SuppressWarnings("restriction")
 public class JiraRemotelinkAttributeEditor extends TextAttributeEditor {
 
     private ContentAssistCommandAdapter contentAssistCommandAdapter = null;

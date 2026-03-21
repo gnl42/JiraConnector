@@ -25,7 +25,6 @@ public class PrivateServerCfgInfo {
     protected final String basicUsername;
     protected final String basicPassword;
     protected final boolean useDefaultCredentials;
-    private static final int HASHCODE_MAGIC = 31;
     protected boolean shared;
 
     public PrivateServerCfgInfo(final ServerIdImpl serverId, final boolean enabled, final boolean useDefaultCredentials, final String username,

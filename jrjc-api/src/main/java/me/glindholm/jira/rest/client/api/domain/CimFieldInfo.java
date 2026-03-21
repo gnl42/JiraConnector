@@ -114,8 +114,7 @@ public class CimFieldInfo implements Serializable, NamedEntity, IdentifiableEnti
      *
      * @return URI to Auto Complete feature for this field
      */
-    @SuppressWarnings("UnusedDeclaration")
-    @Nullable
+     @Nullable
     public URI getAutoCompleteUri() {
         return autoCompleteUri;
     }

@@ -41,13 +41,35 @@ public interface ProjectRestClient {
      */
     CompletableFuture<Project> getProject(String key) throws URISyntaxException;
 
-    // ...existing javadoc...
+    /**
+     * Retrieves complete information about the project identified by the given URI.
+     * <p>
+     * This is a URI-based variant of {@link #getProject(String)}, intended for use when
+     * the caller already has a project resource URI (for example, from another API call).
+     *
+     * @param projectUri the URI of the project resource
+     * @return a future containing complete information about the given project
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
     CompletableFuture<Project> getProject(URI projectUri);
 
-    // ...existing javadoc...
+    /**
+     * Retrieves basic information about all projects visible to the currently authenticated user.
+     *
+     * @return a future containing a list of basic representations of all accessible projects
+     * @throws URISyntaxException if the URI used to access the project collection is invalid
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
     CompletableFuture<List<BasicProject>> getAllProjects() throws URISyntaxException;
 
-    // ...existing javadoc...
+    /**
+     * Retrieves the issue security level configuration for the project identified by the given key.
+     *
+     * @param projectKey unique key of the project (usually 2+ characters)
+     * @return a future containing the security level information for the specified project
+     * @throws URISyntaxException if the URI used to access the project's security level is invalid
+     * @throws RestClientException in case of problems (connectivity, malformed messages, etc.)
+     */
     CompletableFuture<SecurityLevel> getSecurityLevel(String projectKey) throws URISyntaxException;
 
 }

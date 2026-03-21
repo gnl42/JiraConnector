@@ -73,17 +73,16 @@ public class Version implements Serializable {
     private static final int BUILD_TOKEN_GRP = 10;
 
     private void tokenize(final String aVersion) throws IncorrectVersionException {
-        final Scanner s = new Scanner(aVersion);
-        s.findInLine(PATTERN);
-        try {
-            final MatchResult result = s.match();
-            versionNumber = new VersionNumber(Integer.parseInt(result.group(MAJOR_TOKEN_GRP)), Integer.parseInt(result.group(MINOR_TOKEN_GRP)),
-                    Integer.parseInt(result.group(MICRO_TOKEN_GRP)), result.group(ALPHANUM_TOKEN_GRP), result.group(ALPHANUM_VERSION_GRP),
-                    Integer.parseInt(result.group(BUILD_TOKEN_GRP)));
-        } catch (final IllegalStateException ex) {
-            throw new IncorrectVersionException("Version (" + aVersion + ") does not match pattern (\"" + PATTERN + "\")", ex);
-        } finally {
-            s.close();
+        try (final Scanner s = new Scanner(aVersion)) {
+            s.findInLine(PATTERN);
+            try {
+                final MatchResult result = s.match();
+                versionNumber = new VersionNumber(Integer.parseInt(result.group(MAJOR_TOKEN_GRP)), Integer.parseInt(result.group(MINOR_TOKEN_GRP)),
+                        Integer.parseInt(result.group(MICRO_TOKEN_GRP)), result.group(ALPHANUM_TOKEN_GRP), result.group(ALPHANUM_VERSION_GRP),
+                        Integer.parseInt(result.group(BUILD_TOKEN_GRP)));
+            } catch (final IllegalStateException ex) {
+                throw new IncorrectVersionException("Version (" + aVersion + ") does not match pattern (\"" + PATTERN + "\")", ex);
+            }
         }
     }
 

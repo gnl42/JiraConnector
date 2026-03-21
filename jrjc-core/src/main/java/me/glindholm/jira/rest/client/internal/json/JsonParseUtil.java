@@ -69,7 +69,6 @@ public class JsonParseUtil {
         return attributeObject != null ? jsonParser.parse(attributeObject) : null;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public static <T> ExpandableProperty<T> parseExpandableProperty(final JSONObject json, final JsonObjectParser<T> expandablePropertyBuilder)
             throws JSONException, URISyntaxException {
         return parseExpandableProperty(json, false, expandablePropertyBuilder);
@@ -328,7 +327,6 @@ public class JsonParseUtil {
         return uris;
     }
 
-    @SuppressWarnings("unchecked")
     public static Iterator<String> getStringKeys(final JSONObject json) {
         return json.keys();
     }

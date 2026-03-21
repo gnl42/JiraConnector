@@ -62,7 +62,6 @@ import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
-@SuppressWarnings("ConstantConditions")
 public class IssueJsonParserTest {
     @Test
     @Disabled("Not finding watchers")

@@ -123,7 +123,7 @@ public class JiraCorePlugin extends Plugin {
             return new RepositoryStatus(url, IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_REPOSITORY, NLS.bind(CoreMessages.Invalid_query, e.getMessage()),
                     e);
         } else {
-            return RepositoryStatus.createInternalError(ID_PLUGIN, "Unexpected error", e); //$NON-NLS-1$
+            return new RepositoryStatus(IStatus.ERROR, ID_PLUGIN, RepositoryStatus.ERROR_INTERNAL, "Unexpected error", e);
         }
     }
 

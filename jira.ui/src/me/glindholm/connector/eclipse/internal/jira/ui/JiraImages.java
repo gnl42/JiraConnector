@@ -12,6 +12,7 @@
 package me.glindholm.connector.eclipse.internal.jira.ui;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -63,7 +64,11 @@ public class JiraImages {
         final StringBuilder buffer = new StringBuilder(prefix);
         buffer.append('/');
         buffer.append(name);
-        return new URL(baseURL, buffer.toString());
+        try {
+            return baseURL.toURI().resolve(buffer.toString()).toURL();
+        } catch (final URISyntaxException e) {
+            throw new MalformedURLException(e.getMessage());
+        }
     }
 
     private static ImageRegistry getImageRegistry() {

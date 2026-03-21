@@ -13,7 +13,8 @@
 package me.glindholm.connector.eclipse.internal.jira.ui.wizards;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -343,9 +344,9 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     protected boolean isValidUrl(final String name) {
         if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
             try {
-                new URL(name);
+                new URI(name).toURL();
                 return true;
-            } catch (final MalformedURLException e) {
+            } catch (final MalformedURLException | URISyntaxException e) {
             }
         }
         return false;
@@ -364,7 +365,7 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
         this.repository = applyToValidate(repository);
 
-        repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, IRepositoryConstants.CATEGORY_BUGS);
+        repository.setProperty(IRepositoryConstants.PROPERTY_CATEGORY, TaskRepository.CATEGORY_BUGS);
 
         configuration.setDatePattern(datePatternText.getText());
         configuration.setDateTimePattern(dateTimePatternText.getText());
@@ -524,8 +525,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         @Override
         public void run(final IProgressMonitor monitor) throws CoreException {
             try {
-                new URL(repository.getRepositoryUrl());
-            } catch (final MalformedURLException ex) {
+                new URI(repository.getRepositoryUrl()).toURL();
+            } catch (final MalformedURLException | URISyntaxException ex) {
                 throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, IStatus.OK, INVALID_REPOSITORY_URL, null));
             }
 

@@ -23,25 +23,11 @@ public class JiraServerVersion implements Comparable<JiraServerVersion>, Seriali
 
     private static final long serialVersionUID = -838081214233322531L;
 
-    public static final JiraServerVersion JIRA_3_13 = new JiraServerVersion("3.13"); //$NON-NLS-1$
-
-    public static final JiraServerVersion JIRA_4_1 = new JiraServerVersion("4.1"); //$NON-NLS-1$
-
-    public static final JiraServerVersion JIRA_4_2 = new JiraServerVersion("4.2"); //$NON-NLS-1$
-
-    public static final JiraServerVersion JIRA_5_0 = new JiraServerVersion("5.0"); //$NON-NLS-1$
-
     public static final JiraServerVersion JIRA_8_0 = new JiraServerVersion("8.0"); //$NON-NLS-1$
-
-    public static final JiraServerVersion JIRA_8_1_14 = new JiraServerVersion("8.1.14"); //$NON-NLS-1$
-
-    public static final JiraServerVersion JIRA_9_0 = new JiraServerVersion("9.0"); //$NON-NLS-1$
-
-    public static final JiraServerVersion JIRA_10_0 = new JiraServerVersion("10.0"); //$NON-NLS-1$
 
     public final static JiraServerVersion MIN_VERSION = JIRA_8_0;
 
-	public static final JiraServerVersion JIRA_1001_0 = new JiraServerVersion("1001.0"); //$NON-NLS-1$
+    public static final JiraServerVersion JIRA_1001_0 = new JiraServerVersion("1001.0"); //$NON-NLS-1$
 
     private final int major;
 

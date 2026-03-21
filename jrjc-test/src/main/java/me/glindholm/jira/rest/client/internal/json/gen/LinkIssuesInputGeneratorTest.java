@@ -23,13 +23,13 @@ import org.junit.jupiter.api.Test;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.input.LinkIssuesInput;
-import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 
 public class LinkIssuesInputGeneratorTest {
 
-    private final ServerInfo serverInfo = new ServerInfo(null, "1.2.3", ServerVersionConstants.BN_JIRA_4_3, null, null, null, null, null);
+    public static final int BN_JIRA_4_3 = 600;
+    private final ServerInfo serverInfo = new ServerInfo(null, "1.2.3", BN_JIRA_4_3, null, null, null, null, null);
     private final LinkIssuesInputGenerator inputGenerator = new LinkIssuesInputGenerator(serverInfo);
 
     @Test

@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.input.LinkIssuesInput;
-import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
 public class LinkIssuesInputGenerator implements JsonGenerator<LinkIssuesInput> {
@@ -36,15 +35,9 @@ public class LinkIssuesInputGenerator implements JsonGenerator<LinkIssuesInput> 
         final JSONObject res = new JSONObject();
 
         final int buildNumber = serverInfo.getBuildNumber();
-        if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
-            res.put("type", new JSONObject().put("name", linkIssuesInput.getLinkType()));
-            res.put("inwardIssue", new JSONObject().put("key", linkIssuesInput.getFromIssueKey()));
-            res.put("outwardIssue", new JSONObject().put("key", linkIssuesInput.getToIssueKey()));
-        } else {
-            res.put("linkType", linkIssuesInput.getLinkType());
-            res.put("fromIssueKey", linkIssuesInput.getFromIssueKey());
-            res.put("toIssueKey", linkIssuesInput.getToIssueKey());
-        }
+        res.put("type", new JSONObject().put("name", linkIssuesInput.getLinkType()));
+        res.put("inwardIssue", new JSONObject().put("key", linkIssuesInput.getFromIssueKey()));
+        res.put("outwardIssue", new JSONObject().put("key", linkIssuesInput.getToIssueKey()));
         if (linkIssuesInput.getComment() != null) {
             res.put("comment", new CommentJsonGenerator(serverInfo).generate(linkIssuesInput.getComment()));
         }

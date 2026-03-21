@@ -95,6 +95,7 @@ public class JiraProjectPage extends WizardPage {
         this.repository = repository;
     }
 
+    @SuppressWarnings("restriction")
     @Override
     public void createControl(final Composite parent) {
         // create the composite to hold the widgets

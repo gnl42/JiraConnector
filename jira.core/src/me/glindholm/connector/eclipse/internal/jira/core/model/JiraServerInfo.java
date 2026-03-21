@@ -121,7 +121,7 @@ public class JiraServerInfo implements Serializable {
     }
 
     public String getAccountTag() {
-        if (version.isGreaterThanOrEquals(JiraServerVersion.JIRA_10_0)) {
+        if (version.isGreaterThanOrEquals(JiraServerVersion.JIRA_1001_0)) {
             return JiraRestFields.ACCOUNT_ID;
         } else {
             return JiraRestFields.NAME;
@@ -133,9 +133,9 @@ public class JiraServerInfo implements Serializable {
      * <a href="https://developer.atlassian.com/changelog/#CHANGE-2046">jql path change</a>
      * @return true if new jql path should be used
      */
-	public boolean isNewJqlNeeded() {
-		return version.isGreaterThanOrEquals(JiraServerVersion.JIRA_1001_0);
-	}
+    public boolean isNewJqlNeeded() {
+        return version.isGreaterThanOrEquals(JiraServerVersion.JIRA_1001_0);
+    }
 
     @Override
     public String toString() {

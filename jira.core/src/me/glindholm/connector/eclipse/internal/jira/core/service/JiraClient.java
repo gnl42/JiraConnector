@@ -13,6 +13,8 @@
 
 package me.glindholm.connector.eclipse.internal.jira.core.service;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
 import java.text.SimpleDateFormat;
@@ -63,7 +65,7 @@ import me.glindholm.jira.rest.client.api.domain.User;
  * @author Thomas Ehrnhoefer
  * @author Jacek Jaroczynski
  */
-public class JiraClient {
+public class JiraClient implements Closeable {
 
     private static final String URL_REGEXP_HTTP = "http.*"; //$NON-NLS-1$
 
@@ -153,10 +155,8 @@ public class JiraClient {
         if (restClient == null) {
             restClient = createRestClient(location, cache);
             try {
-                final User currentUser = restClient.getCurrentUser();
-                final int i = 0;
+                restClient.getCurrentUser();
             } catch (final JiraException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -857,5 +857,12 @@ public class JiraClient {
 
     public BasicUser getCurrentUser() throws JiraException {
         return getRestClient().getCurrentUser();
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (restClient != null) {
+            restClient.close();
+        }
     }
 }

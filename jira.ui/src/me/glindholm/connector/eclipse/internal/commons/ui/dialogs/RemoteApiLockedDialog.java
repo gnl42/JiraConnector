@@ -20,6 +20,7 @@ import me.glindholm.connector.eclipse.internal.core.CoreMessages;
 
 public class RemoteApiLockedDialog extends ErrorDialogWithHyperlink {
 
+    @SuppressWarnings("restriction")
     public RemoteApiLockedDialog(final Shell parentShell, final String repositoryUrl) {
         super(parentShell, Messages.RemoteApiLockedDialog_permission_denied, CoreMessages.Captcha_authentication_required, Messages.RemoteApiLockedDialog_5,
                 () -> BrowserUtil.openUrl(repositoryUrl, IWorkbenchBrowserSupport.AS_EXTERNAL));

@@ -34,6 +34,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
  * @author Rob Elves
  * @author George Lindholm
  */
+@SuppressWarnings("restriction")
 public class JiraPeoplePart extends TaskEditorPeoplePart {
 
     private static final int COLUMN_MARGIN = 5;

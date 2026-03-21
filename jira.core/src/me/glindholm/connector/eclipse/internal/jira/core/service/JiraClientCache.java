@@ -88,19 +88,17 @@ public class JiraClientCache {
 
             jiraClient.getProjectDetails(project);
 
-            if (version.isGreaterThanOrEquals(JiraServerVersion.JIRA_3_13)) {
-                try {
-                    final JiraSecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(), subMonitor.newChild(1));
-                    if (securityLevels.length > 0) {
-                        final JiraSecurityLevel[] projectSecurityLevels = new JiraSecurityLevel[securityLevels.length + 1];
-                        projectSecurityLevels[0] = JiraSecurityLevel.NONE;
-                        System.arraycopy(securityLevels, 0, projectSecurityLevels, 1, securityLevels.length);
-                        project.setSecurityLevels(projectSecurityLevels);
-                    }
-                } catch (final JiraInsufficientPermissionException e) {
-                    // security levels are only support on JIRA enterprise
-                    project.setSecurityLevels(null);
+            try {
+                final JiraSecurityLevel[] securityLevels = jiraClient.getAvailableSecurityLevels(project.getKey(), subMonitor.newChild(1));
+                if (securityLevels.length > 0) {
+                    final JiraSecurityLevel[] projectSecurityLevels = new JiraSecurityLevel[securityLevels.length + 1];
+                    projectSecurityLevels[0] = JiraSecurityLevel.NONE;
+                    System.arraycopy(securityLevels, 0, projectSecurityLevels, 1, securityLevels.length);
+                    project.setSecurityLevels(projectSecurityLevels);
                 }
+            } catch (final JiraInsufficientPermissionException e) {
+                // security levels are only support on JIRA enterprise
+                project.setSecurityLevels(null);
             }
 
             project.setDetails(true);

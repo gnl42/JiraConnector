@@ -21,7 +21,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.Visibility;
-import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.internal.json.CommentJsonParser;
 import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 
@@ -44,22 +43,12 @@ public class CommentJsonGenerator implements JsonGenerator<Comment> {
         if (commentVisibility != null) {
 
             final int buildNumber = serverInfo.getBuildNumber();
-            if (buildNumber >= ServerVersionConstants.BN_JIRA_4_3) {
-                final JSONObject visibilityJson = new JSONObject();
-                final String commentVisibilityType;
-                if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
-                    commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "group" : "role";
-                } else {
-                    commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "GROUP" : "ROLE";
-                }
-                visibilityJson.put("type", commentVisibilityType);
-                visibilityJson.put("value", commentVisibility.getValue());
-                res.put(CommentJsonParser.VISIBILITY_KEY, visibilityJson);
-            } else if (commentVisibility.getType() == Visibility.Type.ROLE) {
-                res.put("role", commentVisibility.getValue());
-            } else {
-                res.put("group", commentVisibility.getValue());
-            }
+            final JSONObject visibilityJson = new JSONObject();
+            final String commentVisibilityType;
+            commentVisibilityType = commentVisibility.getType() == Visibility.Type.GROUP ? "group" : "role";
+            visibilityJson.put("type", commentVisibilityType);
+            visibilityJson.put("value", commentVisibility.getValue());
+            res.put(CommentJsonParser.VISIBILITY_KEY, visibilityJson);
         }
 
         return res;

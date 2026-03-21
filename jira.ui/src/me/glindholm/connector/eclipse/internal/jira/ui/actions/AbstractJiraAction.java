@@ -47,7 +47,6 @@ import me.glindholm.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 /**
  * @author Jacek Jaroczynski
  */
-@SuppressWarnings("restriction")
 public abstract class AbstractJiraAction extends BaseSelectionListenerAction implements IObjectActionDelegate {
 
     private IStructuredSelection selection;

@@ -55,6 +55,7 @@ import org.eclipse.ui.progress.IProgressConstants2;
  * @author Steffen Pingel
  * @author Kevin Sawicki
  */
+@SuppressWarnings("restriction")
 public abstract class JiraAbstractTaskEditorAttributeSection extends AbstractTaskEditorSection {
 
     private static final int LABEL_WIDTH = 170;
