@@ -69,4 +69,6 @@ public interface JiraRestClientFactory {
     JiraRestClient createWithBasicHttpAuthentication(URI uri, String username, String password, java.net.http.HttpClient httpClient) throws URISyntaxException;
 
     JiraRestClient create(URI uri, AuthenticationHandler authenticationHandler, java.net.http.HttpClient httpClient) throws URISyntaxException;
+
+    JiraRestClient create(URI serverUri) throws URISyntaxException;
 }

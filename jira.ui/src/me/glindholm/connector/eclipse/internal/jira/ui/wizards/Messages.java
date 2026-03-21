@@ -229,6 +229,15 @@ public class Messages extends NLS {
 
     public static String JiraRepositorySettingsPage_Validate_server_settings;
 
+    public static String JiraProjectPage_This_project_has_details_missing;
+
+    public static String NewJiraTaskWizard_New_Jira_Task_Title;
+
+    // Login page
+    public static String JiraRepositorySettingsPage_EnterToken;
+
+    public static String JiraRepositorySettingsPage_EnterUserAndToken;
+
     public static String JiraRepositorySettingsPage_LabelUseToken;
 
     public static String JiraRepositorySettingsPage_TooltipUseToken;
@@ -237,11 +246,4 @@ public class Messages extends NLS {
 
     public static String JiraRepositorySettingsPage_LabelSaveToken;
 
-    public static String JiraRepositorySettingsPage_EnterUserAndToken;
-
-    public static String JiraRepositorySettingsPage_EnterToken;
-
-    public static String JiraProjectPage_This_project_has_details_missing;
-
-    public static String NewJiraTaskWizard_New_Jira_Task_Title;
 }

@@ -28,13 +28,23 @@ import me.glindholm.jira.rest.client.api.AuthenticationHandler;
  */
 public class AsynchronousHttpClientFactory {
 
+    public DisposableHttpClient createUrlValidationClient(final URI serverUri) {
+        final HttpClient httpClient = createHttpClient(Duration.ofMillis(500));
+        return createDisposableClient(httpClient, null);
+    }
+
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-        final HttpClient httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(30))
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build();
+        final HttpClient httpClient = createHttpClient(Duration.ofSeconds(30));
         return createDisposableClient(httpClient, authenticationHandler);
     }
+
+    private static HttpClient createHttpClient(Duration timeout) {
+        return HttpClient.newBuilder()
+                .connectTimeout(timeout)
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build();
+    }
+
 
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler, final HttpClient httpClient) {
         return createDisposableClient(httpClient, authenticationHandler);

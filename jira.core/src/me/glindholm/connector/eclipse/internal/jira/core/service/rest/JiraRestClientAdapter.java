@@ -79,7 +79,9 @@ import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInputBuilder;
 import me.glindholm.jira.rest.client.api.domain.input.TransitionInput;
+import me.glindholm.jira.rest.client.internal.async.AsynchronousHttpClientFactory;
 import me.glindholm.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import me.glindholm.jira.rest.client.internal.async.DisposableHttpClient;
 import me.glindholm.jira.rest.client.internal.async.UriBuilder;
 
 /**
@@ -122,6 +124,12 @@ public class JiraRestClientAdapter implements Closeable {
     private final String url;
 
     private final boolean followRedirects;
+
+    public JiraRestClientAdapter(final String url) throws URISyntaxException {
+        this(url, null, false);
+        URI uri = new URI(url);
+        restClient = new AsynchronousJiraRestClientFactory().create(uri);
+    }
 
     public JiraRestClientAdapter(final String url, final JiraClientCache cache, final boolean followRedirects) {
         this.url = url;
@@ -283,7 +291,7 @@ public class JiraRestClientAdapter implements Closeable {
                 JiraServerInfo serverInfo = cache.getServerInfo();
                 boolean newJqlPath = serverInfo != null && serverInfo.isNewJqlNeeded();
                 final List<Issue> issuesFromServer = restClient.getSearchClient().searchJql(jql,
-                		maxSearchResult, 0, fields, newJqlPath).get().getIssues();
+                        maxSearchResult, 0, fields, newJqlPath).get().getIssues();
                 progress.split(20).setWorkRemaining(issuesFromServer.size());
 
                 final List<JiraIssue> fullIssues = new ArrayList<>();
