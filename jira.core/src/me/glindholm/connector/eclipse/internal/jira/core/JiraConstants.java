@@ -91,4 +91,10 @@ public abstract class JiraConstants {
     public static final String REMOTELINK = "jira.issue.remotelink";
     public static final String REMOTELINK_TEXT = "jira.issue.remotelink.text";
 
+    public static final String ATTRIBUTE_ASSIGNEE = "task.common.user.assigned"; //$NON-NLS-1$
+    public static final String ATTRIBUTE_DESCRIPTION = "task.common.description"; //$NON-NLS-1$
+    public static final String ATTRIBUTE_SUMMARY = "task.common.summary"; //$NON-NLS-1$
+
+    public static final Object ATTRIBUTE_PRIORITY = "task.common.priority";
+
 }
