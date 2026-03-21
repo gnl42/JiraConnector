@@ -11,7 +11,6 @@ Eclipse-BuddyPolicy: registered
 Require-Bundle: jira-rest-java-client-api,
  org.eclipse.jdt.annotation
 Export-Package: me.glindholm.jira.rest.client.auth,
- me.glindholm.jira.rest.client.internal,
  me.glindholm.jira.rest.client.internal.async,
  me.glindholm.jira.rest.client.internal.json,
  me.glindholm.jira.rest.client.internal.json.gen,
