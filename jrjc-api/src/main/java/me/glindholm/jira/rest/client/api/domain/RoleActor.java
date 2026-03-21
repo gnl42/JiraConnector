@@ -34,14 +34,12 @@ public class RoleActor implements Serializable, NamedEntity {
     /**
      * Type of a role actor which associates a project with some particular user.
      */
-    @SuppressWarnings("UnusedDeclaration")
     private static final String TYPE_ATLASSIAN_USER_ROLE = "atlassian-user-role-actor";
 
     /**
      * Type of a role actor which associates a project with a group of users, for instance:
      * administrators, developers.
      */
-    @SuppressWarnings("UnusedDeclaration")
     private static final String TYPE_ATLASSIAN_GROUP_ROLE = "atlassian-group-role-actor";
 
     private final Long id;

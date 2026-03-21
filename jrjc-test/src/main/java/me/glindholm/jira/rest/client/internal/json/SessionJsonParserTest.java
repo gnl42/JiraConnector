@@ -17,12 +17,12 @@
 package me.glindholm.jira.rest.client.internal.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.TestUtil;
 import me.glindholm.jira.rest.client.api.domain.LoginInfo;
 import me.glindholm.jira.rest.client.api.domain.Session;
-import me.glindholm.jira.rest.client.internal.json.SessionJsonParser;
 
 public class SessionJsonParserTest {
     @Test

@@ -24,6 +24,7 @@ import org.eclipse.mylyn.tasks.core.data.TaskAttributeMetaData;
  */
 public class JiraTaskEditorAttributePart extends JiraAbstractTaskEditorAttributeSection {
 
+    @SuppressWarnings("restriction")
     public JiraTaskEditorAttributePart() {
         setPartName(org.eclipse.mylyn.internal.tasks.ui.editors.Messages.TaskEditorAttributePart_Attributes);
         setNeedsRefresh(true);

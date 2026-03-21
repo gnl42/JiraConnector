@@ -66,6 +66,7 @@ import me.glindholm.connector.eclipse.internal.jira.ui.JiraImages;
 /**
  * I hope to contribute it back one day to Mylyn framework
  */
+@SuppressWarnings("restriction")
 public class JiraTaskEditorAttachmentsPart extends AbstractTaskEditorPart {
 
     private static final String ID_POPUP_MENU = "org.eclipse.mylyn.tasks.ui.editor.menu.attachments"; //$NON-NLS-1$

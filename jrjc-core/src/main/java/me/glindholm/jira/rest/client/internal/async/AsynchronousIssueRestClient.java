@@ -198,7 +198,6 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
                         return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
                     } else {
                         final List<Transition> transitions = new ArrayList<>(jsonObject.length());
-                        @SuppressWarnings("unchecked")
                         final Iterator<String> iterator = jsonObject.keys();
                         while (iterator.hasNext()) {
                             final String key = iterator.next();

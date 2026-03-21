@@ -74,7 +74,6 @@ public class TestConstants {
 
     public static final String USER2_PASSWORD = "user";
 
-    @SuppressWarnings("UnusedDeclaration")
     public static final BasicUser USER2 = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=user"), USER2_USERNAME, "My Test User");
 
     public static final Version VERSION_1 = new Version(toUri("http://localhost:8090/jira/rest/api/latest/version/10001"), 10001L, "1", "initial version",

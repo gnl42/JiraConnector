@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public class HttpAuthExtensionSettingsContribution extends AbstractTaskRepositoryPageContribution {
 
+    @SuppressWarnings("restriction")
     public HttpAuthExtensionSettingsContribution() {
         super(org.eclipse.mylyn.internal.tasks.ui.wizards.Messages.AbstractRepositorySettingsPage_Http_Authentication, "");
     }

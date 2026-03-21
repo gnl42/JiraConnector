@@ -56,7 +56,6 @@ public class WorklogInputBuilder {
         this.issueUri = issueUri;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public WorklogInputBuilder copyFromWorklog(final Worklog worklog) {
         return setSelf(worklog.getSelf()).setIssueUri(worklog.getIssueUri()).setAuthor(worklog.getAuthor()).setUpdateAuthor(worklog.getUpdateAuthor())
                 .setComment(worklog.getComment()).setStartDate(worklog.getStartDate()).setMinutesSpent(worklog.getMinutesSpent())
@@ -133,7 +132,6 @@ public class WorklogInputBuilder {
      *
      * @return this worklog input builder object
      */
-    @SuppressWarnings("UnusedDeclaration")
     public WorklogInputBuilder setAdjustEstimateAuto() {
         return setAdjustEstimate(WorklogInput.AdjustEstimate.AUTO, null);
     }

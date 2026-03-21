@@ -60,17 +60,14 @@ public class Filter extends AddressableNamedEntity implements Serializable, Iden
         return id;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public String getJql() {
         return jql;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public URI getViewUrl() {
         return viewUrl;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public URI getSearchUrl() {
         return searchUrl;
     }
@@ -79,12 +76,10 @@ public class Filter extends AddressableNamedEntity implements Serializable, Iden
         return description;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public BasicUser getOwner() {
         return owner;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public boolean isFavourite() {
         return favourite;
     }

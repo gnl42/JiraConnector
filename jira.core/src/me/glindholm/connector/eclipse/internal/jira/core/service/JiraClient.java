@@ -154,10 +154,8 @@ public class JiraClient implements Closeable {
         if (restClient == null) {
             restClient = createRestClient(location, cache);
             try {
-                final User currentUser = restClient.getCurrentUser();
-                final int i = 0;
+                restClient.getCurrentUser();
             } catch (final JiraException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

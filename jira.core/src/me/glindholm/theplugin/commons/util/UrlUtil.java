@@ -18,6 +18,7 @@ package me.glindholm.theplugin.commons.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -46,11 +47,11 @@ public abstract class UrlUtil {
             return null;
         }
         try {
-            final URL url = new URL(address);
+            final URL url = new URI(address).toURL();
             if (url.getHost().length() == 0) {
                 return address;
             }
-        } catch (final MalformedURLException e) {
+        } catch (final MalformedURLException | URISyntaxException e) {
             return address;
         }
 
@@ -67,7 +68,7 @@ public abstract class UrlUtil {
         }
 
         try {
-            final URL url = new URL(urlString);
+            final URL url = new URI(urlString).toURL();
 
             // check the host name
             if (url.getHost().length() == 0) {

@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URISyntaxException;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.BasicWatchers;

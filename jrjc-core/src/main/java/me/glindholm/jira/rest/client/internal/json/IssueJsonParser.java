@@ -324,7 +324,6 @@ public class IssueJsonParser implements JsonObjectParser<Issue> {
 
         final JSONObject json = issueJson.getJSONObject(FIELDS);
         final List<IssueField> fields = new ArrayList<>(json.length());
-        @SuppressWarnings("unchecked")
         final Iterator<String> iterator = json.keys();
         while (iterator.hasNext()) {
             final String key = iterator.next();

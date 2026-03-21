@@ -216,7 +216,6 @@ public class IssueInputBuilder {
      *
      * @return value transformer manager
      */
-    @SuppressWarnings("UnusedDeclaration")
     public ValueTransformerManager getValueTransformerManager() {
         return valueTransformerManager;
     }

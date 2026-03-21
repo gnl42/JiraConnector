@@ -24,8 +24,6 @@ public class JiraConfigurationBean {
     private boolean synchronizeWithIntelliJTasks = false;
     private boolean showIssueTooltips = true;
 
-    private static final int HASHCODE_MAGIC = 31;
-
     public JiraConfigurationBean() {
     }
 

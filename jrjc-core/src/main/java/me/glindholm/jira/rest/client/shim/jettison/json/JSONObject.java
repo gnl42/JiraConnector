@@ -404,7 +404,6 @@ public class JSONObject {
         return node.size();
     }
 
-    @SuppressWarnings("unchecked")
     public Iterator<String> keys() {
         return node.fieldNames();
     }

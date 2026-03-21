@@ -30,6 +30,7 @@ import org.eclipse.ui.services.IServiceLocator;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraTaskDataHandler;
 
+@SuppressWarnings("restriction")
 class JiraAttributeEditorFactory extends AttributeEditorFactory {
     private final TaskDataModel model;
 

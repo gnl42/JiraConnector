@@ -16,10 +16,11 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.jupiter.api.Disabled;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.TestUtil;

@@ -17,6 +17,8 @@
 package me.glindholm.connector.commons.jira.cache;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,11 +82,11 @@ public final class CachedIconLoader {
         if (urlString != null && !icons.containsKey(urlString)) {
             try {
 
-                final URL url = new URL(urlString);
+                final URL url = new URI(urlString).toURL();
                 final Icon i = new ImageIcon(url);
                 icons.put(urlString, i);
                 maybeGenerateDisabledIcon(urlString, i);
-            } catch (final MalformedURLException e) {
+            } catch (final MalformedURLException | URISyntaxException e) {
                 // logger.warn("Cannot load icon: [" + urlString + "]", e);
             }
         }
