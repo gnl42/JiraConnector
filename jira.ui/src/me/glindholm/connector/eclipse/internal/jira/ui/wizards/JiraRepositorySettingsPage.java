@@ -147,6 +147,11 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
     @Override
     public void createSettingControls(Composite parent) {
         super.createSettingControls(parent);
+
+        if (getRepositoryUrl() != null) {
+            checkServerVersion();
+        }
+
         serverUrlCombo.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {

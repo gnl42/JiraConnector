@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -80,9 +81,7 @@ import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 import me.glindholm.jira.rest.client.api.domain.input.IssueInputBuilder;
 import me.glindholm.jira.rest.client.api.domain.input.TransitionInput;
-import me.glindholm.jira.rest.client.internal.async.AsynchronousHttpClientFactory;
 import me.glindholm.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import me.glindholm.jira.rest.client.internal.async.DisposableHttpClient;
 import me.glindholm.jira.rest.client.internal.async.UriBuilder;
 
 /**
