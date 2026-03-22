@@ -37,6 +37,11 @@ import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 public class AsynchronousHttpClientFactory {
 
     /**
+     * Cached default SSLContext so buildDefaultSslContext() runs only once.
+     */
+    private static final SSLContext DEFAULT_SSL_CONTEXT = buildDefaultSslContext();
+
+    /**
      * Creates a default SSLContext initialised with the JVM's default trust store (cacerts),
      * so that self-signed certificates imported into cacerts are accepted.
      */
@@ -57,12 +62,13 @@ public class AsynchronousHttpClientFactory {
         }
     }
 
+    public DisposableHttpClient createUrlValidationClient(final URI serverUri) {
+        final HttpClient httpClient = createHttpClient(Duration.ofMillis(500), DEFAULT_SSL_CONTEXT);
+        return createDisposableClient(httpClient, null);
+    }
+
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-        final HttpClient httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(30))
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .sslContext(buildDefaultSslContext())
-                .build();
+        final HttpClient httpClient = createHttpClient(Duration.ofSeconds(30), DEFAULT_SSL_CONTEXT);
         return createDisposableClient(httpClient, authenticationHandler);
     }
 
@@ -73,17 +79,21 @@ public class AsynchronousHttpClientFactory {
         try {
             final SSLContext ctx = SSLContext.getInstance("TLS");
             ctx.init(null, trustManagers, null);
-            final HttpClient httpClient = HttpClient.newBuilder()
-                    .connectTimeout(Duration.ofSeconds(30))
-                    .followRedirects(HttpClient.Redirect.NORMAL)
-                    .sslContext(ctx)
-                    .build();
+            final HttpClient httpClient = createHttpClient(Duration.ofSeconds(30), ctx);
             return createDisposableClient(httpClient, authenticationHandler);
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             // Fall back to default SSL context
             return createClient(serverUri, authenticationHandler);
         }
     }
+
+    private HttpClient createHttpClient(Duration timeout, SSLContext ctx) {
+         return HttpClient.newBuilder()
+                .connectTimeout(timeout)
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .sslContext(ctx)
+                .build();
+     }
 
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler, final HttpClient httpClient) {
         return createDisposableClient(httpClient, authenticationHandler);

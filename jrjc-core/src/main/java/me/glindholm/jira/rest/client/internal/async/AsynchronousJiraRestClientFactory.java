@@ -35,6 +35,12 @@ import me.glindholm.jira.rest.client.auth.BearerHttpAuthenticationHandler;
 public class AsynchronousJiraRestClientFactory implements JiraRestClientFactory {
 
     @Override
+    public JiraRestClient create(final URI serverUri) throws URISyntaxException {
+        final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory().createUrlValidationClient(serverUri);
+        return new AsynchronousJiraRestClient(serverUri, httpClient);
+    }
+
+   @Override
     public JiraRestClient create(final URI serverUri, final AuthenticationHandler authenticationHandler) throws URISyntaxException {
         final DisposableHttpClient httpClient = new AsynchronousHttpClientFactory().createClient(serverUri, authenticationHandler);
         return new AsynchronousJiraRestClient(serverUri, httpClient);

@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -123,6 +124,12 @@ public class JiraRestClientAdapter implements Closeable {
     private final String url;
 
     private final boolean followRedirects;
+
+    public JiraRestClientAdapter(final String url) throws URISyntaxException {
+        this(url, null, false);
+        URI uri = new URI(url);
+        restClient = new AsynchronousJiraRestClientFactory().create(uri);
+    }
 
     public JiraRestClientAdapter(final String url, final JiraClientCache cache, final boolean followRedirects) {
         this.url = url;

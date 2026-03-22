@@ -137,6 +137,9 @@ public class JiraServerInfo implements Serializable {
         return version.isGreaterThanOrEquals(JiraServerVersion.JIRA_1001_0);
     }
 
+    public boolean isJiraCloud() {
+        return version.isGreaterThanOrEquals(JiraServerVersion.JIRA_1001_0);
+    }
     @Override
     public String toString() {
         final String dateStr = dateFormat.format(buildDate);

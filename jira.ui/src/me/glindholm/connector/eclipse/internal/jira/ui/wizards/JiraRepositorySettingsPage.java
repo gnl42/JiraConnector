@@ -12,6 +12,7 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.wizards;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,6 +31,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.Window;
@@ -45,6 +47,8 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -74,7 +78,9 @@ import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraServerInfo;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraAuthenticationException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraCaptchaRequiredException;
+import me.glindholm.connector.eclipse.internal.jira.core.service.JiraException;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraLocalConfiguration;
+import me.glindholm.connector.eclipse.internal.jira.core.service.rest.JiraRestClientAdapter;
 import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
 import me.glindholm.connector.eclipse.internal.jira.ui.JiraUiPlugin;
 
@@ -121,10 +127,13 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
     private Button useToken;
 
+    boolean useTokenForPassword = true;
+
     public JiraRepositorySettingsPage(final TaskRepository taskRepository) {
         super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings, Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
         setNeedsProxy(true);
         setNeedsHttpAuth(false);
+        setUseTokenForAuthentication(true);
     }
 
     @Override
@@ -132,6 +141,52 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         repositoryLabelEditor.setStringValue(template.label);
         setUrl(template.repositoryUrl);
         getContainer().updateButtons();
+   }
+
+
+   @Override
+    public void createSettingControls(Composite parent) {
+        super.createSettingControls(parent);
+
+        checkServerVersion();
+
+        serverUrlCombo.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                checkServerVersion();
+            }
+        });
+
+    }
+
+    /**
+     * The Jira Cloud uses API tokens instead of passwords, so if the server is
+     * detected as Jira Cloud, switch to token authentication and update the UI
+     * accordingly.
+     */
+    private void checkServerVersion() {
+        String name = getRepositoryUrl();
+        if (name != null && !name.isEmpty()) {
+            try {
+                try (JiraRestClientAdapter client = new JiraRestClientAdapter(name)) {
+                    JiraServerInfo serverInfo = client.getServerInfo();
+                    if (serverInfo.isJiraCloud()) {
+                        useTokenForPassword = true;
+                        setUseTokenForAuthentication(false);
+                        setUseTokenButtonEnabled(false);
+                        setUseTokenSelection(false);
+                        repositoryPasswordEditor.setLabelText(getSettingsPageLabelTokenText());
+                        savePasswordButton.setText(getSettingsPageLabelSaveTokenText());
+                    }
+                }
+            } catch (JiraException | IOException | URISyntaxException e) {
+            }
+        }
+    }
+
+    @Override
+    public boolean isUseTokenForAuthentication() {
+        return useTokenForPassword;
     }
 
     /** Create a button to validate the specified repository settings */
@@ -142,8 +197,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         } else {
             configuration = new JiraLocalConfiguration();
         }
-
-        addTokenCheckbox(true); // Should check Server version >= 8.14
 
         toolkit = new FormToolkit(parent.getDisplay());
 
@@ -338,18 +391,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         });
 
         toolkit.paintBordersFor(composite);
-    }
-
-    @Override
-    protected boolean isValidUrl(final String name) {
-        if (name.startsWith(URL_PREFIX_HTTPS) || name.startsWith(URL_PREFIX_HTTP)) {
-            try {
-                new URI(name).toURL();
-                return true;
-            } catch (final MalformedURLException | URISyntaxException e) {
-            }
-        }
-        return false;
     }
 
     @Override
@@ -644,107 +685,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
 
     }
 
-    /**
-     * Inserts a checkbox into the page where the user can specify that token authentication shall be
-     * used for the task repository.
-     *
-     * @param userOptional whether or not a user name is optional
-     */
-    private boolean needsUser = true;
-
-    protected void addTokenCheckbox(final boolean userOptional) {
-        needsUser = !userOptional;
-        useToken = new Button(compositeContainer, SWT.CHECK);
-        useToken.setText(Messages.JiraRepositorySettingsPage_LabelUseToken);
-        useToken.setToolTipText(Messages.JiraRepositorySettingsPage_TooltipUseToken);
-        useToken.moveBelow(savePasswordButton);
-        GridDataFactory.defaultsFor(useToken).span(3, 1).applyTo(useToken);
-        final String savePasswordText = savePasswordButton.getText();
-        final boolean[] allowAnon = { isAnonymousAccess() };
-        final SelectionAdapter listener = new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                final boolean isChecked = useToken.getSelection();
-                if (isChecked) {
-                    repositoryPasswordEditor.setLabelText(Messages.JiraRepositorySettingsPage_LabelToken);
-                    savePasswordButton.setText(Messages.JiraRepositorySettingsPage_LabelSaveToken);
-                    if (anonymousButton != null) {
-                        allowAnon[0] = isAnonymousAccess();
-                        setAnonymous(false);
-                        anonymousButton.setEnabled(false);
-                    }
-                } else {
-                    repositoryPasswordEditor.setLabelText(LABEL_PASSWORD);
-                    savePasswordButton.setText(savePasswordText);
-                    if (anonymousButton != null) {
-                        anonymousButton.setEnabled(true);
-                        setAnonymous(allowAnon[0]);
-                    }
-                }
-                if (userOptional) {
-                    repositoryUserNameEditor.getTextControl(compositeContainer).setEnabled(!isChecked);
-                    repositoryUserNameEditor.setEmptyStringAllowed(isChecked);
-                    if (isChecked) {
-                        repositoryUserNameEditor.setStringValue("");
-                    }
-                }
-                repositoryPasswordEditor.getLabelControl(compositeContainer).requestLayout();
-                // Trigger page validation if needed
-                if (userOptional && getWizard() != null) {
-                    getWizard().getContainer().updateButtons();
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(final SelectionEvent e) {
-                widgetSelected(e);
-            }
-        };
-        useToken.addSelectionListener(listener);
-        final TaskRepository taskRepository = getRepository();
-        if (taskRepository != null) { // FIXME
-            useToken.setSelection(JiraUtil.isAccessToken(taskRepository));
-            // setSelection does not fire a selection event
-            listener.widgetSelected(null);
-        }
-    }
-
-    /**
-     * Tells whether the task repository uses token authentication.
-     *
-     * @return {@code true} if token authentication shall be used; {@code false} otherwise
-     */
-    protected boolean useTokenAuth() {
-        return useToken != null && useToken.getSelection();
-    }
-
-    @Override
-    protected boolean isMissingCredentials() {
-        if (!needsUser && useTokenAuth()) {
-            return repositoryPasswordEditor.getStringValue().trim().isEmpty();
-        } else {
-            return super.isMissingCredentials();
-        }
-    }
-
-    @SuppressWarnings("restriction")
-    @Override
-    public void setMessage(final String newMessage, final int newType) {
-        // This is a bit hacky since it relies on an internal message and the
-        // way it is used in the super class. But it beats re-implementing
-        // isPageComplete().
-        if (useTokenAuth() && org.eclipse.mylyn.internal.tasks.ui.wizards.Messages.AbstractRepositorySettingsPage_Enter_a_user_id_Message0.equals(newMessage)) {
-            if (needsUser) {
-                super.setMessage(Messages.JiraRepositorySettingsPage_EnterUserAndToken, newType);
-            } else {
-                super.setMessage(Messages.JiraRepositorySettingsPage_EnterToken, newType);
-            }
-        } else {
-            super.setMessage(newMessage, newType);
-        }
-    }
-
     @Override
     public String getConnectorKind() {
         return JiraCorePlugin.CONNECTOR_KIND;
@@ -758,5 +698,56 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         }
         super.dispose();
     }
+
+    /**
+     * @since 4.1
+     * @return
+     */
+    @Override
+    protected String getSettingsPageEnterTokenText() {
+        return Messages.JiraRepositorySettingsPage_EnterToken;
+    }
+
+    /**
+     * @since 4.1
+     * @return
+     */
+    @Override
+    protected String getSettingsPageEnterUserAndTokenText() {
+        return Messages.JiraRepositorySettingsPage_EnterUserAndToken;
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    protected String getSettingsPageGetUseLabelUseTokenText() {
+        return Messages.JiraRepositorySettingsPage_LabelUseToken;
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    protected String getSettingsPageTooltipUseTokenText() {
+        return Messages.JiraRepositorySettingsPage_TooltipUseToken;
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    protected String getSettingsPageLabelTokenText() {
+        return Messages.JiraRepositorySettingsPage_LabelToken;
+    }
+
+    /**
+     * @since 4.1
+     */
+    @Override
+    protected String getSettingsPageLabelSaveTokenText() {
+        return Messages.JiraRepositorySettingsPage_LabelSaveToken;
+    }
+
 
 }
