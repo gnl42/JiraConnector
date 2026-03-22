@@ -38,6 +38,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
  * @author Wesley Coelho (initial integration patch)
  * @author Steffen Pingel
  */
+@SuppressWarnings("restriction")
 public class JiraClientFactory implements IRepositoryListener, IRepositoryChangeListener, IJiraClientFactory {
 
     private static JiraClientFactory instance = null;

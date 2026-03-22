@@ -87,7 +87,6 @@ public class User extends BasicUser {
      * @return URI for specified size or <code>null</code> when there is no avatar image with given
      *         dimensions specified for this user
      */
-    @SuppressWarnings("UnusedDeclaration")
     @Nullable
     public URI getAvatarUri(final String sizeDefinition) {
         return avatarUris.get(sizeDefinition);

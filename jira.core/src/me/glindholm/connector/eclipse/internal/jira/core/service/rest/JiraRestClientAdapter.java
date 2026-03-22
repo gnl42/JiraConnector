@@ -42,6 +42,7 @@ import org.eclipse.mylyn.commons.core.StatusHandler;
 import org.eclipse.osgi.util.NLS;
 
 import me.glindholm.connector.eclipse.internal.jira.core.JiraAttribute;
+import me.glindholm.connector.eclipse.internal.jira.core.JiraConstants;
 import me.glindholm.connector.eclipse.internal.jira.core.JiraCorePlugin;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraAction;
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraComponent;
@@ -141,38 +142,32 @@ public class JiraRestClientAdapter implements Closeable {
             final boolean followRedirects) {
         this(url, cache, followRedirects);
 
-        // final TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
-        // public X509Certificate[] getAcceptedIssuers() {
-        // return null;
-        // }
-        //
-        // public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws
-        // CertificateException {
-        // }
-        //
-        // public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws
-        // CertificateException {
-        // }
-        // } };
-
         try {
-
-            // HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-            //
-            // HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-            // public boolean verify(String s, javax.net.ssl.SSLSession sslSession) {
-            // return true;
-            // }
-            // });
+            final javax.net.ssl.TrustManager[] trustManagers = buildTrustManagers(url);
+            final AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
             if (userName.isEmpty()) {
-                restClient = new AsynchronousJiraRestClientFactory().createWithBearerHttpAuthentication(new URI(url), password);
+                restClient = factory.createWithBearerHttpAuthentication(new URI(url), password, trustManagers);
             } else {
-                restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password);
+                restClient = factory.createWithBasicHttpAuthentication(new URI(url), userName, password, trustManagers);
             }
         } catch (final URISyntaxException e) {
             // we should never get here as Mylyn constructs URI first and fails if it is
             // incorrect
             StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
+        }
+    }
+
+    private static javax.net.ssl.TrustManager[] buildTrustManagers(final String url) {
+        try {
+            final String host = new URI(url).getHost();
+            return new javax.net.ssl.TrustManager[] {
+                new me.glindholm.theplugin.commons.ssl.ConnectorTrustManager(host, null)
+            };
+        } catch (final Exception e) {
+            // Fallback: return empty array so the HttpClient will use its own default
+            StatusHandler.log(new Status(IStatus.WARNING, JiraCorePlugin.ID_PLUGIN,
+                    "Could not build SSL trust manager, falling back to default", e)); //$NON-NLS-1$
+            return null;
         }
     }
 
@@ -595,7 +590,7 @@ public class JiraRestClientAdapter implements Closeable {
         return call(() -> restClient.getIssueClient().createIssue(issueInputBuilder.build()).get().getKey());
     }
 
-    public void updateIssue(final JiraIssue changedIssue, final boolean updateEstimate) throws JiraException {
+    public void updateIssue(final JiraIssue changedIssue, final Set<String> changeIds) throws JiraException {
         final JiraIssue fullIssue = getIssueByKeyOrId(changedIssue.getKey(), new org.eclipse.core.runtime.NullProgressMonitor());
 
         final Issue issue = fullIssue.getRawIssue();
@@ -604,12 +599,19 @@ public class JiraRestClientAdapter implements Closeable {
 
         final List<FieldInput> updateFields = new ArrayList<>();
 
-        updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getType().getId())));
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.PRIORITY, null)) && changedIssue.getPriority() != null) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_TYPE) && //
+                changeIds.contains(JiraConstants.ATTRIBUTE_TYPE)) {
+            updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getType().getId())));
+        }
+
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_PRIORITY) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.PRIORITY, null)) && //
+                changedIssue.getPriority() != null) {
             updateFields.add(new FieldInput(JiraRestFields.PRIORITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getPriority().getId())));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.DUEDATE, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_DUE_DATE) &&
+                editableFields.contains(new JiraIssueField(JiraRestFields.DUEDATE, null))) {
             final String date;
             if (changedIssue.getDue() == null) {
                 date = null;
@@ -620,7 +622,8 @@ public class JiraRestClientAdapter implements Closeable {
         }
 
         // if time tracking is enabled and estimate changed
-        if (issue.getTimeTracking() != null && updateEstimate) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_ESTIMATE) && //
+        issue.getTimeTracking() != null && changeIds.contains(JiraAttribute.ESTIMATE.id())) {
 
             final Long currentEstimateInSeconds = changedIssue.getEstimate();
             final Integer previousEstimateInMinutes = issue.getTimeTracking().getRemainingEstimateMinutes();
@@ -670,7 +673,8 @@ public class JiraRestClientAdapter implements Closeable {
             }
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.VERSIONS, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_AFFECTSVERSIONS) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.VERSIONS, null))) {
             final List<ComplexIssueInputFieldValue> reportedVersions = new ArrayList<>();
             for (final JiraVersion version : changedIssue.getReportedVersions()) {
                 reportedVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
@@ -678,7 +682,8 @@ public class JiraRestClientAdapter implements Closeable {
             updateFields.add(new FieldInput(JiraRestFields.VERSIONS, reportedVersions));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.FIX_VERSIONS, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_FIXVERSIONS) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.FIX_VERSIONS, null))) {
             final List<ComplexIssueInputFieldValue> fixVersions = new ArrayList<>();
             for (final JiraVersion version : changedIssue.getFixVersions()) {
                 fixVersions.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, version.getId()));
@@ -686,7 +691,8 @@ public class JiraRestClientAdapter implements Closeable {
             updateFields.add(new FieldInput(JiraRestFields.FIX_VERSIONS, fixVersions));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.COMPONENTS, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_COMPONENTS) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.COMPONENTS, null))) {
             final List<ComplexIssueInputFieldValue> components = new ArrayList<>();
             for (final JiraComponent component : changedIssue.getComponents()) {
                 components.add(ComplexIssueInputFieldValue.with(JiraRestFields.ID, component.getId()));
@@ -694,7 +700,8 @@ public class JiraRestClientAdapter implements Closeable {
             updateFields.add(new FieldInput(JiraRestFields.COMPONENTS, components));
         }
 
-        if (changedIssue.getSecurityLevel() != null) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_SECURITY_LEVEL) && //
+                changedIssue.getSecurityLevel() != null) {
             // security level value "-1" clears security level
             updateFields
                     .add(new FieldInput(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getSecurityLevel().getId())));
@@ -702,19 +709,23 @@ public class JiraRestClientAdapter implements Closeable {
             // do not clear security level as it might be not available on the screen
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.ENVIRONMENT, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_ENVIRONMENT) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.ENVIRONMENT, null))) {
             updateFields.add(new FieldInput(JiraRestFields.ENVIRONMENT, changedIssue.getEnvironment()));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.SUMMARY, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_SUMMARY) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.SUMMARY, null))) {
             updateFields.add(new FieldInput(JiraRestFields.SUMMARY, changedIssue.getSummary()));
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.DESCRIPTION, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_DESCRIPTION) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.DESCRIPTION, null))) {
             updateFields.add(new FieldInput(JiraRestFields.DESCRIPTION, changedIssue.getDescription() != null ? changedIssue.getDescription() : "")); //$NON-NLS-1$
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.ASSIGNEE, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_ASSIGNEE) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.ASSIGNEE, null))) {
             final String assigne = "-1".equals(changedIssue.getAssignee()) ? "" : changedIssue.getAssignee().getId(); //$NON-NLS-1$//$NON-NLS-2$
             final String prevAssigne = issue.getAssignee() != null ? issue.getAssignee().getId() : ""; //$NON-NLS-1$
 
@@ -723,14 +734,17 @@ public class JiraRestClientAdapter implements Closeable {
             }
         }
 
-        if (editableFields.contains(new JiraIssueField(JiraRestFields.LABELS, null))) {
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_LABELS) && //
+                editableFields.contains(new JiraIssueField(JiraRestFields.LABELS, null))) {
             updateFields.add(new FieldInput(JiraRestFields.LABELS, Arrays.asList(changedIssue.getLabels())));
         }
 
         for (final JiraCustomField customField : changedIssue.getCustomFields()) {
-            final FieldInput field = JiraRestConverter.convert(customField);
-            if (field != null) {
-                updateFields.add(field);
+            if (changeIds.contains(JiraConstants.ATTRIBUTE_CUSTOM_PREFIX + customField.getId())) {
+                final FieldInput field = JiraRestConverter.convert(customField);
+                if (field != null) {
+                    updateFields.add(field);
+                }
             }
         }
 
@@ -790,9 +804,30 @@ public class JiraRestClientAdapter implements Closeable {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             }
+            // Unwrap JiraException wrapping an SSL handshake failure and provide a useful message
+            final Throwable cause = unwrapCause(e);
+            if (cause instanceof javax.net.ssl.SSLHandshakeException || (cause != null && cause.getMessage() != null && cause.getMessage().contains("unable to find valid certification path"))) { //$NON-NLS-1$
+                throw new JiraException(
+                        "SSL certificate verification failed. If you are using a self-signed certificate, import it into the JVM trust store (cacerts).", //$NON-NLS-1$
+                        e);
+            }
             throw new JiraException(e);
         }
 
+    }
+
+    private static Throwable unwrapCause(Throwable t) {
+        final java.util.Set<Throwable> seen = new java.util.HashSet<>();
+        while (t != null && seen.add(t)) {
+            if (t instanceof javax.net.ssl.SSLHandshakeException) {
+                return t;
+            }
+            if (t.getMessage() != null && t.getMessage().contains("unable to find valid certification path")) { //$NON-NLS-1$
+                return t;
+            }
+            t = t.getCause();
+        }
+        return null;
     }
 
     public static SimpleDateFormat getOffsetDateTimeFormat() {

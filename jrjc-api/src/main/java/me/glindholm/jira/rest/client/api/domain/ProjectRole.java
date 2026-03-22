@@ -30,7 +30,6 @@ import me.glindholm.jira.rest.client.api.IdentifiableEntity;
  *
  * @see com.atlassian.jira.security.roles.ProjectRole
  */
-@SuppressWarnings("JavadocReference")
 public class ProjectRole extends BasicProjectRole implements Serializable, IdentifiableEntity<Long> {
     private static final long serialVersionUID = 1L;
 

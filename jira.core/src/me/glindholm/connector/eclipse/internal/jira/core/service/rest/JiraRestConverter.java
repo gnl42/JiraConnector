@@ -404,11 +404,7 @@ public class JiraRestConverter {
                                 NLS.bind("Unable to parse type information (edit meta) for field [{0}:{1}:{2}].", //$NON-NLS-1$
                                         new Object[] { fieldId, issueField.getName(), longType })));
                     }
-                } else {
-                    final int i = 0;
                 }
-            } else {
-                final int i = 0;
             }
         }
         return customFields.toArray(new JiraCustomField[0]);
@@ -571,8 +567,6 @@ public class JiraRestConverter {
                         }
 
                     }
-                } else {
-                    final int i = 0;
                 }
             }
         }
@@ -636,11 +630,11 @@ public class JiraRestConverter {
             outAttachment.setAuthor(BasicUser.UNASSIGNED_USER); // $NON-NLS-1$
         }
 
-        //        if (author != null && author.getDisplayName() != null) {
-        //            outAttachment.setAuthorDisplayName(author.getDisplayName());
-        //        } else {
-        //            outAttachment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
-        //        }
+        // if (author != null && author.getDisplayName() != null) {
+        // outAttachment.setAuthorDisplayName(author.getDisplayName());
+        // } else {
+        // outAttachment.setAuthorDisplayName("Unknown"); //$NON-NLS-1$
+        // }
 
         outAttachment.setCreated(attachment.getCreationDate().toInstant());
         outAttachment.setName(attachment.getFilename());
@@ -1045,7 +1039,7 @@ public class JiraRestConverter {
             }
 
             return new FieldInput(customField.getId(), values);
-            // }
+        // }
 
         case LABELSS:
             if (customField.getValues().size() > 0) {

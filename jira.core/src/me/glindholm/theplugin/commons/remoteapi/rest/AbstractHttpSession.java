@@ -17,6 +17,8 @@
 package me.glindholm.theplugin.commons.remoteapi.rest;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -59,8 +61,8 @@ public abstract class AbstractHttpSession {
         url.set(urlString);
     }
 
-    public static void setUrl(final String urlString) throws MalformedURLException {
-        url.set(new URL(urlString));
+    public static void setUrl(final String urlString) throws MalformedURLException, URISyntaxException {
+        url.set(new URI(urlString).toURL());
     }
 
     protected String getBaseUrl() {
@@ -77,8 +79,8 @@ public abstract class AbstractHttpSession {
             return "";
         }
         try {
-            return new URL(urlString).getHost();
-        } catch (final MalformedURLException e) {
+            return new URI(urlString).getHost();
+        } catch (final URISyntaxException e) {
             return urlString;
         }
     }

@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -134,14 +133,6 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         super(Messages.JiraRepositorySettingsPage_JIRA_Repository_Settings, Messages.JiraRepositorySettingsPage_Validate_server_settings, taskRepository);
         setNeedsProxy(true);
         setNeedsHttpAuth(false);
-//      final AbstractWebLocation location = new JiraTaskRepositoryLocation(repository);
-//      try {
-//          JiraServerInfo serverInfo = JiraClientFactory.getDefault().validateConnection(location,
-//                  new JiraLocalConfiguration(), null);
-//
-//      } catch (final Exception e) {
-//          // ignore
-//      }
         setUseTokenForAuthentication(true);
     }
 
@@ -570,8 +561,8 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
         @Override
         public void run(final IProgressMonitor monitor) throws CoreException {
             try {
-                new URL(repository.getRepositoryUrl());
-            } catch (final MalformedURLException ex) {
+                new URI(repository.getRepositoryUrl()).toURL();
+            } catch (final MalformedURLException | URISyntaxException ex) {
                 throw new CoreException(new Status(IStatus.ERROR, JiraUiPlugin.ID_PLUGIN, IStatus.OK, INVALID_REPOSITORY_URL, null));
             }
 

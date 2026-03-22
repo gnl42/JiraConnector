@@ -85,6 +85,7 @@ public class JiraRemotelinksPart extends AbstractTaskEditorPart {
         }
     }
 
+    @SuppressWarnings("restriction")
     @Override
     public void createControl(final Composite parent, final FormToolkit toolkit) {
         final Section section = createSection(parent, toolkit, false);

@@ -16,14 +16,15 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import me.glindholm.jira.rest.client.api.domain.BasicComponent;
-import me.glindholm.jira.rest.client.api.domain.Component;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.net.URI;
+
+import org.junit.jupiter.api.Test;
+
+import me.glindholm.jira.rest.client.api.domain.BasicComponent;
+import me.glindholm.jira.rest.client.api.domain.Component;
 
 public class ComponentJsonParserTest {
     @Test

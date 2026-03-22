@@ -50,6 +50,7 @@ public class MigrateToSecureStorageJob extends UIJob {
 
     @Override
     public IStatus runInUIThread(final IProgressMonitor monitor) {
+        @SuppressWarnings("restriction")
         final Set<TaskRepository> repos = TasksUiPlugin.getRepositoryManager().getRepositories(kind);
         if (repos != null) {
             for (final TaskRepository repo : repos) {

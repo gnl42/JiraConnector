@@ -20,6 +20,7 @@ import java.net.Proxy;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
@@ -154,10 +155,8 @@ public class JiraClient implements Closeable {
         if (restClient == null) {
             restClient = createRestClient(location, cache);
             try {
-                final User currentUser = restClient.getCurrentUser();
-                final int i = 0;
+                restClient.getCurrentUser();
             } catch (final JiraException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -767,11 +766,11 @@ public class JiraClient implements Closeable {
         return getBaseUrl();
     }
 
-    public void updateIssue(final JiraIssue issue, final String comment, final boolean updateEstimate, final IProgressMonitor monitor) throws JiraException {
+    public void updateIssue(final JiraIssue issue, final String comment, final Set<String> changeIds, final IProgressMonitor monitor) throws JiraException {
         // soapClient.updateIssue(issue, monitor);
 
         try {
-            getRestClient().updateIssue(issue, updateEstimate);
+            getRestClient().updateIssue(issue, changeIds);
         } catch (final RestClientException e) {
             throw new JiraException(e);
         }

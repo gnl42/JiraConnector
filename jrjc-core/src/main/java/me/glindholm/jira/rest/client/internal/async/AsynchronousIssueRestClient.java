@@ -64,7 +64,6 @@ import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 import me.glindholm.jira.rest.client.api.domain.input.LinkIssuesInput;
 import me.glindholm.jira.rest.client.api.domain.input.TransitionInput;
 import me.glindholm.jira.rest.client.api.domain.input.WorklogInput;
-import me.glindholm.jira.rest.client.internal.ServerVersionConstants;
 import me.glindholm.jira.rest.client.internal.json.BasicIssueJsonParser;
 import me.glindholm.jira.rest.client.internal.json.BasicIssuesJsonParser;
 import me.glindholm.jira.rest.client.internal.json.CreateIssueMetaFieldsParser;
@@ -199,7 +198,6 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
                         return JsonParseUtil.parseJsonArray(jsonObject.getJSONArray("transitions"), transitionJsonParserV5);
                     } else {
                         final List<Transition> transitions = new ArrayList<>(jsonObject.length());
-                        @SuppressWarnings("unchecked")
                         final Iterator<String> iterator = jsonObject.keys();
                         while (iterator.hasNext()) {
                             final String key = iterator.next();
@@ -233,18 +231,10 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
         final int buildNumber = getVersionInfo().getBuildNumber();
         try {
             final JSONObject jsonObject = new JSONObject();
-            if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
-                jsonObject.put("transition", new JSONObject().put("id", transitionInput.getId()));
-            } else {
-                jsonObject.put("transition", transitionInput.getId());
-            }
-            if (transitionInput.getComment() != null) {
-                if (buildNumber >= ServerVersionConstants.BN_JIRA_5) {
-                    jsonObject.put("update", new JSONObject().put("comment", new JSONArray()
-                            .put(new JSONObject().put("add", new CommentJsonGenerator(getVersionInfo()).generate(transitionInput.getComment())))));
-                } else {
-                    jsonObject.put("comment", new CommentJsonGenerator(getVersionInfo()).generate(transitionInput.getComment()));
-                }
+            jsonObject.put("transition", new JSONObject().put("id", transitionInput.getId()));
+             if (transitionInput.getComment() != null) {
+                jsonObject.put("update", new JSONObject().put("comment", new JSONArray()
+                       .put(new JSONObject().put("add", new CommentJsonGenerator(getVersionInfo()).generate(transitionInput.getComment())))));
             }
             final List<FieldInput> fields = transitionInput.getFields();
             final JSONObject fieldsJs = new IssueUpdateJsonGenerator().generate(fields);
@@ -296,11 +286,7 @@ public class AsynchronousIssueRestClient extends AbstractAsynchronousRestClient 
     @Override
     public CompletableFuture<Void> removeWatcher(final URI watchersUri, final String username) throws URISyntaxException {
         final UriBuilder uriBuilder = new UriBuilder(watchersUri);
-        if (getVersionInfo().getBuildNumber() >= ServerVersionConstants.BN_JIRA_4_4) {
-            uriBuilder.addParameter("username", username);
-        } else {
-            uriBuilder.appendPath(username).build();
-        }
+        uriBuilder.addParameter("username", username);
         return delete(uriBuilder.build());
     }
 
