@@ -162,7 +162,8 @@ public class ConnectorTrustManager extends X509ExtendedTrustManager {
 
             final String message = "The SSL certificate for\n\n  " + serverHost //$NON-NLS-1$
                     + "\n\ncannot be verified:\n\n  " + reason //$NON-NLS-1$
-                    + "\n\nDo you want to accept it for this session?"; //$NON-NLS-1$
+                    + "\n\nDo you want to accept it for this session?"
+                    + "\n\nSetting the '-D" + PROP_ACCEPT_SELF_SIGNED + "=true' property will bypass this prompt"; //$NON-NLS-1$
 
             final Display display = PlatformUI.isWorkbenchRunning()
                     ? PlatformUI.getWorkbench().getDisplay() : Display.getCurrent();
