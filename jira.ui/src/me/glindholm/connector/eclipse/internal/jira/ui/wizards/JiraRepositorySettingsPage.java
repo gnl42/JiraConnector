@@ -144,13 +144,11 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
    }
 
 
-    @Override
+   @Override
     public void createSettingControls(Composite parent) {
         super.createSettingControls(parent);
 
-        if (getRepositoryUrl() != null) {
-            checkServerVersion();
-        }
+        checkServerVersion();
 
         serverUrlCombo.addFocusListener(new FocusAdapter() {
             @Override
@@ -168,19 +166,21 @@ public class JiraRepositorySettingsPage extends AbstractRepositorySettingsPage {
      */
     private void checkServerVersion() {
         String name = getRepositoryUrl();
-        try {
-            try (JiraRestClientAdapter client = new JiraRestClientAdapter(name)) {
-                JiraServerInfo serverInfo = client.getServerInfo();
-                if (serverInfo.isJiraCloud()) {
-                    useTokenForPassword = true;
-                    setUseTokenForAuthentication(false);
-                    setUseTokenButtonEnabled(false);
-                    setUseTokenSelection(false);
-                    repositoryPasswordEditor.setLabelText(getSettingsPageLabelTokenText());
-                    savePasswordButton.setText(getSettingsPageLabelSaveTokenText());
+        if (name != null && !name.isEmpty()) {
+            try {
+                try (JiraRestClientAdapter client = new JiraRestClientAdapter(name)) {
+                    JiraServerInfo serverInfo = client.getServerInfo();
+                    if (serverInfo.isJiraCloud()) {
+                        useTokenForPassword = true;
+                        setUseTokenForAuthentication(false);
+                        setUseTokenButtonEnabled(false);
+                        setUseTokenSelection(false);
+                        repositoryPasswordEditor.setLabelText(getSettingsPageLabelTokenText());
+                        savePasswordButton.setText(getSettingsPageLabelSaveTokenText());
+                    }
                 }
+            } catch (JiraException | IOException | URISyntaxException e) {
             }
-        } catch (JiraException | IOException | URISyntaxException e) {
         }
     }
 
