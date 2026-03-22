@@ -598,9 +598,9 @@ public class JiraRestClientAdapter implements Closeable {
 
         final List<FieldInput> updateFields = new ArrayList<>();
 
-        if (changeIds.contains(JiraConstants.ATTRIBUTE_TYPE) && //
-                changeIds.contains(JiraConstants.ATTRIBUTE_TYPE)) {
-            updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE, ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getType().getId())));
+        if (changeIds.contains(JiraConstants.ATTRIBUTE_TYPE)) {
+            updateFields.add(new FieldInput(JiraRestFields.ISSUETYPE,
+                    ComplexIssueInputFieldValue.with(JiraRestFields.ID, changedIssue.getType().getId())));
         }
 
         if (changeIds.contains(JiraConstants.ATTRIBUTE_PRIORITY) && //
