@@ -17,7 +17,15 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 
@@ -28,23 +36,64 @@ import me.glindholm.jira.rest.client.api.AuthenticationHandler;
  */
 public class AsynchronousHttpClientFactory {
 
+    /**
+     * Cached default SSLContext so buildDefaultSslContext() runs only once.
+     */
+    private static final SSLContext DEFAULT_SSL_CONTEXT = buildDefaultSslContext();
+
+    /**
+     * Creates a default SSLContext initialised with the JVM's default trust store (cacerts),
+     * so that self-signed certificates imported into cacerts are accepted.
+     */
+    private static SSLContext buildDefaultSslContext() {
+        try {
+            final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init((KeyStore) null); // null → use the JVM default trust store (cacerts)
+            final SSLContext ctx = SSLContext.getInstance("TLS");
+            ctx.init(null, tmf.getTrustManagers(), null);
+            return ctx;
+        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+            // Fall back to platform default — better than completely failing
+            try {
+                return SSLContext.getDefault();
+            } catch (final NoSuchAlgorithmException ex) {
+                throw new IllegalStateException("Cannot initialise SSLContext", ex);
+            }
+        }
+    }
+
     public DisposableHttpClient createUrlValidationClient(final URI serverUri) {
-        final HttpClient httpClient = createHttpClient(Duration.ofMillis(500));
+        final HttpClient httpClient = createHttpClient(Duration.ofMillis(500), DEFAULT_SSL_CONTEXT);
         return createDisposableClient(httpClient, null);
     }
 
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler) {
-        final HttpClient httpClient = createHttpClient(Duration.ofSeconds(30));
+        final HttpClient httpClient = createHttpClient(Duration.ofSeconds(30), DEFAULT_SSL_CONTEXT);
         return createDisposableClient(httpClient, authenticationHandler);
     }
 
-    private static HttpClient createHttpClient(Duration timeout) {
-        return HttpClient.newBuilder()
-                .connectTimeout(timeout)
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build();
+    public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler, final TrustManager[] trustManagers) {
+        if (trustManagers == null) {
+            return createClient(serverUri, authenticationHandler);
+        }
+        try {
+            final SSLContext ctx = SSLContext.getInstance("TLS");
+            ctx.init(null, trustManagers, null);
+            final HttpClient httpClient = createHttpClient(Duration.ofSeconds(30), ctx);
+            return createDisposableClient(httpClient, authenticationHandler);
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            // Fall back to default SSL context
+            return createClient(serverUri, authenticationHandler);
+        }
     }
 
+    private HttpClient createHttpClient(Duration timeout, SSLContext ctx) {
+         return HttpClient.newBuilder()
+                .connectTimeout(timeout)
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .sslContext(ctx)
+                .build();
+     }
 
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler, final HttpClient httpClient) {
         return createDisposableClient(httpClient, authenticationHandler);
