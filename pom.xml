@@ -18,6 +18,7 @@
             </roles>
         </developer>
     </developers>
+
     <!-- Developers of the original code -->
     <contributors>
         <contributor>
@@ -63,7 +64,7 @@
         <connection> scm:git:git@github.com:gnl42/JiraConnector.git</connection>
         <url> scm:git:git@github.com:gnl42/JiraConnector.git</url>
         <developerConnection>scm:git:git@github.com:gnl42/JiraConnector.git</developerConnection>
-        <tag>4.4.0</tag>
+        <tag>6.0.0</tag>
     </scm>
     <issueManagement>
         <system>GitHub</system>
@@ -115,60 +116,20 @@
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>3.1.4</version>
                 </plugin>
-                <!--
-
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.eclipse.tycho</groupId>
-                                        <artifactId>tycho-compiler-plugin</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>validate-classpath</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.eclipse.tycho</groupId>
-                                        <artifactId>target-platform-configuration</artifactId>
-                                        <versionRange>[1.0.0,)</versionRange>
-                                        <goals>
-                                            <goal>target-platform</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
--->
-                <plugin>
+                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.4.1</version>
+                    <version>3.12.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.12.1</version>
+                    <version>3.21.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.36.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -178,17 +139,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jxr-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
@@ -255,16 +211,6 @@
                         </environments>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho.extras</groupId>
-                    <artifactId>tycho-pack200a-plugin</artifactId>
-                    <version>${tycho.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho.extras</groupId>
-                    <artifactId>tycho-pack200b-plugin</artifactId>
-                    <version>${tycho.version}</version>
-                </plugin>
 
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
@@ -291,7 +237,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.4.2</version>
+                    <version>3.8.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -446,6 +392,7 @@
             </plugin>
         </plugins>
     </build>
+
     <profiles>
         <profile>
             <!-- Activate this profile to perform the release to GitHub Pages -->

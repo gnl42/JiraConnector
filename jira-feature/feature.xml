@@ -14,7 +14,7 @@
       label="%featureName"
       version="6.0.0.qualifier"
       provider-name="%providerName"
-      plugin="me.glindholm.connector.eclipse.branding.ui">
+      plugin="me.glindholm.connector.jira.ui">
 
    <description url="https://www.atlassian.com/software/jira">
       %description
@@ -65,6 +65,5 @@
    <plugin
          id="me.glindholm.connector.jira.help"
          version="0.0.0"/>
-
 
 </feature>
