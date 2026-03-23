@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 
 import me.glindholm.connector.eclipse.internal.jira.core.model.JiraWorkLog;
 import me.glindholm.connector.eclipse.internal.jira.core.service.JiraTimeFormat;
+import me.glindholm.jira.rest.client.api.domain.BasicUser;
 
 /**
  * @author Steffen Pingel
