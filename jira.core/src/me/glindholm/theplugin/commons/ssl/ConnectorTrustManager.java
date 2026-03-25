@@ -172,45 +172,22 @@ public class ConnectorTrustManager extends X509ExtendedTrustManager {
                 throw e; // no UI available — reject
             }
 
-            // If we are already on the UI thread, run the dialog inline.
-            // If we are on a background thread, use syncExec so the thread blocks until
-            // the user answers — this prevents a second prompt from appearing before the
-            // first one is dismissed and ensures SESSION_ACCEPTED is populated before
-            // the caller gets control back.
+            // Always post the dialog asynchronously — never block the caller.
+            // Whether this is the UI thread mid-render or a background thread, we must
+            // not block: blocking the UI thread freezes Eclipse, blocking a background
+            // thread can deadlock if the UI thread is waiting on the same connection.
+            // The current attempt always fails (throw); once the user clicks Yes the
+            // cert is in SESSION_ACCEPTED and the next attempt succeeds.
             if (PENDING_PROMPT.add(certKey)) { // false if a dialog is already queued
-                final boolean[] accepted = { false };
-                final Runnable dialog = () -> {
+                display.asyncExec(() -> {
                     PENDING_PROMPT.remove(certKey);
                     if (!display.isDisposed()) {
                         if (MessageDialog.openQuestion(display.getActiveShell(),
                                 "Untrusted SSL Certificate", message)) { //$NON-NLS-1$
                             SESSION_ACCEPTED.add(certKey);
-                            accepted[0] = true;
                         }
                     }
-                };
-                if (display.getThread() == Thread.currentThread()) {
-                    dialog.run(); // already on UI thread — run inline
-                } else {
-                    display.syncExec(dialog); // block background thread until answered
-                }
-                if (accepted[0]) {
-                    return; // user accepted — allow this attempt to proceed
-                }
-            } else {
-                // Another thread is already showing the dialog; wait for it to finish
-                // by spinning on PENDING_PROMPT, then re-check SESSION_ACCEPTED.
-                while (PENDING_PROMPT.contains(certKey)) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (final InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-                if (SESSION_ACCEPTED.contains(certKey)) {
-                    return;
-                }
+                });
             }
 
             throw e;
