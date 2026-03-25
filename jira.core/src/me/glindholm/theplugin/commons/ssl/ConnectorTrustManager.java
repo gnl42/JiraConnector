@@ -16,7 +16,8 @@
 
 package me.glindholm.theplugin.commons.ssl;
 
-import java.net.Socket;
+import java.awt.EventQueue;
+import java.lang.reflect.InvocationTargetException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -24,167 +25,150 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 
-import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509ExtendedTrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
+import me.glindholm.theplugin.commons.configuration.GeneralConfigurationBean;
+import me.glindholm.theplugin.commons.remoteapi.rest.AbstractHttpSession;
 
-/**
- * X509ExtendedTrustManager that first validates against the JVM default trust store (cacerts).
- * If that fails it pops up an SWT MessageDialog asking the user whether to accept the
- * certificate for this session (no persistence).
- *
- * Extending X509ExtendedTrustManager (rather than X509TrustManager) is important: Java's
- * SSLContext wraps plain X509TrustManager instances in AbstractTrustManagerWrapper which
- * runs its own independent PKIX check after ours, defeating the purpose. Extended managers
- * are used as-is.
- */
-public class ConnectorTrustManager extends X509ExtendedTrustManager {
+public class ConnectorTrustManager implements X509TrustManager {
+    private static final Collection<String> ALREADY_REJECTED_CERTS = new HashSet<>();
+    private static Collection<String> temporarilyAcceptedCerts = Collections.synchronizedCollection(new HashSet<>());
 
-    /** Certs accepted for the lifetime of this JVM session only. */
-    private static final Set<String> SESSION_ACCEPTED = Collections.synchronizedSet(new HashSet<>());
+    private final GeneralConfigurationBean configuration;
+    private CertMessageDialog certMessageDialog;
+    private X509TrustManager standardTrustManager;
 
-    /**
-     * Certs for which a dialog has already been posted (asyncExec) but not yet answered,
-     * so we don't flood the user with duplicate dialogs.
-     */
-    private static final Set<String> PENDING_PROMPT = Collections.synchronizedSet(new HashSet<>());
+    private static ThreadLocal<String> url = new ThreadLocal<>();
 
-    private final String serverHost;
-    private final X509TrustManager defaultTrustManager;
+    public static String getUrl() {
+        return url.get();
+    }
 
-    /**
-     * @param serverHost the host name shown in the accept/reject dialog
-     * @param trustStore the key store to validate against, or {@code null} for the JVM default (cacerts)
-     */
-    public ConnectorTrustManager(final String serverHost, final KeyStore trustStore)
+    public ConnectorTrustManager(final GeneralConfigurationBean configuration, final CertMessageDialog certMessageDialog, final KeyStore keyStore)
             throws NoSuchAlgorithmException, KeyStoreException {
-        this.serverHost = serverHost;
+        this.configuration = configuration;
+        this.certMessageDialog = certMessageDialog;
 
         final TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        factory.init(trustStore); // null → JVM default cacerts
-        X509TrustManager found = null;
-        for (final TrustManager tm : factory.getTrustManagers()) {
-            if (tm instanceof X509TrustManager) {
-                found = (X509TrustManager) tm;
-                break;
+        factory.init(keyStore);
+        final TrustManager[] trustmanagers = factory.getTrustManagers();
+
+        // looking for a X509TrustManager instance
+        for (final TrustManager trustmanager : trustmanagers) {
+            if (trustmanager instanceof X509TrustManager) {
+                standardTrustManager = (X509TrustManager) trustmanager;
+                return;
             }
         }
-        if (found == null) {
-            throw new NoSuchAlgorithmException("No X509TrustManager found"); //$NON-NLS-1$
+
+        if (standardTrustManager == null) {
+            throw new NoSuchAlgorithmException("cannot retrieve default trust manager found");
         }
-        this.defaultTrustManager = found;
+
     }
 
-    // ── client-side (unused in our scenario, just delegate) ──────────────────
-
+    // checkClientTrusted
     @Override
     public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
-        defaultTrustManager.checkClientTrusted(chain, authType);
+        standardTrustManager.checkClientTrusted(chain, authType);
     }
 
-    @Override
-    public void checkClientTrusted(final X509Certificate[] chain, final String authType, final Socket socket) throws CertificateException {
-        checkClientTrusted(chain, authType);
+    private boolean isSelfSigned(final X509Certificate certificate) {
+        return certificate.getSubjectDN().equals(certificate.getIssuerDN());
     }
 
-    @Override
-    public void checkClientTrusted(final X509Certificate[] chain, final String authType, final SSLEngine engine) throws CertificateException {
-        checkClientTrusted(chain, authType);
-    }
-
-    // ── server-side ──────────────────────────────────────────────────────────
-
+    // checkServerTrusted
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
-        checkServerTrustedInternal(chain, authType);
-    }
-
-    @Override
-    public void checkServerTrusted(final X509Certificate[] chain, final String authType, final Socket socket) throws CertificateException {
-        checkServerTrustedInternal(chain, authType);
-    }
-
-    @Override
-    public void checkServerTrusted(final X509Certificate[] chain, final String authType, final SSLEngine engine) throws CertificateException {
-        checkServerTrustedInternal(chain, authType);
-    }
-
-    @Override
-    public X509Certificate[] getAcceptedIssuers() {
-        return defaultTrustManager.getAcceptedIssuers();
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-
-    private void checkServerTrustedInternal(final X509Certificate[] chain, final String authType) throws CertificateException {
         try {
-            defaultTrustManager.checkServerTrusted(chain, authType);
-            return; // trusted by cacerts — done
+            standardTrustManager.checkServerTrusted(chain, authType);
         } catch (final CertificateException e) {
-            final String certKey = chain[0].getSubjectX500Principal().getName()
-                    + "|" + chain[0].getSerialNumber(); //$NON-NLS-1$
+            synchronized (ConnectorTrustManager.class) {
+                final String strCert = chain[0].toString();
+                if (ALREADY_REJECTED_CERTS.contains(strCert)) {
+                    throw e;
+                }
 
-            if (SESSION_ACCEPTED.contains(certKey)) {
-                return; // user already accepted this session
-            }
+                if (checkChain(chain, configuration.getCerts()) || checkChain(chain, temporarilyAcceptedCerts)) {
+                    return;
+                }
 
-            // Build a human-readable reason
-            String reason = "The certificate is not trusted by the JVM trust store."; //$NON-NLS-1$
-            if (isSelfSigned(chain[0])) {
-                reason = "The certificate is self-signed."; //$NON-NLS-1$
-            }
-            try {
-                chain[0].checkValidity();
-            } catch (final CertificateExpiredException ex) {
-                reason = "The certificate has expired."; //$NON-NLS-1$
-            } catch (final CertificateNotYetValidException ex) {
-                reason = "The certificate is not yet valid."; //$NON-NLS-1$
-            }
+                String message = e.getMessage();
+                message = message.substring(message.lastIndexOf(":") + 1);
+                if (isSelfSigned(chain[0])) {
+                    message = "Self-signed certificate";
+                }
+                try {
+                    chain[0].checkValidity();
+                } catch (final CertificateExpiredException e1) {
+                    message = "Certificate expired";
+                } catch (final CertificateNotYetValidException e1) {
+                    message = "Certificate not yet valid";
+                }
+                final String server = AbstractHttpSession.getUrl().getHost();
 
-            final String message = "The SSL certificate for\n\n  " + serverHost //$NON-NLS-1$
-                    + "\n\ncannot be verified:\n\n  " + reason //$NON-NLS-1$
-                    + "\n\nDo you want to accept it for this session?"; //$NON-NLS-1$
+                // check if it should be accepted
+                final int[] accepted = { 0 }; // 0 rejected 1 accepted temporarily 2 - accepted perm.
 
-            final Display display = PlatformUI.isWorkbenchRunning()
-                    ? PlatformUI.getWorkbench().getDisplay() : Display.getCurrent();
-
-            if (display == null || display.isDisposed()) {
-                throw e; // no UI available — reject
-            }
-
-            // Always post the dialog asynchronously — never block the caller.
-            // Whether this is the UI thread mid-render or a background thread, we must
-            // not block: blocking the UI thread freezes Eclipse, blocking a background
-            // thread can deadlock if the UI thread is waiting on the same connection.
-            // The current attempt always fails (throw); once the user clicks Yes the
-            // cert is in SESSION_ACCEPTED and the next attempt succeeds.
-            if (PENDING_PROMPT.add(certKey)) { // false if a dialog is already queued
-                display.asyncExec(() -> {
-                    PENDING_PROMPT.remove(certKey);
-                    if (!display.isDisposed()) {
-                        if (MessageDialog.openQuestion(display.getActiveShell(),
-                                "Untrusted SSL Certificate", message)) { //$NON-NLS-1$
-                            SESSION_ACCEPTED.add(certKey);
+                try {
+                    final String message1 = message;
+                    EventQueue.invokeAndWait(() -> {
+                        if (certMessageDialog != null) {
+                            certMessageDialog.show(server, message1, chain);
+                            if (certMessageDialog.isOK()) {
+                                if (certMessageDialog.isTemporarily()) {
+                                    accepted[0] = 1;
+                                    return;
+                                }
+                                accepted[0] = 2;
+                            }
                         }
+                    });
+                } catch (final InterruptedException | InvocationTargetException e1) {
+                    // swallow
+                }
+
+                switch (accepted[0]) {
+                case 1:
+                    temporarilyAcceptedCerts.add(strCert);
+                    break;
+                case 2:
+                    synchronized (configuration) {
+                        // taken once again because something could change in the state
+                        configuration.addCert(strCert);
                     }
-                });
+                    break;
+                default:
+                    synchronized (ALREADY_REJECTED_CERTS) {
+                        ALREADY_REJECTED_CERTS.add(strCert);
+                    }
+                    throw e;
+                }
+
             }
 
-            throw e;
         }
     }
 
-    private static boolean isSelfSigned(final X509Certificate cert) {
-        return cert.getSubjectX500Principal().equals(cert.getIssuerX500Principal());
+    private boolean checkChain(final X509Certificate[] chain, final Collection<String> certs) {
+        for (final X509Certificate cert : chain) {
+            if (certs.contains(cert.toString())) {
+                return true;
+            }
+        }
+        return false;
     }
+
+    // getAcceptedIssuers
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+        return standardTrustManager.getAcceptedIssuers();
+    }
+
 }
