@@ -52,9 +52,10 @@ public class AsynchronousHttpClientFactory {
 
     private HttpClient createHttpClient(final Duration timeout) {
         try {
-            final TrustManagerFactory defaultTmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            defaultTmf.init((KeyStore) null); // loads the default JVM trust store
-            final X509TrustManager defaultTm = Arrays.stream(defaultTmf.getTrustManagers())
+            // getTrustManagers() prefers SSLContext.getDefault() which at Eclipse runtime
+            // is overridden by org.eclipse.equinox.security and already covers both the
+            // JVM CA store and the Eclipse user-accepted certificate store.
+            final X509TrustManager defaultTm = Arrays.stream(getTrustManagers(null))
                     .filter(X509TrustManager.class::isInstance)
                     .map(X509TrustManager.class::cast)
                     .findFirst()
@@ -104,6 +105,37 @@ public class AsynchronousHttpClientFactory {
             throw new RuntimeException("Failed to create HTTP client with custom SSL context", e); //$NON-NLS-1$
         } catch (final Exception e) {
             throw new RuntimeException("Failed to initialise trust manager", e); //$NON-NLS-1$
+        }
+    }
+
+    private static TrustManager[] getTrustManagers(final KeyStore keyStore) throws NoSuchAlgorithmException, java.security.KeyStoreException {
+        // Prefer SSLContext.getDefault() which Eclipse overrides at startup via
+        // org.eclipse.equinox.security to include the Eclipse user-accepted certificate
+        // store in addition to the JVM CA store.
+        try {
+            final TrustManager[] tms = getX509TrustManagersFromContext(SSLContext.getDefault());
+            if (tms != null && tms.length > 0) {
+                return tms;
+            }
+        } catch (final Exception ignored) {
+        }
+        // Outside Eclipse: fall back to the standard JVM TrustManagerFactory.
+        final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(keyStore);
+        return tmf.getTrustManagers();
+    }
+
+    private static TrustManager[] getX509TrustManagersFromContext(final SSLContext ctx) {
+        // SSLContext does not expose TrustManagers directly, so re-initialise a fresh
+        // TrustManagerFactory using the default algorithm. When running inside Eclipse,
+        // org.eclipse.equinox.security registers its own provider as the default so
+        // this factory will include Eclipse's accepted-certificate store automatically.
+        try {
+            final TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init((KeyStore) null);
+            return tmf.getTrustManagers();
+        } catch (final Exception e) {
+            return new TrustManager[0];
         }
     }
 

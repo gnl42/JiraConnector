@@ -151,7 +151,7 @@ public class JiraRestClientAdapter implements Closeable {
             try {
                 restClient.getUserClient().getCurrentUser().join(); // Validate credentials immediately
             } catch (Exception e) {
-                StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
+                StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, url + ": " + e.getMessage()));
                 throw new JiraAuthenticationException("Failed to authenticate with provided credentials.", e);
             }
         } catch (final URISyntaxException e) {
