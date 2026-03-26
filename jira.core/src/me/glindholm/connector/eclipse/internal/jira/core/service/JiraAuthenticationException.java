@@ -16,7 +16,7 @@ package me.glindholm.connector.eclipse.internal.jira.core.service;
  * @author Brock Janiczak
  * @author Steffen Pingel
  */
-public class JiraAuthenticationException extends RuntimeException {
+public class JiraAuthenticationException extends JiraException {
 
     private static final long serialVersionUID = 8723151254362915272L;
 
