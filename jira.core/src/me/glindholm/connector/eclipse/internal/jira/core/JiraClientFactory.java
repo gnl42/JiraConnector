@@ -15,9 +15,6 @@ import java.net.Proxy;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
-import org.eclipse.mylyn.internal.tasks.core.IRepositoryChangeListener;
-import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryChangeEvent;
-import org.eclipse.mylyn.internal.tasks.core.TaskRepositoryDelta.Type;
 import org.eclipse.mylyn.tasks.core.IRepositoryListener;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.core.TaskRepositoryLocationFactory;
@@ -39,7 +36,7 @@ import me.glindholm.connector.eclipse.internal.jira.core.util.JiraUtil;
  * @author Steffen Pingel
  */
 @SuppressWarnings("restriction")
-public class JiraClientFactory implements IRepositoryListener, IRepositoryChangeListener, IJiraClientFactory {
+public class JiraClientFactory implements IRepositoryListener, IJiraClientFactory {
 
     private static JiraClientFactory instance = null;
 
@@ -124,32 +121,55 @@ public class JiraClientFactory implements IRepositoryListener, IRepositoryChange
         // handled by repositoryChanged()
     }
 
-    @Override
-    public synchronized void repositoryChanged(final TaskRepositoryChangeEvent event) {
-        final TaskRepository repository = event.getRepository();
-        if (JiraCorePlugin.CONNECTOR_KIND.equals(repository.getConnectorKind())) {
-            final JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
-            if (client != null) {
-                if (event.getDelta().getType() == Type.ALL) {
-                    client.purgeSession();
-                    updateClient(client, repository);
-                } else if (event.getDelta().getType() == Type.CREDENTIALS || event.getDelta().getType() == Type.PROYX) {
-                    updateClient(client, repository);
-                    client.purgeSession();
-                } else {
-                    updateClient(client, repository);
-                    client.purgeSession();
-                }
-            }
-        }
-    }
+//    @Override
+//    public synchronized void repositoryChanged(final TaskRepositoryChangeEvent event) {
+//        final TaskRepository repository = event.getRepository();
+//        if (JiraCorePlugin.CONNECTOR_KIND.equals(repository.getConnectorKind())) {
+//            final JiraClient client = clientManager.getClient(repository.getRepositoryUrl());
+//            if (client != null) {
+//                if (event.getDelta().getType() == Type.ALL) {
+//                    client.purgeSession();
+//                    updateClient(client, repository);
+//                } else if (event.getDelta().getType() == Type.CREDENTIALS || event.getDelta().getType() == Type.PROYX) {
+//                    updateClient(client, repository);
+//                    client.purgeSession();
+//                } else if (event.getDelta().getType() == Type.PROPERTY) {
+//                    if (!ignoredProperty((String) event.getDelta().getKey())) {
+//                        updateClient(client, repository);
+//                        client.purgeSession();
+//                    }
+//                } else {
+//                    throw new IllegalStateException(
+//                            "Unexpected repository change event: " + event.getDelta().getType()); //$NON-NLS-1$
+//                }
+//            }
+//        }
+//    }
 
-    private void updateClient(final JiraClient client, final TaskRepository repository) {
-        final JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(repository);
-        if (!configuration.equals(client.getLocalConfiguration())) {
-            client.setLocalConfiguration(configuration);
-        }
-    }
+//    private static boolean ignoredProperty(String propertyName) {
+//        if (propertyName.equals(RepositoryLocation.PROPERTY_LABEL) //
+//                || propertyName.equals(TaskRepository.OFFLINE) //
+//                || propertyName.equals(IRepositoryConstants.PROPERTY_ENCODING)
+//                || propertyName.equals("org.eclipse.mylyn.tasklist.repositories.enabled") //$NON-NLS-1$
+//                || propertyName.equals(TaskRepository.PROXY_HOSTNAME)
+//                || propertyName.equals(TaskRepository.PROXY_PORT)
+//                || propertyName.equals("org.eclipse.mylyn.tasklist.repositories.savePassword") //$NON-NLS-1$
+//                || propertyName.equals("org.eclipse.mylyn.tasklist.repositories.proxy.usedefault") //$NON-NLS-1$
+//                || propertyName.equals("org.eclipse.mylyn.tasklist.repositories.proxy.savePassword") //$NON-NLS-1$
+//                || propertyName.equals("org.eclipse.mylyn.tasklist.repositories.proxy.username") //$NON-NLS-1$
+//                || propertyName.equals("org.eclipse.mylyn.tasklist.repositories.proxy.password") //$NON-NLS-1$
+//                || propertyName.equals("org.eclipse.mylyn.tasklist.repositories.proxy.enabled")) { //$NON-NLS-1$
+//            return true;
+//        }
+//        return false;
+//    }
+
+//    private void updateClient(final JiraClient client, final TaskRepository repository) {
+//        final JiraLocalConfiguration configuration = JiraUtil.getLocalConfiguration(repository);
+//        if (!configuration.equals(client.getLocalConfiguration())) {
+//            client.setLocalConfiguration(configuration);
+//        }
+//    }
 
     public JiraServerInfo validateConnection(final AbstractWebLocation location, final IProgressMonitor monitor) throws JiraException {
         return validateConnection(location, new JiraLocalConfiguration(), monitor);
