@@ -40,8 +40,6 @@ Export-Package: me.glindholm.connector.cfg,
  me.glindholm.theplugin.commons.jira,
  me.glindholm.theplugin.commons.remoteapi,
  me.glindholm.theplugin.commons.remoteapi.rest,
- me.glindholm.theplugin.commons.ssl,
- me.glindholm.theplugin.commons.thirdparty.apache,
  me.glindholm.theplugin.commons.util
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-21

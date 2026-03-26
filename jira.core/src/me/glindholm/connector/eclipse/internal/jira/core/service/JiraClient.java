@@ -151,20 +151,15 @@ public class JiraClient implements Closeable {
         this(location, new JiraLocalConfiguration());
     }
 
-    private JiraRestClientAdapter getRestClient() {
+    private JiraRestClientAdapter getRestClient() throws JiraException {
         if (restClient == null) {
             restClient = createRestClient(location, cache);
-            try {
-                restClient.getCurrentUser();
-            } catch (final JiraException e) {
-                e.printStackTrace();
-            }
         }
 
         return restClient;
     }
 
-    private JiraRestClientAdapter createRestClient(final AbstractWebLocation location, final JiraClientCache cache) {
+    private JiraRestClientAdapter createRestClient(final AbstractWebLocation location, final JiraClientCache cache) throws JiraException {
         Proxy proxy = null;
         final String baseUrl = location.getUrl();
         if (baseUrl.matches(URL_REGEXP_HTTPS)) {
@@ -829,7 +824,12 @@ public class JiraClient implements Closeable {
     public synchronized void purgeSession() {
         // webSession.purgeSession();
         // soapClient.purgeSession();
-        restClient = createRestClient(location, cache);
+        try {
+            restClient = createRestClient(location, cache);
+        } catch (JiraException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public String getAssigneeParam(final JiraIssue issue, final int assigneeType, final String user) {

@@ -17,7 +17,19 @@ package me.glindholm.jira.rest.client.internal.async;
 
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
+import java.util.Arrays;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import me.glindholm.jira.rest.client.api.AuthenticationHandler;
 
@@ -38,12 +50,62 @@ public class AsynchronousHttpClientFactory {
         return createDisposableClient(httpClient, authenticationHandler);
     }
 
-    private HttpClient createHttpClient(Duration timeout) {
-         return HttpClient.newBuilder()
-                .connectTimeout(timeout)
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build();
-     }
+    private HttpClient createHttpClient(final Duration timeout) {
+        try {
+            final TrustManagerFactory defaultTmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            defaultTmf.init((KeyStore) null); // loads the default JVM trust store
+            final X509TrustManager defaultTm = Arrays.stream(defaultTmf.getTrustManagers())
+                    .filter(X509TrustManager.class::isInstance)
+                    .map(X509TrustManager.class::cast)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("No X509TrustManager found")); //$NON-NLS-1$
+
+            final X509TrustManager selfSignedTm = new X509TrustManager() {
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return defaultTm.getAcceptedIssuers();
+                }
+
+                @Override
+                public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
+                    defaultTm.checkClientTrusted(chain, authType);
+                }
+
+                @Override
+                public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {
+                    try {
+                        defaultTm.checkServerTrusted(chain, authType);
+                    } catch (final CertificateException e) {
+                        // Accept if the certificate is self-signed (issuer == subject)
+                        if (chain.length == 1) {
+                            final X509Certificate cert = chain[0];
+                            if (cert.getIssuerX500Principal().equals(cert.getSubjectX500Principal())) {
+                                try {
+                                    cert.verify(cert.getPublicKey());
+                                } catch (final Exception ex) {
+                                    throw new CertificateException("Self-signed certificate signature is invalid", ex); //$NON-NLS-1$
+                                }
+                                return; // self-signed and signature is valid
+                            }
+                        }
+                        throw e; // not self-signed — rethrow the original error
+                    }
+                }
+            };
+
+            final SSLContext sslContext = SSLContext.getInstance("TLS"); //$NON-NLS-1$
+            sslContext.init(null, new TrustManager[] { selfSignedTm }, new SecureRandom());
+            return HttpClient.newBuilder()
+                    .connectTimeout(timeout)
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .sslContext(sslContext)
+                    .build();
+        } catch (final NoSuchAlgorithmException | KeyManagementException e) {
+            throw new RuntimeException("Failed to create HTTP client with custom SSL context", e); //$NON-NLS-1$
+        } catch (final Exception e) {
+            throw new RuntimeException("Failed to initialise trust manager", e); //$NON-NLS-1$
+        }
+    }
 
     public DisposableHttpClient createClient(final URI serverUri, final AuthenticationHandler authenticationHandler, final HttpClient httpClient) {
         return createDisposableClient(httpClient, authenticationHandler);

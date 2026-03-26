@@ -138,36 +138,21 @@ public class JiraRestClientAdapter implements Closeable {
     }
 
     public JiraRestClientAdapter(final String url, final String userName, final String password, final Proxy proxy, final JiraClientCache cache,
-            final boolean followRedirects) {
+            final boolean followRedirects) throws JiraAuthenticationException {
         this(url, cache, followRedirects);
 
-        // final TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
-        // public X509Certificate[] getAcceptedIssuers() {
-        // return null;
-        // }
-        //
-        // public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws
-        // CertificateException {
-        // }
-        //
-        // public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws
-        // CertificateException {
-        // }
-        // } };
 
         try {
-
-            // HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-            //
-            // HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-            // public boolean verify(String s, javax.net.ssl.SSLSession sslSession) {
-            // return true;
-            // }
-            // });
             if (userName.isEmpty()) {
                 restClient = new AsynchronousJiraRestClientFactory().createWithBearerHttpAuthentication(new URI(url), password);
             } else {
                 restClient = new AsynchronousJiraRestClientFactory().createWithBasicHttpAuthentication(new URI(url), userName, password);
+            }
+            try {
+                restClient.getUserClient().getCurrentUser().join(); // Validate credentials immediately
+            } catch (Exception e) {
+                StatusHandler.log(new Status(IStatus.ERROR, JiraCorePlugin.ID_PLUGIN, e.getMessage()));
+                throw new JiraAuthenticationException("Failed to authenticate with provided credentials.", e);
             }
         } catch (final URISyntaxException e) {
             // we should never get here as Mylyn constructs URI first and fails if it is
