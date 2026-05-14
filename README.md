@@ -7,9 +7,9 @@ It provides Jira integration withing Eclipse.
 
 Works with Jira 8.0+
 
-Requires Java 21, Eclipse 2021-12 or later
+Requires Java 21, Eclipse 2025-06 or later
 =======
-# Java library for interacting with Atlassian Jira Server/Data Center/Cloud 8, 9 and 10
+# Mylyn connector for interacting with Atlassian Jira Server/Data Center/Cloud 8+
 
 
 Fork of https://bitbucket.org/atlassian/jira-rest-java-client/src/master/
@@ -17,6 +17,7 @@ Fork of https://bitbucket.org/atlassian/jira-rest-java-client/src/master/
 - Needs Java 21
 - Uses java.time instead of joda time
 - OSGI bundles
+- native jave http
 
 Updated for https://github.com/gnl42/JiraConnector
 
