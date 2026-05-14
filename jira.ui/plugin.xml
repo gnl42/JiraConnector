@@ -36,39 +36,30 @@
             id="jira"
             class="me.glindholm.connector.eclipse.internal.jira.core.JiraRepositoryConnector"
             name="%JiraRepositoryConnector.name"/>
-		<connectorUi
-			brandingIcon="icons/eview16/jira-logo.gif"
-			class="me.glindholm.connector.eclipse.internal.jira.ui.JiraConnectorUi"
-			name="%JiraConnectorUi.name"
-			overlayIcon="icons/eview16/overlay-jira.gif"/>
-		<taskListMigrator
-			class="me.glindholm.connector.eclipse.internal.jira.ui.JiraTaskListMigrator">
-		</taskListMigrator>
-	   <repositoryMigrator class="me.glindholm.connector.eclipse.internal.jira.ui.JiraRepositoryMigrator"/>
+    <connectorUi
+      brandingIcon="icons/eview16/jira-logo.gif"
+      class="me.glindholm.connector.eclipse.internal.jira.ui.JiraConnectorUi"
+      name="%JiraConnectorUi.name"
+      overlayIcon="icons/eview16/overlay-jira.gif"/>
+    <taskListMigrator
+      class="me.glindholm.connector.eclipse.internal.jira.ui.JiraTaskListMigrator">
+    </taskListMigrator>
+     <repositoryMigrator class="me.glindholm.connector.eclipse.internal.jira.ui.JiraRepositoryMigrator"/>
 
    </extension>
-
-   <extension
-          point="org.eclipse.mylyn.tasks.ui.taskRepositoryPageContribution">
-       <taskRepositoryPageContribution
-       		 id="me.glindholm.connector.eclipse.jira.ui.httpAuthExtensionSettings"
-             class="me.glindholm.connector.eclipse.internal.jira.ui.wizards.HttpAuthExtensionSettingsContribution"
-             connectorKind="jira">
-       </taskRepositoryPageContribution>
-    </extension>
 
   <!-- TODO jj add icon and fix label -->
   <extension point="org.eclipse.ui.popupMenus">
    <objectContribution
-   		id="me.glindholm.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution"
-   		objectClass="me.glindholm.connector.eclipse.internal.jira.ui.IJiraTask"
-   		adaptable="true">
-	        <action
-		      	class="me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkAction"
-	        	id="me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkAction"
-	        	label="%Action.Start.Work.label"
-	        	menubarPath="additions"
-	        	enablesFor="1"/>
+       id="me.glindholm.connector.eclipse.internal.jira.ui.IJiraTaskObjectContribution"
+       objectClass="me.glindholm.connector.eclipse.internal.jira.ui.IJiraTask"
+       adaptable="true">
+          <action
+            class="me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkAction"
+            id="me.glindholm.connector.eclipse.internal.jira.ui.actions.StartWorkAction"
+            label="%Action.Start.Work.label"
+            menubarPath="additions"
+            enablesFor="1"/>
    </objectContribution>
   </extension>
 
