@@ -25,6 +25,7 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-p2-repository-plugin</artifactId>
                 <configuration>
+                    <includeAllSources>true</includeAllSources>
                     <finalName>${project.artifactId}-${qualifiedVersion}</finalName>
                 </configuration>
             </plugin>

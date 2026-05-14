@@ -18,8 +18,6 @@ package me.glindholm.theplugin.commons;
 
 import java.io.IOException;
 
-import org.apache.commons.io.FilenameUtils;
-
 /**
  * @author lguminski
  */
@@ -49,7 +47,15 @@ public class VersionedVirtualFile {
     }
 
     public String getName() {
-        return FilenameUtils.getName(getUrl());
+        String url = getUrl();
+        if (url == null || url.isEmpty()) {
+            return url;
+        }
+        final int lastUnixPos = url.lastIndexOf("/");
+        final int lastWindowsPos = url.lastIndexOf("\\");
+        final int lastSlash = Math.max(lastUnixPos, lastWindowsPos);
+
+        return lastSlash >= 0 ? url.substring(lastSlash + 1) : url;
     }
 
     public String getUrl() {

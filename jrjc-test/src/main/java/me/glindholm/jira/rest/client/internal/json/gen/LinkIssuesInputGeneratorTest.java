@@ -24,6 +24,7 @@ import me.glindholm.jira.rest.client.api.domain.Comment;
 import me.glindholm.jira.rest.client.api.domain.ServerInfo;
 import me.glindholm.jira.rest.client.api.domain.input.LinkIssuesInput;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
+import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 
 public class LinkIssuesInputGeneratorTest {
@@ -35,13 +36,16 @@ public class LinkIssuesInputGeneratorTest {
     @Test
     public void testGenerateWithoutComment() throws Exception {
         final LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType");
-        assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil.getJsonObjectFromResource("/json/issueLinkInput/no-comment.json")));
+        assertThat(inputGenerator.generate(input1), JSONObjectMatcher
+                .isEqual(ResourceUtil.getJsonObjectFromResource("/json/issueLinkInput/no-comment.json")));
     }
 
     @Test
     public void testGenerate() throws Exception {
         final LinkIssuesInput input1 = new LinkIssuesInput("TST-1", "TST-2", "MyLinkType", Comment.valueOf("simple comment"));
-        assertThat(inputGenerator.generate(input1), JSONObjectMatcher.isEqual(ResourceUtil.getJsonObjectFromResource("/json/issueLinkInput/simple.json")));
+        JSONObject expected = inputGenerator.generate(input1);
+        JSONObject actual = ResourceUtil.getJsonObjectFromResource("/json/issueLinkInput/simple.json");
+        assertThat(expected, JSONObjectMatcher.isEqual(actual));
     }
 
     @Test

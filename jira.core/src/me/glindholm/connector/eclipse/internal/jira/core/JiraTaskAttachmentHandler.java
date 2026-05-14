@@ -14,7 +14,6 @@ package me.glindholm.connector.eclipse.internal.jira.core;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -102,7 +101,7 @@ public class JiraTaskAttachmentHandler extends AbstractTaskAttachmentHandler {
             final JiraClient server = JiraClientFactory.getDefault().getJiraClient(repository);
             try (InputStream is = source.createInputStream(monitor)) {
                 final JiraIssue issue = server.getIssueByKey(task.getTaskKey(), monitor);
-                server.addAttachment(issue, comment, filename, IOUtils.toByteArray(is), monitor);
+                server.addAttachment(issue, comment, filename, is.readAllBytes(), monitor);
             } catch (JiraException | IOException e) {
                 throw new CoreException(JiraCorePlugin.toStatus(repository, e));
             }

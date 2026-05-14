@@ -26,10 +26,9 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
 import me.glindholm.jira.rest.client.api.SearchRestClient;
@@ -83,7 +82,7 @@ public class AsynchronousSearchRestClient extends AbstractAsynchronousRestClient
     @Override
     public CompletableFuture<SearchResult> searchJql(@Nullable final String jql, @Nullable final Integer maxResults, @Nullable final Integer startAt,
             @Nullable final Set<String> fields, final boolean newpqlPath) throws URISyntaxException {
-        final String notNullJql = StringUtils.defaultString(jql);
+        final String notNullJql = jql == null ? "" : jql;
         if (notNullJql.length() > MAX_JQL_LENGTH_FOR_HTTP_GET) {
             return searchJqlImplPost(maxResults, startAt, SEARCH_EXPANDOS, notNullJql, fields, newpqlPath);
         } else {

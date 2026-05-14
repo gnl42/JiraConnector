@@ -51,7 +51,7 @@ public class TestConstants {
     public static final BasicUser USER1_BASIC_DEPRECATED_2 = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=wseliga"),
             USER1_USERNAME, "Wojciech Seliga");
     public static final BasicUser USER1_BASIC = new BasicUser(toUri("http://localhost:8090/jira/rest/api/2/user?username=wseliga"), USER1_USERNAME,
-            "Wojciech Seliga", "wojciech.seliga@spartez.com", null, true);
+            "Wojciech Seliga", "wojciech.seliga@spartez.com", "wojciech.seliga@spartez.com", true);
     public static final User USER1 = new User(USER1_BASIC, null,
             Map.of("16x16", URI.create("http://localhost:8090/jira/secure/useravatar?size=small&avatarId=10082"), "48x48",
                     URI.create("http://localhost:8090/jira/secure/useravatar?avatarId=10082")),
@@ -62,9 +62,9 @@ public class TestConstants {
     public static final BasicUser USER_ADMIN_BASIC_DEPRECATED = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"),
             ADMIN_USERNAME, "Administrator", null, null, false);
     public static final BasicUser USER_ADMIN_BASIC = new BasicUser(toUri("http://localhost:8090/jira/rest/api/2/user?username=admin"), ADMIN_USERNAME,
-            "Administrator");
-    public static final BasicUser USER_ADMIN_BASIC_LATEST = new BasicUser(toUri("http://localhost:8090/jira/rest/api/latest/user?username=admin"),
-            ADMIN_USERNAME, "Administrator", "wojciech.seliga@spartez.com", null, true);
+            "Administrator", null, "wojciech.seliga@spartez.com", true);
+    public static final BasicUser USER_ADMIN_BASIC_LATEST = new BasicUser(toUri("http://localhost:8090/jira/rest/api/2/user?username=admin"),
+            ADMIN_USERNAME, "Administrator", "wojciech.seliga@spartez.com", "wojciech.seliga@spartez.com", true);
     public static final User USER_ADMIN = new User(USER_ADMIN_BASIC_LATEST, null,
             Map.of("16x16", URI.create("http://localhost:8090/jira/secure/useravatar?size=small&ownerId=admin&avatarId=10054"), "48x48",
                     URI.create("http://localhost:8090/jira/secure/useravatar?ownerId=admin&avatarId=10054")),

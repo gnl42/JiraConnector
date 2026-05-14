@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
@@ -107,7 +105,7 @@ public abstract class AbstractAsynchronousRestClient {
     }
 
     protected final CompletableFuture<Void> post(final URI uri) {
-        return post(uri, StringUtils.EMPTY);
+        return post(uri, "");
     }
 
     protected final <I, T> CompletableFuture<T> putAndParse(final URI uri, final I entity, final JsonGenerator<I> jsonGenerator, final JsonObjectParser<T> parser) {

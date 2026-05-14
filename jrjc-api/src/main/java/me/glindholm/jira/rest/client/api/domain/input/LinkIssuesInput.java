@@ -24,40 +24,40 @@ import me.glindholm.jira.rest.client.api.domain.Comment;
  * Input parameters used for issue link creation.
  */
 public class LinkIssuesInput {
-    private final String fromIssueKey;
-    private final String toIssueKey;
+    private final String inwardIssueKey;
+    private final String outwardIssueKey;
     private final String linkType;
     private final Comment comment;
 
     /**
-     * @param fromIssueKey source issue key
-     * @param toIssueKey   destination issue key
+     * @param inwardIssueKey source issue key
+     * @param outwardIssueKey   destination issue key
      * @param linkType     name of the link type (e.g. "Duplicate")
      * @param comment      optional comment
      */
-    public LinkIssuesInput(final String fromIssueKey, final String toIssueKey, final String linkType, @Nullable final Comment comment) {
-        this.fromIssueKey = fromIssueKey;
-        this.toIssueKey = toIssueKey;
+    public LinkIssuesInput(final String inwardIssueKey, final String outwardIssueKey, final String linkType, @Nullable final Comment comment) {
+        this.inwardIssueKey = inwardIssueKey;
+        this.outwardIssueKey = outwardIssueKey;
         this.comment = comment;
         this.linkType = linkType;
     }
 
-    public LinkIssuesInput(final String fromIssueKey, final String toIssueKey, final String linkType) {
-        this(fromIssueKey, toIssueKey, linkType, null);
+    public LinkIssuesInput(final String inwardIssueKey, final String outwardIssueKey, final String linkType) {
+        this(inwardIssueKey, outwardIssueKey, linkType, null);
     }
 
     /**
      * @return source issue key
      */
-    public String getFromIssueKey() {
-        return fromIssueKey;
+    public String getInwardIssueKey() {
+        return inwardIssueKey;
     }
 
     /**
      * @return destination issue key
      */
-    public String getToIssueKey() {
-        return toIssueKey;
+    public String getOutwardIssueKey() {
+        return outwardIssueKey;
     }
 
     /**
@@ -73,5 +73,11 @@ public class LinkIssuesInput {
      */
     public String getLinkType() {
         return linkType;
+    }
+
+    @Override
+    public String toString() {
+        return "LinkIssuesInput [inwardIssueKey=" + inwardIssueKey + ", outwardIssueKey=" + outwardIssueKey
+                + ", linkType=" + linkType + ", comment=" + comment + "]";
     }
 }

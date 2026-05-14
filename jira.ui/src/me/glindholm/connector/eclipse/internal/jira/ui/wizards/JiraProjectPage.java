@@ -13,7 +13,6 @@
 
 package me.glindholm.connector.eclipse.internal.jira.ui.wizards;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -215,7 +214,8 @@ public class JiraProjectPage extends WizardPage {
 
         projectTree.getFilterControl().addModifyListener(e -> {
             final String text = projectTree.getFilterControl().getText();
-            if (!StringUtils.isEmpty(text) && !text.equals(WorkbenchMessages.FilteredTree_FilterMessage)) {
+            if (text != null & !text.isEmpty() && //
+                    !text.equals(WorkbenchMessages.FilteredTree_FilterMessage)) {
                 if (offlineButton != null && offlineButton.getSelection()) {
                     offlineButton.setSelection(false);
                 }

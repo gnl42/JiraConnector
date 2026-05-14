@@ -1,83 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>me.glindholm.connector.jira</groupId>
-    <artifactId>JiraConnector</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <groupId>me.glindholm.connector.jira</groupId>
+        <artifactId>JiraConnector</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>jrjc-test</artifactId>
-  <packaging>eclipse-test-plugin</packaging>
+    <artifactId>jrjc-test</artifactId>
+    <packaging>eclipse-test-plugin</packaging>
 
-  <name>JIRA REST Java Client - Tests</name>
-  <description>Tests of JIRA REST Java Client.</description>
+    <name>JIRA REST Java Client - Tests</name>
+    <description>Tests of JIRA REST Java Client.</description>
 
-  <properties>
-<!--    <plugins>com.atlassian.jira.tests:jira-testkit-plugin:${testkit.version}</plugins>-->
-    <jira.jvm.args>-Xms512m -Xmx1024m</jira.jvm.args>
-  </properties>
+    <properties>
+        <!--
+        <plugins>com.atlassian.jira.tests:jira-testkit-plugin:${testkit.version}</plugins>-->
+        <jira.jvm.args>-Xms512m -Xmx1024m</jira.jvm.args>
+    </properties>
 
-
-
-  <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-surefire-plugin</artifactId>
-        <configuration>
-          <useUIHarness>false</useUIHarness>
-          <useUIThread>false</useUIThread>
-          <argLine>${jira.jvm.args}</argLine>
-          <failIfNoTests>false</failIfNoTests>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>jacoco</id>
-      <build>
+    <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>prepare-agent</id>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-surefire-plugin</artifactId>
                 <configuration>
-                  <propertyName>jacoco.agent</propertyName>
-                  <includes>
-                    <include>com/atlassian/**</include>
-                  </includes>
+                    <useUIHarness>false</useUIHarness>
+                    <useUIThread>false</useUIThread>
+<!--                    <argLine>${jira.jvm.args}</argLine>-->
+                    <failIfNoTests>true</failIfNoTests>
                 </configuration>
-              </execution>
-              <execution>
-                <id>report</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>com.atlassian.maven.plugins</groupId>
-            <artifactId>maven-jira-plugin</artifactId>
-            <configuration>
-              <jvmArgs>${jira.jvm.args} ${jacoco.agent}</jvmArgs>
-            </configuration>
-          </plugin>
+            </plugin>
         </plugins>
-      </build>
-    </profile>
-  </profiles>
+    </build>
 </project>

@@ -1,12 +1,18 @@
 {
-	"linkType":"MyLinkType",
-	"fromIssueKey":"TST-1",
-	"toIssueKey":"TST-2",
-	"comment":{
-		"body":"simple comment",
-		"visibility":{
-    		"type":"GROUP",
-			"value":"jira-users"
-		}
-	}
+  "type" : {
+    "name" : "MyLinkType"
+  },
+  "inwardIssue" : {
+    "key" : "TST-1"
+  },
+  "outwardIssue" : {
+    "key" : "TST-2"
+  },
+  "comment":{
+    "body":"simple comment",
+    "visibility":{
+        "type":"group",
+      "value":"jira-users"
+    }
+  }
 }

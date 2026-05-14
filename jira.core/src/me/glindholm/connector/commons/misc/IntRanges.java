@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 
 /**
@@ -92,7 +92,7 @@ public class IntRanges {
 
     @Override
     public String toString() {
-        return "[" + StringUtils.join(ranges, ',') + "]";
+        return "[" + ranges.stream().map(IntRange::toString).collect(Collectors.joining(",")) + "]";
     }
 
     public String toNiceString() {

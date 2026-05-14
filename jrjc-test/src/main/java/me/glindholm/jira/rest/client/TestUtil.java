@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.Nullable;
 
 import me.glindholm.jira.rest.client.api.RestClientException;
@@ -74,7 +73,7 @@ public class TestUtil {
     }
 
     public static void assertErrorCode(final int errorCode, final Runnable runnable) {
-        assertErrorCode(errorCode, StringUtils.EMPTY, runnable);
+        assertErrorCode(errorCode, "", runnable);
     }
 
     @SuppressWarnings("unused")
@@ -120,7 +119,7 @@ public class TestUtil {
         } catch (final me.glindholm.jira.rest.client.api.RestClientException e) {
             assertTrue(e.getStatusCode().isPresent());
             assertEquals(errorCode, e.getStatusCode().get().intValue());
-            if (!StringUtils.isEmpty(message)) {
+            if (message != null && !message.isEmpty()) {
                 // We expect a single error message. Either error or error message.
                 assertEquals(1, e.getErrorCollections().size());
                 if (e.getErrorCollections().get(0).getErrorMessages().size() > 0) {

@@ -22,7 +22,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.is;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Filter;
@@ -35,12 +34,12 @@ public class FilterJsonParserTest {
     public void testParseWithoutShares() throws Exception {
         final Filter actual = parseFilter("/json/filter/valid-no-shares.json");
         final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10000"), 10000L,
-                "Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
+                "Bugs in Test project", "", "project = TST AND issuetype = Bug",
                 toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10000"),
                 toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug"),
                 USER_ADMIN_BASIC_LATEST, true);
         final Filter expectedNew = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10000"), 10000L,
-                "Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
+                "Bugs in Test project", "", "project = TST AND issuetype = Bug",
                 toUri("http://localhost:8090/jira/secure/issues/?filter=10000"),
                 toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug"),
                 USER_ADMIN_BASIC_LATEST, true);
@@ -67,12 +66,12 @@ public class FilterJsonParserTest {
     public void testParseNotFavourite() throws Exception {
         final Filter actual = parseFilter("/json/filter/valid-not-favourite.json");
         final Filter expectedOld = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10001"), 10001L,
-                "Tasks in Test project - not favuorite filter", StringUtils.EMPTY, "project = TST AND issuetype = Task",
+                "Tasks in Test project - not favuorite filter", "", "project = TST AND issuetype = Task",
                 toUri("http://localhost:8090/jira/secure/IssueNavigator.jspa?mode=hide&requestId=10001"),
                 toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task"),
                 USER_ADMIN_BASIC_LATEST, false);
         final Filter expectedNew = new Filter(toUri("http://localhost:8090/jira/rest/api/latest/filter/10001"), 10001L,
-                "Tasks in Test project - not favuorite filter", StringUtils.EMPTY, "project = TST AND issuetype = Task",
+                "Tasks in Test project - not favuorite filter", "", "project = TST AND issuetype = Task",
                 toUri("http://localhost:8090/jira/issues/?filter=10001"),
                 toUri("http://localhost:8090/jira/rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task"),
                 USER_ADMIN_BASIC_LATEST, false);

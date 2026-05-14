@@ -33,7 +33,6 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -387,7 +386,7 @@ public class JiraRestClientAdapter implements Closeable {
     public void transitionIssue(final JiraIssue issue, final String transitionKey, final String comment, final List<JiraIssueField> transitionFields)
             throws JiraException {
 
-        final Comment outComment = StringUtils.isEmpty(comment) ? null : Comment.valueOf(comment);
+        final Comment outComment = isEmpty(comment) ? null : Comment.valueOf(comment);
 
         final List<FieldInput> fields = new ArrayList<>();
         for (final JiraIssueField transitionField : transitionFields) {
@@ -474,6 +473,10 @@ public class JiraRestClientAdapter implements Closeable {
 
     }
 
+    private boolean isEmpty(String comment) {
+        return comment == null || comment.isEmpty();
+    }
+
     public void assignIssue(final String issueKey, final String user, final String comment) throws JiraException {
         final Issue issue = getIssue(issueKey);
 
@@ -501,11 +504,11 @@ public class JiraRestClientAdapter implements Closeable {
         // List<CimProject> createIssueMetadata =
         // restClient.getIssueClient().getCreateIssueMetadata(builder.build(),
         // new NullProgressMonitor());
-        if (issue.getProject() == null || issue.getProject().getKey() == null || StringUtils.isEmpty(issue.getProject().getKey())) {
+        if (issue.getProject() == null || issue.getProject().getKey() == null || isEmpty(issue.getProject().getKey())) {
             throw new JiraException("Project must be set."); //$NON-NLS-1$
-        } else if (issue.getSummary() == null || StringUtils.isEmpty(issue.getSummary())) {
+        } else if (issue.getSummary() == null || isEmpty(issue.getSummary())) {
             throw new JiraException("Summary must be set."); //$NON-NLS-1$
-        } else if (issue.getType() == null || issue.getType().getId() == null || StringUtils.isEmpty(issue.getType().getId())) {
+        } else if (issue.getType() == null || issue.getType().getId() == null || isEmpty(issue.getType().getId())) {
             throw new JiraException("Issue type must be set."); //$NON-NLS-1$
         }
 
@@ -523,7 +526,7 @@ public class JiraRestClientAdapter implements Closeable {
             issueInputBuilder.setComponents(JiraRestConverter.convert(issue.getComponents()));
         }
 
-        if (!StringUtils.isEmpty(issue.getDescription())) {
+        if (!isEmpty(issue.getDescription())) {
             issueInputBuilder.setDescription(issue.getDescription());
         }
 
@@ -544,12 +547,12 @@ public class JiraRestClientAdapter implements Closeable {
             issueInputBuilder.setFixVersions(JiraRestConverter.convert(issue.getFixVersions()));
         }
 
-        if (issue.getPriority() == null || StringUtils.isEmpty(issue.getPriority().getId())) {
+        if (issue.getPriority() == null || isEmpty(issue.getPriority().getId())) {
             throw new JiraException("Priority not set");
         }
         issueInputBuilder.setPriority(new BasicPriority(null, Long.valueOf(issue.getPriority().getId()), issue.getPriority().getName()));
 
-        if (!StringUtils.isEmpty(issue.getEnvironment())) {
+        if (!isEmpty(issue.getEnvironment())) {
             issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.ENVIRONMENT, issue.getEnvironment()));
         }
 
@@ -571,9 +574,9 @@ public class JiraRestClientAdapter implements Closeable {
             issueInputBuilder.setFieldValue(JiraRestFields.SECURITY, ComplexIssueInputFieldValue.with(JiraRestFields.ID, issue.getSecurityLevel().getId()));
         }
 
-        if (!StringUtils.isEmpty(issue.getParentKey())) {
+        if (!isEmpty(issue.getParentKey())) {
             issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.PARENT, ComplexIssueInputFieldValue.with(JiraRestFields.KEY, issue.getParentKey())));
-        } else if (!StringUtils.isEmpty(issue.getParentId())) {
+        } else if (!isEmpty(issue.getParentId())) {
             issueInputBuilder.setFieldInput(new FieldInput(JiraRestFields.PARENT, ComplexIssueInputFieldValue.with(JiraRestFields.ID, issue.getParentId())));
         }
 

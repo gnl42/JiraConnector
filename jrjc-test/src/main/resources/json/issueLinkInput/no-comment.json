@@ -1,5 +1,11 @@
 {
-	"linkType":"MyLinkType",
-	"fromIssueKey":"TST-1",
-	"toIssueKey":"TST-2"
+    "type" : {
+      "name" : "MyLinkType"
+    },
+    "inwardIssue" : {
+      "key" : "TST-1"
+    },
+    "outwardIssue" : {
+      "key" : "TST-2"
+    }
 }

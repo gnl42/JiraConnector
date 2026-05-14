@@ -16,14 +16,12 @@
 
 package me.glindholm.jira.rest.client.internal.json;
 
-import org.apache.commons.io.IOUtils;
+import java.io.IOException;
+import java.io.InputStream;
 
 import me.glindholm.jira.rest.client.shim.jettison.json.JSONArray;
 import me.glindholm.jira.rest.client.shim.jettison.json.JSONException;
 import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class ResourceUtil {
     public static JSONObject getJsonObjectFromResource(String resourcePath) {
@@ -52,7 +50,7 @@ public class ResourceUtil {
             if (is == null) {
                 throw new IOException("Cannot open resource [" + resourcePath + "]");
             }
-            s = IOUtils.toString(is, "UTF-8");
+            s = new String(is.readAllBytes(), "UTF-8");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

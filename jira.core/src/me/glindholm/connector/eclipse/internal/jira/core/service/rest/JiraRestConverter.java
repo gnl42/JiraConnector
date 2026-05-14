@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.mylyn.commons.core.StatusHandler;
@@ -521,14 +520,14 @@ public class JiraRestConverter {
                 values = JiraRestCustomFieldsParser.parseMultiSelect(field);
                 break;
             case LABELSS:
-                values = List.of(StringUtils.join(JiraRestCustomFieldsParser.parseLabels(field), " ")); //$NON-NLS-1$
+                values = List.of(String.join(" ", JiraRestCustomFieldsParser.parseLabels(field))); //$NON-NLS-1$
                 readonly = true;
                 break;
             case GROUPPICKER:
                 values = List.of(JiraRestCustomFieldsParser.parseGroupPicker(field));
                 break;
             case MULTIGROUPPICKER:
-                values = List.of(StringUtils.join(JiraRestCustomFieldsParser.parseMultiGroupPicker(field), ", ")); //$NON-NLS-1$
+                values = List.of(String.join(", ", JiraRestCustomFieldsParser.parseMultiGroupPicker(field))); //$NON-NLS-1$
                 break;
             default:
                 if (fieldType.getTaskType() != null) { // Ignore fields we don't care about, or don't support yet
@@ -1006,7 +1005,7 @@ public class JiraRestConverter {
                 final List<String> items = Arrays.asList(customField.getValues().get(0).split(",")); //$NON-NLS-1$
 
                 for (final String item : items) {
-                    fields.add(ComplexIssueInputFieldValue.with(JiraRestFields.NAME, StringUtils.strip(item)));
+                    fields.add(ComplexIssueInputFieldValue.with(JiraRestFields.NAME, item.strip()));
                 }
 
                 return new FieldInput(customField.getId(), fields);

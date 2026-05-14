@@ -36,8 +36,8 @@ public class LinkIssuesInputGenerator implements JsonGenerator<LinkIssuesInput> 
 
         final int buildNumber = serverInfo.getBuildNumber();
         res.put("type", new JSONObject().put("name", linkIssuesInput.getLinkType()));
-        res.put("inwardIssue", new JSONObject().put("key", linkIssuesInput.getFromIssueKey()));
-        res.put("outwardIssue", new JSONObject().put("key", linkIssuesInput.getToIssueKey()));
+        res.put("inwardIssue", new JSONObject().put("key", linkIssuesInput.getInwardIssueKey()));
+        res.put("outwardIssue", new JSONObject().put("key", linkIssuesInput.getOutwardIssueKey()));
         if (linkIssuesInput.getComment() != null) {
             res.put("comment", new CommentJsonGenerator(serverInfo).generate(linkIssuesInput.getComment()));
         }

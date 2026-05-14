@@ -39,7 +39,6 @@ Export-Package: me.glindholm.connector.eclipse.internal.jira.ui;x-friends:="me.g
  me.glindholm.connector.eclipse.ui.commons,
  me.glindholm.connector.eclipse.ui.dialogs,
  me.glindholm.connector.eclipse.ui.preferences;x-friends:="me.glindholm.connector.eclipse.directclickthrough.ui"
-Import-Package: me.glindholm.jira.rest.client.api.domain,
- org.apache.commons.lang3;version="[3.17.0,4.0.0)"
+Import-Package: me.glindholm.jira.rest.client.api.domain
 Bundle-Localization: plugin
 Bundle-ClassPath: .

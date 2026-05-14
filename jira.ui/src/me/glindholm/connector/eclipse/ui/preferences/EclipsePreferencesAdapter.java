@@ -14,8 +14,8 @@
 package me.glindholm.connector.eclipse.ui.preferences;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -112,7 +112,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore, IPersistentP
     @Override
     public boolean contains(final String name) {
         try {
-            return ArrayUtils.contains(fPreferences.keys(), name);
+            return Arrays.asList(fPreferences.keys()).contains(name);
         } catch (final BackingStoreException e) {
             return false;
         }

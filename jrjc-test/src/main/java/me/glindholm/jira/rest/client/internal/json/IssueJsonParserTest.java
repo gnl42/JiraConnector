@@ -19,13 +19,13 @@ package me.glindholm.jira.rest.client.internal.json;
 import static me.glindholm.jira.rest.client.TestUtil.toOffsetDateTime;
 import static me.glindholm.jira.rest.client.TestUtil.toOffsetDateTimeFromIsoDate;
 import static me.glindholm.jira.rest.client.TestUtil.toUri;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -33,8 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import me.glindholm.jira.rest.client.api.domain.Attachment;
@@ -64,7 +62,6 @@ import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
 // Ignore "May produce NPE" warnings, as we know what we are doing in tests
 public class IssueJsonParserTest {
     @Test
-    @Disabled("Not finding watchers")
     public void testParseIssue() throws Exception {
         final Issue issue = parseIssue("/json/issue/valid-all-expanded.json");
 
@@ -123,9 +120,11 @@ public class IssueJsonParserTest {
         final List<Worklog> worklogs = issue.getWorklogs();
         assertEquals(5, worklogs.size());
         final Worklog expectedWorklog1 = new Worklog(toUri("http://localhost:8090/jira/rest/api/2/issue/10010/worklog/10011"),
-                toUri("http://localhost:8090/jira/rest/api/latest/issue/10010"), TestConstants.USER1_BASIC, TestConstants.USER1_BASIC, "another piece of work",
-                toOffsetDateTime("2010-08-17T16:38:00.013+02:00"), toOffsetDateTime("2010-08-17T16:38:24.948+02:00"),
-                toOffsetDateTime("2010-08-17T16:37:00.000+02:00"), 15, Visibility.role("Developers"));
+                toUri("http://localhost:8090/jira/rest/api/latest/issue/10010"), //
+                TestConstants.USER1_BASIC, TestConstants.USER1_BASIC, "another piece of work",
+                toOffsetDateTime("2010-08-17T16:38:00.013+0200"), //
+                toOffsetDateTime("2010-08-17T16:38:24.948+0200"), //
+                toOffsetDateTime("2010-08-17T16:37:00.000+0200"), 15, Visibility.role("Developers"));
         final Worklog worklog1 = worklogs.get(1);
         final Worklog a = worklogs.get(1);
         assertEquals(expectedWorklog1, worklog1);
@@ -134,7 +133,7 @@ public class IssueJsonParserTest {
         assertEquals(Visibility.group("jira-users"), worklog2.getVisibility());
 
         final Worklog worklog3 = worklogs.get(3);
-        assertEquals(StringUtils.EMPTY, worklog3.getComment());
+        assertEquals("", worklog3.getComment());
 
         // comments
         assertEquals(4, issue.getComments().size());
@@ -231,7 +230,6 @@ public class IssueJsonParserTest {
     }
 
     @Test
-    @Disabled("Can't find watchers")
     public void testParseIssueJira5x0Representation() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0.json");
         assertEquals(3, issue.getComments().size());
@@ -246,7 +244,7 @@ public class IssueJsonParserTest {
         assertEquals(4, issue.getAttachments().size());
         assertEquals(1, issue.getIssueLinks().size());
         assertEquals(1.457, issue.getField("customfield_10000").getValue());
-        assertThat(issue.getComponents().stream().map(entity -> entity.getId()).collect(Collectors.toList()), containsInAnyOrder("Component A", "Component B"));
+        assertThat(issue.getComponents().stream().map(entity -> entity.getName()).collect(Collectors.toList()), containsInAnyOrder("Component A", "Component B"));
         assertEquals(2, issue.getWorklogs().size());
 //        assertEquals(1, issue.getWatchers().getNumWatchers());
 //        assertFalse(issue.getWatchers().isWatching());
@@ -258,7 +256,6 @@ public class IssueJsonParserTest {
     }
 
     @Test
-    @Disabled("Unable to find watchers")
     public void testParseIssueJira50Representation() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-1.json");
         assertEquals(Long.valueOf(10001), issue.getId());
@@ -292,13 +289,12 @@ public class IssueJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void testParseIssueJiraRepresentationJrjc49() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/jrjc49.json");
         final List<Worklog> worklogs = issue.getWorklogs();
         assertEquals(1, worklogs.size());
         final Worklog worklog = worklogs.get(0);
-        assertEquals("Worklog comment should be returned as empty string, when JIRA doesn't include it in reply", StringUtils.EMPTY, worklog.getComment());
+        assertEquals("", worklog.getComment(), "Worklog comment should be returned as empty string, when JIRA doesn't include it in reply");
         assertEquals(180, worklog.getMinutesSpent());
         assertEquals("deleteduser", worklog.getAuthor().getName());
     }
@@ -323,7 +319,6 @@ public class IssueJsonParserTest {
     }
 
     @Test
-    @Disabled
     public void issueWithChangelog() throws JSONException, URISyntaxException {
         final Issue issue = parseIssue("/json/issue/valid-5.0-with-changelog.json");
         assertEquals("HST-1", issue.getKey());
@@ -334,8 +329,8 @@ public class IssueJsonParserTest {
         assertEquals(4, changelog.size());
         final Iterator<ChangelogGroup> iterator = changelog.iterator();
 
-        final BasicUser user1 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user1"), "user1", "User One");
-        final BasicUser user2 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user2"), "user2", "User Two");
+        final BasicUser user1 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user1"), "user1", "User One", null, "userone@local.domain", true);
+        final BasicUser user2 = new BasicUser(toUri("http://localhost:2990/jira/rest/api/2/user?username=user2"), "user2", "User Two", null, "usertwo@local.domain"	, true);
 
         verifyChangelog(iterator.next(), "2012-04-12T14:28:28.255+0200", user1,
                 List.of(new ChangelogItem(FieldType.JIRA, "duedate", null, null, "2012-04-12", "2012-04-12 00:00:00.0"),

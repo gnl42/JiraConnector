@@ -17,7 +17,7 @@
 package me.glindholm.jira.rest.client.api.domain;
 
 import java.net.URI;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -55,7 +55,13 @@ public class User extends BasicUser {
         super(user);
         Objects.requireNonNull(avatarUris.get(S48_48), "At least one avatar URL is expected - for 48x48");
         this.timezone = timezone;
-        this.avatarUris = new HashMap<>(avatarUris);
+        this.avatarUris = avatarUris.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(
+                        LinkedHashMap::new,
+                        (m, e) -> m.put(e.getKey(), e.getValue()),
+                        LinkedHashMap::putAll
+                );
         this.groups = groups;
     }
 

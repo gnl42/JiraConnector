@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2012 Atlassian
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,14 +16,16 @@
 
 package me.glindholm.jira.rest.client.internal.json.gen;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.glindholm.jira.rest.client.api.domain.input.ComplexIssueInputFieldValue;
 import me.glindholm.jira.rest.client.api.domain.input.FieldInput;
@@ -31,7 +33,6 @@ import me.glindholm.jira.rest.client.api.domain.input.IssueInput;
 import me.glindholm.jira.rest.client.api.domain.input.PropertyInput;
 import me.glindholm.jira.rest.client.internal.json.ResourceUtil;
 import me.glindholm.jira.rest.client.shim.jettison.json.JSONObject;
-import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 
 /**
  * @since v1.0
@@ -39,7 +40,7 @@ import me.glindholm.jira.rest.client.test.matchers.JSONObjectMatcher;
 public class IssueInputJsonGeneratorTest {
 
     @Test
-    @Disabled("Fields in different order")
+//    @Disabled("Fields in different order")
     public void testGenerate() throws Exception {
         final IssueInputJsonGenerator generator = new IssueInputJsonGenerator();
         final IssueInput issueInput = IssueInput.createWithFields(
@@ -59,7 +60,8 @@ public class IssueInputJsonGeneratorTest {
 
         final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/valid.json");
         final JSONObject actual = generator.generate(issueInput);
-        assertThat(expected, JSONObjectMatcher.isEqual(actual));
+        ObjectMapper mapper = new ObjectMapper();
+        assertEquals(mapper.readTree(actual.toString()), mapper.readTree(expected.toString()));
     }
 
     @Test
@@ -69,7 +71,8 @@ public class IssueInputJsonGeneratorTest {
 
         final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/empty.json");
         final JSONObject actual = generator.generate(issueInput);
-        assertThat(expected, JSONObjectMatcher.isEqual(actual));
+        ObjectMapper mapper = new ObjectMapper();
+        assertTrue(mapper.readTree(expected.toString()).equals(mapper.readTree(actual.toString())));
     }
 
     @Test
@@ -79,6 +82,7 @@ public class IssueInputJsonGeneratorTest {
 
         final JSONObject expected = ResourceUtil.getJsonObjectFromResource("/json/issueInput/empty.json");
         final JSONObject actual = generator.generate(issueInput);
-        assertThat(expected, JSONObjectMatcher.isEqual(actual));
+        ObjectMapper mapper = new ObjectMapper();
+        assertTrue(mapper.readTree(expected.toString()).equals(mapper.readTree(actual.toString())));
     }
 }

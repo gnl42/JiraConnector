@@ -51,6 +51,11 @@ public class Permissions {
 
     @Nullable
     public Permission getPermission(final String permissionKey) {
+        for (Permission permission : permissionMap.values()) {
+            if (permission.getKey().equals(permissionKey)) {
+                return permission;
+            }
+        }
         return permissionMap.get(permissionKey);
     }
 

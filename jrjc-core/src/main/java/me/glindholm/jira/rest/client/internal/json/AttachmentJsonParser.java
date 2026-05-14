@@ -35,7 +35,7 @@ public class AttachmentJsonParser implements JsonObjectParser<Attachment> {
         final BasicUser author = JsonParseUtil.parseBasicUser(json.optJSONObject("author"));
         final OffsetDateTime creationDate = JsonParseUtil.parseOffsetDateTime(json.getString("created"));
         final int size = json.getInt("size");
-        final String mimeType = json.getString("mimeType");
+        final String mimeType = json.optString("mimeType");
         final URI contentURI = JsonParseUtil.parseURI(json.getString("content"));
         final URI thumbnailURI = JsonParseUtil.parseOptionalURI(json, THUMBNAIL);
         return new Attachment(selfUri, filename, author, creationDate, size, mimeType, contentURI, thumbnailURI);

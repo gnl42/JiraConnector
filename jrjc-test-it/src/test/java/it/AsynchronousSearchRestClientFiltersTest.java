@@ -53,25 +53,25 @@ public class AsynchronousSearchRestClientFiltersTest extends AbstractAsynchronou
     }
 
     public static final Filter FILTER_10000_OLD = new Filter(resolveURI("rest/api/latest/filter/10000"), 10000L,
-            "Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
+            "Bugs in Test project", "", "project = TST AND issuetype = Bug",
             resolveURI("secure/IssueNavigator.jspa?mode=hide&requestId=10000"),
             resolveURI("rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug"),
             USER_ADMIN_60, true);
 
     public static final Filter FILTER_10000_NEW = new Filter(resolveURI("rest/api/latest/filter/10000"), 10000L,
-            "Bugs in Test project", StringUtils.EMPTY, "project = TST AND issuetype = Bug",
+            "Bugs in Test project", "", "project = TST AND issuetype = Bug",
             resolveURI("issues/?filter=10000"),
             resolveURI("rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Bug"),
             USER_ADMIN_60, true);
 
     public static final Filter FILTER_10001_OLD = new Filter(resolveURI("rest/api/latest/filter/10001"), 10001L,
-            "Tasks in Test project - not favuorite filter", StringUtils.EMPTY, "project = TST AND issuetype = Task",
+            "Tasks in Test project - not favuorite filter", "", "project = TST AND issuetype = Task",
             resolveURI("secure/IssueNavigator.jspa?mode=hide&requestId=10001"),
             resolveURI("rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task"),
             USER_ADMIN_60, false);
 
     public static final Filter FILTER_10001_NEW = new Filter(resolveURI("rest/api/latest/filter/10001"), 10001L,
-            "Tasks in Test project - not favuorite filter", StringUtils.EMPTY, "project = TST AND issuetype = Task",
+            "Tasks in Test project - not favuorite filter", "", "project = TST AND issuetype = Task",
             resolveURI("issues/?filter=10001"),
             resolveURI("rest/api/latest/search?jql=project+%3D+TST+AND+issuetype+%3D+Task"),
             USER_ADMIN_60, false);

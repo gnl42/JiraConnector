@@ -31,4 +31,3 @@ Require-Bundle: me.glindholm.connector.eclipse.commons.core,
  org.eclipse.jdt.annotation;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
-Import-Package: org.apache.commons.lang3

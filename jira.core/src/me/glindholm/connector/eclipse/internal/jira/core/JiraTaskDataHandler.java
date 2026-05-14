@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -532,7 +531,8 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
         }
 
         if (jiraIssue.getLabels().length > 0) {
-            setAttributeValue(data, JiraAttribute.LABELS, StringUtils.join(jiraIssue.getLabels(), " ")); //$NON-NLS-1$
+            setAttributeValue(data, JiraAttribute.LABELS,
+                String.join(" ", jiraIssue.getLabels())); //$NON-NLS-1$
         }
 
         addAttributeValue(data, JiraAttribute.PROJECT_ROLES, JiraConstants.NEW_COMMENT_VIEWABLE_BY_ALL);
@@ -1483,7 +1483,7 @@ public class JiraTaskDataHandler extends AbstractTaskDataHandler {
 
         final String labels = getAttributeValue(taskData, JiraAttribute.LABELS);
         if (labels != null) {
-            issue.setLabels(StringUtils.split(labels));
+            issue.setLabels(labels.split("\\s+"));
         }
 
         return issue;

@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.mylyn.commons.net.AbstractWebLocation;
@@ -233,7 +232,7 @@ public class JiraClient implements Closeable {
             throw new JiraException(e);
         }
 
-        if (!StringUtils.isEmpty(comment)) {
+        if (comment != null && !comment.isEmpty()) {
             addCommentToIssue(issue.getKey(), comment, monitor);
         }
 
@@ -268,7 +267,7 @@ public class JiraClient implements Closeable {
         // throw new JiraException(e.toString(), e);
         // }
 
-        if (!StringUtils.isEmpty(comment)) {
+        if (comment != null && !comment.isEmpty()) {
             addCommentToIssue(jiraIssue.getKey(), comment, monitor);
         }
     }
@@ -770,7 +769,7 @@ public class JiraClient implements Closeable {
             throw new JiraException(e);
         }
 
-        if (!StringUtils.isEmpty(comment)) {
+        if (comment != null && !comment.isEmpty()) {
             addCommentToIssue(issue.getKey(), comment, monitor);
         }
     }

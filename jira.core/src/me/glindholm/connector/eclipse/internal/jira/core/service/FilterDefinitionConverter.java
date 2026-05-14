@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -448,7 +447,7 @@ public class FilterDefinitionConverter {
         // estimations
         addJqlAndExpression(searchParams, jiraField.WORK_RATIO(), jqlFilter.extractWorkRatios(filter.getEstimateVsActualFilter()));
 
-        final String whereClause = StringUtils.join(searchParams, " AND "); //$NON-NLS-1$
+        final String whereClause = String.join(" AND ", searchParams); //$NON-NLS-1$
         final String orderByClause = getJqlOrdering(filter.getOrdering());
 
         return whereClause + " " + orderByClause; //$NON-NLS-1$
@@ -672,7 +671,7 @@ public class FilterDefinitionConverter {
         final StringBuilder param = new StringBuilder();
         param.append(key);
         param.append(" in ("); //$NON-NLS-1$
-        param.append(StringUtils.join(values, ",")); //$NON-NLS-1$
+        param.append(String.join(",", values)); //$NON-NLS-1$
         param.append(")"); //$NON-NLS-1$
         // add to output list
         searchParams.add(param.toString());
@@ -690,7 +689,7 @@ public class FilterDefinitionConverter {
      */
     private void addJqlOrExpression(final Collection<String> searchParams, final Collection<String> expressions) {
         if (expressions.size() > 0) {
-            searchParams.add("(" + StringUtils.join(expressions, " OR ") + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            searchParams.add("(" + String.join(" OR ", expressions) + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 

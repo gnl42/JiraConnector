@@ -62,7 +62,7 @@ public class TestUtil {
     }
 
     public static void assertErrorCode(int errorCode, Runnable runnable) {
-        assertErrorCode(errorCode, StringUtils.EMPTY, runnable);
+        assertErrorCode(errorCode, "", runnable);
     }
 
     @SuppressWarnings("unused")
