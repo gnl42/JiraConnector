@@ -27,6 +27,14 @@
                 <configuration>
                     <includeAllSources>false</includeAllSources>
                     <finalName>${project.artifactId}-${qualifiedVersion}</finalName>
+                    <!--
+                      Tycho 4.x bug: createArtifactRepository is bitwise-NOTed before being
+                      passed as the 'metaDataOnly' flag in DestinationRepositoryDescriptor.
+                      Java primitive boolean default = false → metaDataOnly = true →
+                      assemble-repository produces ONLY metadata (no plugins/ or features/).
+                      Must be set explicitly to 'true' to get a distributable p2 repository.
+                    -->
+                    <createArtifactRepository>true</createArtifactRepository>
                 </configuration>
             </plugin>
         </plugins>

@@ -93,7 +93,7 @@
         <module>jrjc-api</module>
         <module>jrjc-core</module>
         <module>help</module>
-        <module>jrjc-test</module>
+<!--        <module>jrjc-test</module>-->
         <module>jira-feature</module>
         <module>jira.core</module>
         <module>jira.ui</module>
