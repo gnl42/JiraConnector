@@ -78,7 +78,7 @@
         <current-release-directory>${releases-directory}/${qualifiedVersion}</current-release-directory>
         <!-- The label for the Composite sites -->
         <site.label>JiraConnector</site.label>
-        <tycho.version>4.0.13</tycho.version>
+        <tycho.version>5.0.2</tycho.version>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <platform.version>5.2.1</platform.version>
@@ -93,7 +93,7 @@
         <module>jrjc-api</module>
         <module>jrjc-core</module>
         <module>help</module>
-<!--        <module>jrjc-test</module>-->
+        <module>jrjc-test</module>
         <module>jira-feature</module>
         <module>jira.core</module>
         <module>jira.ui</module>
@@ -300,6 +300,14 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                          <goal>test</goal>
+                        </goals>
+                        <phase>test</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <failIfNoTests>false</failIfNoTests>
                     <useUIHarness>true</useUIHarness>
