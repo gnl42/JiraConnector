@@ -15,27 +15,21 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-packaging-plugin</artifactId>
-                <configuration>
-                    <format>'v'yyyyMMdd'-'HHmm</format>
-                </configuration>
             </plugin>
-            <!-- make sure that zipped p2 repositories have the fully qualified
-        version -->
             <plugin>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-p2-repository-plugin</artifactId>
-                <configuration>
-                    <includeAllSources>false</includeAllSources>
-                    <finalName>${project.artifactId}-${qualifiedVersion}</finalName>
-                    <!--
-                      Tycho 4.x bug: createArtifactRepository is bitwise-NOTed before being
-                      passed as the 'metaDataOnly' flag in DestinationRepositoryDescriptor.
-                      Java primitive boolean default = false → metaDataOnly = true →
-                      assemble-repository produces ONLY metadata (no plugins/ or features/).
-                      Must be set explicitly to 'true' to get a distributable p2 repository.
-                    -->
-                    <createArtifactRepository>true</createArtifactRepository>
-                </configuration>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <!-- sets the following properties that we use in our Ant
+                    scripts parsedVersion.majorVersion
+                        parsedVersion.minorVersion bound by default to the validate phase -->
+                    <execution>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -54,12 +48,8 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
                         <executions>
-                            <!-- sets the following properties that we use in
-                            our Ant scripts
-                parsedVersion.majorVersion
-                parsedVersion.minorVersion
-                bound by default to the validate phase
-              -->
+                            <!-- sets parsedVersion.majorVersion and parsedVersion.minorVersion,
+                bound by default to the validate phase -->
                             <execution>
                                 <id>parse-version</id>
                                 <goals>
@@ -164,73 +154,28 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-eclipse-plugin</artifactId>
-                        <configuration>
-                            <repositories>
-                                <repository>
-                                    <id>eclipse-version</id>
-                                    <layout>p2</layout>
-                                    <url>
-                                        https://download.eclipse.org/releases/2023-06</url>
-                                </repository>
-                            </repositories>
-                            <dependencies>
-                                <dependency>
-                                    <artifactId>org.eclipse.ant.core</artifactId>
-                                    <type>eclipse-plugin</type>
-                                </dependency>
-                                <dependency>
-                                    <artifactId>org.apache.ant</artifactId>
-                                    <type>eclipse-plugin</type>
-                                </dependency>
-                                <dependency>
-                                    <artifactId>
-                                        org.eclipse.equinox.p2.repository.tools</artifactId>
-                                    <type>eclipse-plugin</type>
-                                </dependency>
-                                <dependency>
-                                    <artifactId>
-                                        org.eclipse.equinox.p2.core.feature</artifactId>
-                                    <type>eclipse-feature</type>
-                                </dependency>
-                                <dependency>
-                                    <artifactId>
-                                        org.eclipse.equinox.p2.extras.feature</artifactId>
-                                    <type>eclipse-feature</type>
-                                </dependency>
-                                <dependency>
-                                    <artifactId>org.eclipse.rcp</artifactId>
-                                    <type>eclipse-feature</type>
-                                </dependency>
-                            </dependencies>
-                        </configuration>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <!-- rhino-engine registers Rhino as a JSR-223 provider for Java 15+ -->
+                            <dependency>
+                                <groupId>org.mozilla</groupId>
+                                <artifactId>rhino-engine</artifactId>
+                                <version>1.9.1</version>
+                            </dependency>
+                        </dependencies>
                         <executions>
-                            <!-- add our new child repository -->
+                            <!-- Add our new child repository to the composite p2 site -->
                             <execution>
                                 <id>add-p2-composite-repository</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>eclipse-run</goal>
+                                    <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <applicationsArgs>
-                                        <args>-application</args>
-                                        <args>org.eclipse.ant.core.antRunner</args>
-                                        <args>-buildfile</args>
-                                        <args>packaging-p2composite.ant</args>
-                                        <args>p2.composite.add</args>
-                                        <args>-Dsite.label="${site.label}"</args>
-                                        <args>
-                                            -Dcomposite.base.dir=${github-local-clone}</args>
-                                        <args>
-                                            -DunqualifiedVersion=${unqualifiedVersion}</args>
-                                        <args>-DbuildQualifier=${buildQualifier}</args>
-                                        <args>
-                                            -DparsedVersion.majorVersion=${parsedVersion.majorVersion}</args>
-                                        <args>
-                                            -DparsedVersion.minorVersion=${parsedVersion.minorVersion}</args>
-                                    </applicationsArgs>
+                                    <target>
+                                        <script language="javascript"
+                                            src="${project.basedir}/src/main/scripts/updateP2Composite.js"/>
+                                    </target>
                                 </configuration>
                             </execution>
                         </executions>
