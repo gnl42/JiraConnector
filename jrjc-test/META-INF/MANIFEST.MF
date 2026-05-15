@@ -18,3 +18,4 @@ Import-Package: com.fasterxml.jackson.annotation;version="[2.19.0,3.0.0)",
  org.hamcrest;version="[3.0.0,4.0.0)",
  org.junit.jupiter.api;version="6.0.3",
  org.junit.jupiter.api.function;version="[6.0.0,7.0.0)"
+Export-Package: me.glindholm.jira.rest.client

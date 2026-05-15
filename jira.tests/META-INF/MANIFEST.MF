@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: me.glindholm.connector.eclipse.jira.tests
 Bundle-Name: Mylyn Jira Tests
 Bundle-SymbolicName: me.glindholm.connector.eclipse.jira.tests
-Bundle-Version: 5.2.0.qualifier
-Require-Bundle: org.junit,
- org.eclipse.core.runtime,
+Bundle-Version: 6.0.0.qualifier
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.search,
  org.eclipse.ui,
@@ -12,19 +12,23 @@ Require-Bundle: org.junit,
  org.eclipse.mylyn.commons.net,
  org.eclipse.mylyn.context.core,
  org.eclipse.mylyn.commons.repositories.core,
- me.glindholm.connector.eclipse.jira.core,
- me.glindholm.connector.eclipse.jira.ui,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.ui,
  org.eclipse.mylyn.tasks.search,
- com.google.guava
-Export-Package: me.glindholm.connector.eclipse.jira.tests;x-friends:="me.glindholm.connector.eclipse.tests",
- me.glindholm.connector.eclipse.jira.tests.client;x-internal:=true,
- me.glindholm.connector.eclipse.jira.tests.core;x-internal:=true,
- me.glindholm.connector.eclipse.jira.tests.model;x-internal:=true,
- me.glindholm.connector.eclipse.jira.tests.ui;x-internal:=true,
- me.glindholm.connector.eclipse.jira.tests.util;x-internal:=true
+ jira-rest-java-client-api;bundle-version="[6.0.0,7.0.0)",
+ jira-rest-java-client-core;bundle-version="6.0.0",
+ me.glindholm.connector.jira.core;bundle-version="[6.0.0,7.0.0)",
+ org.eclipse.jdt.annotation;bundle-version="2.3.100",
+ me.glindholm.connector.jira.ui;bundle-version="6.0.0",
+ org.eclipse.core.net;bundle-version="1.5.700",
+ org.eclipse.mylyn.commons.notifications.core;bundle-version="4.8.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Eclipse Mylyn
 Bundle-ClassPath: lib/hamcrest-all-1.3RC0.jar,.
-Import-Package: org.eclipse.mylyn.internal.tasks.ui.search
+Import-Package: com.google.gson;version="[2.13.0,3.0.0)",
+ org.apache.commons.lang3;version="[3.20.0,4.0.0)";resolution:=optional,
+ org.eclipse.mylyn.internal.tasks.ui.search,
+ org.junit.jupiter.api;version="[6.0.0,7.0.0)",
+ org.junit.platform.engine;version="[6.0.0,7.0.0)",
+ org.junit.platform.engine.support.hierarchical;version="[6.0.0,7.0.0)",
+ org.junit.platform.suite.api;version="[6.0.0,7.0.0)"
